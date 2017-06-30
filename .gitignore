@@ -1,0 +1,7 @@
+/nbproject/private/
+/build/
+/bundle/data/local/
+/dist/
+build.xml
+manifest.mf
+*.wav
