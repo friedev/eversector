@@ -119,6 +119,9 @@ public class Main
      */
     public static boolean disqualified;
     
+    /** The number of ships destroyed by the player. */
+    public static int kills;
+    
     /**
      * Set up the game and prompt the player for actions.
      * @param args the command line arguments
@@ -153,6 +156,7 @@ public class Main
             pendingRelationships = new LinkedList<>();
             attackers = new LinkedList<>();
             showStars = false;
+            kills = 0;
 
             setOptionDefaults();
 

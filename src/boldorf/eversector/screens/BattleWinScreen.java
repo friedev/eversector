@@ -6,6 +6,7 @@ import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
+import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.storage.Reputations;
@@ -67,6 +68,7 @@ public class BattleWinScreen extends ConfirmationScreen
                 Reputations.KILL_ALLY);
         
         looting.destroy(false);
+        kills++;
         return new SectorScreen(getDisplay());
     }
 }

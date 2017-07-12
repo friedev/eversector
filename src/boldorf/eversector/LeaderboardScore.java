@@ -1,5 +1,6 @@
 package boldorf.eversector;
 
+import boldorf.util.Nameable;
 import boldorf.util.Utility;
 import java.util.Properties;
 
@@ -14,6 +15,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     private String  shipName;
     private Integer score;
     private Integer turns;
+    private Integer kills;
     private Integer sectors;
     private String  reputation;
     private boolean leader;
@@ -26,6 +28,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         shipName   = properties.getProperty("shipName");
         score      = Utility.parseInt(properties.getProperty("score"));
         turns      = Utility.parseInt(properties.getProperty("turns"));
+        kills      = Utility.parseInt(properties.getProperty("kills"));
         sectors    = Utility.parseInt(properties.getProperty("sectors"));
         reputation = properties.getProperty("reputation");
         leader     = "true".equals(properties.getProperty("leader"));
@@ -36,16 +39,18 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
      * @param shipName the name of the ship to attribute the score to
      * @param score the score
      * @param turns the number of turns played
+     * @param kills the number of ships destroyed
      * @param sectors the number of sectors discovered
      * @param reputation the reputation
      * @param leader true if the player was a leader
      */
-    public LeaderboardScore(String shipName, int score, int turns, int sectors,
-            String reputation, boolean leader)
+    public LeaderboardScore(String shipName, int score, int turns, int kills,
+            int sectors, String reputation, boolean leader)
     {
         this.shipName   = shipName;
         this.score      = score;
         this.turns      = turns;
+        this.kills      = kills;
         this.sectors    = sectors;
         this.reputation = reputation;
         this.leader     = leader;
@@ -55,13 +60,14 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
      * Creates a new LeaderboardScore without a ship name accompanying it.
      * @param score the score
      * @param turns the number of turns played
+     * @param kills the number of ships destroyed
      * @param sectors the number of sectors discovered
      * @param reputation the reputation of the score
      * @param leader true if the player was a leader
      */
-    public LeaderboardScore(int score, int turns, int sectors,
+    public LeaderboardScore(int score, int turns, int kills, int sectors,
             String reputation, boolean leader)
-        {this(null, score, turns, sectors, reputation, leader);}
+        {this(null, score, turns, kills, sectors, reputation, leader);}
     
     @Override
     public String toString()
@@ -77,6 +83,12 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         builder.append(score).append(" Credits, ")
                 .append(turns).append(" Turns, ")
                 .append(sectors).append(" Sectors, ");
+        
+        if (kills > 0)
+        {
+            builder.append(kills).append(" ")
+                    .append(Nameable.makePlural("Kill", kills)).append(", ");
+        }
         
         builder.append(reputation);
         if (leader)
@@ -98,6 +110,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         
         properties.setProperty("score",      score.toString());
         properties.setProperty("turns",      turns.toString());
+        properties.setProperty("kills",      kills.toString());
         properties.setProperty("sectors",    sectors.toString());
         properties.setProperty("reputation", reputation);
         properties.setProperty("leader",     Boolean.toString(leader));
@@ -111,8 +124,8 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
      */
     public boolean isValid()
     {
-        return score != null && turns != null && sectors != null &&
-                reputation != null;
+        return score != null && turns != null && kills != null &&
+                sectors != null && reputation != null;
     }
     
     @Override

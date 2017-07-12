@@ -13,6 +13,7 @@ import boldorf.util.Nameable;
 import boldorf.eversector.LeaderboardScore;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.disqualified;
+import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
 import static boldorf.eversector.Main.player;
@@ -185,7 +186,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             }
             
             LeaderboardScore playerScore = new LeaderboardScore(
-                    player.calculateShipValue(), map.getTurns(),
+                    player.calculateShipValue(), map.getTurns(), kills,
                     map.getNDiscoveredSectors(), reputationAdjective,
                     player.isLeader());
 
