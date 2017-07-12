@@ -1,5 +1,7 @@
 package boldorf.eversector.screens;
 
+import boldorf.apwt.screens.KeyScreen;
+import boldorf.apwt.screens.Keybinding;
 import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
@@ -26,7 +28,7 @@ import squidpony.squidmath.Coord;
 
 /** The Screen used for navigating Sectors. */
 class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
-        PopupMaster, CommandScreen
+        PopupMaster, KeyScreen
 {
     private AlignedWindow window;
     private Screen popup;

@@ -1,5 +1,7 @@
 package boldorf.eversector.screens;
 
+import boldorf.apwt.screens.KeyScreen;
+import boldorf.apwt.screens.Keybinding;
 import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
@@ -29,7 +31,7 @@ import squidpony.squidmath.Coord;
  * 
  */
 public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
-        PopupMaster, CommandScreen
+        PopupMaster, KeyScreen
 {
     private AlignedWindow window;
     private Screen popup;

@@ -1,5 +1,7 @@
 package boldorf.eversector.screens;
 
+import boldorf.apwt.screens.KeyScreen;
+import boldorf.apwt.screens.Keybinding;
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
@@ -38,7 +40,7 @@ import java.util.ArrayList;
  * 
  */
 class StationScreen extends MenuScreen<AlignedMenu>
-        implements WindowScreen<AlignedWindow>, CommandScreen
+        implements WindowScreen<AlignedWindow>, KeyScreen
 {
     public static final Color COLOR_AFFORDABLE = AsciiPanel.white;
     public static final Color COLOR_UNAFFORDABLE = AsciiPanel.brightBlack;

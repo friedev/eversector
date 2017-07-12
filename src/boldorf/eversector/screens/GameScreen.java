@@ -1,5 +1,7 @@
 package boldorf.eversector.screens;
 
+import boldorf.apwt.screens.KeyScreen;
+import boldorf.apwt.screens.Keybinding;
 import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
@@ -34,7 +36,7 @@ import squidpony.squidmath.Coord;
  * situation.
  */
 public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
-        PopupMaster, CommandScreen
+        PopupMaster, KeyScreen
 {
     public static final int MESSAGE_LINES = 10;
     
@@ -253,10 +255,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding("keybindings", "h", "?"));
         keybindings.add(new Keybinding("quit", "Q"));
         
-        if (subscreen != null && subscreen instanceof CommandScreen)
+        if (subscreen != null && subscreen instanceof KeyScreen)
         {
             keybindings.add(null);
-            keybindings.addAll(((CommandScreen) subscreen).getKeybindings());
+            keybindings.addAll(((KeyScreen) subscreen).getKeybindings());
         }
         
         return keybindings;

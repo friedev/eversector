@@ -1,5 +1,7 @@
 package boldorf.eversector.screens;
 
+import boldorf.apwt.screens.KeyScreen;
+import boldorf.apwt.screens.Keybinding;
 import boldorf.util.Utility;
 import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
@@ -28,7 +30,7 @@ import squidpony.squidmath.Coord;
  * 
  */
 public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
-        CommandScreen
+        KeyScreen
 {
     private AlignedWindow window;
     private Coord cursor;
