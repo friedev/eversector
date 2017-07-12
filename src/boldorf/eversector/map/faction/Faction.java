@@ -4,6 +4,7 @@ import boldorf.eversector.Main;
 import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.util.Nameable;
 import boldorf.eversector.entities.Ship;
 import static boldorf.eversector.map.faction.Focus.*;
@@ -14,7 +15,7 @@ import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import java.awt.Color;
 
 /** A group of ships with a name and relationships with other factions. */
-public class Faction extends Nameable
+public class Faction extends Nameable implements ColorStringObject
 {
     /** All the possible "types" of factions that can be generated. */
     public static String[] TYPES = new String[]
@@ -72,6 +73,7 @@ public class Faction extends Nameable
     public String toString()
         {return super.toString() + " " + type;}
     
+    @Override
     public ColorString toColorString()
         {return new ColorString(toString(), color);}
     

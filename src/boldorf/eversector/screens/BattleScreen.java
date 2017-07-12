@@ -112,7 +112,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
                     if (player.isCloaked())
                     {
                         addColorMessage(new ColorString("You have escaped ")
-                                .add(opponent.toColorString())
+                                .add(opponent)
                                 .add(" with the help of your cloaking."));
                     }
                     else if (!opponent.willPursue(player))
@@ -159,8 +159,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
                 if (opponent.isInFaction(player.getFaction()))
                 {
                     addColorMessage(opponent.toColorString()
-                            .add(" is already in the ")
-                            .add(player.getFaction().toColorString())
+                            .add(" is already in the ").add(player.getFaction())
                             .add("."));
                     break;
                 }
@@ -170,7 +169,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
                     player.convert(opponent);
                     addColorMessage(opponent.toColorString()
                             .add(" has surrendered and joined the ")
-                            .add(player.getFaction().toColorString()).add("."));
+                            .add(player.getFaction()).add("."));
                     playSoundEffect(CLAIM);
                     return endBattle();
                 }
@@ -179,7 +178,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
                     nextAttack = true;
                     addColorMessage(opponent.toColorString()
                             .add(" has refused to join the ")
-                            .add(player.getFaction().toColorString()).add("."));
+                            .add(player.getFaction()).add("."));
                 }
                 break;
             }
@@ -269,15 +268,15 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
         else if (player.isDestroyed())
         {
             return new EndScreen(getDisplay(),
-                    new ColorString("You have been destroyed by ")
-                            .add(opponent.toColorString()).add("."), true);
+                    new ColorString("You have been destroyed by ").add(opponent)
+                            .add("."), true);
         }
         
         if (opponent.isDestroyed())
         {
             popup = new BattleWinScreen(getDisplay(), opponent,
-                    new ColorString("You have destroyed ")
-                            .add(opponent.toColorString()).add("."));
+                    new ColorString("You have destroyed ").add(opponent)
+                            .add("."));
         }
         
         return this;
@@ -329,8 +328,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
         contents.clear();
         window.getSeparators().clear();
         
-        contents.add(new ColorString("Opponent: ")
-                .add(opponent.toColorString()));
+        contents.add(new ColorString("Opponent: ").add(opponent));
         
         if (!scanning)
             return;

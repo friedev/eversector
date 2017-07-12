@@ -108,7 +108,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
                     .add(new ColorString(reputation.getAdjective()
                             .toLowerCase(), reputation.getColor())
                     .add(" " + playerTitle + " of the ")
-                    .add(player.getFaction().toColorString())).add("."));
+                    .add(player.getFaction())).add("."));
         }
         else if (player.isPirate())
         {

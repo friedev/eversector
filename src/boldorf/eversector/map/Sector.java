@@ -189,15 +189,15 @@ public class Sector extends Nameable
                 {
                     ruler.addNews(new ColorString(toString() + " "
                             + locationString + " has been taken from the ")
-                            .add(faction.toColorString()).add("."));
+                            .add(faction).add("."));
                 }
             }
             
             if (faction != null)
             {
                 faction.addNews(new ColorString(toString() + " "
-                        + locationString + " has been lost to the ")
-                        .add(ruler.toColorString()).add("."));
+                        + locationString + " has been lost to the ").add(ruler)
+                        .add("."));
             }
         }
         

@@ -11,6 +11,7 @@ import boldorf.eversector.storage.Paths;
 import boldorf.util.FileManager;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.items.Item;
 import boldorf.eversector.map.Sector;
 import java.io.FileNotFoundException;
@@ -20,7 +21,7 @@ import java.util.List;
 import boldorf.eversector.map.faction.Faction;
 
 /** A station at which ships can refuel and purchase upgrades. */
-public class Station extends CelestialBody
+public class Station extends CelestialBody implements ColorStringObject
 {
     public static final String TRADE  = "Trade";
     public static final String BATTLE = "Battle";
@@ -73,6 +74,7 @@ public class Station extends CelestialBody
     public String toString()
         {return type + " Station " + super.toString();}
     
+    @Override
     public ColorString toColorString()
     {
         return new ColorString(toString(),

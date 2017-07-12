@@ -22,8 +22,7 @@ public class DistressConvertScreen extends ConfirmationScreen
     {
         super(display);
         window = new PopupWindow(display);
-        window.getContents().add(new ColorString("The ")
-                .add(converting.toColorString())
+        window.getContents().add(new ColorString("The ").add(converting)
                 .add(" offers to aid you if you join them."));
         window.getContents().add(new ColorString("Accept the offer?"));
         this.converting = converting;

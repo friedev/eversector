@@ -183,8 +183,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
         contents.add(new ColorString("Orbit: ")
                 .add(new ColorString(Integer.toString(player.getOrbit()),
                         COLOR_FIELD)));
-        contents.add(new ColorString("Ruler: ")
-                .add(station.getFaction().toColorString()));
+        contents.add(new ColorString("Ruler: ").add(station.getFaction()));
         
         if (ships.size() > 1)
         {

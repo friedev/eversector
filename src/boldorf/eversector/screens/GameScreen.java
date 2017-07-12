@@ -330,7 +330,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         Faction playerFaction = player.getFaction();
         
         for (Faction faction: map.getFactions())
-            contents.add(new ColorString(faction.toColorString()));
+            contents.add(faction.toColorString());
 
         if (playerFaction != null)
         {

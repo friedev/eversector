@@ -51,13 +51,12 @@ public class Election
     {
         if (emergency)
         {
-            return new ColorString("The ")
-                    .add(faction.toColorString())
+            return new ColorString("The ").add(faction)
                     .add(" is holding an emergency election for leader.");
         }
         
         return new ColorString("The scheduled leader election for the ")
-                .add(faction.toColorString()).add(" has arrived.");
+                .add(faction).add(" has arrived.");
     }
     
     public Ship electLeader()

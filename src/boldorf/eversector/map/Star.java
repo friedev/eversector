@@ -5,11 +5,12 @@ import boldorf.util.Utility;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import static boldorf.eversector.Main.rng;
 import java.awt.Color;
 
 /** A star that possesses a type and a power level. */
-public enum Star
+public enum Star implements ColorStringObject
 {
     YELLOW_DWARF("Yellow Dwarf", 7, false, AsciiPanel.brightYellow,
             ExtChars.STAR),
@@ -36,6 +37,7 @@ public enum Star
     public String toString()
         {return type;}
     
+    @Override
     public ColorString toColorString()
         {return new ColorString(type, color);}
     

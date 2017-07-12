@@ -1,16 +1,14 @@
 package boldorf.eversector.entities;
 
-import boldorf.util.FileManager;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.faction.Faction;
-import boldorf.eversector.storage.Paths;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
 /** A planetary region with various characteristics. */
-public class Region
+public class Region implements ColorStringObject
 {
     public static String[] BARREN_TYPES = new String[]
     {
@@ -70,6 +68,7 @@ public class Region
     public String toString()
         {return type + " Region";}
     
+    @Override
     public ColorString toColorString()
     {
         return isClaimed() ? new ColorString(toString(), faction.getColor()) :

@@ -4,6 +4,7 @@ import boldorf.util.Utility;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.map.Map;
@@ -11,7 +12,7 @@ import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.faction.Faction;
 
 /** A planet in a sector that can be interacted with in different ways. */
-public class Planet extends CelestialBody
+public class Planet extends CelestialBody implements ColorStringObject
 {
     /** The minimum number of regions a planet can have. */
     public static final int MIN_REGIONS = 3;
@@ -73,6 +74,7 @@ public class Planet extends CelestialBody
     public String toString()
         {return type + " " + super.toString();}
     
+    @Override
     public ColorString toColorString()
     {
         return new ColorString(toString(),

@@ -59,8 +59,7 @@ public class RelationshipRequestScreen extends MenuScreen<PopupMenu>
             Faction otherFaction =
                     relationship.getOtherFaction(player.getFaction());
             RelationshipType type = relationship.getType();
-            ColorString base = otherFaction.toColorString().add(": ")
-                    .add(type.toColorString())
+            ColorString base = otherFaction.toColorString().add(": ").add(type)
                     .add(new ColorChar(ExtChars.ARROW1_R, COLOR_FIELD));
             
             factions.add(otherFaction);
@@ -70,15 +69,13 @@ public class RelationshipRequestScreen extends MenuScreen<PopupMenu>
                 factions.add(otherFaction);
                 changes.add(RelationshipType.WAR);
                 changes.add(RelationshipType.ALLIANCE);
-                contents.add(new ColorString(base)
-                        .add(RelationshipType.WAR.toColorString()));
-                contents.add(base
-                        .add(RelationshipType.ALLIANCE.toColorString()));
+                contents.add(new ColorString(base).add(RelationshipType.WAR));
+                contents.add(base.add(RelationshipType.ALLIANCE));
                 continue;
             }
             
             changes.add(RelationshipType.PEACE);
-            contents.add(base.add(RelationshipType.PEACE.toColorString()));
+            contents.add(base.add(RelationshipType.PEACE));
         }
     }
 }

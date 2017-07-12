@@ -24,7 +24,7 @@ public class BattleConvertScreen extends ConfirmationScreen
         window = new PopupWindow(display);
         window.getContents().add(converting.toColorString()
                 .add(" offers to spare you if you join the ")
-                .add(converting.getFaction().toColorString()).add("."));
+                .add(converting.getFaction()).add("."));
         window.getContents().add(new ColorString("Accept the offer?"));
         this.converting = converting;
     }

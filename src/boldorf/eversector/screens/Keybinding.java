@@ -1,12 +1,13 @@
 package boldorf.eversector.screens;
 
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import static boldorf.eversector.Main.COLOR_FIELD;
 
 /**
  * 
  */
-public class Keybinding
+public class Keybinding implements ColorStringObject
 {
     private String function;
     private String[] keys;
@@ -34,6 +35,7 @@ public class Keybinding
     public String[] getKeys()
         {return keys;}
     
+    @Override
     public ColorString toColorString()
     {
         ColorString colorString = new ColorString(keys[0], COLOR_FIELD);

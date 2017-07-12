@@ -15,6 +15,7 @@ import boldorf.eversector.storage.Reputations;
 import boldorf.eversector.storage.Resources;
 import boldorf.util.Utility;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import boldorf.util.Nameable;
 import static boldorf.eversector.Main.addColorMessage;
@@ -34,7 +35,8 @@ import static boldorf.eversector.Main.playSoundEffect;
 import boldorf.eversector.storage.Paths;
 
 /** A starship which can travel through and interact with the map. */
-public class Ship extends Satellite implements Comparable<Ship>
+public class Ship extends Satellite implements ColorStringObject,
+        Comparable<Ship>
 {
     // Starting resource amounts
     public static final int FUEL    = 15;
@@ -282,6 +284,7 @@ public class Ship extends Satellite implements Comparable<Ship>
                 super.toString() : getClassification() + " " + super.toString();
     }
     
+    @Override
     public ColorString toColorString()
     {
         return isAligned() ? new ColorString(toString(), faction.getColor()) :
@@ -533,7 +536,7 @@ public class Ship extends Satellite implements Comparable<Ship>
         {
             // Print before faction is left so that null is not printed
             addPlayerColorMessage(new ColorString("The ")
-                    .add(faction.toColorString())
+                    .add(faction)
                 .add(" has rejected you on account of your transgressions."));
             
             Faction oldFaction = faction;
@@ -2442,8 +2445,7 @@ public class Ship extends Satellite implements Comparable<Ship>
         ship.changeReputation(shipFaction, -Reputations.CONVERT);
         
         ship.addPlayerColorMessage(toColorString()
-                .add(" has converted you to the ")
-                .add(faction.toColorString()).add("."));
+                .add(" has converted you to the ").add(faction).add("."));
         return true;
     }
     
@@ -2672,14 +2674,12 @@ public class Ship extends Satellite implements Comparable<Ship>
             if (!canDistress())
             {
                 // Otherwise they will refuse, giving others a chance to help
-                addPlayerColorMessage(new ColorString("The ")
-                        .add(faction.toColorString())
+                addPlayerColorMessage(new ColorString("The ").add(faction)
                         .add(" refuses to help you."));
             }
             else if (faction.getEconomyCredits() < DISTRESS_CREDITS)
             {
-                addPlayerColorMessage(new ColorString("The ")
-                        .add(faction.toColorString())
+                addPlayerColorMessage(new ColorString("The ").add(faction)
                         .add(" cannot afford to help you."));
             }
             else
@@ -2719,8 +2719,7 @@ public class Ship extends Satellite implements Comparable<Ship>
         if (responder != faction)
             joinFaction(responder);
         
-        addPlayerColorMessage(new ColorString("The ")
-                .add(faction.toColorString())
+        addPlayerColorMessage(new ColorString("The ").add(faction)
                 .add(" responds and warps supplies to your location."));
         changeCredits(faction, DISTRESS_CREDITS);
         faction.changeEconomy(-refill());

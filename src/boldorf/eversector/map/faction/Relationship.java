@@ -157,17 +157,15 @@ public class Relationship
             if (chooser.requestRelationship(receiver, newRelationship))
             {
                 chooser.addNews(new ColorString("We " + actingVerb + " the ")
-                        .add(receiver.toColorString()).add("."));
-                receiver.addNews(new ColorString("The ")
-                        .add(chooser.toColorString()).add(" " + verb + " us."));
+                        .add(receiver).add("."));
+                receiver.addNews(new ColorString("The ").add(chooser)
+                        .add(" " + verb + " us."));
             }
             else
             {
                 chooser.addNews(new ColorString("We " + requestVerb + " the ")
-                        .add(receiver.toColorString())
-                        .add(", but they refused it."));
-                receiver.addNews(new ColorString("The ")
-                        .add(chooser.toColorString())
+                        .add(receiver).add(", but they refused it."));
+                receiver.addNews(new ColorString("The ").add(chooser)
                         .add(" " + requestVerb + " us, but we refused it."));
             }
             
@@ -178,16 +176,16 @@ public class Relationship
         {
             type = newRelationship;
             chooser.addNews(new ColorString("We " + actingVerb + " the ")
-                    .add(receiver.toColorString()).add("."));
-            receiver.addNews(new ColorString("The ")
-                    .add(chooser.toColorString()).add(" " + verb + " us."));
+                    .add(receiver).add("."));
+            receiver.addNews(new ColorString("The ").add(chooser)
+                    .add(" " + verb + " us."));
             return true;
         }
         
         pendingRelationships.add(new RelationshipChange(otherFaction,
                 newRelationship, question, new ColorString("The ")
-                        .add(otherFaction.toColorString())
-                        .add(" has " + requestVerb + " you."), negateAnswer));
+                        .add(otherFaction).add(" has " + requestVerb + " you."),
+                negateAnswer));
         return true;
         
         /*

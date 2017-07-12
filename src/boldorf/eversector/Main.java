@@ -49,7 +49,7 @@ public class Main
      * If true, will adjust the path to work in the developer's IDE with sources
      * and libraries separate.
      */
-    public static final boolean DEV_PATH = false;
+    public static final boolean DEV_PATH = true;
     
     /** The longest version that can be compensated for with spaces. */
     public static final int MAX_VERSION_LENGTH = 22;

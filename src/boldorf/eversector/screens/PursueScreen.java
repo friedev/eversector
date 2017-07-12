@@ -5,7 +5,6 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
-import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.entities.Ship;
@@ -23,8 +22,8 @@ public class PursueScreen extends ConfirmationScreen
     {
         super(display);
         window = new PopupWindow(display);
-        window.getContents().add(new ColorString("Pursue ")
-                .add(pursuing.toColorString()).add("?"));
+        window.getContents().add(new ColorString("Pursue ").add(pursuing)
+                .add("?"));
     }
 
     @Override

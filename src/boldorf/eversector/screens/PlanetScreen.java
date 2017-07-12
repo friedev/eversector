@@ -156,7 +156,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         if (player.landedIn().isClaimed())
         {
             contents.add(new ColorString("Ruler: ")
-                    .add(player.landedIn().getFaction().toColorString()));
+                    .add(player.landedIn().getFaction()));
         }
         
         if (player.landedIn().hasOre())

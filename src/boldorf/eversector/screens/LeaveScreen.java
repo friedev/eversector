@@ -20,7 +20,7 @@ public class LeaveScreen extends ConfirmationScreen
         super(display);
         window = new PopupWindow(display);
         window.getContents().add(new ColorString("Really leave the ")
-                .add(player.getFaction().toColorString()).add("?"));
+                .add(player.getFaction()).add("?"));
         this.redirect = redirect;
     }
 
