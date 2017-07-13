@@ -3,6 +3,7 @@ package boldorf.eversector.screens;
 import boldorf.apwt.screens.KeyScreen;
 import boldorf.apwt.screens.Keybinding;
 import boldorf.apwt.Display;
+import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
@@ -24,10 +25,12 @@ import boldorf.eversector.map.faction.RelationshipType;
 import boldorf.eversector.storage.Actions;
 import static boldorf.eversector.storage.Paths.DISTRESS;
 import static boldorf.eversector.storage.Paths.REFINE;
+import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 
 /**
@@ -45,6 +48,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
     private List<Message> messages;
     private Screen subscreen;
     private Screen popup;
+    private int messageOffset;
     
     public GameScreen(Display display)
     {
@@ -53,6 +57,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         factionWindow = new AlignedWindow(display, Coord.get(1, 1));
         messages = new LinkedList<>();
         subscreen = new SectorScreen(display);
+        messageOffset = -1;
     }
     
     @Override
@@ -96,6 +101,29 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             
             if (popup instanceof EndScreen)
                 subscreen = null;
+            
+            return this;
+        }
+        
+        if (viewingHistory())
+        {
+            if (key.getKeyCode() == KeyEvent.VK_H ||
+                    key.getKeyCode() == KeyEvent.VK_ENTER ||
+                    key.getKeyCode() == KeyEvent.VK_ESCAPE)
+            {
+                messageOffset = -1;
+                return this;
+            }
+            
+            Direction direction = Utility.keyToDirectionRestricted(key);
+            
+            if (direction == null)
+                return this;
+            
+            if (direction.hasUp() && canScrollHistoryUp())
+                messageOffset++;
+            else if (direction.hasDown() && canScrollHistoryDown())
+                messageOffset--;
             
             return this;
         }
@@ -175,14 +203,16 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             case KeyEvent.VK_PERIOD: case KeyEvent.VK_SPACE:
                 nextTurn = true;
                 break;
+            case KeyEvent.VK_H:
+                if (messages.size() > MESSAGE_LINES)
+                    messageOffset = 0;
+                break;
             case KeyEvent.VK_O:
                 popup = new OptionsScreen(getDisplay());
                 break;
             case KeyEvent.VK_SLASH:
-                if (!key.isShiftDown())
-                    break;
-            case KeyEvent.VK_H:
-                popup = new HelpScreen(getDisplay(), getKeybindings());
+                if (key.isShiftDown())
+                    popup = new HelpScreen(getDisplay(), getKeybindings());
                 break;
             case KeyEvent.VK_Q:
                 popup = new QuitScreen(getDisplay());
@@ -245,8 +275,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         if (player.hasModule(Actions.REFINE))
             keybindings.add(new Keybinding("refine ore into fuel", "i"));
         keybindings.add(new Keybinding("wait one turn", ".", "space"));
+        if (messages.size() > MESSAGE_LINES)
+            keybindings.add(new Keybinding("message history", "h"));
         keybindings.add(new Keybinding("options", "o"));
-        keybindings.add(new Keybinding("keybindings", "h", "?"));
+        keybindings.add(new Keybinding("keybindings", "?"));
         keybindings.add(new Keybinding("quit", "Q"));
         
         if (subscreen != null && subscreen instanceof KeyScreen)
@@ -269,6 +301,15 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
     @Override
     public boolean hasPopup()
         {return popup != null;}
+    
+    private boolean viewingHistory()
+        {return messageOffset != -1;}
+    
+    private boolean canScrollHistoryUp()
+        {return messageOffset + MESSAGE_LINES < messages.size();}
+    
+    private boolean canScrollHistoryDown()
+        {return messageOffset > 0;}
     
     private class Message
     {
@@ -418,10 +459,11 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                 (MESSAGE_LINES + 2)), Coord.get(getDisplay().getCharWidth() - 1,
                         getDisplay().getCharHeight() - 1), new Border(1));
         
+        int offset = Math.max(0, messageOffset);
         int lines = Math.min(messages.size(), MESSAGE_LINES);
         List<ColorString> messageOutput = new ArrayList<>(lines);
         List<Message> displayedMessages = messages.subList(
-                messages.size() - lines, messages.size());
+                messages.size() - lines - offset, messages.size() - offset);
         
         for (Message current: displayedMessages)
         {
@@ -457,5 +499,22 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         getDisplay().write(Coord.get(1, getDisplay().getCharHeight() -
                 (MESSAGE_LINES + 1)),
                 messageOutput.toArray(new ColorString[lines]));
+        
+        if (viewingHistory())
+        {
+            if (canScrollHistoryUp())
+            {
+                getDisplay().writeCenter(getDisplay().getCharHeight() -
+                        MESSAGE_LINES - 2, new ColorString(Character.toString(
+                                ExtChars.ARROW1_U), COLOR_FIELD));
+            }
+            
+            if (canScrollHistoryDown())
+            {
+                getDisplay().writeCenter(getDisplay().getCharHeight() - 1,
+                        new ColorString(Character.toString(ExtChars.ARROW1_D),
+                                COLOR_FIELD));
+            }
+        }
     }
 }
