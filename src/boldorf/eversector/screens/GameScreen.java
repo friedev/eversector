@@ -42,7 +42,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
     
     private AlignedWindow statusWindow;
     private AlignedWindow factionWindow;
-    private List<ColorString> messages;
+    private List<Message> messages;
     private Screen subscreen;
     private Screen popup;
     
@@ -68,13 +68,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         factionWindow.display();
         bottomY = Math.max(bottomY, factionWindow.getBottomRight().y);
         
-        getDisplay().drawBorder(Coord.get(0, getDisplay().getCharHeight() -
-                (MESSAGE_LINES + 2)), Coord.get(getDisplay().getCharWidth() - 1,
-                        getDisplay().getCharHeight() - 1), new Border(1));
-        
-        getDisplay().write(Coord.get(1, getDisplay().getCharHeight() -
-                (MESSAGE_LINES + 1)),
-                messages.toArray(new ColorString[messages.size()]));
+        drawMessageWindow();
         
         if (subscreen != null)
         {
@@ -263,31 +257,6 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         
         return keybindings;
     }
-
-    public void addMessage(ColorString message)
-    {
-        if (message.length() >= getDisplay().getCharWidth() - 2)
-        {
-            int splitIndex = getDisplay().getCharWidth() - 2;
-            while (message.charAt(splitIndex) != ' ')
-                splitIndex--;
-            
-            if (message.charAt(splitIndex) != ' ')
-                splitIndex = getDisplay().getCharWidth();
-            else
-                message.getSet().remove(splitIndex);
-            
-            messages.add(0, message.subSequence(0, splitIndex));
-            messages.add(1, message.subSequence(splitIndex, message.length()));
-        }
-        else
-        {
-            messages.add(0, message);
-        }
-        
-        while (messages.size() > MESSAGE_LINES)
-            messages.remove(MESSAGE_LINES);
-    }
     
     @Override
     public AlignedWindow getWindow()
@@ -300,6 +269,42 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
     @Override
     public boolean hasPopup()
         {return popup != null;}
+    
+    private class Message
+    {
+        ColorString message;
+        int counter;
+        
+        Message(ColorString message)
+        {
+            this.message = message;
+            this.counter = 1;
+        }
+        
+        ColorString getOutput()
+        {
+            if (counter == 1)
+                return message;
+            
+            return new ColorString(message).add(new ColorString(
+                    " (x" + Integer.toString(counter) + ")", COLOR_FIELD));
+        }
+    }
+    
+    public void addMessage(ColorString message)
+    {
+        if (messages.isEmpty())
+        {
+            messages.add(new Message(message));
+            return;
+        }
+        
+        Message previous = messages.get(messages.size() - 1);
+        if (message.toString().equals(previous.message.toString()))
+            previous.counter++;
+        else
+            messages.add(new Message(message));
+    }
     
     private void setUpStatusWindow()
     {
@@ -405,5 +410,52 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             contents.add(new ColorString("Ships: ").add(new ColorString(
                     playerFaction.getShipTypes(), COLOR_FIELD)));
         }
+    }
+    
+    private void drawMessageWindow()
+    {
+        getDisplay().drawBorder(Coord.get(0, getDisplay().getCharHeight() -
+                (MESSAGE_LINES + 2)), Coord.get(getDisplay().getCharWidth() - 1,
+                        getDisplay().getCharHeight() - 1), new Border(1));
+        
+        int lines = Math.min(messages.size(), MESSAGE_LINES);
+        List<ColorString> messageOutput = new ArrayList<>(lines);
+        List<Message> displayedMessages = messages.subList(
+                messages.size() - lines, messages.size());
+        
+        for (Message current: displayedMessages)
+        {
+            ColorString currentOutput = new ColorString(current.getOutput());
+            
+            if (currentOutput.length() >= getDisplay().getCharWidth() - 2)
+            {
+                int splitIndex = getDisplay().getCharWidth() - 2;
+                while (currentOutput.charAt(splitIndex) != ' ')
+                    splitIndex--;
+
+                if (currentOutput.charAt(splitIndex) != ' ')
+                    splitIndex = getDisplay().getCharWidth();
+                else
+                    currentOutput.getCharacters().remove(splitIndex);
+                
+                messageOutput.add(currentOutput.subSequence(0, splitIndex));
+                messageOutput.add(currentOutput.subSequence(splitIndex,
+                        currentOutput.length()));
+            }
+            else
+            {
+                messageOutput.add(current.getOutput());
+            }
+        }
+        
+        if (messageOutput.size() > MESSAGE_LINES)
+        {
+            messageOutput = messageOutput.subList(
+                    messageOutput.size() - MESSAGE_LINES, messageOutput.size());
+        }
+        
+        getDisplay().write(Coord.get(1, getDisplay().getCharHeight() -
+                (MESSAGE_LINES + 1)),
+                messageOutput.toArray(new ColorString[lines]));
     }
 }
