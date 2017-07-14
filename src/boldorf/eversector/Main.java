@@ -2,10 +2,8 @@ package boldorf.eversector;
 
 import asciiPanel.AsciiFont;
 import asciiPanel.AsciiPanel;
-import boldorf.util.Console;
 import boldorf.util.FileManager;
 import boldorf.util.NameGenerator;
-import boldorf.util.Prompt;
 import boldorf.util.Utility;
 import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
@@ -34,6 +32,7 @@ import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import javax.sound.sampled.Clip;
@@ -125,122 +124,116 @@ public class Main
     /**
      * Set up the game and prompt the player for actions.
      * @param args the command line arguments
+     * @throws java.lang.Exception any uncaught exceptions will be thrown
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
-        try
+        if (DEV_PATH)
         {
-            if (DEV_PATH)
-            {
-                FileManager.movePathUp(4);
-                FileManager.addToPath("EverSector/bundle/");
-            }
-            else
-            {
-                FileManager.movePathUp();
-            }
-            
-            readInitialFiles();
-            rng = new RNG();
-            
-            if (FileManager.checkExistence(Paths.OPTIONS))
-                options = FileManager.load(Paths.OPTIONS);
-            else
-                options = new Properties();
-            
-            setUpSeed();
-            nameGenerator = new NameGenerator(GENERAL, rng);
-            
-            disqualified = false;
-            pendingElection = null;
-            pendingRelationships = new LinkedList<>();
-            attackers = new LinkedList<>();
-            showStars = false;
-            kills = 0;
-
-            setOptionDefaults();
-
-            // Create the map and update the player as needed
-            map = new Map();
-            boolean savedGame = FileManager.checkExistence(Paths.SAVE);
-            if (savedGame)
-            {
-                Properties save = FileManager.load(Paths.SAVE);
-                if (optionIs(OPTION_TRUE,
-                        save.getProperty(Options.DISQUALIFIED)))
-                    disqualified = true;
-                player = new Ship(map, save);
-                map.setPlayer(player);
-            }
-            else
-            {
-                map.createNewPlayer();
-                player = map.getPlayer();
-            }
-
-            map.reveal(player.getLocation());
-            // Reveal here to avoid overrideable calls in Map constructor
-
-            LinkedList<ColorString> startMessages = new LinkedList<>();
-            
-            if (options.getProperty(Options.NAME) == null)
-            {
-                startMessages.add(new ColorString("Welcome to EverSector!"));
-            }
-            else
-            {
-                startMessages.add(new ColorString("Welcome back to EverSector, "
-                        ).add(new ColorString(options.getProperty(Options.NAME),
-                                COLOR_FIELD))
-                        .add("!"));
-            }
-            
-            startMessages.add(new ColorString("Please consult the "
-                    + "bundled README to learn how to play."));
-            startMessages.add(new ColorString("By playing, you accept the "
-                    + "Terms of Use in the README."));
-            startMessages.add(new ColorString("Tip: ", COLOR_FIELD)
-                            .add(rng.getRandomElement(TIPS)));
-            
-            if (savedGame)
-            {
-                startMessages.add(new ColorString(
-                        "Press any key to continue your saved game."));
-            }
-            else
-            {
-                if (optionIs(OPTION_TRUE, Options.KEEP_SEED))
-                {
-                    startMessages.add(new ColorString("Your chosen seed is: ")
-                            .add(new ColorString(Long.toString(seed),
-                                    COLOR_FIELD)));
-                }
-                
-                startMessages.add(new ColorString("Press any key to begin."));
-            }
-            
-            display = new Display(new AsciiPanel(
-                    Utility.parseInt(options.getProperty(WIDTH)),
-                    Utility.parseInt(options.getProperty(HEIGHT)),
-                    AsciiFont.QBICFEET_10x10));
-            
-            display.init(new StartScreen(display, startMessages));
-            
-            soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
-            if (!optionIs(OPTION_TRUE, Options.MUSIC))
-                soundtrack.stop();
+            FileManager.movePathUp(4);
+            FileManager.addToPath("EverSector/bundle/");
         }
-        catch (Exception e)
+        else
         {
-            Console.println();
-            Console.println("An error has occured!");
-            Console.println("Please send the following stack trace to the "
-                    + "developer to help resolve the issue:");
-            
-            e.printStackTrace();
-            Prompt.enterTo("close");
-            System.exit(1);
+            FileManager.movePathUp();
         }
+
+        readInitialFiles();
+        rng = new RNG();
+
+        if (FileManager.checkExistence(Paths.OPTIONS))
+            options = FileManager.load(Paths.OPTIONS);
+        else
+            options = new Properties();
+
+        setUpSeed();
+        nameGenerator = new NameGenerator(GENERAL, rng);
+        
+        List<ColorString> startMessages = startGame();
+        
+        display = new Display(new AsciiPanel(
+                Utility.parseInt(options.getProperty(WIDTH)),
+                Utility.parseInt(options.getProperty(HEIGHT)),
+                AsciiFont.QBICFEET_10x10));
+
+        display.init(new StartScreen(display, startMessages));
+
+        soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
+        if (!optionIs(OPTION_TRUE, Options.MUSIC))
+            soundtrack.stop();
+    }
+    
+    public static List<ColorString> startGame() throws Exception
+    {
+        disqualified = false;
+        pendingElection = null;
+        pendingRelationships = new LinkedList<>();
+        attackers = new LinkedList<>();
+        showStars = false;
+        kills = 0;
+
+        setOptionDefaults();
+
+        // Create the map and update the player as needed
+        map = new Map();
+        boolean savedGame = FileManager.checkExistence(Paths.SAVE);
+        if (savedGame)
+        {
+            Properties save = FileManager.load(Paths.SAVE);
+            if (optionIs(OPTION_TRUE,
+                    save.getProperty(Options.DISQUALIFIED)))
+                disqualified = true;
+            player = new Ship(map, save);
+            map.setPlayer(player);
+        }
+        else
+        {
+            map.createNewPlayer();
+            player = map.getPlayer();
+        }
+
+        map.reveal(player.getLocation());
+        // Reveal here to avoid overrideable calls in Map constructor
+
+        LinkedList<ColorString> startMessages = new LinkedList<>();
+
+        if (options.getProperty(Options.NAME) == null)
+        {
+            startMessages.add(new ColorString("Welcome to EverSector!"));
+        }
+        else
+        {
+            startMessages.add(new ColorString("Welcome back to EverSector, "
+                    ).add(new ColorString(options.getProperty(Options.NAME),
+                            COLOR_FIELD))
+                    .add("!"));
+        }
+
+        startMessages.add(new ColorString("Please consult the "
+                + "bundled README to learn how to play."));
+        startMessages.add(new ColorString("By playing, you accept the "
+                + "Terms of Use in the README."));
+        startMessages.add(new ColorString("Tip: ", COLOR_FIELD)
+                        .add(rng.getRandomElement(TIPS)));
+
+        if (savedGame)
+        {
+            startMessages.add(new ColorString(
+                    "Press any key to continue your saved game."));
+        }
+        else
+        {
+            if (optionIs(OPTION_TRUE, Options.KEEP_SEED))
+            {
+                startMessages.add(new ColorString("Your chosen seed is: ")
+                        .add(new ColorString(Long.toString(seed),
+                                COLOR_FIELD)));
+            }
+
+            startMessages.add(new ColorString("Press any key to begin."));
+        }
+
+        return startMessages;
     }
     
     public static void addColorMessage(ColorString message)

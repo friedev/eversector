@@ -17,6 +17,7 @@ import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
 import static boldorf.eversector.Main.player;
+import static boldorf.eversector.Main.startGame;
 import boldorf.eversector.entities.ReputationRange;
 import boldorf.eversector.entities.Ship;
 import static boldorf.eversector.screens.StartScreen.getTitleArt;
@@ -70,7 +71,25 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 
     @Override
     public Screen processInput(KeyEvent key)
-        {System.exit(0); return null;}
+    {
+        if (key.getKeyCode() == KeyEvent.VK_R)
+        {
+            try
+            {
+                return new StartScreen(getDisplay(), startGame());
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            return null;
+        }
+        
+        System.exit(0);
+        return null;
+    }
 
     @Override
     public PopupWindow getWindow()
@@ -143,7 +162,9 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
                             + "!"));
         }
         
-        contents.add(new ColorString("Press any key to quit."));
+        contents.add(new ColorString("Press ")
+                .add(new ColorString("r", COLOR_FIELD))
+                .add(" to play again or anything else to quit."));
     }
     
     private void setUpLeaderboard()

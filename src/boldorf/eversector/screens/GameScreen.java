@@ -99,6 +99,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         {
             popup = popup.processInput(key);
             
+            if (popup instanceof StartScreen)
+                return popup;
+            
             if (popup instanceof EndScreen)
                 subscreen = null;
             
