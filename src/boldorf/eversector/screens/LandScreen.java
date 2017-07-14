@@ -39,6 +39,7 @@ public class LandScreen extends MenuScreen<PopupMenu>
             player.getMap().nextTurn();
             return new PlanetScreen(getDisplay());
         }
-        return null;
+        
+        return player.canLand() ? new CrashLandScreen(getDisplay()) : null;
     }
 }

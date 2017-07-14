@@ -1711,9 +1711,15 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         
         if (getAmountOf(Resources.HULL) > CRASH_THRESHOLD)
+        {
             getResource(Resources.HULL).setAmount(CRASH_THRESHOLD);
+        }
         else
+        {
             getResource(Resources.HULL).setAmount(0);
+            destroy(false);
+            return true;
+        }
         
         landedIn = sector.getPlanetAt(getOrbit()).getRandomRegion();
         landedIn.getShips().add(this);
