@@ -14,6 +14,8 @@ public abstract class Paths
         SAVE,
         OPTIONS,
         LEADERBOARD,
+    // Images
+        ICON,
     // Audio files
         SOUNDTRACK,
         START,
@@ -30,7 +32,7 @@ public abstract class Paths
         TORPEDO,
         PULSE,
         DEATH,
-    // Station manifests
+    // Item manifests
         MODULES,
         WEAPONS,
         RESOURCES,
@@ -45,6 +47,9 @@ public abstract class Paths
         SAVE        = manifest.getProperty("save");
         OPTIONS     = manifest.getProperty("options");
         LEADERBOARD = manifest.getProperty("leaderboard");
+        
+        // Images
+        ICON = manifest.getProperty("icon");
         
         // Audio files
         SOUNDTRACK = manifest.getProperty("soundtrack");

@@ -155,7 +155,9 @@ public class Main
                 Utility.parseInt(options.getProperty(WIDTH)),
                 Utility.parseInt(options.getProperty(HEIGHT)),
                 AsciiFont.QBICFEET_10x10));
-
+        
+        display.setIconImage(FileManager.loadImage(Paths.ICON));
+        display.setTitle("EverSector");
         display.init(new StartScreen(display, startMessages));
 
         soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
