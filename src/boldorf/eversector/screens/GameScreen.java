@@ -218,7 +218,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                     popup = new HelpScreen(getDisplay(), getKeybindings());
                 break;
             case KeyEvent.VK_Q:
-                popup = new QuitScreen(getDisplay());
+                if (key.isShiftDown())
+                    popup = new QuitScreen(getDisplay());
                 break;
         }
         
