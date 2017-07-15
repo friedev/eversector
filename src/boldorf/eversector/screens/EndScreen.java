@@ -12,7 +12,11 @@ import boldorf.apwt.windows.PopupWindow;
 import boldorf.util.Nameable;
 import boldorf.eversector.LeaderboardScore;
 import static boldorf.eversector.Main.COLOR_FIELD;
+import static boldorf.eversector.Main.DISPLAYED_SCORES;
+import static boldorf.eversector.Main.buildLeaderboard;
+import static boldorf.eversector.Main.buildLeaderboardHeader;
 import static boldorf.eversector.Main.disqualified;
+import static boldorf.eversector.Main.getLeaderboardScores;
 import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
@@ -27,7 +31,6 @@ import boldorf.eversector.storage.Paths;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,9 +39,6 @@ import java.util.List;
  */
 public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 {
-    /** The number of scores to display on the leaderboard. */
-    public static final int DISPLAYED_SCORES = 5;
-    
     /** The minimum number of turns that must pass before a score is logged. */
     public static final int MIN_TURNS = 10;
     
@@ -173,19 +173,19 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         
         if (disqualified)
         {
-            printLeaderboard();
+            window.getContents().addAll(buildLeaderboard());
             contents.add(new ColorString("Your score has been disqualified due "
                     + "to debug command usage.", COLOR_SCORE));
         }
         else if (map.getTurns() <= MIN_TURNS)
         {
-            printLeaderboard();
+            window.getContents().addAll(buildLeaderboard());
             contents.add(new ColorString("This game has been too short to log "
                     + "a score.", COLOR_SCORE));
         }
         else if (player.calculateShipValue() <= Ship.BASE_VALUE)
         {
-            printLeaderboard();
+            window.getContents().addAll(buildLeaderboard());
             contents.add(new ColorString("You have not scored enough for a "
                     + "leaderboard entry.", COLOR_SCORE));
         }
@@ -226,27 +226,6 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
     }
     
     /**
-     * Prints the leaderboard without any special markings, and will skip the
-     * printing altogether if the leaderboard file does not exist.
-     * @return true if the print was made
-     */
-    public boolean printLeaderboard()
-    {
-        List<ColorString> contents = window.getContents();
-        FileManager.createContainingFolders(Paths.LEADERBOARD);
-        List<LeaderboardScore> scores = getLeaderboardScores();
-        
-        if (scores == null || scores.isEmpty())
-            return false;
-        
-        addLeaderboardHeader(scores.size());
-        for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
-            contents.add(new ColorString(scores.get(i).toString()));
-        
-        return true;
-    }
-    
-    /**
      * Prints the leaderboard as well as the given score, if separate.
      * @param playerScore the score to add to the leaderboard and print
      * regardless of position
@@ -269,7 +248,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         scores.sort(Comparator.reverseOrder());
         
         boolean playerScoreNoted = false;
-        addLeaderboardHeader(scores.size());
+        contents.add(buildLeaderboardHeader(scores.size()));
         
         for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
         {
@@ -298,40 +277,5 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         }
         
         return scores.size();
-    }
-    
-    public void addLeaderboardHeader(int nScores)
-    {
-        ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
-        if (nScores > DISPLAYED_SCORES)
-            header.add(" (" + nScores + " Scores Total)");
-        
-        window.getContents().add(header);
-    }
-    
-    /**
-     * Returns a sorted list of every leaderboard score.
-     * @return an ArrayList of Integers parsed from the leaderboard file and
-     * sorted from greatest to least
-     */
-    public static List<LeaderboardScore> getLeaderboardScores()
-    {
-        List<LeaderboardScore> scores = new ArrayList<>();
-        
-        try
-        {
-            int index = 1;
-            while (scores.add(new LeaderboardScore(FileManager.load(
-                    Paths.LEADERBOARD + "score_" + index + ".properties"))))
-            {
-                index++;
-            }
-        }
-        catch (IllegalArgumentException | IOException e) {}
-        // Do nothing, but stop the loop
-        
-        // Sort scores from highest to lowest
-        scores.sort(Comparator.reverseOrder());
-        return scores;
     }
 }

@@ -13,6 +13,7 @@ import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.addError;
+import static boldorf.eversector.Main.buildLeaderboard;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.pendingRelationships;
@@ -210,6 +211,11 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                 if (messages.size() > MESSAGE_LINES)
                     messageOffset = 0;
                 break;
+            case KeyEvent.VK_B:
+                List<ColorString> leaderboard = buildLeaderboard();
+                if (!leaderboard.isEmpty())
+                    popup = new LeaderboardScreen(getDisplay(), leaderboard);
+                break;
             case KeyEvent.VK_O:
                 popup = new OptionsScreen(getDisplay());
                 break;
@@ -281,6 +287,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding("wait one turn", ".", "space"));
         if (messages.size() > MESSAGE_LINES)
             keybindings.add(new Keybinding("message history", "h"));
+        if (!buildLeaderboard().isEmpty())
+            keybindings.add(new Keybinding("leaderboard", "b"));
         keybindings.add(new Keybinding("options", "o"));
         keybindings.add(new Keybinding("keybindings", "?"));
         keybindings.add(new Keybinding("quit", "Q"));

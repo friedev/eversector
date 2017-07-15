@@ -15,6 +15,7 @@ import boldorf.eversector.entities.Station;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.faction.Election;
 import boldorf.eversector.map.faction.RelationshipChange;
+import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
 import boldorf.eversector.screens.GameScreen;
 import boldorf.eversector.screens.StartScreen;
 import static boldorf.eversector.storage.Names.GENERAL;
@@ -31,6 +32,8 @@ import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -62,6 +65,9 @@ public class Main
     
     /** The year the game is copyrighted in. */
     public static final int COPYRIGHT_YEAR = 2017;
+    
+    /** The number of scores to display on the leaderboard. */
+    public static final int DISPLAYED_SCORES = 5;
     
     public static final Color
     COLOR_FIELD = AsciiPanel.brightWhite,
@@ -261,6 +267,56 @@ public class Main
             FileManager.playAudio(path);
         }
         catch (Exception e) {}
+    }
+    
+    public static List<ColorString> buildLeaderboard()
+    {
+        List<ColorString> leaderboard = new LinkedList<>();
+        FileManager.createContainingFolders(Paths.LEADERBOARD);
+        List<LeaderboardScore> scores = getLeaderboardScores();
+        
+        if (scores == null || scores.isEmpty())
+            return leaderboard;
+        
+        leaderboard.add(buildLeaderboardHeader(scores.size()));
+        for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
+            leaderboard.add(new ColorString(scores.get(i).toString()));
+        
+        return leaderboard;
+    }
+    
+    public static ColorString buildLeaderboardHeader(int nScores)
+    {
+        ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
+        if (nScores > DISPLAYED_SCORES)
+            header.add(" (" + nScores + " Scores Total)");
+        return header;
+    }
+    
+    /**
+     * Returns a sorted list of every leaderboard score.
+     * @return an ArrayList of Integers parsed from the leaderboard file and
+     * sorted from greatest to least
+     */
+    public static List<LeaderboardScore> getLeaderboardScores()
+    {
+        List<LeaderboardScore> scores = new ArrayList<>();
+        
+        try
+        {
+            int index = 1;
+            while (scores.add(new LeaderboardScore(FileManager.load(
+                    Paths.LEADERBOARD + "score_" + index + ".properties"))))
+            {
+                index++;
+            }
+        }
+        catch (IllegalArgumentException | IOException e) {}
+        // Do nothing, but stop the loop
+        
+        // Sort scores from highest to lowest
+        scores.sort(Comparator.reverseOrder());
+        return scores;
     }
     
     public static void readInitialFiles() throws FileNotFoundException,
