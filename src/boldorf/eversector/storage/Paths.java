@@ -23,6 +23,8 @@ public abstract class Paths
         OFF,
         ENGINE,
         MINE,
+        DOCK,
+        TRANSACTION, 
         CLAIM,
         DISTRESS,
         SCAN,
@@ -52,21 +54,23 @@ public abstract class Paths
         ICON = manifest.getProperty("icon");
         
         // Audio files
-        SOUNDTRACK = manifest.getProperty("soundtrack");
-        START      = manifest.getProperty("start");
-        ON         = manifest.getProperty("on");
-        OFF        = manifest.getProperty("off");
-        ENGINE     = manifest.getProperty("engine");
-        MINE       = manifest.getProperty("mine");
-        CLAIM      = manifest.getProperty("claim");
-        DISTRESS   = manifest.getProperty("distress");
-        SCAN       = manifest.getProperty("scan");
-        REFINE     = manifest.getProperty("refine");
-        WARP       = manifest.getProperty("warp");
-        LASER      = manifest.getProperty("laser");
-        TORPEDO    = manifest.getProperty("torpedo");
-        PULSE      = manifest.getProperty("pulse");
-        DEATH      = manifest.getProperty("death");
+        SOUNDTRACK  = manifest.getProperty("soundtrack");
+        START       = manifest.getProperty("start");
+        ON          = manifest.getProperty("on");
+        OFF         = manifest.getProperty("off");
+        ENGINE      = manifest.getProperty("engine");
+        MINE        = manifest.getProperty("mine");
+        DOCK        = manifest.getProperty("dock");
+        TRANSACTION = manifest.getProperty("transaction");
+        CLAIM       = manifest.getProperty("claim");
+        DISTRESS    = manifest.getProperty("distress");
+        SCAN        = manifest.getProperty("scan");
+        REFINE      = manifest.getProperty("refine");
+        WARP        = manifest.getProperty("warp");
+        LASER       = manifest.getProperty("laser");
+        TORPEDO     = manifest.getProperty("torpedo");
+        PULSE       = manifest.getProperty("pulse");
+        DEATH       = manifest.getProperty("death");
 
         // Station manifests
         MODULES   = manifest.getProperty("modules");

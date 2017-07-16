@@ -19,6 +19,7 @@ import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.entities.Station;
 import boldorf.eversector.map.Sector;
+import static boldorf.eversector.storage.Paths.DOCK;
 import static boldorf.eversector.storage.Paths.ENGINE;
 import static boldorf.eversector.storage.Paths.MINE;
 import java.awt.event.KeyEvent;
@@ -141,7 +142,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 {
                     nextTurn = true;
                     nextScreen = new StationScreen(getDisplay());
-                    playSoundEffect(MINE);
+                    playSoundEffect(DOCK);
                 }
                 break;
             case KeyEvent.VK_RIGHT:

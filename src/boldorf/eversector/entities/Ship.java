@@ -3267,7 +3267,9 @@ public class Ship extends Satellite implements ColorStringObject,
                     dockedWith.getResource(resource.getName()) != null)
             {
                 resource.setPrice(dockedWith.getResource(resource.getName())
-                                                                 .getPrice());
+                        .getPrice());
+                
+                // This currently updates the expander's price for ALL ships
                 resource.getExpander().setPrice(dockedWith
                         .getExpander(resource.getExpander().getName())
                         .getPrice());

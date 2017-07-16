@@ -30,11 +30,13 @@ import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.storage.Paths.CLAIM;
-import static boldorf.eversector.storage.Paths.MINE;
-import static boldorf.eversector.storage.Paths.OFF;
+import static boldorf.eversector.storage.Paths.DOCK;
 import static boldorf.eversector.storage.Paths.ON;
+import static boldorf.eversector.storage.Paths.TRANSACTION;
+import boldorf.util.Utility;
 import java.awt.Color;
 import java.util.ArrayList;
+import squidpony.squidgrid.Direction;
 
 /**
  * 
@@ -42,16 +44,16 @@ import java.util.ArrayList;
 class StationScreen extends MenuScreen<AlignedMenu>
         implements WindowScreen<AlignedWindow>, KeyScreen
 {
-    public static final Color COLOR_AFFORDABLE = AsciiPanel.white;
-    public static final Color COLOR_UNAFFORDABLE = AsciiPanel.brightBlack;
-    public static final Color COLOR_CREDITS_AFFORDABLE = AsciiPanel.brightWhite;
-    public static final Color COLOR_CREDITS_UNAFFORDABLE = AsciiPanel.red;
+    private boolean buying;
+    private int buyStart;
+    private int sellStart;
     
     public StationScreen(Display display)
     {
         super(new AlignedMenu(new AlignedWindow(display, Coord.get(0, 0),
                 new Border(2)), COLOR_SELECTION_FOREGROUND,
                 COLOR_SELECTION_BACKGROUND));
+        buying = true;
     }
 
     @Override
@@ -64,41 +66,52 @@ class StationScreen extends MenuScreen<AlignedMenu>
     @Override
     public Screen processInput(KeyEvent key)
     {
-        if (getMenu().updateSelectionRestricted(key))
+        Direction direction = Utility.keyToDirectionRestricted(key);
+        if (getMenu().updateSelection(direction))
+        {
+            int index = getMenu().getSelectionIndex();
+            if ((buying && index >= sellStart) ||
+                    (!buying && index < sellStart))
+                getMenu().updateSelection(direction.opposite());
             return this;
+        }
         
         boolean nextTurn = false;
         Screen nextScreen = this;
-        Item item = getSelectedItem();
         
         switch (key.getKeyCode())
         {
-            case KeyEvent.VK_LEFT: case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_ESCAPE:
-            {
-                player.undock();
-                nextTurn = true;
-                playSoundEffect(MINE);
-                nextScreen = new SectorScreen(getDisplay());
-                break;
-            }
-            case KeyEvent.VK_EQUALS: case KeyEvent.VK_PLUS:
             case KeyEvent.VK_ENTER:
             {
-                boolean onSound = item instanceof Module ?
-                        player.buyModule((Module) item) :
-                        player.buyResource(item.getName(), 1);
-                if (onSound)
-                    playSoundEffect(ON);
+                boolean success;
+                Item item = getSelectedItem();
+                if (buying)
+                {
+                    if (item instanceof Module)
+                        success = player.buyModule(item.getName());
+                    else
+                        success = player.buyResource(item.getName(), 1);
+                }
+                else
+                {
+                    if (item instanceof Module)
+                        success = player.sellModule(item.getName());
+                    else
+                        success = player.buyResource(item.getName(), -1);
+                }
+                
+                if (success)
+                    playSoundEffect(TRANSACTION);
                 break;
             }
-            case KeyEvent.VK_MINUS: case KeyEvent.VK_UNDERSCORE:
+            case KeyEvent.VK_LEFT: case KeyEvent.VK_RIGHT: case KeyEvent.VK_TAB:
             {
-                boolean offSound = item instanceof Module ?
-                        player.sellModule(item.getName()) :
-                        player.buyResource(item.getName(), -1);
-                if (offSound)
-                    playSoundEffect(OFF);
+//                int offset = getMenu().getSelectionIndex() -
+//                        (buying ? buyStart : sellStart);
+                buying = !buying;
+                resetSelection();
+//                getMenu().setSelectionIndex(getMenu().getSelectionIndex() +
+//                        offset);
                 break;
             }
             case KeyEvent.VK_R:
@@ -112,6 +125,14 @@ class StationScreen extends MenuScreen<AlignedMenu>
                     playSoundEffect(CLAIM);
                 }
                 break;
+            case KeyEvent.VK_ESCAPE:
+            {
+                player.undock();
+                nextTurn = true;
+                playSoundEffect(DOCK);
+                nextScreen = new SectorScreen(getDisplay());
+                break;
+            }
         }
         
         if (nextTurn)
@@ -123,15 +144,19 @@ class StationScreen extends MenuScreen<AlignedMenu>
     public List<Keybinding> getKeybindings()
     {
         List<Keybinding> keybindings = new ArrayList<>();
-        keybindings.add(new Keybinding("undock",
+        keybindings.add(new Keybinding("buy/sell item", "enter"));
+        keybindings.add(new Keybinding("toggle buy/sell", "tab",
                 Character.toString(ExtChars.ARROW1_L),
-                Character.toString(ExtChars.ARROW1_R), "escape"));
-        keybindings.add(new Keybinding("buy item", "enter", "+"));
-        keybindings.add(new Keybinding("sell item", "-"));
+                Character.toString(ExtChars.ARROW1_R)));
         keybindings.add(new Keybinding("restock", "r"));
+        keybindings.add(new Keybinding("claim", "c"));
+        keybindings.add(new Keybinding("undock", "escape"));
         return keybindings;
     }
 
+    private void resetSelection()
+        {getMenu().setSelectionIndex(buying ? buyStart : sellStart);}
+    
     /**
      * Maxes out all of the player's resources, selling ore.
      * @return true if at least one resource was restocked
@@ -197,75 +222,142 @@ class StationScreen extends MenuScreen<AlignedMenu>
         
         getWindow().addSeparator(new Line(true, 2, 1));
         int index = contents.size();
-        int startIndex = index;
+        buyStart = index;
         for (BaseResource resource: station.getResources())
-        {
-            contents.add(getItemString(resource));
-            getMenu().getRestrictions().add(index);
-            index++;
-        }
+            index = addEntry(getItemString(resource, true), index);
         
         for (BaseResource resource: station.getResources())
-        {
-            contents.add(getItemString(resource.getExpander()));
-            getMenu().getRestrictions().add(index);
-            index++;
-        }
+            index = addEntry(getItemString(resource.getExpander(), true),
+                    index);
         
         for (Module module: station.getModules())
-        {
             if (station.sells(module))
+                index = addEntry(getItemString(module, true), index);
+        
+        getWindow().addSeparator(new Line(false, 1, 1));
+        index++;
+        sellStart = index;
+        
+        for (Resource resource: player.getResources())
+            index = addEntry(getItemString(resource, false), index);
+        
+        for (Resource resource: player.getResources())
+        {
+            if (resource.getNExpanders() > 0)
             {
-                contents.add(getItemString(module));
-                getMenu().getRestrictions().add(index);
-                index++;
+                index = addEntry(getItemString(station.getExpander(
+                        resource.getExpander().getName()), false), index);
             }
         }
         
-        getWindow().addSeparator(new Line(false, 1, 1));
-        for (BaseResource resource: station.getResources())
-            contents.add(getItemPriceString(resource));
+        for (Module module: player.getModules())
+            index = addEntry(getItemString(module, false), index);
         
-        for (BaseResource resource: station.getResources())
-            contents.add(getItemPriceString(resource.getExpander()));
-        
-        for (Module module: station.getModules())
-            if (station.sells(module))
-                contents.add(getItemPriceString(module));
+        for (Module module: player.getCargo())
+            index = addEntry(getItemString(module, false), index);
         
         if (getMenu().getSelectionIndex() == 0)
-            getMenu().setSelectionIndex(startIndex);
+            getMenu().setSelectionIndex(buyStart);
         
-        getWindow().addSeparator(new Line(true, 2, 1));
         Item item = getSelectedItem();
         if (item != null)
+        {
+            getWindow().addSeparator(new Line(true, 2, 1));
             contents.addAll(item.define());
+        }
     }
     
     private Item getSelectedItem()
     {
-        return player.dockedWith().getItem(getMenu().getSelection().toString());
+        if (getMenu().getSelection() == null)
+            resetSelection();
+        
+        String itemString = getMenu().getSelection().toString();
+        if (!itemString.contains(" ("))
+        {
+            resetSelection();
+            itemString = getMenu().getSelection().toString();
+        }
+        
+        itemString = itemString.substring(0, itemString.indexOf(" ("));
+        Item item = player.dockedWith().getItem(itemString);
+        return item == null ? player.getModule(itemString) : item;
     }
     
-    private ColorString getItemString(Item item)
-        {return new ColorString(item.toString(), getCostColor(item));}
-    
-    private ColorString getItemPriceString(Item item)
+    private int addEntry(ColorString line, int index)
     {
-        return new ColorString(Integer.toString(item.getPrice()),
-                getCreditColor(item))
-            .add(new ColorString(" Credits", getCostColor(item)));
+        getWindow().getContents().add(line);
+        getMenu().getRestrictions().add(index);
+        index++;
+        return index;
     }
     
-    private Color getCostColor(Item item)
+    private ColorString getItemString(Item item, boolean buying)
     {
-        return player.getCredits() >= item.getPrice() ?
-                COLOR_AFFORDABLE : COLOR_UNAFFORDABLE;
+        ItemColors colors = new ItemColors(item, buying);
+        return new ColorString(item.toString(), colors.item)
+                .add(new ColorString(" (" + Integer.toString(item.getPrice())
+                        + "C)", colors.credits));
     }
     
-    private Color getCreditColor(Item item)
+    private class ItemColors
     {
-        return player.getCredits() >= item.getPrice() ?
-                COLOR_CREDITS_AFFORDABLE : COLOR_CREDITS_UNAFFORDABLE;
+        private final Color ITEM     = AsciiPanel.white;
+        private final Color CREDITS  = AsciiPanel.brightWhite;
+        private final Color INVALID  = AsciiPanel.red;
+        private final Color DISABLED = AsciiPanel.brightBlack;
+        
+        Color item;
+        Color credits;
+        
+        ItemColors(Item i, boolean buying)
+        {
+            if (buying)
+            {
+                if (i instanceof BaseResource &&
+                        player.getResource(i.getName()).isFull())
+                {
+                    item = DISABLED;
+                    credits = DISABLED;
+                    return;
+                }
+                
+                if (player.getCredits() < i.getPrice())
+                {
+                    item = DISABLED;
+                    credits = INVALID;
+                    return;
+                }
+                
+                item = ITEM;
+                credits = CREDITS;
+            }
+            else
+            {
+                if (i instanceof Module &&
+                        !player.dockedWith().sells((Module) i))
+                {
+                    item = INVALID;
+                    credits = DISABLED;
+                    return;
+                }
+                
+                if (i instanceof Resource && ((Resource) i).isEmpty())
+                {
+                    item = DISABLED;
+                    credits = DISABLED;
+                    return;
+                }
+
+                item = ITEM;
+                credits = CREDITS;
+            }
+        }
+        
+        ItemColors()
+        {
+            item = ITEM;
+            credits = CREDITS;
+        }
     }
 }
