@@ -45,13 +45,12 @@ public class CrashLandScreen extends ConfirmationScreen
                 playSoundEffect(DEATH);
                 return new EndScreen(getDisplay(), new ColorString(
                         "You crash into the surface of "
-                                + player.getSector().getPlanetAt(
-                                        player.getOrbit())
+                                + player.getSectorLocation().getPlanet()
                                 + ", obliterating your ship."), true);
             }
             
             playSoundEffect(TORPEDO);
-            player.getMap().nextTurn();
+            player.getLocation().getMap().nextTurn();
             return new PlanetScreen(getDisplay());
         }
         return null;

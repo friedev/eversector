@@ -200,7 +200,7 @@ public class Main
             player = map.getPlayer();
         }
 
-        map.reveal(player.getLocation());
+        map.reveal(player.getLocation().getCoords());
         // Reveal here to avoid overrideable calls in Map constructor
 
         LinkedList<ColorString> startMessages = new LinkedList<>();

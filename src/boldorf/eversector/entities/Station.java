@@ -12,8 +12,8 @@ import boldorf.util.FileManager;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import boldorf.eversector.entities.locations.SectorLocation;
 import boldorf.eversector.items.Item;
-import boldorf.eversector.map.Sector;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -54,15 +54,14 @@ public class Station extends CelestialBody implements ColorStringObject
     private String type;
     
     /**
-     * Creates a station from a name, orbit, and sector.
+     * Creates a station from a name, location, and faction.
      * @param name the name of the station
-     * @param orbit the orbit of the station
+     * @param location the location of the station
      * @param faction the faction the station belongs to
-     * @param sector the sector this station will be in
      */
-    public Station(String name, int orbit, Faction faction, Sector sector)
+    public Station(String name, SectorLocation location, Faction faction)
     {
-        super(name, orbit, faction, sector);
+        super(name, location, faction);
         ships = new LinkedList<>();
         type = generateType();
         

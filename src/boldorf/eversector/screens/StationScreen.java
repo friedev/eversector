@@ -201,15 +201,15 @@ class StationScreen extends MenuScreen<AlignedMenu>
     private void setUpMenu()
     {
         List<ColorString> contents = getWindow().getContents();
-        Station station = player.dockedWith();
+        Station station = player.getSectorLocation().getStation();
         List<Ship> ships = station.getShips();
         
         contents.clear();
         getWindow().getSeparators().clear();
         contents.add(new ColorString(station.toString()));
         contents.add(new ColorString("Orbit: ")
-                .add(new ColorString(Integer.toString(player.getOrbit()),
-                        COLOR_FIELD)));
+                .add(new ColorString(Integer.toString(
+                        player.getSectorLocation().getOrbit()), COLOR_FIELD)));
         contents.add(new ColorString("Ruler: ").add(station.getFaction()));
         
         if (ships.size() > 1)
@@ -280,7 +280,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
         }
         
         itemString = itemString.substring(0, itemString.indexOf(" ("));
-        Item item = player.dockedWith().getItem(itemString);
+        Item item = player.getSectorLocation().getStation().getItem(itemString);
         return item == null ? player.getModule(itemString) : item;
     }
     
@@ -334,8 +334,8 @@ class StationScreen extends MenuScreen<AlignedMenu>
             }
             else
             {
-                if (i instanceof Module &&
-                        !player.dockedWith().sells((Module) i))
+                if (i instanceof Module && !player.getSectorLocation()
+                        .getStation().sells((Module) i))
                 {
                     item = INVALID;
                     credits = DISABLED;

@@ -1,36 +1,41 @@
 package boldorf.eversector.entities;
 
+import boldorf.eversector.entities.locations.SectorLocation;
 import boldorf.eversector.map.faction.Faction;
-import boldorf.eversector.map.Sector;
+import boldorf.util.Nameable;
 
 /** A stationary satellite that can have ships land on it. */
-public abstract class CelestialBody extends Satellite
+public abstract class CelestialBody extends Nameable
 {
     /** The base cost in credits to claim any celestial body. */
     public static final int CLAIM_COST = 250;
     
     /** The sector this body belongs to. */
-    private Sector sector;
+    private final SectorLocation location;
     
     /** The faction that has claimed this body. */
     private Faction faction;
     
     /**
-     * Creates a CelestialBody from a name, orbit, faction, and sector.
+     * Creates a CelestialBody from a name, location, and faction.
      * @param name the name of the body
-     * @param orbit the orbit of the body
+     * @param location the location of the body
      * @param faction the faction that owns the body
-     * @param sector the sector that the body is in
      */
-    public CelestialBody(String name, int orbit, Faction faction, Sector sector)
+    public CelestialBody(String name, SectorLocation location, Faction faction)
     {
-        super(name, orbit);
-        this.sector = sector;
+        super(name);
+        this.location = location;
         this.faction = faction;
     }
     
-    public CelestialBody(String name, int orbit, Sector sector)
-        {this(name, orbit, null, sector);}
+    /**
+     * Creates an unclaimed CelestialBody from a name and location.
+     * @param name the name of the body
+     * @param location the location of the body
+     */
+    public CelestialBody(String name, SectorLocation location)
+        {this(name, location, null);}
     
     /**
      * Returns the cost of claiming territory on the celestial body.
@@ -39,8 +44,8 @@ public abstract class CelestialBody extends Satellite
      */
     public abstract int getClaimCost();
     
-    public Sector getSector()
-        {return sector;}
+    public SectorLocation getLocation()
+        {return location;}
     
     public Faction getFaction()
         {return faction;}
@@ -58,7 +63,7 @@ public abstract class CelestialBody extends Satellite
             return;
         
         faction = f;
-        sector.updateFaction();
+        location.getSector().updateFaction();
     }
     
     /** Removes claimed status without updating sector factions. */

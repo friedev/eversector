@@ -10,6 +10,8 @@ import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import boldorf.eversector.entities.Ore;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.entities.Station;
+import boldorf.eversector.entities.locations.Location;
+import boldorf.eversector.entities.locations.SectorLocation;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,10 +117,8 @@ public class Map
         
         // Factions must be created first so they can be assigned to ships
         createFactions();
-        initialize();
+        init();
         map[offset][offset].changeType(Sector.STATION_SYSTEM);
-        
-        updateShipSectors();
         
         for (Faction faction: factions)
             faction.updateFocus();
@@ -170,12 +170,13 @@ public class Map
     /** Creates the player, the starting sector, and the player's faction. */
     public void createNewPlayer()
     {
-        player = new Ship("Player", Coord.get(0, 0), this);
-        player.getSector().changeType(Sector.STATION_SYSTEM);
-        player.setSector(sectorAt(0, 0));
-        player.setOrbit(player.getSector().getRandomStationOrbit());
-        player.setFaction(player.getSector().getStationAt(player.getOrbit())
-                .getFaction());
+        sectorAt(0, 0).changeType(Sector.STATION_SYSTEM);
+        SectorLocation location = new Location(this, Coord.get(0, 0))
+                .enterSector();
+        location =
+                location.setOrbit(location.getSector().getRandomStationOrbit());
+        Faction faction = location.getStation().getFaction();
+        player = new Ship("Player", location, faction);
     }
     
     /** Plays through the next turn on the map. */
@@ -214,8 +215,9 @@ public class Map
                     if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
                     {
                         Ship newShip = new Ship(sector.generateNameFor(
-                                rng.nextInt(26)),
-                                sector.getLocation(), this, station.getOrbit(),
+                                rng.nextInt(26)), new SectorLocation(
+                                        sector.getLocation(),
+                                        station.getLocation().getOrbit()),
                                 station.getFaction());
                         newShip.dock();
                         ships.add(newShip);
@@ -256,13 +258,6 @@ public class Map
             updateFactionLeaders();
         
         turns++;
-    }
-    
-    /** Updates every sector with a ship in it to the correct correspondence. */
-    private void updateShipSectors()
-    {
-        for (Ship ship: ships)
-            ship.updateSector();
     }
     
     /** Updates the leader of each faction. */
@@ -367,21 +362,21 @@ public class Map
      * @param sector the sector whose location will be used in the reveal
      */
     public void reveal(Sector sector)
-        {reveal(sector.getLocation());}
+        {reveal(sector.getLocation().getCoords());}
     
     /**
      * Scans the sector by revealing its surroundings
      * @param sector the sector whose location will be used in the scan
      */
     public void scan(Sector sector)
-        {scan(sector.getLocation());}
+        {scan(sector.getLocation().getCoords());}
     
     /** Discovers all sectors. */
     public void discoverAll()
     {
         for (int y = 0; y < map.length; y++)
             for (int x = 0; x < map[y].length; x++)
-                sectorAt(map[y][x].getLocation()).discover();
+                sectorAt(map[y][x].getLocation().getCoords()).discover();
     }
     
     /**
@@ -480,7 +475,7 @@ public class Map
             {
                 ColorChar symbol = new ColorChar(showStars ?
                         map[y][x].getStarSymbol() : map[y][x].getSymbol());
-                if (map[y][x].getLocation().equals(cursor))
+                if (map[y][x].getLocation().getCoords().equals(cursor))
                     symbol.setBackground(COLOR_SELECTION_BACKGROUND);
                 line.add(symbol);
             }
@@ -918,12 +913,17 @@ public class Map
         {return oreTypes[rng.nextInt(oreTypes.length)];}
     
     /** Initializes all the sectors on the map. */
-    private void initialize()
+    private void init()
     {
         for (int y = 0; y < map.length; y++)
+        {
             for (int x = 0; x < map[y].length; x++)
-                map[y][x] = new Sector(Coord.get(x - offset, -y + offset),
-                        this);
+            {
+                map[y][x] = new Sector(new Location(this,
+                        Coord.get(x - offset, -y + offset)));
+                map[y][x].init();
+            }
+        }
     }
     
     /**

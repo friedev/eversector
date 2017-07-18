@@ -16,6 +16,8 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 import boldorf.util.Nameable;
 import static boldorf.eversector.Main.SYMBOL_EMPTY;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
+import boldorf.eversector.entities.locations.Location;
+import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,8 +59,7 @@ public class Sector extends Nameable
     public static final String EMPTY          = "Empty";
     
     private Star          star;
-    private Coord         location;
-    private Map           map;
+    private Location      location;
     private String        type;
     private Faction       faction;
     private Planet[]      planets;
@@ -68,22 +69,20 @@ public class Sector extends Nameable
     private boolean       isDiscovered;
     
     /**
-     * Creates a sector from a Coord, map, and type.
-     * @param p the location of the sector as a Coord
-     * @param m the map the sector is on
-     * @param t the type of sector
+     * Creates a sector from a location and type.
+     * @param location the sector's location
+     * @param type the type of sector
      */
-    public Sector(Coord p, Map m, String t)
+    public Sector(Location location, String type)
     {
         // Constructor is done this way so generateName() can be initialized
         super(new String());
         setNickname(Main.nameGenerator.generateName(2));
         
-        location     = p;
-        map          = m;
+        this.location = location;
         isDiscovered = false;
-        usedLetters  = new LinkedList<>();
-        type = t != null && isValidType(t) ? t : generateType();
+        usedLetters = new LinkedList<>();
+        this.type = type != null && isValidType(type) ? type : generateType();
         star = EMPTY.equals(type) ? null : Star.generate();
         
         // Generate a name that isn't used
@@ -91,37 +90,39 @@ public class Sector extends Nameable
         do
         {
             name = generateName();
-        } while (map.isUsed(name));
+        } while (location.getMap().isUsed(name));
         setName(generateName());
-        map.addDesignation(name);
-        
-        generatePlanets();
-        generateStations();
-        generateShips();
-        
-        updateFaction();
+        location.getMap().addDesignation(name);
     }
     
     /**
-     * Creates a sector from a Coord and a map, randomly generating the type.
-     * @param p the location of the sector as a Coord
-     * @param m the map the sector is on
+     * Creates a sector from a location, randomly generating the type.
+     * @param l the sector's location
      */
-    public Sector(Coord p, Map m)
-        {this(p, m, null);}
+    public Sector(Location l)
+        {this(l, null);}
+    
+    public void init()
+    {
+        generatePlanets();
+        generateStations();
+        generateShips();
+        updateFaction();
+    }
     
     @Override
     public String toString()
         {return "Sector " + super.toString();}
     
-    public Map     getMap()       {return map;            }
-    public Coord   getLocation()  {return location;       }
-    public String  getType()      {return type;           }
-    public Faction getFaction()   {return faction;        }
-    public Star    getStar()      {return star;           }
-    public boolean isDiscovered() {return isDiscovered;   }
-    public boolean isClaimed()    {return faction != null;}
-    public int     getOrbits()    {return star.getPower();}
+    public Location getLocation()  {return location;       }
+    public String   getType()      {return type;           }
+    public Faction  getFaction()   {return faction;        }
+    public Star     getStar()      {return star;           }
+    public boolean  isDiscovered() {return isDiscovered;   }
+    public boolean  isClaimed()    {return faction != null;}
+    
+    public int getOrbits()
+        {return star == null ? 0 : star.getPower();}
     
     /**
      * Calculates the dominant faction in the sector, based on their control of
@@ -132,6 +133,7 @@ public class Sector extends Nameable
         if (planets == null || stations == null)
             return;
         
+        Map map = location.getMap();
         int[] control = new int[map.getFactions().length];
         
         // Increase the respective counter for each claimed body
@@ -161,7 +163,8 @@ public class Sector extends Nameable
             }
         }
         
-        String locationString = "(" + location.x + "," + location.y + ")";
+        String locationString = "(" + location.getCoords().x + ","
+                + location.getCoords().y + ")";
         
         // There was a tie in control, so no faction rules this sector
         if (index == -1)
@@ -264,7 +267,7 @@ public class Sector extends Nameable
             return SYMBOL_UNDISCOVERED;
         
         char symbol;
-        if (map.getPlayer().getSector() == this)
+        if (location.getMap().getPlayer().getLocation().getSector() == this)
             symbol = SYMBOL_PLAYER.getChar();
         else
             symbol = getTypeSymbol().getChar();
@@ -278,7 +281,7 @@ public class Sector extends Nameable
         if (!isDiscovered)
             return SYMBOL_UNDISCOVERED;
         
-        if (map.getPlayer().getSector() == this)
+        if (location.getMap().getPlayer().getLocation().getSector() == this)
             return SYMBOL_PLAYER;
         
         if (star == null)
@@ -341,7 +344,7 @@ public class Sector extends Nameable
      */
     public ColorChar getNShipsSymbol(Faction faction)
     {
-        if (map.getPlayer().getSector() == this)
+        if (location.getMap().getPlayer().getLocation().getSector() == this)
             return SYMBOL_PLAYER;
         
         if (!isDiscovered)
@@ -545,15 +548,16 @@ public class Sector extends Nameable
             // sector
             Faction planetFaction;
             if (STATION_SYSTEM.equals(type))
-                planetFaction = map.getRandomFaction();
+                planetFaction = location.getMap().getRandomFaction();
             else
                 planetFaction = null;
             
             // Make a new planet with the sector's name and i's corresponding
             // letter, this sector, and j adjusted from a whole number to a
             // natural number
-            planets[j] = new Planet(generateNameFor(i), j + 1, planetFaction,
-                    this);
+            planets[j] = new Planet(generateNameFor(i),
+                    new SectorLocation(getLocation(), j + 1), planetFaction);
+            planets[j].init();
         }
     }
     
@@ -591,8 +595,9 @@ public class Sector extends Nameable
             // Make a new station with the sector's name and i's corresponding
             // letter, this sector, and j adjusted from a whole number to a 
             // natural number
-            stations[j] = new Station(generateNameFor(i), j + 1,
-                    map.getRandomFaction(), this);
+            stations[j] = new Station(generateNameFor(i),
+                    new SectorLocation(getLocation(), j + 1),
+                    location.getMap().getRandomFaction());
         }
     }
     
@@ -621,11 +626,12 @@ public class Sector extends Nameable
         {
             // Make a new ship with the sector's name and i's corresponding
             // letter, the sector's location, and its map
-            Ship ship = new Ship(generateShipName(), location, map,
-                    rng.nextInt(star.getPower()),
-                    map.getRandomFaction());
+            Ship ship = new Ship(generateShipName(),
+                    new SectorLocation(location,
+                            rng.nextInt(star.getPower()) + 1),
+                    location.getMap().getRandomFaction());
             ships.add(ship);
-            map.addShip(ship);
+            location.getMap().addShip(ship);
         }
     }
     
@@ -677,7 +683,7 @@ public class Sector extends Nameable
      * @return true if the sector's coordinates are both zero
      */
     public boolean isCenter()
-        {return location.x == 0 && location.y == 0;}
+        {return location.getCoords().equals(Coord.get(0, 0));}
     
     /**
      * Returns the first ship found with the given name.
@@ -717,10 +723,10 @@ public class Sector extends Nameable
      */
     public Ship getFirstOtherShip(Ship ship)
     {
-        int orbit = ship.getOrbit();
+        int orbit = ship.getSectorLocation().getOrbit();
         for (Ship otherShip: ships)
             if (otherShip != null && otherShip != ship &&
-                                     otherShip.getOrbit() == orbit)
+                    otherShip.getSectorLocation().getOrbit() == orbit)
                 return otherShip;
         
         return null;
@@ -740,7 +746,8 @@ public class Sector extends Nameable
         // The if checks if the ship is at the same orbit, is of a different
         // faction, and is either unaligned or at war
         for (Ship otherShip: ships)
-            if (otherShip.getOrbit() == orbit && otherShip.isHostile(faction))
+            if (((SectorLocation) otherShip.getLocation()).getOrbit() == orbit
+                    && otherShip.isHostile(faction))
                 return otherShip;
         
         return null;
@@ -753,7 +760,13 @@ public class Sector extends Nameable
      * @return the first ship hostile to the entered ship in the same orbit
      */
     public Ship getFirstHostileShip(Ship ship)
-        {return getFirstHostileShip(ship.getOrbit(), ship.getFaction());}
+    {
+        if (!ship.isInSector())
+            return null;
+        
+        return getFirstHostileShip(ship.getSectorLocation().getOrbit(),
+                ship.getFaction());
+    }
     
     public List<Ship> getShips()
         {return ships;}
@@ -768,7 +781,7 @@ public class Sector extends Nameable
         List<Ship> shipsAtOrbit = new LinkedList<>();
         
         for (Ship ship: ships)
-            if (ship != null && ship.getOrbit() == orbit)
+            if (ship != null && ship.getSectorLocation().getOrbit() == orbit)
                 shipsAtOrbit.add(ship);
         
         return shipsAtOrbit;
@@ -810,8 +823,18 @@ public class Sector extends Nameable
         ColorString symbols = new ColorString();
         int orbitIndex = orbit - 1;
         int nShips = getShipsAt(orbit).size();
-        boolean playerIsHere = map.getPlayer().getSector() == this &&
-                               map.getPlayer().getOrbit()  == orbit;
+        
+        boolean playerIsHere;
+        Location playerLocation = location.getMap().getPlayer().getLocation();
+        if (playerLocation instanceof SectorLocation)
+        {
+            SectorLocation sectorLocation = (SectorLocation) playerLocation;
+            playerIsHere = sectorLocation.getOrbit() == orbit;
+        }
+        else
+        {
+            playerIsHere = false;
+        }
         
         if (stations[orbitIndex] != null)
             symbols.add(stations[orbitIndex].getSymbol());
@@ -831,7 +854,8 @@ public class Sector extends Nameable
             Faction commonFaction = null;
             for (Ship ship: ships)
             {
-                if (ship.getOrbit() == orbit && !ship.isPlayer())
+                if (ship.getSectorLocation().getOrbit() == orbit &&
+                        !ship.isPlayer())
                 {
                     if (ship.getHighestLevel() > highestLevel)
                         highestLevel = ship.getHighestLevel();
@@ -892,7 +916,8 @@ public class Sector extends Nameable
         
         for (Ship ship: ships)
         {
-            if (ship != null && ship.getOrbit() == orbit && !ship.isPlayer())
+            if (ship != null && ship.getSectorLocation().getOrbit() == orbit &&
+                    !ship.isPlayer())
             {
                 ColorString shipString = ship.toColorString();
                 if (ship.isLeader())

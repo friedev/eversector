@@ -1,8 +1,12 @@
 package boldorf.eversector.entities;
 
+import static boldorf.apwt.ExtChars.DOT;
+import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import static boldorf.eversector.Main.rng;
+import boldorf.eversector.entities.locations.PlanetLocation;
 import boldorf.eversector.map.faction.Faction;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,14 +16,14 @@ public class Region implements ColorStringObject
 {
     public static String[] BARREN_TYPES = new String[]
     {
-        "Cold", "Cracked", "Cratered", "Dry", "Flat", "Mountainous", "Obsidian",
+        "Cracked", "Cratered", "Dry", "Flat", "Mountainous", "Obsidian",
         "Volcanic"
     };
     
     public static String[] TERRAN_TYPES = new String[]
     {
-        "Arctic", "Desertic", "Dune", "Forested", "Hilly", "Marsh", "Mountainous",
-        "Oceanic", "Plains", "Rocky", "Tropical", "Tundra"
+        "Arctic", "Desertic", "Dune", "Forested", "Hilly", "Marsh",
+        "Mountainous", "Oceanic", "Plains", "Rocky", "Tropical", "Tundra"
     };
     
     public static String[] GLACIAL_TYPES = new String[]
@@ -28,41 +32,35 @@ public class Region implements ColorStringObject
         "Mountainous", "Rocky", "Tundra"
     };
     
+    private final PlanetLocation location;
     private List<Ship> ships;
-    private Planet     planet;
     private String     type;
     private Faction    faction;
     private Ore        ore;
     
     /**
      * Generates a claimed region of the given faction on the given planet.
-     * @param p the planet on which to generate the region
-     * @param f the faction that starts with control of the region
+     * @param location the location of the region
+     * @param faction the faction that starts with control of the region
      */
-    public Region(Planet p, Faction f)
+    public Region(PlanetLocation location, Faction faction)
     {
-        if (p == null)
+        if (location == null)
             throw new NullPointerException();
         
-        ships = new LinkedList<>();
-        planet = p;
-        
-        do
-        {
-            type = generateType();
-            // TODO attempt to reduce duplicate region types
-        } while (planet.hasRegion(type));
-        
-        faction  = f;
-        ore = planet.getRandomOre();
+        this.ships    = new LinkedList<>();
+        this.location = location;
+        this.type     = generateType();
+        this.faction  = faction;
+        this.ore      = location.getPlanet().getRandomOre();
     }
     
     /**
      * Generates an unclaimed region on the given planet.
-     * @param p the planet on which to generate the region
+     * @param location the location of the region
      */
-    public Region(Planet p)
-        {this(p, null);}
+    public Region(PlanetLocation location)
+        {this(location, null);}
     
     @Override
     public String toString()
@@ -75,13 +73,29 @@ public class Region implements ColorStringObject
                 new ColorString(toString());
     }
     
-    public Planet  getPlanet()   {return planet;                    }
-    public String  getType()     {return type;                      }
-    public Faction getFaction()  {return faction;                   }
-    public Ore     getOre()      {return ore;                       }
-    public boolean isClaimed()   {return faction != null;           }
-    public boolean hasOre()      {return ore != null;               }
-    public List<Ship> getShips() {return ships;                     }
+    public ColorChar toColorChar()
+    {
+        boolean playerIsHere = false;
+        for (Ship ship: ships)
+        {
+            if (ship.isPlayer())
+            {
+                playerIsHere = true;
+                break;
+            }
+        }
+        
+        return new ColorChar(playerIsHere ? SYMBOL_PLAYER.getChar() : DOT,
+                isClaimed() ? faction.getColor() : null);
+    }
+    
+    public PlanetLocation getLocation() {return location;}
+    public String  getType()     {return type;           }
+    public Faction getFaction()  {return faction;        }
+    public Ore     getOre()      {return ore;            }
+    public boolean isClaimed()   {return faction != null;}
+    public boolean hasOre()      {return ore != null;    }
+    public List<Ship> getShips() {return ships;          }
     
     /**
      * Claims the region for a given faction and updates the faction of the
@@ -94,7 +108,7 @@ public class Region implements ColorStringObject
             return;
         
         faction = f;
-        planet.updateFaction();
+        location.getPlanet().updateFaction();
     }
     
     /**
@@ -122,7 +136,7 @@ public class Region implements ColorStringObject
      */
     private String generateType()
     {
-        switch (planet.getType())
+        switch (location.getPlanet().getType())
         {
             case BARREN_PLANET:
                 return (String) rng.getRandomElement(BARREN_TYPES);

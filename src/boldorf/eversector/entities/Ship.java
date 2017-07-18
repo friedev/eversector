@@ -32,10 +32,11 @@ import squidpony.squidmath.Coord;
 import static boldorf.eversector.Main.addMessage;
 import static boldorf.eversector.Main.attackers;
 import static boldorf.eversector.Main.playSoundEffect;
+import boldorf.eversector.entities.locations.*;
 import boldorf.eversector.storage.Paths;
 
 /** A starship which can travel through and interact with the map. */
-public class Ship extends Satellite implements ColorStringObject,
+public class Ship extends Nameable implements ColorStringObject,
         Comparable<Ship>
 {
     // Starting resource amounts
@@ -85,23 +86,15 @@ public class Ship extends Satellite implements ColorStringObject,
     /** The number of characters used when printing status. */
     public static final int SPACING = 12;
     
-    /** The current coordinates of the ship. */
-    private Coord location;
-    /** The current sector the ship is in. */
-    private Sector sector;
+    /** This ship's location. */
+    private Location location;
     /** The sector the ship is attempting to travel to. */
     private Sector destination;
-    /** The map the ship is using. */
-    private Map map;
     
     /** Various booleans represented by Strings, their existence means true. */
     private List<String> flags;
     /** The faction that the ship belongs to, null if unaligned. */
     private Faction faction;
-    /** The station that the ship is docked with, null if not docked. */
-    private Station dockedWith;
-    /** The region that the ship is landed in, null if not landed. */
-    private Region landedIn;
     
     /** The amount of credits possessed by the ship. */
     private int credits;
@@ -117,36 +110,22 @@ public class Ship extends Satellite implements ColorStringObject,
     // TODO make an UnlimitedResource class for credits?
     
     /**
-     * Creates a ship from a name, Coord, map, orbit, and faction.
-     * @param n the name of the ship
-     * @param l the location of the ship as a Coord
-     * @param m the map the ship will use
-     * @param o the orbit of the ship
-     * @param f the faction the ship belongs to
+     * Creates a ship from a name, location, and faction.
+     * @param name the name of the ship
+     * @param location the location of the ship
+     * @param faction the faction the ship belongs to
      */
-    public Ship(String n, Coord l, Map m, int o, Faction f)
+    public Ship(String name, Location location, Faction faction)
     {
-        super(n, o);
-        
-        map = m;
-        
-        if (map.contains(l))
-            location = l;
-        else
-            location = Coord.get(0, 0);
-        
-        sector = map.sectorAt(location);
-        destination = null;
-        flags  = new ArrayList<>();
-        
-        faction     = f;
-        dockedWith  = null;
-        landedIn    = null;
-        
-        credits     = CREDITS;
-        modules     = new LinkedList<>();
-        cargo       = new LinkedList<>();
-        resources   = Station.copyResources();
+        super(name);
+        this.location = location;
+        destination   = null;
+        flags         = new ArrayList<>();
+        this.faction  = faction;
+        credits       = CREDITS;
+        modules       = new LinkedList<>();
+        cargo         = new LinkedList<>();
+        resources     = Station.copyResources();
         
         createReputations();
         setResourceDefaults();
@@ -154,13 +133,12 @@ public class Ship extends Satellite implements ColorStringObject,
     
     /**
      * Creates the ship from a map and a set of properties.
-     * @param m the map the ship will use
+     * @param map the map the ship will use
      * @param properties the properties of the ship
      */
-    public Ship(Map m, Properties properties)
+    public Ship(Map map, Properties properties)
     {
         super("Player");
-        map = m;
         
         // Basic hard-coded definitions
         flags     = new ArrayList<>();
@@ -199,42 +177,13 @@ public class Ship extends Satellite implements ColorStringObject,
                         setName(value);
                         break;
                     case "location":
-                        location = Utility.parseCoord(value);
-                        sector   = map.sectorAt(location);
-                        break;
-                    case "orbit":
-                        setOrbit(Utility.parseInt(value, 0));
+                        location = Location.parseLocation(map, value);
                         break;
                     case "faction":
                         faction = map.getFaction(value);
                         break;
                     case "credits":
                         credits = Utility.parseInt(value, CREDITS);
-                        break;
-                    case "situation":
-                        switch (value)
-                        {
-                            case "landed":
-                                if (sector != null &&
-                                        sector.isPlanetAt(getOrbit()) &&
-                                        sector.getPlanetAt(getOrbit())
-                                                .getType().canLandOn())
-                                {
-                                    landedIn = sector.getPlanetAt(getOrbit())
-                                            .getRandomRegion();
-                                }
-                                dockedWith = null;
-                                break;
-                            case "docked":
-                                landedIn = null;
-                                if (sector != null)
-                                    dockedWith = sector.getStationAt(getOrbit());
-                                break;
-                            default:
-                                landedIn   = null;
-                                dockedWith = null;
-                                break;
-                        }
                         break;
                     case "modules":
                         String[] moduleStrings = value.split(", ");
@@ -246,36 +195,12 @@ public class Ship extends Satellite implements ColorStringObject,
     }
     
     /**
-     * Creates a ship from a name, Coord, and map, setting the orbit to 0 and
-     * faction to null.
+     * Creates an unaligned ship from a name and Location.
      * @param n the name of the ship
-     * @param l the location of the ship as a Coord
-     * @param m the map the ship will use
+     * @param l the Location of the ship
      */
-    public Ship(String n, Coord l, Map m)
-        {this(n, l, m, 0, null);}
-    
-    /**
-     * Creates a ship from a name, Coord, map, and orbit, setting the faction to
-     * null.
-     * @param n the name of the ship
-     * @param l the location of the ship as a Coord
-     * @param m the map the ship will use
-     * @param o the orbit of the ship
-     */
-    public Ship(String n, Coord l, Map m, int o)
-        {this(n, l, m, o, null);}
-    
-    /**
-     * Creates a ship from a name, Coord, map, orbit, and faction, setting the
-     * orbit to 0.
-     * @param n the name of the ship
-     * @param l the location of the ship as a Coord
-     * @param m the map the ship will use
-     * @param f the faction the ship belongs to
-     */
-    public Ship(String n, Coord l, Map m, Faction f)
-        {this(n, l, m, 0, f);}
+    public Ship(String n, Location l)
+        {this(n, l, null);}
     
     @Override
     public String toString()
@@ -291,24 +216,31 @@ public class Ship extends Satellite implements ColorStringObject,
                 new ColorString(toString());
     }
     
-    public Coord        getLocation()  {return location;            }
-    public Sector       getSector()    {return sector;              }
-    public Map          getMap()       {return map;                 }
-    public Faction      getFaction()   {return faction;             }
-    public int          getCredits()   {return credits;             }
-    public Station      dockedWith()   {return dockedWith;          }
-    public Planet       landedOn()     {return landedIn.getPlanet();}
-    public Region       landedIn()     {return landedIn;            }
-    public boolean      isDocked()     {return dockedWith != null;  }
-    public boolean      isLanded()     {return landedIn   != null;  }
-    public Resource[]   getResources() {return resources;           }
-    public List<Module> getModules()   {return modules;             }
-    public List<Module> getCargo()     {return cargo;               }
+    public Faction      getFaction()   {return faction;  }
+    public int          getCredits()   {return credits;  }
+    public Resource[]   getResources() {return resources;}
+    public List<Module> getModules()   {return modules;  }
+    public List<Module> getCargo()     {return cargo;    }
     
-    public boolean isInSector()  {return getOrbit() != 0;   }
+    public boolean isInSector() {return location instanceof SectorLocation; }
+    public boolean isDocked()   {return location instanceof StationLocation;}
+    public boolean isLanded()   {return location instanceof PlanetLocation; }
+    
     public boolean isDestroyed() {return hasFlag(DESTROYED);}
     public boolean isShielded()  {return hasFlag(SHIELDED); }
     public boolean isCloaked()   {return hasFlag(CLOAKED);  }
+    
+    public Location getLocation()
+        {return location;}
+    
+    public SectorLocation getSectorLocation()
+        {return (SectorLocation) location;}
+    
+    public PlanetLocation getPlanetLocation()
+        {return (PlanetLocation) location;}
+    
+    public StationLocation getStationLocation()
+        {return (StationLocation) location;}
     
     /**
      * Returns true if there is a flag in the flags list with the given name.
@@ -324,7 +256,7 @@ public class Ship extends Satellite implements ColorStringObject,
      * @return true if this is equal to the map's specified player
      */
     public boolean isPlayer()
-        {return map.getPlayer() == this;}
+        {return location.getMap().getPlayer() == this;}
     
     /**
      * Returns true if the faction the ship belongs to is the one specified.
@@ -366,12 +298,6 @@ public class Ship extends Satellite implements ColorStringObject,
     public boolean isLeader()
         {return isAligned() ? faction.isLeader(this) : false;}
     
-    public void setSector(Sector s)
-    {
-        sector = s;
-        sector.getShips().add(this);
-    }
-    
     /**
      * Sets the ship's faction without modifying reputation.
      * @param f the faction to assign to this ship
@@ -380,12 +306,59 @@ public class Ship extends Satellite implements ColorStringObject,
         {faction = f;}
     
     /**
-     * Sets the ship's location to the specified Coord.
-     * @param p the Coord to move the ship to
-     * @return true if the ship was moved
+     * Sets the ship's location to the specified location.
+     * @param destination the location to move the ship to
      */
-    public boolean setLocation(Coord p)
+    public void setLocation(Location destination)
     {
+        if (destination == null)
+            return;
+        
+        if (destination instanceof StationLocation &&
+                !(location instanceof StationLocation))
+        {
+            getSectorLocation().getStation().getShips().add(this);
+            location.getSector().getShips().remove(this);
+        }
+        else if (destination instanceof PlanetLocation)
+        {
+            if (location instanceof PlanetLocation)
+            {
+                ((PlanetLocation) location).getRegion().getShips().remove(this);
+                ((PlanetLocation) destination).getRegion().getShips().add(this);
+            }
+            else
+            {
+                ((PlanetLocation) destination).getRegion().getShips().add(this);
+                location.getSector().getShips().remove(this);
+            }
+        }
+        else if (destination instanceof SectorLocation)
+        {
+            if (!(location instanceof SectorLocation))
+            {
+                location.getSector().getShips().add(this);
+            }
+            else if (location instanceof StationLocation)
+            {
+                location.getSector().getShips().add(this);
+                getSectorLocation().getStation().getShips().remove(this);
+            }
+            else if (location instanceof PlanetLocation)
+            {
+                location.getSector().getShips().add(this);
+                getPlanetLocation().getRegion().getShips().remove(this);
+            }
+        }
+        else if (location instanceof SectorLocation &&
+                !(destination instanceof SectorLocation))
+        {
+            location.getSector().getShips().remove(this);
+        }
+        
+        location = destination;
+        
+        /*
         if (isInSector())
         {
             addPlayerError("The ship cannot move between sectors while "
@@ -410,8 +383,7 @@ public class Ship extends Satellite implements ColorStringObject,
         
         if (isPlayer())
             reveal();
-        
-        return true;
+        */
     }
     
     /**
@@ -423,21 +395,9 @@ public class Ship extends Satellite implements ColorStringObject,
         Properties properties = new Properties();
         properties.setProperty("name", super.toString());
         properties.setProperty("location", location.toString());
-        properties.setProperty("orbit", Integer.toString(getOrbit()));
         if (isAligned())
             properties.setProperty("faction", faction.getName());
         properties.setProperty("credits", Integer.toString(credits));
-        
-        String situation;
-        if (isLanded())
-            situation = "landed";
-        else if (isDocked())
-            situation = "docked";
-        else if (isInSector())
-            situation = "inSector";
-        else
-            situation = "interstellar";
-        properties.setProperty("situation", situation);
         
         StringBuilder builder = new StringBuilder();
         for (Module module: modules)
@@ -870,10 +830,16 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public final void addModule(String name)
     {
-        if (isDocked() && dockedWith.hasModule(name))
-            addModule(dockedWith.getModule(name));
+        if (isDocked())
+        {
+            Module module = getSectorLocation().getStation().getModule(name);
+            if (module != null)
+                addModule(module);
+        }
         else
+        {
             addModule(Station.getBaseModule(name));
+        }
     }
     
     /**
@@ -1008,11 +974,12 @@ public class Ship extends Satellite implements ColorStringObject,
         }
         
         Resource resource = getResource(name);
+        Station station = getSectorLocation().getStation();
         
         if (resource == null)
         {
             // Try finding if an expander was specified and continue purchase
-            Expander expander = dockedWith.getExpander(name);
+            Expander expander = station.getExpander(name);
             
             if (expander == null)
             {
@@ -1042,7 +1009,7 @@ public class Ship extends Satellite implements ColorStringObject,
             }
             
             resource.expand(quantity);
-            changeCredits(dockedWith.getFaction(), -price);
+            changeCredits(station.getFaction(), -price);
             return true;
         }
         
@@ -1052,7 +1019,7 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        int price = dockedWith.getResource(name).getPrice() * quantity;
+        int price = station.getResource(name).getPrice() * quantity;
         
         if (!validateFunds(price))
             return false;
@@ -1078,7 +1045,7 @@ public class Ship extends Satellite implements ColorStringObject,
         }
         
         resource.changeAmount(quantity);
-        changeCredits(dockedWith.getFaction(), -price);
+        changeCredits(station.getFaction(), -price);
         return true;
     }
     
@@ -1113,8 +1080,8 @@ public class Ship extends Satellite implements ColorStringObject,
         
         if (isDocked())
         {
-            return Math.min(credits /
-                    dockedWith.getResource(resource.getName()).getPrice(),
+            return Math.min(credits / getSectorLocation().getStation()
+                    .getResource(resource.getName()).getPrice(),
                     resource.getCapacity() - resource.getAmount());
         }
         
@@ -1137,8 +1104,8 @@ public class Ship extends Satellite implements ColorStringObject,
         {
             return Math.min(MAX_EXPANDERS -
                     getResourceFromExpander(expander.getName()).getNExpanders(),
-                    credits /
-                    dockedWith.getExpander(expander.getName()).getPrice());
+                    credits / getSectorLocation().getStation()
+                            .getExpander(expander.getName()).getPrice());
         }
         
         return Math.min(MAX_EXPANDERS -
@@ -1189,13 +1156,14 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         
         // Module must be retrieved after it is known that the ship is docked
-        Module module = dockedWith.getModule(name);
+        Station station = getSectorLocation().getStation();
+        Module module = station.getModule(name);
         
         if (module == null || module.getName() == null)
         {
             if (Station.hasBaseModule(name))
             {
-                addPlayerError(dockedWith + " does not sell modules of this "
+                addPlayerError(station + " does not sell modules of this "
                         + "type.");
                 return false;
             }
@@ -1204,15 +1172,15 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        if (!dockedWith.sells(module))
+        if (!station.sells(module))
         {
-            addPlayerError(dockedWith + " does not sell modules of this type.");
+            addPlayerError(station + " does not sell modules of this type.");
             return false;
         }
         
         if (module instanceof Weapon && isPirate())
         {
-            addPlayerError(dockedWith + " refuses to sell weaponry to "
+            addPlayerError(station + " refuses to sell weaponry to "
                     + "pirates.");
             
             return false;
@@ -1225,7 +1193,7 @@ public class Ship extends Satellite implements ColorStringObject,
         
         // Capacity is checked by addModule
         addModule(module);
-        changeCredits(dockedWith.getFaction(), -price);
+        changeCredits(station.getFaction(), -price);
         return true;
     }
     
@@ -1251,13 +1219,14 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         
         // Module must be retrieved after it is known that the ship is docked
-        Module module = dockedWith.getModule(name);
+        Station station = getSectorLocation().getStation();
+        Module module = station.getModule(name);
         
         if (module == null)
         {
             if (Station.hasBaseModule(name))
             {
-                addPlayerError(dockedWith + " will not accept a module of this "
+                addPlayerError(station + " will not accept a module of this "
                             + "type.");
                 return false;
             }
@@ -1266,9 +1235,9 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        if (!dockedWith.sells(module))
+        if (!station.sells(module))
         {
-            addPlayerError(dockedWith + " will not accept a module of this "
+            addPlayerError(station + " will not accept a module of this "
                         + "type.");
             return false;
         }
@@ -1276,7 +1245,7 @@ public class Ship extends Satellite implements ColorStringObject,
         // removeModule deals with the case where the module does not exist
         if (removeModule(module))
         {
-            changeCredits(dockedWith.getFaction(), module.getPrice());
+            changeCredits(station.getFaction(), module.getPrice());
             return true;
         }
         
@@ -1339,27 +1308,19 @@ public class Ship extends Satellite implements ColorStringObject,
         }
         
         // Invert to match cartesian system
-        if (direction == Direction.UP)
-            direction = Direction.DOWN;
-        else if (direction == Direction.DOWN)
-            direction = Direction.UP;
-        
-        Coord target = location.translate(direction);
-        
-        if (!map.contains(target))
-        {
-            addPlayerError("The destination entered is not on the map.");
-            return false;
-        }
+        if (direction == Direction.UP || direction == Direction.DOWN)
+            direction = direction.opposite();
         
         if (!validateResources(Actions.BURN, "initiate a burn"))
             return false;
         
-        Resource resource = getResource(Actions.BURN.getResource());
+        Location target = location.move(direction);
+        if (target == null)
+            return false;
         
-        location = target;
-        sector = map.sectorAt(location);
-        resource.changeAmount(-Actions.BURN.getCost());
+        setLocation(target);
+        getResource(Actions.BURN.getResource())
+                .changeAmount(-Actions.BURN.getCost());
         
         if (isPlayer())
             reveal();
@@ -1380,12 +1341,14 @@ public class Ship extends Satellite implements ColorStringObject,
         if (!validateResources(Actions.WARP.getAction(), "charge warp drive"))
             return false;
         
-        Resource resource = getResource(Actions.WARP.getResource());
+        Location target = location.moveTo(p);
         
-        if (!setLocation(p))
+        if (target == null)
             return false;
         
-        resource.changeAmount(-Actions.WARP.getCost());
+        setLocation(target);
+        getResource(Actions.WARP.getResource())
+                .changeAmount(-Actions.WARP.getCost());
         return true;
     }
     
@@ -1403,7 +1366,7 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        if (Sector.EMPTY.equals(sector.getType()))
+        if (Sector.EMPTY.equals(location.getSector().getType()))
         {
             addPlayerError("There is nothing to orbit in this sector.");
             return false;
@@ -1423,15 +1386,16 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        int target = increase ? getOrbit() + 1 : getOrbit() - 1;
+        int orbit = getSectorLocation().getOrbit();
+        int target = increase ? orbit + 1 : orbit - 1;
         
-        if (!sector.isValidOrbit(target))
+        if (!location.getSector().isValidOrbit(target))
         {
             if (increase)
                 return escape();
             
             addPlayerError("Invalid orbit. Must be between 1 and "
-                        + sector.getOrbits() + ".");
+                        + location.getSector().getOrbits() + ".");
             return false;
         }
         
@@ -1448,12 +1412,12 @@ public class Ship extends Satellite implements ColorStringObject,
         if (!validateResources(resource, cost, "perform an orbital maneuver"))
             return false;
         
-        setOrbit(target);
+        setLocation(getSectorLocation().setOrbit(target));
         resource.changeAmount(-cost);
         return true;
     }
     
-    public boolean relocate(boolean increase)
+    public boolean relocate(Direction direction)
     {
         if (!isLanded())
         {
@@ -1462,10 +1426,15 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        int target = landedOn().getRegions().indexOf(landedIn) +
-                (increase ? 1 : -1);
+        if (direction.isDiagonal())
+        {
+            addPlayerError("Diagonal relocation is not allowed.");
+            return false;
+        }
         
-        if (target < 0 || target >= landedOn().getRegions().size())
+        PlanetLocation target = getPlanetLocation().moveRegion(direction);
+        
+        if (target == null)
         {
             addPlayerError("Invalid region specified.");
             return false;
@@ -1474,11 +1443,9 @@ public class Ship extends Satellite implements ColorStringObject,
         if (!validateResources(Actions.RELOCATE, "relocate"))
             return false;
         
-        Resource resource = getResource(Actions.RELOCATE.getResource());
-        resource.changeAmount(-Actions.RELOCATE.getCost());
-        landedIn.getShips().remove(this);
-        landedIn = landedOn().getRegions().get(target);
-        landedIn.getShips().add(this);
+        getResource(Actions.RELOCATE.getResource())
+                .changeAmount(-Actions.RELOCATE.getCost());
+        setLocation(target);
         return true;
     }
     
@@ -1500,22 +1467,19 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        int cost = Actions.ESCAPE.getCost();
-        if (!validateResources(Actions.ESCAPE.getResource(), cost,
-                "escape the gravity of " + sector))
+        if (!validateResources(Actions.ESCAPE,
+                "escape the gravity of " + location.getSector()))
             return false;
 
-        Resource resource = getResource(Actions.ESCAPE.getResource());
-
-        setOrbit(0);
-        resource.changeAmount(-cost);
-        sector.getShips().remove(this);
+        getResource(Actions.ESCAPE.getResource())
+                .changeAmount(-Actions.ESCAPE.getCost());
+        setLocation(getSectorLocation().escapeSector());
         return true;
     }
     
     /** Reveals the player's sector (discovers surrounding sectors). */
     public void reveal()
-        {map.reveal(location);}
+        {location.getMap().reveal(location.getCoords());}
     
     /**
      * Performs the scanning action, although all results must be performed
@@ -1536,8 +1500,8 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        Resource resource = getResource(Actions.SCAN.getResource());
-        resource.changeAmount(-Actions.SCAN.getCost());
+        getResource(Actions.SCAN.getResource())
+                .changeAmount(-Actions.SCAN.getCost());
         return true;
     }
     
@@ -1547,6 +1511,8 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public boolean enter()
     {
+        Sector sector = location.getSector();
+        
         if (isInSector())
         {
             addPlayerError("Ship is already in " + sector + ".");
@@ -1559,16 +1525,13 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        int cost = Actions.ENTER.getCost();
-        if (!validateResources(Actions.ENTER.getResource(), cost,
+        if (!validateResources(Actions.ENTER,
                 "enter into orbit around " + sector))
             return false;
 
-        Resource resource = getResource(Actions.ENTER.getResource());
-
-        resource.changeAmount(-cost);
-        setSector(sector);
-        setOrbit(sector.getOrbits());
+        getResource(Actions.ENTER.getResource())
+                .changeAmount(-Actions.ENTER.getCost());
+        setLocation(location.enterSector());
         return true;
     }
     
@@ -1578,13 +1541,15 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public boolean dock()
     {
-        if (getOrbit() == 0)
+        if (!isInSector())
         {
             addPlayerError("Ship must be in orbit to dock.");
             return false;
         }
         
-        if (!sector.isStationAt(getOrbit()))
+        Station station = getSectorLocation().getStation();
+        
+        if (station == null)
         {
             addPlayerError("There is no station at this orbit.");
             return false;
@@ -1598,12 +1563,9 @@ public class Ship extends Satellite implements ColorStringObject,
         
         if (isDocked())
         {
-            addPlayerError("The ship is already docked with " + dockedWith
-                    + ".");
+            addPlayerError("The ship is already docked with " + station + ".");
             return false;
         }
-        
-        Station station = sector.getStationAt(getOrbit());
         
         if (isHostile(station.getFaction()) && isAligned())
         {
@@ -1614,7 +1576,7 @@ public class Ship extends Satellite implements ColorStringObject,
                 return false;
             }
             
-            forceDock();
+            setLocation(getSectorLocation().dock());
 
             if (!claim())
             {
@@ -1624,19 +1586,12 @@ public class Ship extends Satellite implements ColorStringObject,
         }
         else
         {
-            forceDock();
+            setLocation(getSectorLocation().dock());
         }
         
         repairModules();
         updatePrices();
         return true;
-    }
-    
-    public void forceDock()
-    {
-        dockedWith = sector.getStationAt(getOrbit());
-        dockedWith.getShips().add(this);
-        sector.getShips().remove(this);
     }
     
     /**
@@ -1651,25 +1606,23 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        dockedWith.getShips().remove(this);
-        dockedWith = null;
-        sector.getShips().add(this);
+        setLocation(getStationLocation().undock());
         return true;
     }
     
     /**
      * Lands on the planet at the ship's orbit, if possible.
-     * @param region the index of the region to land in
+     * @param coords the index of the region to land in
      * @return true if the landing was successful
      */
-    public boolean land(Region region)
+    public boolean land(Coord coords)
     {
         if (!canLand())
             return false;
         
-        Planet planet = sector.getPlanetAt(getOrbit());
+        Planet planet = getSectorLocation().getPlanet();
         
-        if (!planet.getRegions().contains(region))
+        if (!planet.contains(coords))
         {
             addPlayerError("The specified region was not found on " + planet
                     + ".");
@@ -1681,24 +1634,8 @@ public class Ship extends Satellite implements ColorStringObject,
         
         getResource(Actions.LAND.getResource())
                 .changeAmount(-Actions.LAND.getCost());
-        landedIn = region;
-        landedIn.getShips().add(this);
-        sector.getShips().remove(this);
+        setLocation(getSectorLocation().land(coords));
         return true;
-    }
-    
-    public boolean land(int regionIndex)
-    {
-        Planet planet = sector.getPlanetAt(getOrbit());
-        
-        if (regionIndex < 0 || regionIndex >= planet.getRegions().size())
-        {
-            addPlayerError("Invalid region specified.");
-            return false;
-        }
-        
-        
-        return land(planet.getRegions().get(regionIndex));
     }
     
     /**
@@ -1721,9 +1658,8 @@ public class Ship extends Satellite implements ColorStringObject,
             return true;
         }
         
-        landedIn = sector.getPlanetAt(getOrbit()).getRandomRegion();
-        landedIn.getShips().add(this);
-        sector.getShips().remove(this);
+        Planet planet = getSectorLocation().getPlanet();
+        setLocation(getSectorLocation().land(planet.getRandomCoord()));
         return true;
     }
     
@@ -1733,7 +1669,7 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public boolean canLand()
     {
-        if (!isOrbiting())
+        if (!isInSector())
         {
             addPlayerError("Ship must be at a planet's orbit to land.");
             return false;
@@ -1751,7 +1687,7 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        Planet planet = sector.getPlanetAt(getOrbit());
+        Planet planet = getSectorLocation().getPlanet();
         
         if (planet == null)
         {
@@ -1783,16 +1719,13 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        if (!validateResources(Actions.TAKEOFF, "takeoff from " + landedIn))
+        if (!validateResources(Actions.TAKEOFF, "takeoff from the "
+                + getPlanetLocation().getRegion()))
             return false;
         
-        Resource resource = getResource(Actions.TAKEOFF.getResource());
-        
-        // landedOn is set to null below so that the message is correct
-        resource.changeAmount(-Actions.TAKEOFF.getCost());
-        landedIn.getShips().remove(this);
-        sector.getShips().add(this);
-        landedIn = null;
+        getResource(Actions.TAKEOFF.getResource())
+                .changeAmount(-Actions.TAKEOFF.getCost());
+        setLocation(getPlanetLocation().takeoff());
         return true;
     }
     
@@ -1810,14 +1743,15 @@ public class Ship extends Satellite implements ColorStringObject,
         
         Ore ore;
         if (isLanded())
-            ore = landedIn.getOre();
+            ore = getPlanetLocation().getRegion().getOre();
         else
-            ore = map.getRandomOre();
+            ore = location.getMap().getRandomOre();
         
         if (ore == null)
         {
             addPlayerError("There is no ore to mine in the "
-                    + landedIn.toString().toLowerCase() + ".");
+                    + getPlanetLocation().getRegion().toString().toLowerCase()
+                    + ".");
             return false;
         }
         
@@ -1865,7 +1799,14 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public boolean canMine(boolean print)
     {
-        Planet planet = sector.getPlanetAt(getOrbit());
+        if (!isInSector())
+        {
+            if (print)
+                addPlayerError("The ship must be in a sector to mine.");
+            return false;
+        }
+        
+        Planet planet = getSectorLocation().getPlanet();
         
         if (planet == null)
         {
@@ -2293,13 +2234,14 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public boolean burnTowards(int x, int y)
     {
-        if (x > location.getX())
+        Coord coords = location.getCoords();
+        if (x > coords.x)
             return burn(Direction.LEFT);
-        if (x < location.getX())
+        if (x < coords.x)
             return burn(Direction.RIGHT);
-        if (y > location.getY())
+        if (y > coords.y)
             return burn(Direction.UP);
-        if (y < location.getY())
+        if (y < coords.y)
             return burn(Direction.DOWN);
         return true;
     }
@@ -2311,7 +2253,7 @@ public class Ship extends Satellite implements ColorStringObject,
      * @return true if any progress was made toward the coordinates
      */
     public boolean burnTowards(Coord p)
-        {return burnTowards(p.getX(), p.getY());}
+        {return burnTowards(p.x, p.y);}
     
     // Normal attacks will be dealt with in Game, this attack is for AI ships
     
@@ -2463,7 +2405,7 @@ public class Ship extends Satellite implements ColorStringObject,
     public boolean canConvert(Ship ship)
     {
         return isAligned() && !ship.isInFaction(faction) && !(ship.willAttack()
-                           && !ship.isPlayer());
+                && !ship.isPlayer());
     }
     
     /**
@@ -2473,7 +2415,7 @@ public class Ship extends Satellite implements ColorStringObject,
     public boolean claim()
     {
         if (isLanded())
-            return claim(landedIn);
+            return claim(getPlanetLocation().getRegion());
         
         if (!canClaim(true))
             return false;
@@ -2499,22 +2441,21 @@ public class Ship extends Satellite implements ColorStringObject,
     {
         if (!canClaimRegion(region))
             return false;
-
-        changeCredits(region.getFaction(), -landedOn().getClaimCost());
+        
+        Planet planet = getSectorLocation().getPlanet();
+        int nRegions = planet.getNRegions();
+        changeCredits(region.getFaction(), -planet.getClaimCost());
 
         if (ALLIANCE == faction.getRelationship(region.getFaction()))
         {
-            changeReputation(faction,
-                    Reputations.CLAIM_ALLY / landedOn().getRegions().size());
+            changeReputation(faction, Reputations.CLAIM_ALLY / nRegions);
         }
         else
         {
-            changeReputation(faction,
-                    Reputations.CLAIM / landedOn().getRegions().size());
+            changeReputation(faction, Reputations.CLAIM / nRegions);
         }
 
-        changeReputation(region.getFaction(),
-                -Reputations.CLAIM / landedOn().getRegions().size());
+        changeReputation(region.getFaction(), -Reputations.CLAIM / nRegions);
 
         // Claim must be done here so the faction relations can be checked
         region.claim(faction);
@@ -2612,7 +2553,7 @@ public class Ship extends Satellite implements ColorStringObject,
             return false;
         }
         
-        return canClaimStation(dockedWith, print);
+        return canClaimStation(getSectorLocation().getStation(), print);
     }
     
     /**
@@ -2655,6 +2596,8 @@ public class Ship extends Satellite implements ColorStringObject,
         return true;
     }
     
+    // TODO remove getClaimableBody()
+    
     /**
      * Returns the claimable celestial body that the ship is on.
      * @return whichever claimable celestial body the player is on, landedOn
@@ -2664,7 +2607,8 @@ public class Ship extends Satellite implements ColorStringObject,
     {
         // Returning null separately is unnecessary since it will be returned
         // anyway when the ship isn't docked
-        return isLanded() ? landedOn() : dockedWith;
+        return isLanded() ? getSectorLocation().getPlanet() :
+                getSectorLocation().getStation();
     }
     
     public Faction getDistressResponder()
@@ -2762,7 +2706,8 @@ public class Ship extends Satellite implements ColorStringObject,
             
             if (location.equals(candidate.location))
                 preferences[i] += 3;
-            else if (location.isAdjacent(candidate.location))
+            else if (location.getCoords()
+                    .isAdjacent(candidate.location.getCoords()))
                 preferences[i]++;
             
             if (candidate.calculateShipValue() > calculateShipValue())
@@ -3052,13 +2997,14 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public void destroy(boolean print)
     {
-        sector.removeLetter((int) getName().charAt(getName().length() - 1));
-        sector.getShips().remove(this);
+        location.getSector()
+                .removeLetter((int) getName().charAt(getName().length() - 1));
+        location.getSector().getShips().remove(this);
         
         if (isDocked())
-            dockedWith.getShips().remove(this);
+            getSectorLocation().getStation().getShips().remove(this);
         else if (isLanded())
-            landedIn.getShips().remove(this);
+            getPlanetLocation().getRegion().getShips().remove(this);
         
         addFlag(DESTROYED);
         
@@ -3099,10 +3045,10 @@ public class Ship extends Satellite implements ColorStringObject,
     /** Creates a Reputation object for each faction in the game. */
     private void createReputations()
     {
-        reputations = new Reputation[map.getFactions().length];
+        reputations = new Reputation[location.getMap().getFactions().length];
         
         for (int i = 0; i < reputations.length; i++)
-            reputations[i] = new Reputation(map.getFactions()[i]);
+            reputations[i] = new Reputation(location.getMap().getFactions()[i]);
     }
     
     /**
@@ -3243,36 +3189,32 @@ public class Ship extends Satellite implements ColorStringObject,
         return level;
     }
     
-    /** Resets the sector to the one at the ship's location. */
-    public void updateSector()
-        {sector = map.sectorAt(location);}
-    
     /**
      * Resets the prices of all items on the ship to the current station's
      * prices, if docked.
      */
     public void updatePrices()
     {
-        if (dockedWith == null)
+        if (!isDocked())
             return;
         
+        Station station = getSectorLocation().getStation();
+        
         for (Module module: modules)
-            if (module != null &&
-                    dockedWith.getModule(module.getName()) != null)
-                module.setPrice(dockedWith.getModule(module.getName())
-                                                           .getPrice());
+            if (module != null && station.getModule(module.getName()) != null)
+                module.setPrice(station.getModule(module.getName()).getPrice());
+        
         for (Resource resource: resources)
         {
             if (resource != null &&
-                    dockedWith.getResource(resource.getName()) != null)
+                    station.getResource(resource.getName()) != null)
             {
-                resource.setPrice(dockedWith.getResource(resource.getName())
+                resource.setPrice(station.getResource(resource.getName())
                         .getPrice());
                 
                 // This currently updates the expander's price for ALL ships
-                resource.getExpander().setPrice(dockedWith
-                        .getExpander(resource.getExpander().getName())
-                        .getPrice());
+                resource.getExpander().setPrice(station.getExpander(
+                        resource.getExpander().getName()).getPrice());
             }
         }
     }
@@ -3283,7 +3225,8 @@ public class Ship extends Satellite implements ColorStringObject,
         if (hasModule(Actions.SOLAR) && isInSector() && !isLanded())
         {
             changeResource(Actions.SOLAR.getResource(), Actions.SOLAR.getCost()
-                    * sector.getStar().getSolarPowerAt(getOrbit()));
+                    * location.getSector().getStar().getSolarPowerAt(
+                            getSectorLocation().getOrbit()));
         }
         
         if (isShielded() && !changeResourceBy(Actions.SHIELD.getAction()))
@@ -3320,11 +3263,12 @@ public class Ship extends Satellite implements ColorStringObject,
         // Travel to a new sector if willing
         if (willClaim())
         {
-            if (destination == null ||
-                sector.getLocation().equals(destination.getLocation()))
+            if (destination == null || location.getCoords().equals(
+                    destination.getLocation().getCoords()))
             {
-                Sector possibility = map.sectorAt(
-                        map.adjacentTypeTo(Sector.STATION_SYSTEM, location));
+                Sector possibility = location.getMap().sectorAt(
+                        location.getMap().adjacentTypeTo(Sector.STATION_SYSTEM,
+                                location.getCoords()));
                 
                 if (!isAligned())
                 {
@@ -3376,19 +3320,16 @@ public class Ship extends Satellite implements ColorStringObject,
         if (isDocked() && willClaim() && claim())
             return;
         
+        // Claim the planet if powerful enough
+        // The isLanded() check is to confirm that the planet is claimable
+        if (isLanded() && willClaim() && claim())
+            return;
+        
         // If the ship is in a position to mine
-        if (isLanded() || (!isLanded() && !isDocked() &&
-                sector.isPlanetAt(getOrbit()) &&
-                sector.getPlanetAt(getOrbit()).getType().canMineFromOrbit()
-                && getResource(Resources.HULL).getAmount()
+        if (canMine() && (isLanded() || getResource(Resources.HULL).getAmount()
                     > Planet.ASTEROID_DAMAGE))
         {
             if (mine())
-                return;
-            
-            // Claim the planet if powerful enough
-            // The isLanded() check is to confirm that the planet is claimable
-            if (willClaim() && isLanded() && claim())
                 return;
             
             // This method will ensure that other emergency options are used
@@ -3404,6 +3345,8 @@ public class Ship extends Satellite implements ColorStringObject,
             seekStation();
             return;
         }
+        
+        Sector sector = location.getSector();
         
         // Attack a ship if not in the center
         if (!sector.isCenter())
@@ -3433,19 +3376,20 @@ public class Ship extends Satellite implements ColorStringObject,
             return;
         }
         
-        if (!getResource(Resources.ENERGY).isEmpty())
+        if (!getResource(Resources.ENERGY).isEmpty() && isInSector())
         {
-            Planet planet = sector.getPlanetAt(getOrbit());
+            Planet planet = getSectorLocation().getPlanet();
             if (planet != null && planet.getType().canLandOn())
             {
-                Region target = planet.getRandomOreRegion();
-                if ((target == null && land(planet.getRandomRegion())) ||
+                Coord target = planet.getRandomOreCoord();
+                if ((target == null && land(planet.getRandomCoord())) ||
                         (target != null && land(target)))
                     return;
             }
             
-            int closestPlanet = sector.closestMineablePlanetTo(getOrbit());
-            if (closestPlanet > 0 && orbit(getOrbit() < closestPlanet))
+            int orbit = getSectorLocation().getOrbit();
+            int closestPlanet = sector.closestMineablePlanetTo(orbit);
+            if (closestPlanet > 0 && orbit(orbit < closestPlanet))
                 return;
         }
         
@@ -3537,13 +3481,15 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     private void seekStation()
     {
-        if (sector.isStationAt(getOrbit()) && !isDocked() && !isLanded())
+        Sector sector = location.getSector();
+        
+        if (isInSector() && getSectorLocation().isStation() && !isDocked() &&
+                !isLanded())
         {
-            if (isHostile(sector.getStationAt(getOrbit()).getFaction())
-                    && isAligned())
+            Station station = getSectorLocation().getStation();
+            
+            if (isHostile(station.getFaction()) && isAligned())
             {
-                Station station = sector.getStationAt(getOrbit());
-                
                 if (!dock() && credits < station.getClaimCost())
                 {
                     if (!isInFaction(station.getFaction()) && isAligned())
@@ -3574,8 +3520,22 @@ public class Ship extends Satellite implements ColorStringObject,
         
         if (Sector.STATION_SYSTEM.equals(sector.getType()))
         {
-            if (isInSector() && orbit(getOrbit() < sector.closestStationTo(
-                    getOrbit(), faction)))
+            if (!isInSector())
+            {
+                if (enter())
+                {
+                    return;
+                }
+                else
+                {
+                    distressOrDestroy();
+                    return;
+                }
+            }
+            
+            int orbit = getSectorLocation().getOrbit();
+            if (isInSector() && orbit(orbit < sector.closestStationTo(orbit,
+                    faction)))
                 return;
             
             if (enter())
@@ -3585,8 +3545,9 @@ public class Ship extends Satellite implements ColorStringObject,
         if (isInSector() && escape())
             return;
         
-        if (map.adjacentTypeTo(Sector.STATION_SYSTEM, location) != null &&
-                burnTowards(map.adjacentTypeTo(Sector.STATION_SYSTEM, location)))
+        Coord adjacentStation = location.getMap().adjacentTypeTo(
+                Sector.STATION_SYSTEM, location.getCoords());
+        if (adjacentStation != null && burnTowards(adjacentStation))
             return;
         
         if (doRandomBurn())
@@ -3608,10 +3569,11 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     public boolean seekSector(Sector target)
     {
-        if (target == null || !map.contains(target.getLocation()))
+        if (target == null ||
+                !location.getMap().contains(target.getLocation().getCoords()))
             return false;
         
-        if (sector == target)
+        if (location.getSector() == target)
         {
             if (!isInSector())
                 enter();
@@ -3620,7 +3582,7 @@ public class Ship extends Satellite implements ColorStringObject,
         }
         
         if (!isInSector())
-            return burnTowards(target.getLocation());
+            return burnTowards(target.getLocation().getCoords());
         
         if (isLanded())
             return takeoff();
@@ -3631,7 +3593,7 @@ public class Ship extends Satellite implements ColorStringObject,
     }
     
     public boolean seekSector(Coord target)
-        {return seekSector(map.sectorAt(target));}
+        {return seekSector(location.getMap().sectorAt(target));}
     
     /**
      * Distress if respected enough, otherwise destroy the ship (intended for
@@ -3655,10 +3617,10 @@ public class Ship extends Satellite implements ColorStringObject,
         if (target == null)
             return -1;
         
-        if (target == sector)
+        if (target == location.getSector())
             return (Actions.ORBIT.getCost() * 2);
         
-        if (location.isAdjacent(target.getLocation()))
+        if (location.getCoords().isAdjacent(target.getLocation().getCoords()))
         {
             if (isLanded())
                 return Actions.TAKEOFF.getCost() + Actions.BURN.getCost()
@@ -3677,28 +3639,36 @@ public class Ship extends Satellite implements ColorStringObject,
      */
     private int calculateStationDistance()
     {
-        if (isDocked() || sector.isStationAt(getOrbit()))
+        if (isInSector() && getSectorLocation().getStation() != null)
             return 0;
         
-        if (Sector.STATION_SYSTEM.equals(sector.getType()))
+        Sector sector = location.getSector();
+        
+        if (isInSector() && Sector.STATION_SYSTEM.equals(sector.getType()))
         {
             int cost = 0;
+            int orbit = getSectorLocation().getOrbit();
             if (isLanded())
                 cost += Actions.TAKEOFF.getCost();
             
-            cost += Math.abs(sector.closestStationTo(getOrbit()) - getOrbit())
+            cost += Math.abs(sector.closestStationTo(orbit) - orbit)
                     * Actions.ORBIT.getCost();
             return cost;
         }
         
-        if (map.adjacentTypeTo(Sector.STATION_SYSTEM, location) != null)
+        if (location.getMap().adjacentTypeTo(Sector.STATION_SYSTEM,
+                location.getCoords()) != null)
         {
             int cost = 0;
             if (isLanded())
+            {
                 cost += Actions.TAKEOFF.getCost();
+            }
             if (isInSector())
+            {
                 cost += Actions.ESCAPE.getCost() + (Actions.ORBIT.getCost() *
-                        (sector.getOrbits() - getOrbit()));
+                        (sector.getOrbits() - getSectorLocation().getOrbit()));
+            }
             
             cost += Actions.BURN.getCost() + Actions.ORBIT.getCost();
             return cost;

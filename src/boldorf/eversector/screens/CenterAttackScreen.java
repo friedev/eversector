@@ -36,10 +36,12 @@ public class CenterAttackScreen extends ConfirmationScreen
     @Override
     public Screen onConfirm()
     {
-        if (player.getSector().getShipsAt(player.getOrbit()).size() == 2)
+        if (player.getLocation().getSector()
+                .getShipsAt(player.getSectorLocation().getOrbit()).size() == 2)
         {
             return new BattleScreen(getDisplay(),
-                    player.getSector().getFirstOtherShip(player), true);
+                    player.getLocation().getSector().getFirstOtherShip(player),
+                    true);
         }
         
         return new AttackScreen(getDisplay());

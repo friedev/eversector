@@ -5,23 +5,23 @@ import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import boldorf.eversector.entities.locations.PlanetLocation;
+import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
-import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.faction.Faction;
+import java.util.Arrays;
+import squidpony.squidmath.Coord;
 
 /** A planet in a sector that can be interacted with in different ways. */
 public class Planet extends CelestialBody implements ColorStringObject
 {
-    /** The minimum number of regions a planet can have. */
-    public static final int MIN_REGIONS = 3;
-    
     /**
-     * The maximum increase in factions over the minimum (increased by 1 to 
-     * include 0).
+     * The greatest number that region widths will be multiplied by, along with
+     * 2.
      */
-    public static final int REGION_RANGE = 5;
+    public static final int REGION_MULTIPLIER_RANGE = 3;
     
     /** The minimum number of ore types on a planet. */
     public static final int MIN_ORES = 1;
@@ -37,20 +37,19 @@ public class Planet extends CelestialBody implements ColorStringObject
      */
     public static final int ASTEROID_DAMAGE = 1;
     
-    private PlanetType   type;
-    private List<Ore>    ores;
-    private List<Region> regions;
+    private PlanetType type;
+    private List<Ore>  ores;
+    private Region[][] regions;
     
     /**
-     * Creates a planet with a name, orbit, faction, and sector.
+     * Creates a planet with a name, location, and faction.
      * @param name the name of the planet
-     * @param orbit the orbit of the planet
+     * @param location the location of the planet
      * @param faction the faction that has claimed the planet
-     * @param sector the sector the planet belongs to
      */
-    public Planet(String name, int orbit, Faction faction, Sector sector)
+    public Planet(String name, SectorLocation location, Faction faction)
     {
-        super(name, orbit, faction, sector);
+        super(name, location, faction);
         
         generateType();
         
@@ -58,7 +57,18 @@ public class Planet extends CelestialBody implements ColorStringObject
             generateOre();
         else
             ores = null;
-        
+    }
+    
+    /**
+     * Creates an unclaimed planet with a name and location.
+     * @param name the name of the planet
+     * @param location the location of the planet
+     */
+    public Planet(String name, SectorLocation location)
+        {this(name, location, null);}
+    
+    public void init()
+    {
         // Only set the planet's faction if it is a rocky planet
         // Note that unclaim() does not call updateFaction()
         if (type.canLandOn())
@@ -66,9 +76,6 @@ public class Planet extends CelestialBody implements ColorStringObject
         else
             unclaim();
     }
-    
-    public Planet(String name, int orbit, Sector sector)
-        {this(name, orbit, null, sector);}
     
     @Override
     public String toString()
@@ -84,8 +91,47 @@ public class Planet extends CelestialBody implements ColorStringObject
     public PlanetType getType()
         {return type;}
     
-    public List<Region> getRegions()
+    public Region[][] getRegions()
         {return regions;}
+    
+    public int getNRegions()
+        {return getNRows() * getNColumns();}
+    
+    public int getNRows()
+        {return regions.length;}
+    
+    public int getNColumns()
+        {return regions[0].length;}
+    
+    public Region regionAt(Coord location)
+        {return regions[location.y][location.x];}
+    
+    public Coord indexOf(Region region)
+    {
+        for (int y = 0; y < regions.length; y++)
+            for (int x = 0; x < regions[y].length; x++)
+                if (regions[y][x] == region)
+                    return Coord.get(x, y);
+        return null;
+    }
+    
+    public boolean contains(Coord location)
+        {return containsX(location.x) && containsY(location.y);}
+    
+    public boolean containsX(int x)
+        {return x >= 0 && getNColumns() >= x + 1;}
+    
+    public boolean containsY(int y)
+        {return y >= 0 && getNRows() >= y + 1;}
+    
+    public Coord getCenter()
+        {return Coord.get(getNColumns() / 2, getNRows() / 2);}
+    
+    public int getOppositeSide(int x)
+    {
+        return containsX(x + getNColumns() / 2) ?
+                x + getNColumns() / 2 : x - getNColumns() / 2;
+    }
     
     // TODO change CelestialBody/Station regarding claiming changes to planet
     
@@ -103,14 +149,14 @@ public class Planet extends CelestialBody implements ColorStringObject
             return;
         }
         
-        Map map = getSector().getMap();
-        
-        int[] control = new int[map.getFactions().length];
+        int[] control = new int[getLocation().getMap().getFactions().length];
         
         // Increase the respective counter for each claimed body
-        for (Region region: regions)
-            if (region != null && region.isClaimed())
-                control[map.getIndex(region.getFaction())]++;
+        for (Region[] row: regions)
+            for (Region region: row)
+                if (region != null && region.isClaimed())
+                    control[getLocation().getMap().getIndex(
+                            region.getFaction())]++;
         
         int index     = -1;
         int maxBodies = 0; // The most owned bodies in a faction
@@ -130,7 +176,7 @@ public class Planet extends CelestialBody implements ColorStringObject
             }
         }
         
-        claim(index == -1 ? null : map.getFaction(index));
+        claim(index == -1 ? null : getLocation().getMap().getFaction(index));
     }
     
     /**
@@ -140,9 +186,10 @@ public class Planet extends CelestialBody implements ColorStringObject
      */
     public boolean hasRegion(String type)
     {
-        for (Region region: regions)
-            if (region.getType().equalsIgnoreCase(type))
-                return true;
+        for (Region[] row: regions)
+            for (Region region: row)
+                if (region.getType().equalsIgnoreCase(type))
+                    return true;
         return false;
     }
     
@@ -151,7 +198,15 @@ public class Planet extends CelestialBody implements ColorStringObject
      * @return any of the regions on the planet, chosen at random
      */
     public Region getRandomRegion()
-        {return getRandomRegion(regions);}
+    {
+        List<Region> regionList = new ArrayList<>();
+        for (Region[] row: regions)
+            regionList.addAll(Arrays.asList(row));
+        return getRandomRegion(regionList);
+    }
+    
+    public Coord getRandomCoord()
+        {return rng.nextCoord(getNColumns(), getNRows());}
     
     /**
      * Returns a random region on the planet that is not already controlled by
@@ -165,9 +220,10 @@ public class Planet extends CelestialBody implements ColorStringObject
     {
         ArrayList<Region> unclaimedRegions = new ArrayList<>();
         
-        for (Region region: regions)
-            if (region.getFaction() != faction)
-                unclaimedRegions.add(region);
+        for (Region[] row: regions)
+            for (Region region: row)
+                if (region.getFaction() != faction)
+                    unclaimedRegions.add(region);
         
         return getRandomRegion(unclaimedRegions);
     }
@@ -176,11 +232,20 @@ public class Planet extends CelestialBody implements ColorStringObject
     {
         ArrayList<Region> oreRegions = new ArrayList<>();
         
-        for (Region region: regions)
-            if (region.hasOre())
-                oreRegions.add(region);
+        for (Region[] row: regions)
+            for (Region region: row)
+                if (region.hasOre())
+                    oreRegions.add(region);
         
         return getRandomRegion(oreRegions);
+    }
+    
+    public Coord getRandomOreCoord()
+    {
+        Region oreRegion = getRandomOreRegion();
+        if (oreRegion == null)
+            return getRandomCoord();
+        return oreRegion.getLocation().getRegionCoords();
     }
     
     /**
@@ -191,7 +256,7 @@ public class Planet extends CelestialBody implements ColorStringObject
     private static Region getRandomRegion(List<Region> regions)
     {
         return regions == null || regions.isEmpty() ?
-                null : regions.get(rng.nextInt(regions.size()));
+                null : rng.getRandomElement(regions);
     }
     
     /**
@@ -200,7 +265,7 @@ public class Planet extends CelestialBody implements ColorStringObject
      */
     @Override
     public int getClaimCost()
-        {return CLAIM_COST / regions.size();}
+        {return CLAIM_COST / getNRegions();}
     
     /**
      * Returns a symbol for the planet's type.
@@ -229,8 +294,9 @@ public class Planet extends CelestialBody implements ColorStringObject
         
         int nShips = 0;
         
-        for (Region region: regions)
-            nShips += region.getShips().size();
+        for (Region[] row: regions)
+            for (Region region: row)
+                nShips += region.getShips().size();
         
         return nShips;
     }
@@ -242,10 +308,26 @@ public class Planet extends CelestialBody implements ColorStringObject
         
         int nShips = 0;
         
-        for (Region region: regions)
-            nShips += region.getNShips(faction);
+        for (Region[] row: regions)
+            for (Region region: row)
+                nShips += region.getNShips(faction);
         
         return nShips;
+    }
+    
+    public List<ColorString> toColorStrings()
+    {
+        List<ColorString> list = new ArrayList<>(getNRows());
+        
+        for (Region[] row: regions)
+        {
+            ColorString rowString = new ColorString();
+            for (Region region: row)
+                rowString.add(region.toColorChar());
+            list.add(rowString);
+        }
+        
+        return list;
     }
     
     /**
@@ -257,7 +339,8 @@ public class Planet extends CelestialBody implements ColorStringObject
     {
         // If the star is nebular, there is a 1/2 chance that a nebula is
         // generated instead of a planet
-        if (getSector().getStar().isNebular() && rng.nextBoolean())
+        if (getLocation().getSector().getStar().isNebular() &&
+                rng.nextBoolean())
         {
             type = PlanetType.NEBULA;
             return;
@@ -271,8 +354,8 @@ public class Planet extends CelestialBody implements ColorStringObject
     
     private PlanetType getRockyType()
     {
-        return PlanetType.getRockyType(
-                getSector().getStar().getPowerAt(getOrbit()));
+        return PlanetType.getRockyType(getLocation().getSector().getStar()
+                .getPowerAt(getLocation().getOrbit()));
     }
     
     private void generateOre()
@@ -281,7 +364,7 @@ public class Planet extends CelestialBody implements ColorStringObject
         int nOres = rng.nextInt(ORE_RANGE) + MIN_ORES;
         for (int i = 0; i < nOres; i++)
         {
-            Ore ore = getSector().getMap().getRandomOre();
+            Ore ore = getLocation().getMap().getRandomOre();
             
             if (!ores.contains(ore))
                 ores.add(ore);
@@ -294,13 +377,17 @@ public class Planet extends CelestialBody implements ColorStringObject
     /** Generates a random amount of regions. */
     private void generateRegions()
     {
-        int nRegions = rng.nextInt(REGION_RANGE) + MIN_REGIONS + 1;
-        regions = new ArrayList<>();
-        for (int i = 0; i < nRegions; i++)
+        int widthMultiplier = rng.nextInt(REGION_MULTIPLIER_RANGE) + 1;
+        regions = new Region[widthMultiplier + 1][widthMultiplier * 2];
+        for (int y = 0; y < regions.length; y++)
         {
-            Faction ruler = Sector.STATION_SYSTEM.equals(getSector().getType())
-                    ? getSector().getMap().getRandomFaction() : null;
-            regions.add(new Region(this, ruler));
+            for (int x = 0; x < regions[y].length; x++)
+            {
+                regions[y][x] = new Region(new PlanetLocation(getLocation(),
+                        Coord.get(x, y)), Sector.STATION_SYSTEM.equals(
+                        getLocation().getSector().getType()) ?
+                        getLocation().getMap().getRandomFaction() : null);
+            }
         }
         
         updateFaction();

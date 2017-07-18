@@ -1,45 +1,88 @@
 package boldorf.eversector.screens;
 
 import boldorf.apwt.Display;
-import boldorf.apwt.screens.MenuScreen;
+import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
-import boldorf.apwt.windows.PopupMenu;
+import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
-import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Region;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
-import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
+import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Main.playSoundEffect;
+import boldorf.eversector.entities.Planet;
+import boldorf.eversector.entities.locations.PlanetLocation;
 import static boldorf.eversector.storage.Paths.ENGINE;
+import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
+import java.util.List;
+import squidpony.squidgrid.Direction;
+import squidpony.squidmath.Coord;
 
 /**
  * 
  */
-public class LandScreen extends MenuScreen<PopupMenu>
+public class LandScreen extends ConfirmationScreen
+        implements WindowScreen<PopupWindow>
 {
+    private PopupWindow window;
+    private PlanetLocation selection;
+    
     public LandScreen(Display display)
     {
-        super(new PopupMenu(new PopupWindow(display),
-                COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
-        getConfirmCodes().add(KeyEvent.VK_RIGHT);
-        getCancelCodes().add(KeyEvent.VK_LEFT);
-        
-        for (Region region:
-                player.getSector().getPlanetAt(player.getOrbit()).getRegions())
-            getMenu().getWindow().getContents().add(region.toColorString());
+        super(display);
+        Planet planet = player.getSectorLocation().getPlanet();
+        window = new PopupWindow(display);
+        window.getContents().addAll(planet.toColorStrings());
+        selection = new PlanetLocation(player.getSectorLocation(),
+                planet.getCenter());
     }
+    
+    @Override
+    public void displayOutput()
+    {
+        setUpWindow();
+        window.display();
+    }
+    
+    @Override
+    public Screen processInput(KeyEvent key)
+    {
+        Direction direction = Utility.keyToDirectionRestricted(key);
+        if (direction != null)
+        {
+            selection = selection.moveRegion(direction);
+            return this;
+        }
+        
+        return super.processInput(key);
+    }
+    
+    @Override
+    public PopupWindow getWindow()
+        {return window;}
     
     @Override
     public Screen onConfirm()
     {
-        if (player.land(getMenu().getSelectionIndex()))
+        if (player.land(selection.getRegionCoords()))
         {
             playSoundEffect(ENGINE);
-            player.getMap().nextTurn();
+            player.getLocation().getMap().nextTurn();
             return new PlanetScreen(getDisplay());
         }
         
         return player.canLand() ? new CrashLandScreen(getDisplay()) : null;
+    }
+    
+    private void setUpWindow()
+    {
+        window.getContents().clear();
+        List<ColorString> colorStrings =
+                player.getSectorLocation().getPlanet().toColorStrings();
+        
+        Coord regionCoords = selection.getRegionCoords();
+        colorStrings.get(regionCoords.y).getColorCharAt(regionCoords.x)
+                .setBackground(COLOR_SELECTION_BACKGROUND);
+        window.getContents().addAll(colorStrings);
     }
 }

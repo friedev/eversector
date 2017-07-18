@@ -25,7 +25,7 @@ public class ClaimStationScreen extends ConfirmationScreen
     {
         super(display);
         window = new PopupWindow(display);
-        Station claiming = player.getSector().getStationAt(player.getOrbit());
+        Station claiming = player.getSectorLocation().getStation();
         window.getContents().add(new ColorString("Claim ").add(claiming)
                 .add(" for ")
                 .add(new ColorString(Integer.toString(claiming.getClaimCost()),

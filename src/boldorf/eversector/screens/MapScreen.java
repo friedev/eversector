@@ -105,7 +105,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         else
         {
-            if (isLooking() && key.getKeyCode() == KeyEvent.VK_L )
+            if (isLooking() && key.getKeyCode() == KeyEvent.VK_L)
             {
                 cursor = null;
                 return this;
@@ -125,13 +125,13 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                         break;
                     warping = true;
                 case KeyEvent.VK_L:
-                    cursor = player.getLocation();
+                    cursor = player.getLocation().getCoords();
                     break;
                 case KeyEvent.VK_S:
                     if (player.scan())
                     {
                         nextTurn = true;
-                        map.scan(player.getLocation());
+                        map.scan(player.getLocation().getCoords());
                         playSoundEffect(SCAN);
                     }
                     break;
@@ -183,12 +183,14 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 player.hasModule(Actions.SCAN) && Main.showStars, cursor));
         
         window.addSeparator(new Line(true, 2, 1));
-        Coord location = isLooking() ? cursor: player.getLocation();
+        Coord location = isLooking() ? cursor: player.getLocation().getCoords();
         if (!map.sectorAt(location).isDiscovered())
             contents.add(new ColorString("Undiscovered Sector"));
         else
             contents.add(new ColorString(map.sectorAt(location).toString()));
-        contents.add(new ColorString("Location: ").add(new ColorString(
-                location.x + "," + location.y, COLOR_FIELD)));
+        
+        contents.add(new ColorString("Location: ")
+                .add(new ColorString(Utility.coordToOrderedPair(location),
+                        COLOR_FIELD)));
     }
 }

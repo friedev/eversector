@@ -96,11 +96,13 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_UP:
-                    if (player.getSector().isValidOrbit(cursor - 1))
+                    if (player.getLocation().getSector().isValidOrbit(
+                            cursor - 1))
                         cursor--;
                     break;
                 case KeyEvent.VK_DOWN:
-                    if (player.getSector().isValidOrbit(cursor + 1))
+                    if (player.getLocation().getSector().isValidOrbit(
+                            cursor + 1))
                         cursor++;
                     break;
                 case KeyEvent.VK_L: case KeyEvent.VK_ENTER:
@@ -131,8 +133,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                Station station =
-                        player.getSector().getStationAt(player.getOrbit());
+                Station station = player.getSectorLocation().getStation();
                 if (station != null && player.isHostile(station.getFaction()) &&
                         player.canClaimStation(station, false))
                 {
@@ -155,22 +156,26 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 
                 // Fix this creating a message when unable to mine an asteroid belt
                 if (player.canLand())
+                {
+                    // Make crash landings choose a random region
                     popup = new LandScreen(getDisplay());
+                }
                 break;
             case KeyEvent.VK_A:
             {
                 if (!player.hasWeapons())
                     break;
                 
-                Sector sector = player.getSector();
-                if (sector.getShipsAt(player.getOrbit()).size() <= 1)
+                Sector sector = player.getLocation().getSector();
+                int orbit = player.getSectorLocation().getOrbit();
+                if (sector.getShipsAt(orbit).size() <= 1)
                     break;
                 
                 if (sector.isCenter())
                 {
                     popup = new CenterAttackScreen(getDisplay());
                 }
-                else if (sector.getShipsAt(player.getOrbit()).size() == 2)
+                else if (sector.getShipsAt(orbit).size() == 2)
                 {
                     popup = new BattleScreen(getDisplay(),
                             sector.getFirstOtherShip(player), true);
@@ -182,7 +187,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 break;
             }
             case KeyEvent.VK_L:
-                cursor = player.getOrbit();
+                cursor = player.getSectorLocation().getOrbit();
                 break;
         }
         
@@ -234,14 +239,14 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();
-        Sector sector = Main.player.getSector();
+        Sector sector = Main.player.getLocation().getSector();
         contents.clear();
         window.getSeparators().clear();
         
         contents.add(new ColorString(sector.toString()));
         contents.add(new ColorString("Location: ")
-                .add(new ColorString(sector.getLocation().x + ","
-                        + sector.getLocation().y, COLOR_FIELD)));
+                .add(new ColorString(sector.getLocation().getCoords().x + ","
+                        + sector.getLocation().getCoords().y, COLOR_FIELD)));
         contents.add(new ColorString("Star: ").add(sector.getStar()));
         contents.add(new ColorString("Ruler: ")
                 .add(sector.isClaimed() ? sector.getFaction().toColorString() :
@@ -258,6 +263,6 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
         
         window.addSeparator(new Line(false, 1, 2, 1));
         contents.addAll(sector.getOrbitContents(isLooking() ? cursor :
-                player.getOrbit()));
+                player.getSectorLocation().getOrbit()));
     }
 }
