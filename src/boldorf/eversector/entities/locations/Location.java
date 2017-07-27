@@ -3,6 +3,7 @@ package boldorf.eversector.entities.locations;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.util.Utility;
+import java.util.Objects;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 
@@ -122,5 +123,13 @@ public class Location
             return new StationLocation(sectorLocation);
         
         return sectorLocation;
+    }
+    
+    public boolean equals(Location o)
+    {
+        if (o instanceof SectorLocation)
+            return false;
+        
+        return map == o.map && coords.equals(o.coords);
     }
 }

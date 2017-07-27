@@ -7,7 +7,6 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.util.Nameable;
 import boldorf.eversector.entities.Ship;
-import static boldorf.eversector.map.faction.Focus.*;
 import boldorf.eversector.map.Map;
 import static boldorf.eversector.map.faction.RelationshipType.*;
 import static boldorf.eversector.storage.Options.NEWS;
@@ -27,7 +26,6 @@ public class Faction extends Nameable implements ColorStringObject
     };
     
     public static final int ECONOMY_CREDITS = 10000;
-    public static final Focus DEFAULT_FOCUS = EXPAND;
     public static final int NEWS_LENGTH = 10;
     
     private Color  color;
@@ -36,7 +34,6 @@ public class Faction extends Nameable implements ColorStringObject
     private Relationship[] relationships;
     private Ship   leader;
     private int    economy;
-    private Focus  focus;
     private int    lastElection;
     
     /**
@@ -55,7 +52,6 @@ public class Faction extends Nameable implements ColorStringObject
         relationships = new Relationship[map.getFactions().length -1];
         leader        = null;
         economy       = 0;
-        focus         = DEFAULT_FOCUS;
         lastElection  = -Map.SIMULATED_TURNS;
     }
     
@@ -82,7 +78,6 @@ public class Faction extends Nameable implements ColorStringObject
     public Map     getMap()             {return map;           }
     public Ship    getLeader()          {return leader;        }
     public int     getEconomyCredits()  {return economy;       }
-    public Focus   getFocus()           {return focus;         }
     public boolean isLeader(Ship ship)  {return leader == ship;}
     public int     getLastElection()    {return lastElection;  }
     
@@ -321,123 +316,6 @@ public class Faction extends Nameable implements ColorStringObject
             return relationship.getType() == PEACE ||
                    relationship.getType() == ALLIANCE ? ALLIANCE : PEACE;
         }
-    }
-    
-    /**
-     * Returns a comma-separated list of every focus keyword, for informing the
-     * player of their command choices.
-     * @return a comma-separated list of every focus keyword
-     */
-    public static String getFocusKeywords()
-    {
-        StringBuilder builder = new StringBuilder();
-        for (Focus f: Focus.values())
-            builder.append(f.getName()).append(", ");
-        builder.delete(builder.length() - 2, builder.length());
-        return builder.toString();
-    }
-    
-    public void cycleFocus()
-    {
-        switch (focus)
-        {
-            case INVADE:
-                focus = DEFEND;
-                return;
-            case DEFEND:
-                focus = EXPAND;
-                return;
-            case EXPAND:
-                focus = INVADE;
-                return;
-        }
-    }
-    
-    public boolean setFocus(String newFocus)
-    {
-        if (newFocus == null)
-            return false;
-        
-        for (Focus f: Focus.values())
-        {
-            if (newFocus.equalsIgnoreCase(f.getName()))
-            {
-                focus = f;
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /** Updates the focus of the faction depending on its circumstances. */
-    public void updateFocus()
-    {
-        if (relationships.length == 2)
-        {
-            // If stronger than the enemy
-            if (getRank() == 1)
-                focus = INVADE;
-            // If tied with the enemy
-            else if (relationships[0].getOtherFaction(this).getRank() == 2)
-                focus = EXPAND;
-            // If weaker than the enemy
-            else
-                focus = DEFEND;
-            return;
-        }
-        
-        // The amount of wars the faction is in, higher ratings mean more wars
-        // Alliances subtract from this count
-        int warRating = 0;
-        for (Relationship relationship: relationships)
-        {
-            switch (relationship.getType())
-            {
-                case WAR:
-                    warRating++;
-                    break;
-                case ALLIANCE:
-                    warRating--;
-                    break;
-            }
-        }
-        
-        // True if this faction is in the top half of factions by control
-        boolean topFaction = getRank() <= map.getFactions().length / 2;
-        
-        // If partaking in many wars
-        if (warRating > 0)
-        {
-            if (topFaction)
-            {
-                // Attack factions at war if strong
-                focus = INVADE;
-                return;
-            }
-            
-            // Defend from stronger factions
-            focus = DEFEND;
-            return;
-        }
-        
-        // If allied with many factions
-        if (warRating < 0)
-        {
-            if (topFaction)
-            {
-                // Secure current sectors while at peace
-                focus = DEFEND;
-                return;
-            }
-            
-            // Expand to new sectors to raise ranking
-            focus = EXPAND;
-            return;
-        }
-        
-        // If at peace (or a balance of alliances and war), expand the faction
-        focus = EXPAND;
     }
     
     public void addNews(String news)

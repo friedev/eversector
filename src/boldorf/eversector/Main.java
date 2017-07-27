@@ -10,6 +10,7 @@ import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
+import boldorf.eversector.entities.Battle;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.entities.Station;
 import boldorf.eversector.map.Map;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import squidpony.squidmath.RNG;
 
 /** The main class for EverSector, which primarily manages player input. */
@@ -103,14 +105,14 @@ public class Main
     /** The game music that will loop in the background. */
     public static Clip soundtrack;
     
+    /** A list of ships that intend to attack the player. */
+    public static Battle pendingBattle;
+    
     /** True if there is an election to take place in the player's faction. */
     public static Election pendingElection;
     
     /** A list of proposed relationship changes from other factions. */
     public static Queue<RelationshipChange> pendingRelationships;
-    
-    /** A list of ships that intend to attack the player. */
-    public static Queue<Ship> attackers;
     
     /**
      * If true, will show star symbols on the map instead of type symbols and
@@ -169,6 +171,15 @@ public class Main
         soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
         if (!optionIs(OPTION_TRUE, Options.MUSIC))
             soundtrack.stop();
+        
+        /*
+        // Volume control prototype
+        FloatControl gainControl = (FloatControl)
+                soundtrack.getControl(FloatControl.Type.MASTER_GAIN);
+        float range = gainControl.getMaximum() - gainControl.getMinimum();
+        float gain = (range * 1.0f) + gainControl.getMinimum();
+        gainControl.setValue(gain);
+        */
     }
     
     public static List<ColorString> startGame() throws Exception
@@ -176,7 +187,7 @@ public class Main
         disqualified = false;
         pendingElection = null;
         pendingRelationships = new LinkedList<>();
-        attackers = new LinkedList<>();
+        pendingBattle = null;
         showStars = false;
         kills = 0;
 

@@ -37,7 +37,9 @@ public class AttackScreen extends MenuScreen<PopupMenu>
     @Override
     public Screen onConfirm()
     {
-        return new BattleScreen(getDisplay(), player.getLocation().getSector()
-                .getShip(getMenu().getSelection().toString()), true);
+        Ship opponent = player.getLocation().getSector().getShip(
+                getMenu().getSelection().toString());
+        return new BattleScreen(getDisplay(), player.startBattle(opponent),
+                true);
     }
 }

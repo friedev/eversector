@@ -1,7 +1,10 @@
 package boldorf.eversector.entities.locations;
 
+import boldorf.eversector.entities.Battle;
 import boldorf.eversector.entities.Planet;
+import boldorf.eversector.entities.Ship;
 import boldorf.eversector.entities.Station;
+import java.util.List;
 import squidpony.squidmath.Coord;
 
 /**
@@ -42,6 +45,9 @@ public class SectorLocation extends Location
     public boolean isStation()
         {return getSector().isStationAt(orbit);}
     
+    public List<Ship> getShips()
+        {return getSector().getShipsAt(orbit);}
+    
     public SectorLocation setOrbit(int orbit)
     {
         return getSector().isValidOrbit(orbit) ?
@@ -65,4 +71,19 @@ public class SectorLocation extends Location
     
     public StationLocation dock()
         {return new StationLocation(this);}
+    
+    public BattleLocation joinBattle(Battle battle)
+        {return new BattleLocation(this, battle);}
+    
+    @Override
+    public boolean equals(Location o)
+    {
+        if (!(o instanceof SectorLocation) || o instanceof PlanetLocation ||
+                o instanceof StationLocation)
+            return false;
+        
+        SectorLocation cast = (SectorLocation) o;
+        return getMap() == cast.getMap() &&
+                getCoords().equals(cast.getCoords()) && orbit == cast.orbit;
+    }
 }

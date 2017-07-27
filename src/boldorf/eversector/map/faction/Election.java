@@ -112,7 +112,7 @@ public class Election
         {
             if (ship.isInFaction(faction) && !candidates.contains(ship))
             {
-                Ship vote = ship.vote(candidates);
+                Ship vote = ship.getAI().vote(candidates);
                 int index = candidates.indexOf(vote);
                 votes.set(index, votes.get(index) + 1);
             }
@@ -121,7 +121,7 @@ public class Election
     
     public Ship getWinner()
     {
-        int winnerIndex = 0;
+        int winnerIndex = 1;
         int highestVotes = 0;
         
         for (int i = 0; i < votes.size(); i++)

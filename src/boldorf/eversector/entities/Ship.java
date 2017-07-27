@@ -16,6 +16,7 @@ import boldorf.eversector.storage.Resources;
 import boldorf.util.Utility;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import boldorf.util.Nameable;
 import static boldorf.eversector.Main.addColorMessage;
@@ -24,13 +25,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import boldorf.eversector.map.faction.Faction;
-import boldorf.eversector.map.faction.Focus;
-import boldorf.eversector.map.faction.RelationshipType;
 import static boldorf.eversector.map.faction.RelationshipType.*;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 import static boldorf.eversector.Main.addMessage;
-import static boldorf.eversector.Main.attackers;
 import static boldorf.eversector.Main.playSoundEffect;
 import boldorf.eversector.entities.locations.*;
 import boldorf.eversector.storage.Paths;
@@ -50,14 +48,8 @@ public class Ship extends Nameable implements ColorStringObject,
     public static final String SHIELDED  = "shielded";
     public static final String CLOAKED   = "cloaked";
     
-    /** The minimum amount of credits required for an NPC to dock. */
-    public static final int MIN_DOCK_CREDITS = 15;
-    
-    /**
-     * The range of credits above the starting amount that can be gained as a 
-     * reward when exploring.
-     */
-    public static final int EXPLORE_REWARD_RANGE = 301;
+    /** The radius of the FOV without any scanners. */
+    public static final double FOV_RADIUS = 1.0;
     
     /** The amount of credits gained by sending a distress signal. */
     public static final int DISTRESS_CREDITS = 100;
@@ -86,16 +78,14 @@ public class Ship extends Nameable implements ColorStringObject,
     /** The number of characters used when printing status. */
     public static final int SPACING = 12;
     
-    /** This ship's location. */
+    /** The ship's AI. */
+    private AI ai;
+    /** The ship's location. */
     private Location location;
-    /** The sector the ship is attempting to travel to. */
-    private Sector destination;
-    
     /** Various booleans represented by Strings, their existence means true. */
     private List<String> flags;
     /** The faction that the ship belongs to, null if unaligned. */
     private Faction faction;
-    
     /** The amount of credits possessed by the ship. */
     private int credits;
     /** How the ship is perceived by factions based on their deeds. */
@@ -118,8 +108,8 @@ public class Ship extends Nameable implements ColorStringObject,
     public Ship(String name, Location location, Faction faction)
     {
         super(name);
+        ai            = new AI(this);
         this.location = location;
-        destination   = null;
         flags         = new ArrayList<>();
         this.faction  = faction;
         credits       = CREDITS;
@@ -141,6 +131,7 @@ public class Ship extends Nameable implements ColorStringObject,
         super("Player");
         
         // Basic hard-coded definitions
+        ai        = null;
         flags     = new ArrayList<>();
         modules   = new LinkedList<>();
         cargo     = new LinkedList<>();
@@ -196,11 +187,11 @@ public class Ship extends Nameable implements ColorStringObject,
     
     /**
      * Creates an unaligned ship from a name and Location.
-     * @param n the name of the ship
-     * @param l the Location of the ship
+     * @param name the name of the ship
+     * @param location the Location of the ship
      */
-    public Ship(String n, Location l)
-        {this(n, l, null);}
+    public Ship(String name, Location location)
+        {this(name, location, null);}
     
     @Override
     public String toString()
@@ -216,6 +207,7 @@ public class Ship extends Nameable implements ColorStringObject,
                 new ColorString(toString());
     }
     
+    public AI           getAI()        {return ai;       }
     public Faction      getFaction()   {return faction;  }
     public int          getCredits()   {return credits;  }
     public Resource[]   getResources() {return resources;}
@@ -223,8 +215,17 @@ public class Ship extends Nameable implements ColorStringObject,
     public List<Module> getCargo()     {return cargo;    }
     
     public boolean isInSector() {return location instanceof SectorLocation; }
-    public boolean isDocked()   {return location instanceof StationLocation;}
     public boolean isLanded()   {return location instanceof PlanetLocation; }
+    public boolean isDocked()   {return location instanceof StationLocation;}
+    public boolean isInBattle() {return location instanceof BattleLocation; }
+    
+    public boolean isOrbital() 
+    {
+        return location instanceof SectorLocation &&
+                !(location instanceof PlanetLocation ||
+                location instanceof StationLocation ||
+                location instanceof BattleLocation);
+    }
     
     public boolean isDestroyed() {return hasFlag(DESTROYED);}
     public boolean isShielded()  {return hasFlag(SHIELDED); }
@@ -241,6 +242,9 @@ public class Ship extends Nameable implements ColorStringObject,
     
     public StationLocation getStationLocation()
         {return (StationLocation) location;}
+    
+    public BattleLocation getBattleLocation()
+        {return (BattleLocation) location;}
     
     /**
      * Returns true if there is a flag in the flags list with the given name.
@@ -260,11 +264,11 @@ public class Ship extends Nameable implements ColorStringObject,
     
     /**
      * Returns true if the faction the ship belongs to is the one specified.
-     * @param f the faction to compare
+     * @param faction the faction to compare
      * @return true if the specified faction and actual faction are the same
      */
-    public boolean isInFaction(Faction f)
-        {return faction == f;}
+    public boolean isInFaction(Faction faction)
+        {return this.faction == faction;}
     
     /**
      * Returns true if this ship belongs to a faction.
@@ -299,11 +303,43 @@ public class Ship extends Nameable implements ColorStringObject,
         {return isAligned() ? faction.isLeader(this) : false;}
     
     /**
-     * Sets the ship's faction without modifying reputation.
-     * @param f the faction to assign to this ship
+     * Returns true if the specified ship is considered non-hostile (including
+     * if this ship is a pirate).
+     * @param ship the ship to check
+     * @return true if: the ship is not a pirate and this ship is a pirate or
+     * an ally (this is so reputation is lowered for piracy)
      */
-    public void setFaction(Faction f)
-        {faction = f;}
+    public boolean isPassive(Ship ship)
+    {
+        return ship.isAligned() && (!isAligned() ||
+               isInFaction(ship.faction) ||
+               !ship.getFaction().isRelationship(WAR, faction));
+    }
+    
+    /**
+     * Returns true if the specified faction is hostile to this ship.
+     * @param otherFaction the faction to check
+     * @return true if: the faction is not this ship's faction and is at war
+     */
+    public boolean isHostile(Faction otherFaction)
+    {
+        return !isInFaction(otherFaction) && (!isAligned() ||
+                faction.isRelationship(WAR, otherFaction));
+    }
+    
+    /**
+     * Sets the ship's AI to the given AI.
+     * @param ai the AI to assign to this ship
+     */
+    public void setAI(AI ai)
+        {this.ai = ai;}
+    
+    /**
+     * Sets the ship's faction without modifying reputation.
+     * @param faction the faction to assign to this ship
+     */
+    public void setFaction(Faction faction)
+        {this.faction = faction;}
     
     /**
      * Sets the ship's location to the specified location.
@@ -357,34 +393,27 @@ public class Ship extends Nameable implements ColorStringObject,
         }
         
         location = destination;
-        
-        /*
-        if (isInSector())
-        {
-            addPlayerError("The ship cannot move between sectors while "
-                    + "orbiting.");
-            return false;
-        }
-        
-        if (!map.contains(p))
-        {
-            addPlayerError("The destination entered is not on the map.");
-            return false;
-        }
-        
-        if (location.equals(p))
-        {
-            addPlayerError("The ship is already in the designated sector.");
-            return false;
-        }
-        
-        location = p;
-        sector = map.sectorAt(location);
-        
-        if (isPlayer())
-            reveal();
-        */
     }
+    
+    /*
+    public List<Coord> getFOV(double radius)
+    {
+        double[][] light = new FOV().calculateFOV(
+                getLocation().getMap().getLightMap(),
+                getLocation().getCoords().x, getLocation().getCoords().y,
+                radius);
+        
+        List<Coord> fov = new ArrayList<>();
+        for (int y = 0; y < light.length; y++)
+            for (int x = 0; x < light[y].length; x++)
+                fov.add(Coord.get(x, y));
+        
+        return fov;
+    }
+    
+    public List<Coord> getFOV()
+        {return getFOV(FOV_RADIUS);}
+    */
     
     /**
      * Generates a list of the ship's properties and returns them.
@@ -1449,11 +1478,7 @@ public class Ship extends Nameable implements ColorStringObject,
         return true;
     }
     
-    /**
-     * Escapes gravitation influence of the current sector, if possible.
-     * @return true if the escape was successful
-     */
-    public boolean escape()
+    public boolean canEscape()
     {
         if (isLanded())
         {
@@ -1467,8 +1492,30 @@ public class Ship extends Nameable implements ColorStringObject,
             return false;
         }
         
-        if (!validateResources(Actions.ESCAPE,
-                "escape the gravity of " + location.getSector()))
+        if (!isInSector())
+        {
+            addPlayerError("Ship must be in a sector to escape from one.");
+            return false;
+        }
+        
+        if (getSectorLocation().getOrbit() < location.getSector().getOrbits())
+        {
+            addPlayerError("Ship must be at the furthest orbit of "
+                    + location.getSector() + "to attempt an escape.");
+            return false;
+        }
+        
+        return validateResources(Actions.ESCAPE, "escape the gravity of "
+                + location.getSector());
+    }
+    
+    /**
+     * Escapes gravitation influence of the current sector, if possible.
+     * @return true if the escape was successful
+     */
+    public boolean escape()
+    {
+        if (!canEscape())
             return false;
 
         getResource(Actions.ESCAPE.getResource())
@@ -1973,6 +2020,37 @@ public class Ship extends Nameable implements ColorStringObject,
         return validateResources(weapon.getAction(), "fire");
     }
     
+    public Battle startBattle(Ship opponent)
+    {
+        if (!opponent.isOrbital() || getSectorLocation().getOrbit() !=
+                opponent.getSectorLocation().getOrbit())
+            return null;
+        
+        Battle battle = new Battle(this, opponent);
+        setLocation(getSectorLocation().joinBattle(battle));
+        opponent.setLocation(opponent.getSectorLocation().joinBattle(battle));
+        
+        List<Ship> others = getSectorLocation().getShips();
+        for (Ship other: others)
+            if (other.ai != null)
+                other.ai.joinBattle(battle);
+        
+        for (Ship ship: battle.getShips())
+        {
+            if (ship.isPlayer())
+            {
+                Main.pendingBattle = battle;
+                return battle;
+            }
+        }
+        
+        battle.processBattle();
+        setLocation(getBattleLocation().leaveBattle());
+        for (Ship ship: battle.getShips())
+            ship.setLocation(location);
+        return battle;
+    }
+    
     /**
      * Checks if the ship is equipped with a specified module and that it is
      * undamaged, and optionally prints a custom message if not.
@@ -2144,17 +2222,6 @@ public class Ship extends Nameable implements ColorStringObject,
     }
     
     /**
-     * Damages the ship by a random amount, to be used when exploring.
-     * @return the amount of damage dealt to the ship
-     */
-    public int dealRandomDamage()
-    {
-        int damage = rng.nextInt(Ship.HULL) + 1;
-        damage(damage, false);
-        return damage;
-    }
-    
-    /**
      * Gather as much loot as possible from the given ship.
      * @param ship the ship to loot
      */
@@ -2213,127 +2280,6 @@ public class Ship extends Nameable implements ColorStringObject,
                 }
             }
         }
-    }
-    
-    /**
-     * Performs the same function as warpTo(Coord), using two int coordinates
-     * instead.
-     * @param x the x coordinate to warp to, must be on the map
-     * @param y the x coordinate to warp to, must be on the map
-     * @return true if the warp was successful
-     */
-    public boolean warpTo(int x, int y)
-        {return warpTo(Coord.get(x, y));}
-    
-    /**
-     * Burns towards the given coordinates, return true if the sector was
-     * reached or any progress was made.
-     * @param x the x coordinate to move towards
-     * @param y the y coordinate to move towards
-     * @return true if any progress was made toward the coordinates
-     */
-    public boolean burnTowards(int x, int y)
-    {
-        Coord coords = location.getCoords();
-        if (x > coords.x)
-            return burn(Direction.LEFT);
-        if (x < coords.x)
-            return burn(Direction.RIGHT);
-        if (y > coords.y)
-            return burn(Direction.UP);
-        if (y < coords.y)
-            return burn(Direction.DOWN);
-        return true;
-    }
-    
-    /**
-     * Performs the same function as burnTowards, using a Coord instead of two
-     * ints.
-     * @param p the coordinates to move towards
-     * @return true if any progress was made toward the coordinates
-     */
-    public boolean burnTowards(Coord p)
-        {return burnTowards(p.x, p.y);}
-    
-    // Normal attacks will be dealt with in Game, this attack is for AI ships
-    
-    /**
-     * Starts an encounter with the specified ship (this version intended for 
-     * AI).
-     * @param ship the ship to attack
-     * @return true if the ship attacked, false if not
-     */
-    public boolean attack(Ship ship)
-    {
-        if (ship == null)
-        {
-            // No print will be done because ship is null
-            return false;
-        }
-        
-        if (!willAttack())
-        {
-            if (validateResources(Actions.FLEE, "flee"))
-            {
-                ship.addPlayerColorMessage(toColorString()
-                        .add(" attempts to flee."));
-                return false;
-            }
-            
-            return false;
-        }
-        
-        if (!isShielded() && toggleActivation(Actions.SHIELD))
-        {
-            ship.addPlayerColorMessage(toColorString()
-                    .add(" activates a shield."));
-            // No return since shielding is a free action
-        }
-        
-        if (canFire(Actions.PULSE, ship))
-        {
-            ship.addPlayerColorMessage(toColorString()
-                    .add(" fires a pulse beam."));
-            ship.playPlayerSound(Paths.PULSE);
-            fire(Actions.PULSE, ship);
-            return true;
-        }
-        
-        if (willUseFuel(Actions.TORPEDO.getCost()) &&
-                canFire(getWeapon(Actions.TORPEDO.getName()), ship))
-        {
-            ship.addPlayerColorMessage(toColorString()
-                    .add(" fires a torpedo."));
-            ship.playPlayerSound(Paths.TORPEDO);
-            fire(Actions.TORPEDO, ship);
-            return true;
-        }
-        
-        if (canFire(Actions.LASER, ship))
-        {
-            ship.addPlayerColorMessage(toColorString().add(" fires a laser."));
-            ship.playPlayerSound(Paths.LASER);
-            fire(Actions.LASER, ship);
-            return true;
-        }
-        
-        // Note that the code above under !willAttack() is borrowed from here
-        
-        if (validateResources(Actions.FLEE, "flee"))
-        {
-            if (!isCloaked() && toggleActivation(Actions.CLOAK))
-            {
-                ship.addPlayerColorMessage(toColorString()
-                        .add(" activates a cloaking device."));
-                // No return since cloaking is a free action
-            }
-            
-            ship.addPlayerColorMessage(toColorString()
-                    .add(" attempts to flee."));
-            return false;
-        }
-        
-        return false;
     }
     
     /**
@@ -2403,10 +2349,7 @@ public class Ship extends Nameable implements ColorStringObject,
      * @return true if the ship can be converted
      */
     public boolean canConvert(Ship ship)
-    {
-        return isAligned() && !ship.isInFaction(faction) && !(ship.willAttack()
-                && !ship.isPlayer());
-    }
+        {return isAligned() && !ship.isInFaction(faction) && !ship.isPlayer();}
     
     /**
      * Claims a celestial body for the ship's faction.
@@ -2691,44 +2634,35 @@ public class Ship extends Nameable implements ColorStringObject,
                 > Math.abs(Reputations.DISTRESS);
     }
     
-    public Ship vote(List<Ship> candidates)
+    /**
+     * Removes the ship from all collections and marks it as destroyed.
+     * @param print if true, will print a message about the ship's destruction
+     */
+    public void destroy(boolean print)
     {
-        int[] preferences = new int[candidates.size()];
+        location.getSector()
+                .removeLetter((int) getName().charAt(getName().length() - 1));
+        location.getSector().getShips().remove(this);
         
-        for (int i = 0; i < candidates.size(); i++)
+        if (isDocked())
+            getSectorLocation().getStation().getShips().remove(this);
+        else if (isLanded())
+            getPlanetLocation().getRegion().getShips().remove(this);
+        
+        addFlag(DESTROYED);
+        
+        if (isPlayer())
         {
-            Ship candidate = candidates.get(i);
-            preferences[i] = 0;
-            
-            if (getHigherLevel() != null &&
-                    getHigherLevel().equals(candidate.getHigherLevel()))
-                preferences[i] += 2;
-            
-            if (location.equals(candidate.location))
-                preferences[i] += 3;
-            else if (location.getCoords()
-                    .isAdjacent(candidate.location.getCoords()))
-                preferences[i]++;
-            
-            if (candidate.calculateShipValue() > calculateShipValue())
-                preferences[i]++;
+            playSoundEffect(Paths.DEATH);
+            // TODO replace with constant checks in GameScreen
+//            Main.display.setScreen(new EndScreen(Main.display,
+//                    new ColorString("You have been destroyed.",
+//                            Main.COLOR_ERROR), true));
         }
-        
-        int highestPreference = 0;
-        int index = 0;
-        
-        for (int i = 0; i < preferences.length; i++)
+        else if (print)
         {
-            // Using > instead of >= biases the ship's vote towards the
-            // candidate with the highest reputation
-            if (preferences[i] > highestPreference)
-            {
-                highestPreference = preferences[i];
-                index = i;
-            }
+            addColorMessage(toColorString().add(" has been destroyed."));
         }
-        
-        return candidates.get(index);
     }
     
     /**
@@ -2806,249 +2740,6 @@ public class Ship extends Nameable implements ColorStringObject,
         }
         
         return contents;
-    }
-    
-    /**
-     * Manages the actions of a battle between two AI-controlled ships.
-     * @param ship the ship that this ship is battling
-     */
-    private void controlAIBattle(Ship ship)
-    {
-        do
-        {
-            // If this ship chooses to flee but is pursued
-            if (!attack(ship))
-            {
-                if (changeResourceBy(Actions.FLEE) &&
-                        (!ship.willPursue(this) ||
-                         !ship.changeResourceBy(Actions.PURSUE)))
-                {
-                    // If the other ship is powerful enough, they will convert
-                    // this ship
-                    if (ship.willConvert() && ship.convert(this))
-                        return;
-                    
-                    // If the conversion fails, the fight continues
-                }
-                else
-                {
-                    break;
-                }
-            }
-            
-            // If the other ship flees but is pursued
-            if (!ship.attack(this))
-            {
-                if (ship.changeResourceBy(Actions.PURSUE) &&
-                        (!willPursue(ship) || !changeResourceBy(Actions.FLEE)))
-                {
-                    if (willConvert() && convert(ship))
-                        return;
-                }
-            }
-        } while (!isDestroyed() && !ship.isDestroyed());
-        
-        // If this ship is destroyed or cannot flee while the other ship lives
-        if (isDestroyed() || (!validateResources(Actions.FLEE, "flee") &&
-                !ship.isDestroyed()))
-        {
-            if (isLeader() && ship.isInFaction(faction))
-            {
-                faction.setLeader(ship);
-                faction.addNews(ship + " has defeated our leader, " + toString()
-                        + ", and has wrested control of the faction.");
-            }
-            else
-            {
-                if (ship.isPassive(this))
-                    ship.changeReputation(ship.faction, Reputations.KILL_ALLY);
-                else
-                    ship.changeReputation(ship.faction, Reputations.KILL_ENEMY);
-                
-                ship.changeReputation(faction, Reputations.KILL_ALLY);
-                
-                if (isLeader())
-                {
-                    faction.addNews(ship + " of the " + ship.faction
-                            + " has destroyed our leader, " + toString() + ".");
-                }
-                
-                ship.loot(this);
-
-                if (!isDestroyed())
-                    destroy(false);
-            }
-        }
-        else
-        {
-            if (ship.isLeader() && isInFaction(faction))
-            {
-                ship.faction.setLeader(this);
-                ship.faction.addNews(toString() + " has defeated our leader, "
-                        + ship + ", and has wrested control of the faction.");
-            }
-            else
-            {
-                if (isPassive(ship))
-                    changeReputation(faction, Reputations.KILL_ALLY);
-                else
-                    changeReputation(faction, Reputations.KILL_ENEMY);
-                
-                changeReputation(ship.faction, Reputations.KILL_ALLY);
-                
-                if (ship.isLeader())
-                {
-                    ship.faction.addNews(toString() + " of the " + faction
-                            + " has destroyed our leader, " + ship.toString()
-                            + ".");
-                }
-                
-                loot(ship);
-
-                if (!ship.isDestroyed())
-                    ship.destroy(false);
-            }
-        }
-    }
-    
-    /**
-     * Returns true if the specified ship is considered non-hostile (including
-     * if this ship is a pirate).
-     * @param ship the ship to check
-     * @return true if: the ship is not a pirate and this ship is a pirate or
-     * an ally (this is so reputation is lowered for piracy)
-     */
-    public boolean isPassive(Ship ship)
-    {
-        return ship.isAligned() && (!isAligned() ||
-               isInFaction(ship.faction) ||
-               !ship.getFaction().isRelationship(WAR, faction));
-    }
-    
-    /**
-     * Returns true if the specified faction is hostile to this ship.
-     * @param otherFaction the faction to check
-     * @return true if: the faction is not this ship's faction and is at war
-     */
-    public boolean isHostile(Faction otherFaction)
-    {
-        return !isInFaction(otherFaction) && (!isAligned() ||
-                faction.isRelationship(WAR, otherFaction));
-    }
-    
-    /**
-     * Returns true if the NPC is willing to pursue a ship.
-     * @param ship the ship that is fleeing
-     * @return true if the attacking ship will pursue the fleeing ship
-     */
-    public boolean willPursue(Ship ship)
-    {
-        return ship.getAmountOf(Resources.HULL) <= getAmountOf(Resources.HULL)
-                && hasWeapons() && willUseFuel(Actions.PURSUE.getCost());
-    }
-    
-    /**
-     * Returns true if the NPC is willing to enter a fight.
-     * @return true if this ship will engage in any fights, based on its hull
-     * strength and weaponry
-     */
-    public boolean willAttack()
-    {
-        return hasWeapons() &&
-                getAmountOf(Resources.HULL) >= getCapOf(Resources.HULL) / 2;
-    }
-    
-    /**
-     * Returns true if the NPC is willing to convert another ship.
-     * @return true if the NPC is willing to convert another ship
-     */
-    public boolean willConvert()
-        {return getHighestLevel() >= Levels.BASE_LEVEL;}
-    
-    /**
-     * Returns true if this ship is willing to claim a planet.
-     * @return true if the NPC is willing to claim a planet
-     */
-    public boolean willClaim()
-        {return getTotalLevel() >= Levels.BASE_LEVEL * Levels.LEVEL_AMT * 4;}
-    
-    /**
-     * Returns true if the ship is willing the use the specified amount of fuel,
-     * making their decision based off of their distance from a station.
-     * @param fuel the amount of fuel to check that the ship will use
-     * @return true if the ship's amount of fuel minus the specified amount of
-     * fuel is greater than or equal to the approximate cost of reaching a
-     * station
-     */
-    public boolean willUseFuel(int fuel)
-    {
-        return getAmountOf(Resources.FUEL) - fuel >= calculateStationDistance();
-    }
-    
-    public boolean willExplore(Sector target)
-    {
-        return target == null ? false : getAmountOf(Resources.FUEL) >=
-               calculateSectorDistance(target) && willClaim();
-    }
-    
-    /**
-     * Removes the ship from all collections and marks it as destroyed.
-     * @param print if true, will print a message about the ship's destruction
-     */
-    public void destroy(boolean print)
-    {
-        location.getSector()
-                .removeLetter((int) getName().charAt(getName().length() - 1));
-        location.getSector().getShips().remove(this);
-        
-        if (isDocked())
-            getSectorLocation().getStation().getShips().remove(this);
-        else if (isLanded())
-            getPlanetLocation().getRegion().getShips().remove(this);
-        
-        addFlag(DESTROYED);
-        
-        if (isPlayer())
-        {
-            playSoundEffect(Paths.DEATH);
-            // TODO replace with constant checks in GameScreen
-//            Main.display.setScreen(new EndScreen(Main.display,
-//                    new ColorString("You have been destroyed.",
-//                            Main.COLOR_ERROR), true));
-        }
-        else if (print)
-        {
-            addColorMessage(toColorString().add(" has been destroyed."));
-        }
-    }
-    
-    /** Sets the ship's resources to the constant defaults. */
-    private void setResourceDefaults()
-    {
-        Resource current = getResource(Resources.FUEL);
-        current.setBaseCapacity(FUEL);
-        current.setAmount(FUEL);
-        
-        current = getResource(Resources.ENERGY);
-        current.setBaseCapacity(ENERGY);
-        current.setAmount(ENERGY);
-        
-        current = getResource(Resources.ORE);
-        current.setBaseCapacity(ORE);
-        current.setAmount(0);
-        
-        current = getResource(Resources.HULL);
-        current.setBaseCapacity(HULL);
-        current.setAmount(HULL);
-    }
-    
-    /** Creates a Reputation object for each faction in the game. */
-    private void createReputations()
-    {
-        reputations = new Reputation[location.getMap().getFactions().length];
-        
-        for (int i = 0; i < reputations.length; i++)
-            reputations[i] = new Reputation(location.getMap().getFactions()[i]);
     }
     
     /**
@@ -3243,463 +2934,33 @@ public class Ship extends Nameable implements ColorStringObject,
         }
     }
     
-    /** Does a logical action based on the situation (intended for NPCs). */
-    public void performAction()
+    /** Sets the ship's resources to the constant defaults. */
+    private void setResourceDefaults()
     {
-        // Removes shielding/cloaking if not necessary
-        if (isShielded())
-            toggleActivation(Actions.SHIELD);
+        Resource current = getResource(Resources.FUEL);
+        current.setBaseCapacity(FUEL);
+        current.setAmount(FUEL);
         
-        if (isCloaked())
-            toggleActivation(Actions.CLOAK);
+        current = getResource(Resources.ENERGY);
+        current.setBaseCapacity(ENERGY);
+        current.setAmount(ENERGY);
         
-        if (isDocked())
-        {
-            buyItems();
-            undock();
-            return;
-        }
+        current = getResource(Resources.ORE);
+        current.setBaseCapacity(ORE);
+        current.setAmount(0);
         
-        // Travel to a new sector if willing
-        if (willClaim())
-        {
-            if (destination == null || location.getCoords().equals(
-                    destination.getLocation().getCoords()))
-            {
-                Sector possibility = location.getMap().sectorAt(
-                        location.getMap().adjacentTypeTo(Sector.STATION_SYSTEM,
-                                location.getCoords()));
-                
-                if (!isAligned())
-                {
-                    destination = possibility;
-                }
-                else if (possibility != null)
-                {
-                    String focus = faction.getFocus().getName();
-                    RelationshipType relationship;
-                    if (possibility.getFaction() == null)
-                    {
-                        relationship = null;
-                    }
-                    else
-                    {
-                        relationship = possibility.getFaction().getRelationship(
-                                        faction);
-                    }
-
-                    if (Focus.INVADE.getName().equals(focus) &&
-                            (relationship == null || WAR.equals(relationship)))
-                    {
-                        // If attacking and the sector is at war or disputed
-                        destination = possibility;
-                    }
-                    else if (Focus.EXPAND.getName().equals(focus) &&
-                            (relationship == null ||
-                            PEACE.equals(relationship) ||
-                            ALLIANCE.equals(relationship)))
-                    {
-                        // If claiming and the sector is unclaimed or peaceful
-                        destination = possibility;
-                    }
-                    else if (Focus.DEFEND.getName().equals(focus))
-                    {
-                        // Stay in the current sector
-                        destination = null;
-                    }
-                }
-            }
-            
-            if (destination != null && willExplore(destination) &&
-                    seekSector(destination))
-                return;
-        }
-        
-        // Must be done after destination updates to make sure powerful ships
-        // update their destinations
-        if (isDocked() && willClaim() && claim())
-            return;
-        
-        // Claim the planet if powerful enough
-        // The isLanded() check is to confirm that the planet is claimable
-        if (isLanded() && willClaim() && claim())
-            return;
-        
-        // If the ship is in a position to mine
-        if (canMine() && (isLanded() || getResource(Resources.HULL).getAmount()
-                    > Planet.ASTEROID_DAMAGE))
-        {
-            if (mine())
-                return;
-            
-            // This method will ensure that other emergency options are used
-            seekStation();
-            return;
-        }
-        
-        // If ship is running low on fuel while distant from a station, return
-        // to the nearest station
-        if (getAmountOf(Resources.FUEL) <= calculateStationDistance()
-                + Actions.ORBIT.getCost())
-        {
-            seekStation();
-            return;
-        }
-        
-        Sector sector = location.getSector();
-        
-        // Attack a ship if not in the center
-        if (!sector.isCenter())
-        {
-            // Find a ship at the same orbit
-            Ship otherShip = sector.getFirstHostileShip(this);
-            if (otherShip != null && willAttack() && !otherShip.isCloaked())
-            {
-                if (otherShip.isPlayer())
-                {
-                    attackers.add(this);
-                    addColorMessage(
-                            new ColorString("You are under attack from ")
-                                    .add(toColorString()).add("!"));
-                }
-                else
-                {
-                    controlAIBattle(otherShip);
-                }
-                return;
-            }
-        }
-        
-        if (getResource(Resources.ORE).isFull())
-        {
-            seekStation();
-            return;
-        }
-        
-        if (!getResource(Resources.ENERGY).isEmpty() && isInSector())
-        {
-            Planet planet = getSectorLocation().getPlanet();
-            if (planet != null && planet.getType().canLandOn())
-            {
-                Coord target = planet.getRandomOreCoord();
-                if ((target == null && land(planet.getRandomCoord())) ||
-                        (target != null && land(target)))
-                    return;
-            }
-            
-            int orbit = getSectorLocation().getOrbit();
-            int closestPlanet = sector.closestMineablePlanetTo(orbit);
-            if (closestPlanet > 0 && orbit(orbit < closestPlanet))
-                return;
-        }
-        
-        seekStation();
+        current = getResource(Resources.HULL);
+        current.setBaseCapacity(HULL);
+        current.setAmount(HULL);
     }
     
-    /** Buys an item from a list in order of importance. */
-    private void buyItems()
+    /** Creates a Reputation object for each faction in the game. */
+    private void createReputations()
     {
-        boolean selling = true;
-        while (selling && !cargo.isEmpty())
-        {
-            selling = false;
-            for (Module module: cargo)
-            {
-                // Must never update selling without checking sellModule()
-                // If a station will not accept a module, this loops forever
-                if (module != null && sellModule(module.getName()))
-                {
-                    selling = true;
-                    break;
-                }
-            }
-        }
+        reputations = new Reputation[location.getMap().getFactions().length];
         
-        buyResource(Resources.ORE,   -getMaxSellAmount(Resources.ORE));
-        buyResource(Resources.FUEL,   getMaxBuyAmount(Resources.FUEL));
-        buyResource(Resources.HULL,   getMaxBuyAmount(Resources.HULL));
-        buyResource(Resources.ENERGY, getMaxBuyAmount(Resources.ENERGY));
-        
-        // Stop purchase before buying any modules if a purchase would render
-        // the ship unable to claim territory, and they are willing to do so
-        // The base price must be used in the case that the station doesn't sell
-        // the module
-        if (willClaim() && credits -
-                Station.getBaseWeapon("Pulse Beam").getPrice()
-                < CelestialBody.CLAIM_COST)
-            return;
-        
-        if (!hasModule(Actions.PULSE))
-            buyModule(Actions.PULSE);
-        
-        if (!hasModule(Actions.TORPEDO))
-            buyModule(Actions.TORPEDO);
-        
-        if (!hasModule(Actions.LASER))
-            buyModule(Actions.LASER);
-        
-        if (!hasModule(Actions.SHIELD))
-            buyModule(Actions.SHIELD);
-        
-        if (!hasModule(Actions.REFINE))
-            buyModule(Actions.REFINE);
-        
-        buyExpanders();
-    }
-    
-    /** Purchases the expander with the highest priority (intended for NPCs). */
-    private void buyExpanders()
-    {
-        int tanks  = getResource(Resources.FUEL  ).getNExpanders();
-        int bays   = getResource(Resources.ORE   ).getNExpanders();
-        int cells  = getResource(Resources.ENERGY).getNExpanders();
-        int plates = getResource(Resources.HULL  ).getNExpanders();
-        
-        // If there are the least fuel tanks, buy more
-        int maxTanks = getMaxBuyAmount(getExpander(Resources.FUEL_EXPANDER));
-        if (maxTanks > 0 && tanks < bays && tanks < cells && tanks < plates)
-            buyResource(Resources.FUEL_EXPANDER, maxTanks);
-        
-        // If there are fewer cargo bays than cells and plates, buy more
-        int maxBays = getMaxBuyAmount(getExpander(Resources.ORE_EXPANDER));
-        if (maxBays > 0 && bays < cells && bays < plates)
-            buyResource(Resources.ORE_EXPANDER, maxBays);
-        
-        // If there are the fewer energy cells than hull plates, buy more
-        int maxCells = getMaxBuyAmount(getExpander(Resources.ENERGY_EXPANDER));
-        if (maxCells > 0 && cells < plates)
-            buyResource(Resources.ENERGY_EXPANDER, maxCells);
-        
-        // Buy hull frames by default
-        buyResource(Resources.HULL_EXPANDER,
-                getMaxBuyAmount(getExpander(Resources.HULL_EXPANDER)));
-    }
-    
-    /**
-     * Will perform the next action in getting to a station, and will distress
-     * or destroy the ship if not possible.
-     */
-    private void seekStation()
-    {
-        Sector sector = location.getSector();
-        
-        if (isInSector() && getSectorLocation().isStation() && !isDocked() &&
-                !isLanded())
-        {
-            Station station = getSectorLocation().getStation();
-            
-            if (isHostile(station.getFaction()) && isAligned())
-            {
-                if (!dock() && credits < station.getClaimCost())
-                {
-                    if (!isInFaction(station.getFaction()) && isAligned())
-                    {
-                        leaveFaction();
-                        
-                        if (getReputation(station.getFaction()).get()
-                                >= Reputations.REQ_REJECTION)
-                            joinFaction(station.getFaction());
-                        else
-                            distressOrDestroy();
-                        return;
-                    }
-                }
-                return;
-            }
-            
-            if (credits + getResource(Resources.ORE).getTotalPrice()
-                    >= MIN_DOCK_CREDITS)
-                dock();
-            else
-                distressOrDestroy();
-            return;
-        }
-        
-        if (isLanded() && takeoff())
-            return;
-        
-        if (Sector.STATION_SYSTEM.equals(sector.getType()))
-        {
-            if (!isInSector())
-            {
-                if (enter())
-                {
-                    return;
-                }
-                else
-                {
-                    distressOrDestroy();
-                    return;
-                }
-            }
-            
-            int orbit = getSectorLocation().getOrbit();
-            if (isInSector() && orbit(orbit < sector.closestStationTo(orbit,
-                    faction)))
-                return;
-            
-            if (enter())
-                return;
-        }
-        
-        if (isInSector() && escape())
-            return;
-        
-        Coord adjacentStation = location.getMap().adjacentTypeTo(
-                Sector.STATION_SYSTEM, location.getCoords());
-        if (adjacentStation != null && burnTowards(adjacentStation))
-            return;
-        
-        if (doRandomBurn())
-            return;
-        
-        if (refine())
-            return;
-        
-        // On its own, this distressOrDestroy seems to harm unendangered ships
-        if (getAmountOf(Resources.FUEL) < Actions.ORBIT.getCost())
-            distressOrDestroy();
-    }
-    
-    /**
-     * Returns false if the ship is in the sector, otherwise will try to fly
-     * there.
-     * @param target the sector the ship will try to reach
-     * @return true if seeking the sector, false if impossible
-     */
-    public boolean seekSector(Sector target)
-    {
-        if (target == null ||
-                !location.getMap().contains(target.getLocation().getCoords()))
-            return false;
-        
-        if (location.getSector() == target)
-        {
-            if (!isInSector())
-                enter();
-            
-            return false;
-        }
-        
-        if (!isInSector())
-            return burnTowards(target.getLocation().getCoords());
-        
-        if (isLanded())
-            return takeoff();
-        else if (isDocked())
-            return undock();
-        else
-            return escape();
-    }
-    
-    public boolean seekSector(Coord target)
-        {return seekSector(location.getMap().sectorAt(target));}
-    
-    /**
-     * Distress if respected enough, otherwise destroy the ship (intended for
-     * NPCs).
-     */
-    private void distressOrDestroy()
-    {
-        if (canDistress())
-            distress();
-        else
-            destroy(false);
-    }
-    
-    /**
-     * Returns the amount of fuel required to get to the specified sector.
-     * @return the amount of fuel required to get to the sector, -1 if null or
-     * too far away
-     */
-    private int calculateSectorDistance(Sector target)
-    {
-        if (target == null)
-            return -1;
-        
-        if (target == location.getSector())
-            return (Actions.ORBIT.getCost() * 2);
-        
-        if (location.getCoords().isAdjacent(target.getLocation().getCoords()))
-        {
-            if (isLanded())
-                return Actions.TAKEOFF.getCost() + Actions.BURN.getCost()
-                        + (Actions.ORBIT.getCost() * 2);
-            
-            return Actions.BURN.getCost() + (Actions.ORBIT.getCost() * 2);
-        }
-        
-        return -1;
-    }
-    
-    /**
-     * Returns the amount of fuel required to get to the nearest station.
-     * @return the amount of fuel required to get to a station, -1 if further
-     * than one sector away from one
-     */
-    private int calculateStationDistance()
-    {
-        if (isInSector() && getSectorLocation().getStation() != null)
-            return 0;
-        
-        Sector sector = location.getSector();
-        
-        if (isInSector() && Sector.STATION_SYSTEM.equals(sector.getType()))
-        {
-            int cost = 0;
-            int orbit = getSectorLocation().getOrbit();
-            if (isLanded())
-                cost += Actions.TAKEOFF.getCost();
-            
-            cost += Math.abs(sector.closestStationTo(orbit) - orbit)
-                    * Actions.ORBIT.getCost();
-            return cost;
-        }
-        
-        if (location.getMap().adjacentTypeTo(Sector.STATION_SYSTEM,
-                location.getCoords()) != null)
-        {
-            int cost = 0;
-            if (isLanded())
-            {
-                cost += Actions.TAKEOFF.getCost();
-            }
-            if (isInSector())
-            {
-                cost += Actions.ESCAPE.getCost() + (Actions.ORBIT.getCost() *
-                        (sector.getOrbits() - getSectorLocation().getOrbit()));
-            }
-            
-            cost += Actions.BURN.getCost() + Actions.ORBIT.getCost();
-            return cost;
-        }
-        
-        return -1;
-    }
-    
-    /**
-     * Burns in a random direction (intended for NPCs).
-     * @return true if the burn was successful
-     */
-    private boolean doRandomBurn()
-    {
-        switch (rng.nextInt(4))
-        {
-            case 0:
-                if (burn(Direction.LEFT))
-                    return true;
-            case 1:
-                if (burn(Direction.RIGHT))
-                    return true;
-            case 2:
-                if (burn(Direction.UP))
-                    return true;
-            case 3:
-                if (burn(Direction.DOWN))
-                    return true;
-        }
-        
-        return false;
+        for (int i = 0; i < reputations.length; i++)
+            reputations[i] = new Reputation(location.getMap().getFactions()[i]);
     }
 
     @Override

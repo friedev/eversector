@@ -7,6 +7,7 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.player;
+import boldorf.eversector.map.Sector;
 
 /**
  * 
@@ -36,12 +37,12 @@ public class CenterAttackScreen extends ConfirmationScreen
     @Override
     public Screen onConfirm()
     {
-        if (player.getLocation().getSector()
-                .getShipsAt(player.getSectorLocation().getOrbit()).size() == 2)
+        Sector sector = player.getLocation().getSector();
+        if (sector.getShipsAt(player.getSectorLocation().getOrbit()).size()
+                == 2)
         {
             return new BattleScreen(getDisplay(),
-                    player.getLocation().getSector().getFirstOtherShip(player),
-                    true);
+                    player.startBattle(sector.getFirstOtherShip(player)), true);
         }
         
         return new AttackScreen(getDisplay());

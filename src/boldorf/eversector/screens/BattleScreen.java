@@ -4,17 +4,21 @@ import boldorf.apwt.screens.KeyScreen;
 import boldorf.apwt.screens.Keybinding;
 import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.screens.MenuScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
+import boldorf.apwt.windows.AlignedMenu;
 import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
+import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
+import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.addColorMessage;
 import static boldorf.eversector.Main.addError;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.entities.Battle;
 import boldorf.eversector.items.Action;
 import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
@@ -30,20 +34,20 @@ import squidpony.squidmath.Coord;
 /**
  * 
  */
-public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
-        PopupMaster, KeyScreen
+public class BattleScreen extends MenuScreen<AlignedMenu>
+        implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
-    private AlignedWindow window;
     private Screen popup;
-    private Ship opponent;
+    private Battle battle;
     private boolean deniedConversion;
     private boolean scanning;
     
-    public BattleScreen(Display display, Ship opponent, boolean nextTurn)
+    public BattleScreen(Display display, Battle battle, boolean nextTurn)
     {
-        super(display);
-        window = new AlignedWindow(display, Coord.get(0, 0), new Border(1));
-        this.opponent = opponent;
+        super(new AlignedMenu(new AlignedWindow(display, Coord.get(0, 0),
+                new Border(1)), COLOR_SELECTION_FOREGROUND,
+                COLOR_SELECTION_BACKGROUND));
+        this.battle = battle;
         deniedConversion = false;
         scanning = false;
         
@@ -56,7 +60,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
     public void displayOutput()
     {
         setUpWindow();
-        window.display();
+        super.displayOutput();
         
         if (popup != null)
             popup.displayOutput();
@@ -313,7 +317,7 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
     
     @Override
     public AlignedWindow getWindow()
-        {return window;}
+        {return menu;}
     
     @Override
     public Screen getPopup()
@@ -325,24 +329,24 @@ public class BattleScreen extends Screen implements WindowScreen<AlignedWindow>,
     
     private void setUpWindow()
     {
-        List<ColorString> contents = window.getContents();
+        List<ColorString> contents = menu.getContents();
         
         contents.clear();
-        window.getSeparators().clear();
+        menu.getSeparators().clear();
         
         contents.add(new ColorString("Opponent: ").add(opponent));
         
         if (!scanning)
             return;
         
-        window.addSeparator(new Line(true, 1, 1));
+        menu.addSeparator(new Line(true, 1, 1));
         List<ColorString> statusList = opponent.getStatusList();
         for (ColorString line: statusList)
         {
             if (line == null)
-                window.addSeparator(new Line(true, 1, 1));
+                menu.addSeparator(new Line(true, 1, 1));
             else
-                window.getContents().add(line);
+                menu.getContents().add(line);
         }
     }
 }

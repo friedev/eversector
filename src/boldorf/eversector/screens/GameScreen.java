@@ -157,11 +157,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         switch (key.getKeyCode())
         {
             // To be implemented upon expansion of the ore system
-            /*
-            case KeyEvent.VK_G:
-                popup = new OreScreen(getDisplay());
-                break;
-            */
+//            case KeyEvent.VK_G:
+//                popup = new OreScreen(getDisplay());
+//                break;
             case KeyEvent.VK_I:
                 if (player.refine())
                 {
@@ -193,10 +191,6 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             case KeyEvent.VK_N:
                 if (player.isLeader() && map.getFactions().length > 2)
                     popup = new RelationshipRequestScreen(getDisplay());
-                break;
-            case KeyEvent.VK_F:
-                if (player.isLeader())
-                    player.getFaction().cycleFocus();
                 break;
             case KeyEvent.VK_M:
                 if (player.hasActivationModules())
@@ -274,12 +268,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding(player.isAligned() ?
                 "join/leave faction" : "join faction", "j"));
         keybindings.add(new Keybinding("broadcast distress signal", "d"));
-        if (player.isLeader())
-        {
-            if (map.getFactions().length > 2)
-                keybindings.add(new Keybinding("negotiate relationship", "n"));
-            keybindings.add(new Keybinding("cycle focus", "f"));
-        }
+        if (player.isLeader() && map.getFactions().length > 2)
+            keybindings.add(new Keybinding("negotiate relationship", "n"));
         if (player.hasActivationModules())
             keybindings.add(new Keybinding("toggle module activation", "m"));
         if (player.hasModule(Actions.REFINE))
@@ -426,10 +416,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             return;
         
         factionWindow.addSeparator(new Line(true, 1, 1));
-        ColorString leaderSet = new ColorString("Leader: ");
+        ColorString leaderString = new ColorString("Leader: ");
         if (player.isLeader())
         {
-            leaderSet.add(new ColorString("You", COLOR_FIELD));
+            leaderString.add(new ColorString("You", COLOR_FIELD));
         }
         else
         {
@@ -437,14 +427,12 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             ReputationRange reputation =
                     leader.getReputation(playerFaction).getRange();
             
-            leaderSet.add(new ColorString(leader.toString(),
+            leaderString.add(new ColorString(leader.toString(),
                     COLOR_FIELD)).add(new ColorString(" ("
                             + reputation.getAdjective() + ")",
                             reputation.getColor()));
         }
-        contents.add(leaderSet);
-        contents.add(new ColorString("Focus: ").add(new ColorString(
-                playerFaction.getFocus().getDescription(), COLOR_FIELD)));
+        contents.add(leaderString);
         
         if (player.isLeader())
         {

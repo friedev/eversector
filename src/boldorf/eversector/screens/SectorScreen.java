@@ -13,7 +13,7 @@ import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
-import static boldorf.eversector.Main.attackers;
+import static boldorf.eversector.Main.pendingBattle;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
@@ -82,9 +82,9 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         // This is necessary both here and below to avoid interruptions
-        if (!attackers.isEmpty())
+        if (pendingBattle != null)
         {
-            popup = new BattleScreen(getDisplay(), attackers.poll(), false);
+            popup = new BattleScreen(getDisplay(), pendingBattle, false);
             return this;
         }
         
@@ -177,8 +177,8 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 }
                 else if (sector.getShipsAt(orbit).size() == 2)
                 {
-                    popup = new BattleScreen(getDisplay(),
-                            sector.getFirstOtherShip(player), true);
+                    popup = new BattleScreen(getDisplay(), player.startBattle(
+                            sector.getFirstOtherShip(player)), true);
                 }
                 else
                 {
@@ -194,9 +194,9 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
         if (nextTurn)
             map.nextTurn();
         
-        if (!attackers.isEmpty())
+        if (pendingBattle != null)
         {
-            popup = new BattleScreen(getDisplay(), attackers.poll(), false);
+            popup = new BattleScreen(getDisplay(), pendingBattle, false);
             return this;
         }
         

@@ -18,6 +18,7 @@ import static boldorf.eversector.Main.SYMBOL_EMPTY;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.entities.locations.Location;
 import boldorf.eversector.entities.locations.SectorLocation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,10 +98,10 @@ public class Sector extends Nameable
     
     /**
      * Creates a sector from a location, randomly generating the type.
-     * @param l the sector's location
+     * @param location the sector's location
      */
-    public Sector(Location l)
-        {this(l, null);}
+    public Sector(Location location)
+        {this(location, null);}
     
     public void init()
     {
@@ -336,50 +337,23 @@ public class Sector extends Nameable
         return nShips;
     }
     
-    /**
-     * Returns an integer representing the result of getNShips(Faction) for use
-     * as a one-character symbol.
-     * @param faction the faction to read the number of ships from
-     * @return a char showing the number of ships, if the sector is discovered
-     */
-    public ColorChar getNShipsSymbol(Faction faction)
+    public List<Planet> getPlanets()
     {
-        if (location.getMap().getPlayer().getLocation().getSector() == this)
-            return SYMBOL_PLAYER;
-        
-        if (!isDiscovered)
-            return SYMBOL_UNDISCOVERED;
-        
-        char symbol;
-        int nShips = getNShips(faction);
-        
-        if (nShips >= 10)
-            symbol = SYMBOL_MANY_SHIPS.getChar();
-        else if (nShips == 0)
-            symbol = getSymbol().getChar();
-        else
-            symbol = (char) (nShips + 48);
-        // 48 is where numerals appear in ASCII
-        
-        return new ColorChar(symbol, isClaimed() ?
-                getFaction().getColor() : null);
+        List<Planet> planetList = new ArrayList<>();
+        for (Planet planet: planets)
+            if (planet != null)
+                planetList.add(planet);
+        return planetList;
     }
     
-    /**
-     * Returns true if there is a planet at the specified orbit.
-     * @param orbit the orbit to check for planets
-     * @return true if a search for a planet in the orbit does not return null
-     */
-    public boolean isPlanetAt(int orbit)
-        {return getPlanetAt(orbit) != null;}
-    
-    /**
-     * Returns true if there is a station at the specified orbit.
-     * @param orbit the orbit to check for stations
-     * @return true if a search for a station in the orbit does not return null
-     */
-    public boolean isStationAt(int orbit)
-        {return getStationAt(orbit) != null;}
+    public List<Station> getStations()
+    {
+        List<Station> stationList = new ArrayList<>();
+        for (Station station: stations)
+            if (station != null)
+                stationList.add(station);
+        return stationList;
+    }
     
     /**
      * Returns the planet at the specified orbit.
@@ -400,109 +374,31 @@ public class Sector extends Nameable
         {return isValidOrbit(orbit) ? stations[orbit - 1] : null;}
     
     /**
-     * Finds the closest planet to the specified orbit.
-     * @param orbit the orbit to check from, should be a valid orbit (between 1
-     * and 10)
-     * @return the orbit of the closest planet, 0 if no planets were found
+     * Returns true if there is a planet at the specified orbit.
+     * @param orbit the orbit to check for planets
+     * @return true if a search for a planet in the orbit does not return null
      */
-    public int closestPlanetTo(int orbit)
-    {
-        for (int i = 1; i < planets.length; i++)
-        {
-            if (isPlanetAt(orbit - i))
-                return orbit - i;
-            if (isPlanetAt(orbit + i))
-                return orbit + i;
-        }
-        
-        return 0;
-    }
+    public boolean isPlanetAt(int orbit)
+        {return getPlanetAt(orbit) != null;}
     
     /**
-     * Finds the closest rocky planet to the specified orbit.
-     * @param orbit the orbit to check from, should be a valid orbit (between 1
-     * and 10)
-     * @return the orbit of the closest rocky planet, 0 if no rocky planets were
-     * found 
+     * Returns true if there is a station at the specified orbit.
+     * @param orbit the orbit to check for stations
+     * @return true if a search for a station in the orbit does not return null
      */
-    public int closestMineablePlanetTo(int orbit)
-    {
-        for (int i = 1; i < planets.length; i++)
-        {
-            if (isPlanetAt(orbit - i) && getPlanetAt(orbit - i).getType()
-                    .canMine())
-            {
-                return orbit - i;
-            }
-            if (isPlanetAt(orbit + i) && getPlanetAt(orbit + i).getType()
-                    .canMine())
-            {
-                return orbit + i;
-            }
-        }
-        
-        return 0;
-    }
-    
-    /**
-     * Finds the closest station to the specified orbit.
-     * @param orbit the orbit to check from, should be a valid orbit (between 1
-     * and 10)
-     * @return the orbit of the closest station, 0 if no stations were found 
-     */
-    public int closestStationTo(int orbit)
-    {
-        for (int i = 1; i < planets.length; i++)
-        {
-            if (isStationAt(orbit - i))
-                return orbit - i;
-            if (isStationAt(orbit + i))
-                return orbit + i;
-        }
-        
-        return 0;
-    }
-    
-    /**
-     * Finds the closest station to the specified orbit that is owned by the
-     * specified faction.
-     * @param orbit the orbit to check from, should be a valid orbit (between 1
-     * and 10)
-     * @param owner the faction that the station must be controlled by
-     * @return the orbit of the closest station owned by the specified faction,
-     * the orbit of a station not controlled by the faction if not possible, or
-     * 0 if no stations were found 
-     */
-    public int closestStationTo(int orbit, Faction owner)
-    {
-        for (int i = 1; i < planets.length; i++)
-        {
-            if (isStationAt(orbit - i) &&
-                    getStationAt(orbit - i).getFaction() == owner)
-            {
-                return orbit - i;
-            }
-            
-            if (isStationAt(orbit + i) &&
-                    getStationAt(orbit + i).getFaction() == owner)
-            {
-                return orbit + i;
-            }
-        }
-        
-        return closestStationTo(orbit);
-    }
+    public boolean isStationAt(int orbit)
+        {return getStationAt(orbit) != null;}
     
     /**
      * Changes the sector's type to t and regenerates its planets and stations.
-     * @param t the type value - to apply the change, it must be from 0 to 2
+     * @param newType the type value - to apply the change, it must be from 0 to 2
      */
-    public void changeType(String t)
+    public void setType(String newType)
     {
-        if (isValidType(t) && !type.equals(t))
+        if (isValidType(newType) && !type.equals(newType))
         {
             String oldType = type;
-            type = t;
+            type = newType;
             star = EMPTY.equals(type) ? null : Star.generate();
             generatePlanets();
             generateStations();

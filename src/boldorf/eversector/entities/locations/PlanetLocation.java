@@ -56,4 +56,17 @@ public class PlanetLocation extends SectorLocation
                 new PlanetLocation(this,
                         regionCoords.setX(getPlanet().getNColumns() - 1));
     }
+    
+    @Override
+    public boolean equals(Location o)
+    {
+        if (!(o instanceof PlanetLocation))
+            return false;
+        
+        PlanetLocation cast = (PlanetLocation) o;
+        return getMap() == cast.getMap() &&
+                getCoords().equals(cast.getCoords()) &&
+                getOrbit() == cast.getOrbit() &&
+                regionCoords.equals(cast.regionCoords);
+    }
 }

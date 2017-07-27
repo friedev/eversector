@@ -118,10 +118,7 @@ public class Map
         // Factions must be created first so they can be assigned to ships
         createFactions();
         init();
-        map[offset][offset].changeType(Sector.STATION_SYSTEM);
-        
-        for (Faction faction: factions)
-            faction.updateFocus();
+        sectorAt(0, 0).setType(Sector.STATION_SYSTEM);
     }
     
     public Sector[][] toArray()      {return map;                         }
@@ -170,13 +167,13 @@ public class Map
     /** Creates the player, the starting sector, and the player's faction. */
     public void createNewPlayer()
     {
-        sectorAt(0, 0).changeType(Sector.STATION_SYSTEM);
         SectorLocation location = new Location(this, Coord.get(0, 0))
                 .enterSector();
         location =
                 location.setOrbit(location.getSector().getRandomStationOrbit());
         Faction faction = location.getStation().getFaction();
         player = new Ship("Player", location, faction);
+        player.setAI(null);
     }
     
     /** Plays through the next turn on the map. */
@@ -185,7 +182,7 @@ public class Map
         player.updateContinuousEffects();
         
         for (Ship ship: ships)
-            ship.performAction();
+            ship.getAI().act();
         
         for (Iterator<Ship> it = ships.iterator(); it.hasNext();)
             if (it.next().isDestroyed())
@@ -242,12 +239,6 @@ public class Map
                     break;
             }
             while (!getRandomRelationship().updateRelationship());
-            
-            // Update each faction's focus after relationships, except for the
-            // player's faction while they're a leader
-            for (Faction faction: factions)
-                if (player != faction.getLeader())
-                    faction.updateFocus();
         }
         
         // Update faction leaders periodically, or immediately if destroyed
@@ -280,43 +271,6 @@ public class Map
                 faction.holdElection();
             }
         }
-    }
-    
-    /**
-     * Returns the Coord with a sector of a given type adjacent to the specified
-     * location.
-     * @param type the type of sector to look for
-     * @param location the Coord to look adjacent to for sectors
-     * @return an adjacent Coord that contains a sector with the given type,
-     * null if none
-     */
-    public Coord adjacentTypeTo(String type, Coord location)
-    {
-        if (type == null || location == null)
-            return null;
-        
-        int x = location.x;
-        int y = location.y;
-        
-        ArrayList<Coord> adjacentTypes = new ArrayList<>();
-        
-        if (contains(x - 1, y) && type.equals(sectorAt(x - 1, y).getType()))
-            adjacentTypes.add(Coord.get(x - 1, y));
-        
-        if (contains(x + 1, y) && type.equals(sectorAt(x + 1, y).getType()))
-            adjacentTypes.add(Coord.get(x + 1, y));
-        
-        if (contains(x, y - 1) && type.equals(sectorAt(x, y - 1).getType()))
-            adjacentTypes.add(Coord.get(x, y - 1));
-        
-        if (contains(x, y + 1) && type.equals(sectorAt(x, y + 1).getType()))
-            adjacentTypes.add(Coord.get(x, y + 1));
-        
-        if (adjacentTypes.isEmpty())
-            return null;
-        
-        return adjacentTypes.get(rng.nextInt(
-                adjacentTypes.size()));
     }
     
     /**
@@ -599,275 +553,6 @@ public class Map
                 .append(" Mining, ").append(battle).append(" Battle)")
                 .toString();
     }
-    
-        /*
-        LinkedList<Ship> candidates = new LinkedList<>();
-        int minRep = 0;
-        
-        for (Ship ship: ships)
-        {
-            if (ship.isInFaction(faction) && (ship.getReputation(faction).get()
-                    > minRep) || candidates.size() < CANDIDATES)
-            {
-                candidates.add(ship);
-                
-                if (candidates.size() > CANDIDATES)
-                {
-                    candidates.sort(Comparator.naturalOrder());
-                    candidates.removeFirst();
-                }
-                
-                int lowestRep = ship.getReputation(faction).get();
-                
-                for (Ship candidate: candidates)
-                    if (candidate.getReputation(faction).get() < lowestRep)
-                        lowestRep = candidate.getReputation(faction).get();
-                
-                minRep = lowestRep;
-            }
-        }
-        
-        if (player == null || !player.isInFaction(faction) || turns < 0 ||
-                (Main.optionIs(OPTION_FALSE, Options.VOTING)
-                && player.getReputation(faction).get() < minRep))
-        {
-            // This gives higher-reputation candidates a slight bias among
-            // voters
-            candidates.sort(Comparator.reverseOrder());
-            Ship winner = getWinner(candidates, getVotes(candidates, faction));
-            
-            // Decrease the winners reputation if they've won again
-            if (winner != null && faction.isLeader(winner))
-                winner.changeReputation(faction, Reputations.NO_ELECTION);
-            
-            return winner;
-        }
-        
-        // Give the player a reputation bonus if enough time has passed
-//        if (turns >= LEADER_CHECK_FREQ * PLAYER_REP_TIME)
-//            playerRep *= PLAYER_REP_MODIFIER;
-        
-        // Alternate code for checking if an election is natural
-        // turns - faction.getLastElection() < ELECTION_FREQ
-
-        boolean playerVoting;
-        boolean leaderDestroyed = faction.getLeader() != null &&
-                faction.getLeader().isDestroyed();
-        
-        if (player.getReputation(faction).get() >= minRep)
-        {
-            if (leaderDestroyed)
-            {
-                playerVoting = !Prompt.printNotificationQuery("The former "
-                        + "leader of the " + faction + ", "
-                        + faction.getLeader() + ", has been destroyed and a "
-                        + "new leader must be chosen.", "Run for office?");
-            }
-            else
-            {
-                playerVoting = !Prompt.printNotificationQuery("It is almost "
-                        + "time to elect a leader for the " + faction + ".",
-                        "Run for office?");
-            }
-            
-            if (!playerVoting)
-            {
-                candidates.sort(Comparator.naturalOrder());
-                candidates.removeFirst();
-                candidates.add(player);
-            }
-        }
-        else
-        {
-            playerVoting = true;
-        }
-            
-        candidates.sort(Comparator.reverseOrder());
-        Console.println();
-        
-        Ship winner = null;
-        List<Integer> votes = null;
-        
-        if (playerVoting)
-        {
-            Console.println(faction + " Leader Candidates:");
-            
-            for (int i = 0; i < candidates.size(); i++)
-            {
-                Ship candidate = candidates.get(i);
-                StringBuilder builder = new StringBuilder();
-                builder.append(i + 1).append(". ").append(candidate)
-                        .append(" (")
-                        .append(candidate.getReputation(faction).getRange()
-                                .getAdjective());
-                
-                if (faction.getLeader() == candidate)
-                     builder.append(", Former Leader");
-                
-                builder.append(")");
-                
-                Console.println(1, builder.toString());
-            }
-            
-            if (leaderDestroyed)
-            {
-                Console.println("The former leader of the " + faction
-                        + " has been destroyed and an emergency election is "
-                        + "being held.");
-            }
-            else
-            {
-                Console.println("It is time to elect a new leader for the "
-                        + faction + ".");
-            }
-            
-            Console.println("Cast your vote by choosing a number, or enter "
-                    + "\"cancel\" to abstain.");
-            
-            Integer voteIndex;
-            do
-            {
-                voteIndex = Prompt.getIntInput("Vote");
-                
-                if (voteIndex == null)
-                    break;
-                
-                if (!(voteIndex >= 1 && voteIndex <= candidates.size()))
-                {
-                    Console.println("Enter one of the numbers on the left or "
-                            + "enter \"cancel\" to abstain.");
-                }
-            } while (!(voteIndex >= 1 && voteIndex <= candidates.size()));
-            
-            if (voteIndex == null)
-                votes = getVotes(candidates, faction);
-            else
-                votes = getVotes(candidates, faction, voteIndex - 1);
-            
-            Console.println();
-        }
-        
-        if (playerVoting || candidates.contains(player))
-        {
-            if (votes == null)
-                votes = getVotes(candidates, faction);
-            
-            winner = getWinner(candidates, votes);
-            
-            Console.println(faction + " Election Results:");
-            for (int i = 0; i < candidates.size(); i++)
-            {
-                Ship candidate = candidates.get(i);
-                StringBuilder builder = new StringBuilder();
-                builder.append(i + 1).append(". ");
-                
-                if (player == candidate)
-                    builder.append("You");
-                else
-                    builder.append(candidate);
-                
-                builder.append(" (")
-                        .append(candidate.getReputation(faction).getRange()
-                                .getAdjective())
-                        .append(") - ").append(votes.get(i)).append(" ")
-                        .append(Nameable.makePlural("Vote", votes.get(i)));
-                
-                Console.println(1, builder.toString());
-            }
-            
-            if (leaderDestroyed)
-            {
-                Console.println("The emergency election has been held and the "
-                        + "standings are listed above.");
-            }
-            else
-            {
-                Console.println("The leader election has been held and the "
-                        + "standings are listed above.");
-            }
-
-            if (player == winner)
-            {
-                if (faction.getLeader() == player)
-                    Console.println("You have been reelected!");
-                else
-                    Console.println("You have won the election!");
-            }
-            else if (candidates.contains(player))
-            {
-                if (faction.getLeader() == player)
-                    Console.println(winner + " has succeeded you as the leader "
-                            + "of the " + faction + ".");
-                else
-                    Console.println(
-                            "You have lost the election to " + winner + ".");
-            }
-            else
-            {
-                if (faction.getLeader() == winner)
-                    Console.println(winner + " has been reelected.");
-                else
-                    Console.println(winner + " has won the election.");
-            }
-
-            Prompt.enterTo("continue");
-        }
-        else if (winner == null)
-        {
-            winner = getWinner(candidates, getVotes(candidates, faction));
-        }
-        
-        if (faction.isLeader(winner))
-            winner.changeReputation(faction, Reputations.NO_ELECTION);
-        
-        return winner;
-    }
-    
-    public LinkedList<Integer> getVotes(List<Ship> candidates, Faction faction)
-        {return getVotes(candidates, faction, -1);}
-    
-    public LinkedList<Integer> getVotes(List<Ship> candidates, Faction faction,
-            int playerVote)
-    {
-        LinkedList<Integer> votes = new LinkedList<>();
-        
-        // Fill the vote list with 0s as a starting Coord
-        for (Ship candidate: candidates)
-            votes.add(0);
-        
-        for (Ship ship: ships)
-        {
-            if (ship.isInFaction(faction) && !candidates.contains(ship))
-            {
-                Ship vote = ship.vote(candidates);
-                int index = candidates.indexOf(vote);
-                votes.set(index, votes.get(index) + 1);
-            }
-        }
-        
-        if (playerVote >= 0 && playerVote < votes.size())
-            votes.set(playerVote, votes.get(playerVote) + 1);
-        
-        return votes;
-    }
-    
-    public Ship getWinner(List<Ship> candidates, List<Integer> votes)
-    {
-        int winnerIndex = 0;
-        int highestVotes = 0;
-        
-        for (int i = 0; i < votes.size(); i++)
-        {
-            if (votes.get(i) > highestVotes)
-            {
-                winnerIndex = i;
-                highestVotes = votes.get(i);
-            }
-        }
-        
-        return candidates.get(winnerIndex);
-    }
-        */
     
     public Faction[] getFactions()
         {return factions;}
