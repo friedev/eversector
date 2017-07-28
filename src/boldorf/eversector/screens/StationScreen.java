@@ -344,11 +344,21 @@ class StationScreen extends MenuScreen<AlignedMenu>
                     return;
                 }
                 
-                if (i instanceof Resource && ((Resource) i).isEmpty())
+                if (i instanceof Resource)
                 {
-                    item = DISABLED;
-                    credits = DISABLED;
-                    return;
+                    if (((Resource) i).isEmpty())
+                    {
+                        item = DISABLED;
+                        credits = DISABLED;
+                        return;
+                    }
+                    
+                    if (!((Resource) i).isSellable())
+                    {
+                        item = INVALID;
+                        credits = DISABLED;
+                        return;
+                    }
                 }
 
                 item = ITEM;
