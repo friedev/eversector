@@ -12,6 +12,7 @@ import static boldorf.eversector.Main.options;
 import static boldorf.eversector.Main.soundtrack;
 import boldorf.eversector.storage.Options;
 import java.util.List;
+import javax.sound.sampled.Clip;
 
 /**
  * 
@@ -37,11 +38,15 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
         if (Options.MUSIC.equals(key))
         {
             if (Options.toBoolean(options.getProperty(Options.MUSIC)))
+            {
                 soundtrack.start();
+                soundtrack.loop(Clip.LOOP_CONTINUOUSLY);
+            }
             else
+            {
                 soundtrack.stop();
+            }
         }
-            
         
         return this;
     }
