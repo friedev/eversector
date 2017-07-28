@@ -118,12 +118,13 @@ class StationScreen extends MenuScreen<AlignedMenu>
             }
             case KeyEvent.VK_LEFT: case KeyEvent.VK_RIGHT: case KeyEvent.VK_TAB:
             {
-//                int offset = getMenu().getSelectionIndex() -
-//                        (buying ? buyStart : sellStart);
+                int offset = getMenu().getSelectionIndex() -
+                        (buying ? buyStart : sellStart);
                 buying = !buying;
                 resetSelection();
-//                getMenu().setSelectionIndex(getMenu().getSelectionIndex() +
-//                        offset);
+                getMenu().setSelectionIndex(Math.min(
+                        getMenu().getSelectionIndex() + offset,
+                        buying ? sellStart - 2 : sellEnd));
                 break;
             }
             case KeyEvent.VK_R:
