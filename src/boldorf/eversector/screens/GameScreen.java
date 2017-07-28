@@ -366,7 +366,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         
         statusWindow.addSeparator(new Line(true, 1, 1));
         contents.add(new ColorString("Turn ")
-                .add(new ColorString(Integer.toString(Main.map.getTurns()),
+                .add(new ColorString(Integer.toString(Main.map.getTurn()),
                         COLOR_FIELD)));
     }
     

@@ -149,16 +149,16 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
                     .add(" sectors."));
         }
         
-        if (map.getTurns() == 0)
+        if (map.getTurn() == 0)
         {
             contents.add(new ColorString("Thanks for playing!"));
         }
         else
         {
             contents.add(new ColorString("Thanks for playing ")
-                    .add(new ColorString(Integer.toString(map.getTurns()),
+                    .add(new ColorString(Integer.toString(map.getTurn()),
                             COLOR_FIELD))
-                    .add(" " + Nameable.makePlural("turn", map.getTurns())
+                    .add(" " + Nameable.makePlural("turn", map.getTurn())
                             + "!"));
         }
         
@@ -177,7 +177,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             contents.add(new ColorString("Your score has been disqualified due "
                     + "to debug command usage.", COLOR_SCORE));
         }
-        else if (map.getTurns() <= MIN_TURNS)
+        else if (map.getTurn() <= MIN_TURNS)
         {
             window.getContents().addAll(buildLeaderboard());
             contents.add(new ColorString("This game has been too short to log "
@@ -207,7 +207,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             }
             
             LeaderboardScore playerScore = new LeaderboardScore(
-                    player.calculateShipValue(), map.getTurns(), kills,
+                    player.calculateShipValue(), map.getTurn(), kills,
                     map.getNDiscoveredSectors(), reputationAdjective,
                     player.isLeader());
 

@@ -83,7 +83,7 @@ public class Faction extends Nameable implements ColorStringObject
     
     public void setLeader(Ship leader)
     {
-        lastElection = map.getTurns();
+        lastElection = map.getTurn();
         
         /*
         if (this.leader == leader)
@@ -104,7 +104,7 @@ public class Faction extends Nameable implements ColorStringObject
     public void holdElection(boolean emergency)
     {
         Election election = new Election(this, emergency);
-        if (map.getPlayer().isInFaction(this) && map.getTurns() >= 0)
+        if (map.getPlayer().isInFaction(this) && map.getTurn() >= 0)
         {
             pendingElection = election;
             return;

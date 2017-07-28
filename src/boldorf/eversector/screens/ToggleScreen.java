@@ -43,10 +43,12 @@ public class ToggleScreen extends MenuScreen
         boolean hadFlag = player.hasFlag(player.getModule(module).getEffect());
         player.toggleActivation(getMenu().getSelection().toString());
         boolean hasFlag = player.hasFlag(player.getModule(module).getEffect());
+        
         if (hasFlag && !hadFlag)
             playSoundEffect(ON);
         else if (!hasFlag && hadFlag)
             playSoundEffect(OFF);
+        
         return null;
     }
 }

@@ -1,6 +1,7 @@
 package boldorf.eversector.entities;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,19 +11,22 @@ public class Battle
 {
     private List<Ship> attackers;
     private List<Ship> defenders;
+    private List<Ship> destroyed;
     
     public Battle(List<Ship> attackers, List<Ship> defenders)
     {
         this.attackers = attackers;
         this.defenders = defenders;
+        this.destroyed = new LinkedList<>();
     }
     
     public Battle(Ship attacker, Ship defender)
     {
-        attackers = new ArrayList<>();
+        attackers = new LinkedList<>();
         attackers.add(attacker);
-        defenders = new ArrayList<>();
+        defenders = new LinkedList<>();
         defenders.add(defender);
+        destroyed = new LinkedList<>();
     }
     
     public List<Ship> getAttackers()
@@ -30,6 +34,9 @@ public class Battle
     
     public List<Ship> getDefenders()
         {return defenders;}
+    
+    public List<Ship> getDestroyed()
+        {return destroyed;}
     
     public List<Ship> getShips()
     {
@@ -40,41 +47,86 @@ public class Battle
     }
     
     public List<Ship> getAllies(Ship ship)
-        {return attackers.contains(ship) ? attackers : defenders;}
+    {
+        List<Ship> allies = new LinkedList<>();
+        allies.addAll(attackers.contains(ship) ? attackers : defenders);
+        allies.remove(ship);
+        return allies;
+    }
     
     public List<Ship> getEnemies(Ship ship)
         {return attackers.contains(ship) ? defenders : attackers;}
     
+    public boolean continues()
+        {return !attackers.isEmpty() && !defenders.isEmpty();}
+    
+    /**
+     * Processes a turn of the battle.
+     * @return true if the battle will continue after this turn
+     */
     public boolean processTurn()
     {
-        if (attackers.isEmpty() || defenders.isEmpty())
+        if (!continues())
             return false;
         
+        boolean attackMade = false;
         int size = Math.max(attackers.size(), defenders.size());
         for (int i = 0; i < size; i++)
         {
             if (attackers.size() >= i + 1 && attackers.get(i).getAI() != null)
-                attackers.get(i).getAI().performBattleAction();
+            {
+                attackMade = attackMade ||
+                        attackers.get(i).getAI().performBattleAction();
+            }
+            
             if (defenders.size() >= i + 1 && defenders.get(i).getAI() != null)
-                defenders.get(i).getAI().performBattleAction();
+            {
+                attackMade = attackMade ||
+                        defenders.get(i).getAI().performBattleAction();
+            }
         }
         
-        for (Ship attacker: attackers)
-            if (attacker.isDestroyed())
-                attackers.remove(attacker);
+        for (Ship ship: getShips())
+        {
+            if (ship.isDestroyed())
+            {
+                // Duplicate remove done to avoid concurrent modification
+                attackers.remove(ship);
+                defenders.remove(ship);
+                destroyed.add(ship);
+            }
+        }
         
-        for (Ship defender: defenders)
-            if (defender.isDestroyed())
-                defenders.remove(defender);
-        
-        return true;
+        return attackMade && continues();
     }
     
     public void processBattle()
     {
-        while (!attackers.isEmpty() && !defenders.isEmpty())
+        while (continues())
             if (!processTurn())
                 break;
+        
+        distributeLoot();
+        endBattle();
+    }
+    
+    public void distributeLoot()
+    {
+        List<Ship> winners = getShips();
+        
+        for (int i = 0; i < destroyed.size(); i++)
+            winners.get(i % winners.size()).loot(destroyed.get(i));
+    }
+    
+    public void endBattle()
+    {
+        for (Ship ship: getShips())
+            if (ship.isInBattle())
+                ship.setLocation(ship.getBattleLocation().leaveBattle());
+        
+        attackers.clear();
+        defenders.clear();
+        destroyed.clear();
     }
     
     /*

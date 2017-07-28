@@ -3,7 +3,6 @@ package boldorf.eversector.entities.locations;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.util.Utility;
-import java.util.Objects;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 
@@ -46,13 +45,8 @@ public class Location
     
     public Location move(Direction direction)
     {
-        if (direction.isDiagonal())
-            return null;
-        
-        if (direction.hasUp() || direction.hasDown())
-            direction = direction.opposite();
-        
-        return moveTo(coords.translate(direction));
+        return moveTo(coords.translate(Direction.getDirection(direction.deltaX,
+                -direction.deltaY)));
     }
     
     public Location moveTo(Coord destination)

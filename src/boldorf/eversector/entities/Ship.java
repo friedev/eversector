@@ -375,15 +375,15 @@ public class Ship extends Nameable implements ColorStringObject,
             {
                 location.getSector().getShips().add(this);
             }
-            else if (location instanceof StationLocation)
-            {
-                location.getSector().getShips().add(this);
-                getSectorLocation().getStation().getShips().remove(this);
-            }
             else if (location instanceof PlanetLocation)
             {
                 location.getSector().getShips().add(this);
                 getPlanetLocation().getRegion().getShips().remove(this);
+            }
+            else if (location instanceof StationLocation)
+            {
+                location.getSector().getShips().add(this);
+                getSectorLocation().getStation().getShips().remove(this);
             }
         }
         else if (location instanceof SectorLocation &&
@@ -1336,10 +1336,6 @@ public class Ship extends Nameable implements ColorStringObject,
             return false;
         }
         
-        // Invert to match cartesian system
-        if (direction == Direction.UP || direction == Direction.DOWN)
-            direction = direction.opposite();
-        
         if (!validateResources(Actions.BURN, "initiate a burn"))
             return false;
         
@@ -2028,11 +2024,11 @@ public class Ship extends Nameable implements ColorStringObject,
         
         Battle battle = new Battle(this, opponent);
         setLocation(getSectorLocation().joinBattle(battle));
-        opponent.setLocation(opponent.getSectorLocation().joinBattle(battle));
+        opponent.setLocation(location);
         
         List<Ship> others = getSectorLocation().getShips();
         for (Ship other: others)
-            if (other.ai != null)
+            if (other.ai != null && !other.isInBattle())
                 other.ai.joinBattle(battle);
         
         for (Ship ship: battle.getShips())
@@ -2045,9 +2041,6 @@ public class Ship extends Nameable implements ColorStringObject,
         }
         
         battle.processBattle();
-        setLocation(getBattleLocation().leaveBattle());
-        for (Ship ship: battle.getShips())
-            ship.setLocation(location);
         return battle;
     }
     

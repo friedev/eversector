@@ -11,23 +11,21 @@ import boldorf.apwt.windows.AlignedMenu;
 import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
+import boldorf.eversector.Main;
+import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
-import static boldorf.eversector.Main.addColorMessage;
-import static boldorf.eversector.Main.addError;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.entities.Battle;
-import boldorf.eversector.items.Action;
+import boldorf.eversector.entities.Ship;
 import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
-import static boldorf.eversector.storage.Paths.CLAIM;
-import static boldorf.eversector.storage.Paths.ENGINE;
 import static boldorf.eversector.storage.Paths.SCAN;
-import boldorf.eversector.storage.Resources;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import squidpony.squidmath.Coord;
 
@@ -39,17 +37,15 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
 {
     private Screen popup;
     private Battle battle;
-    private boolean deniedConversion;
-    private boolean scanning;
+    private List<Ship> scanning;
     
     public BattleScreen(Display display, Battle battle, boolean nextTurn)
     {
         super(new AlignedMenu(new AlignedWindow(display, Coord.get(0, 0),
-                new Border(1)), COLOR_SELECTION_FOREGROUND,
+                new Border(2)), COLOR_SELECTION_FOREGROUND,
                 COLOR_SELECTION_BACKGROUND));
         this.battle = battle;
-        deniedConversion = false;
-        scanning = false;
+        scanning = new LinkedList<>();
         
         // If possible, do this after the battle is over
         if (nextTurn)
@@ -72,37 +68,45 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         if (popup != null)
         {
             Screen result = popup.processInput(key);
+            /*
             if (result == null && popup instanceof BattleConvertScreen)
                 deniedConversion = true;
+            */
             popup = result;
             return popup instanceof SectorScreen ? popup : this;
         }
         
+        if (getMenu().updateSelectionRestricted(key))
+            return this;
+        
         boolean nextAttack = false;
+        Ship selected = getSelectedShip();
+        boolean isOpponent = battle.getEnemies(player).contains(selected);
         
         switch (key.getKeyCode())
         {
             case KeyEvent.VK_L:
-                if (player.fire(Actions.LASER, opponent))
+                if (isOpponent && player.fire(Actions.LASER, selected))
                 {
                     nextAttack = true;
                     playSoundEffect(Paths.LASER);
                 }
                 break;
             case KeyEvent.VK_T:
-                if (player.fire(Actions.TORPEDO, opponent))
+                if (isOpponent && player.fire(Actions.TORPEDO, selected))
                 {
                     nextAttack = true;
                     playSoundEffect(Paths.TORPEDO);
                 }
                 break;
             case KeyEvent.VK_P:
-                if (player.fire(Actions.PULSE, opponent))
+                if (isOpponent && player.fire(Actions.PULSE, selected))
                 {
                     nextAttack = true;
                     playSoundEffect(Paths.PULSE);
                 }
                 break;
+            /*
             case KeyEvent.VK_F:
             {
                 Action flee = Actions.FLEE;
@@ -137,23 +141,17 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                 opponent.changeResourceBy(flee);
                 break;
             }
-            case KeyEvent.VK_M:
-                if (player.hasActivationModules())
-                    popup = new ToggleScreen(getDisplay());
-                else
-                    addError("The ship has no modules that can be activated.");
-                break;
+            */
             case KeyEvent.VK_S:
-                if (scanning)
-                    break;
-                
-                if (player.scan())
+                if (selected != player && !scanning.contains(selected) &&
+                        player.scan())
                 {
                     nextAttack = true;
-                    scanning = true;
+                    scanning.add(selected);
                     playSoundEffect(SCAN);
                 }
                 break;
+            /*
             case KeyEvent.VK_C:
             {
                 if (!player.isAligned())
@@ -204,28 +202,37 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                     .add(" strips your ship of its components and departs."),
                         true);
             }
+            */
             case KeyEvent.VK_PERIOD: case KeyEvent.VK_SPACE:
                 nextAttack = true;
-                break;
-            case KeyEvent.VK_SLASH:
-                if (!key.isShiftDown())
-                    break;
-            case KeyEvent.VK_H:
-                popup = new HelpScreen(getDisplay(), getKeybindings());
                 break;
             case KeyEvent.VK_Q:
                 popup = new QuitScreen(getDisplay());
                 break;
         }
         
-        if (opponent.isDestroyed())
+        if (nextAttack)
         {
-            popup = new BattleWinScreen(getDisplay(), opponent,
-                    new ColorString("You have destroyed ")
-                            .add(opponent.toColorString()).add("."));
-            return this;
+            battle.processTurn();
+            
+            if (player.isDestroyed())
+            {
+                return new EndScreen(getDisplay(),
+                        new ColorString("You have been destroyed."), true);
+            }
+            
+            if (!battle.continues())
+            {
+                battle.distributeLoot();
+                battle.endBattle();
+                Main.pendingBattle = null;
+                return endBattle();
+            }
         }
         
+        return this;
+        
+        /*
         if (!nextAttack)
             return this;
         
@@ -271,21 +278,16 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
             
             popup = new PursueScreen(getDisplay(), opponent);
         }
-        else if (player.isDestroyed())
-        {
-            return new EndScreen(getDisplay(),
-                    new ColorString("You have been destroyed by ").add(opponent)
-                            .add("."), true);
-        }
-        
-        if (opponent.isDestroyed())
-        {
-            popup = new BattleWinScreen(getDisplay(), opponent,
-                    new ColorString("You have destroyed ").add(opponent)
-                            .add("."));
-        }
-        
-        return this;
+        */
+    }
+    
+    private Ship getSelectedShip()
+    {
+        String selectedText = getMenu().getSelection().toString();
+        for (Ship ship: battle.getShips())
+            if (selectedText.equals(ship.toString()))
+                return ship;
+        return null;
     }
     
     private SectorScreen endBattle()
@@ -307,7 +309,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         if (player.hasActivationModules())
             keybindings.add(new Keybinding("toggle module activation", "m"));
         if (player.hasModule(Actions.SCAN))
-            keybindings.add(new Keybinding("scan opponent", "s"));
+            keybindings.add(new Keybinding("scan selected ship", "s"));
         if (player.isAligned())
             keybindings.add(new Keybinding("convert opponent", "c"));
         keybindings.add(new Keybinding("flee", "f"));
@@ -317,7 +319,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
     
     @Override
     public AlignedWindow getWindow()
-        {return menu;}
+        {return getMenu().getWindow();}
     
     @Override
     public Screen getPopup()
@@ -329,24 +331,54 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
     
     private void setUpWindow()
     {
-        List<ColorString> contents = menu.getContents();
+        List<ColorString> contents = getWindow().getContents();
         
         contents.clear();
-        menu.getSeparators().clear();
+        getWindow().getSeparators().clear();
         
-        contents.add(new ColorString("Opponent: ").add(opponent));
-        
-        if (!scanning)
-            return;
-        
-        menu.addSeparator(new Line(true, 1, 1));
-        List<ColorString> statusList = opponent.getStatusList();
-        for (ColorString line: statusList)
+        int index = 0;
+        if (!battle.getAllies(player).isEmpty())
         {
-            if (line == null)
-                menu.addSeparator(new Line(true, 1, 1));
-            else
-                menu.getContents().add(line);
+            contents.add(new ColorString("Allies", COLOR_FIELD));
+            index++;
+
+            for (Ship ally: battle.getAllies(player))
+            {
+                getMenu().getRestrictions().add(index);
+                contents.add(ally.toColorString());
+                index++;
+            }
+
+            getWindow().addSeparator(new Line(true, 2, 1));
+            index++;
         }
+        
+        contents.add(new ColorString("Enemies", COLOR_FIELD));
+        index++;
+        
+        for (Ship enemy: battle.getEnemies(player))
+        {
+            getMenu().getRestrictions().add(index);
+            contents.add(enemy.toColorString());
+            index++;
+        }
+        
+        Ship selected = getSelectedShip();
+        if (scanning.contains(selected))
+        {
+            getWindow().addSeparator(new Line(false, 2, 1));
+            List<ColorString> statusList = selected.getStatusList();
+            for (ColorString line: statusList)
+            {
+                if (line == null)
+                    getWindow().addSeparator(new Line(false, 2, 1));
+                else
+                    contents.add(line);
+            }
+        }
+        
+        if (!getMenu().getRestrictions().contains(
+                getMenu().getSelectionIndex()))
+            getMenu().setSelectionIndex(getMenu().getRestrictions().get(0));
     }
 }

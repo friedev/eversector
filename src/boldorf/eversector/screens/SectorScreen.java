@@ -54,8 +54,8 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                     ((WindowScreen) popup).getWindow() instanceof AlignedWindow)
             {
                 ((AlignedWindow) ((WindowScreen) popup).getWindow())
-                        .setLocation(Coord.get(1, window.getBottomRight().y
-                                + 3));
+                        .setLocation(Coord.get(1,
+                                window.getBottomRight().y + 3));
             }
             
             popup.displayOutput();
@@ -77,16 +77,14 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
             
             return popup instanceof PlanetScreen ||
                     popup instanceof StationScreen ||
+                    popup instanceof BattleScreen ||
                     popup instanceof EndScreen ?
                     popup : this;
         }
         
         // This is necessary both here and below to avoid interruptions
         if (pendingBattle != null)
-        {
-            popup = new BattleScreen(getDisplay(), pendingBattle, false);
-            return this;
-        }
+            return new BattleScreen(getDisplay(), pendingBattle, false);
         
         boolean nextTurn = false;
         Screen nextScreen = this;
@@ -177,7 +175,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 }
                 else if (sector.getShipsAt(orbit).size() == 2)
                 {
-                    popup = new BattleScreen(getDisplay(), player.startBattle(
+                    return new BattleScreen(getDisplay(), player.startBattle(
                             sector.getFirstOtherShip(player)), true);
                 }
                 else
@@ -195,10 +193,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
             map.nextTurn();
         
         if (pendingBattle != null)
-        {
-            popup = new BattleScreen(getDisplay(), pendingBattle, false);
-            return this;
-        }
+            return new BattleScreen(getDisplay(), pendingBattle, false);
         
         return nextScreen;
     }

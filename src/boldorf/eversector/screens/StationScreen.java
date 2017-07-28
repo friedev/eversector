@@ -269,7 +269,8 @@ class StationScreen extends MenuScreen<AlignedMenu>
     
     private Item getSelectedItem()
     {
-        if (getMenu().getSelection() == null)
+        if (getMenu().getSelectionIndex() >= getWindow().getContents().size() ||
+                getMenu().getSelection() == null)
             resetSelection();
         
         String itemString = getMenu().getSelection().toString();

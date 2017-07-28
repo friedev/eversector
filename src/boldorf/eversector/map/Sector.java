@@ -182,7 +182,7 @@ public class Sector extends Nameable
         
         if (faction != ruler)
         {
-            if (map.getTurns() > -Map.SIMULATED_TURNS)
+            if (map.getTurn() > -Map.SIMULATED_TURNS)
             {
                 if (faction == null)
                 {

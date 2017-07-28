@@ -332,9 +332,6 @@ public class AI
                         ((SectorLocation) destination).getOrbit());
             }
             
-            if (ship.escape())
-                return true;
-            
             return ship.orbit(true);
         }
         
@@ -359,36 +356,42 @@ public class AI
     
     public boolean joinBattle(Battle battle)
     {
-        boolean attackersHostile = false;
-        boolean defendersHostile = false;
-        
-        for (Ship attacker: battle.getAttackers())
-        {
-            if (ship.isHostile(attacker.getFaction()))
-            {
-                attackersHostile = true;
-                break;
-            }
-        }
-        
-        for (Ship defender: battle.getDefenders())
-        {
-            if (ship.isHostile(defender.getFaction()))
-            {
-                defendersHostile = true;
-                break;
-            }
-        }
-        
-        if (attackersHostile == defendersHostile)
+        if (!willAttack() || !ship.isOrbital())
             return false;
         
-        if (attackersHostile)
-            battle.getDefenders().add(ship);
-        else
-            battle.getAttackers().add(ship);
+        int attackerFriendliness = 0;
+        int defenderFriendliness = 0;
         
+        for (Ship attacker: battle.getAttackers())
+            attackerFriendliness += getFriendliness(attacker);
+        
+        for (Ship defender: battle.getDefenders())
+            defenderFriendliness += getFriendliness(defender);
+        
+        if (attackerFriendliness > defenderFriendliness)
+            battle.getAttackers().add(ship);
+        else
+            battle.getDefenders().add(ship);
+        
+        ship.setLocation(ship.getSectorLocation().joinBattle(battle));
         return true;
+    }
+    
+    private int getFriendliness(Ship other)
+    {
+        if (!other.isAligned())
+            return 0;
+
+        if (ship.isInFaction(other.getFaction()))
+            return 4;
+
+        switch (other.getFaction().getRelationship(ship.getFaction()))
+        {
+            case ALLIANCE: return 3;
+            case PEACE: return 1;
+        }
+        
+        return 0;
     }
     
     /**

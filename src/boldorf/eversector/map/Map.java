@@ -90,7 +90,7 @@ public class Map
     private Faction[]    factions;
     private List<String> designations;
     private Ore[]        oreTypes;   
-    private int          turns;
+    private int          turn;
     
     /**
      * Generates a map with the default size.
@@ -113,7 +113,7 @@ public class Map
                  + MIN_FACTIONS];
         designations = new LinkedList<>();
         oreTypes = generateOreTypes();
-        turns = -SIMULATED_TURNS;
+        turn = -SIMULATED_TURNS;
         
         // Factions must be created first so they can be assigned to ships
         createFactions();
@@ -121,14 +121,29 @@ public class Map
         sectorAt(0, 0).setType(Sector.STATION_SYSTEM);
     }
     
-    public Sector[][] toArray()      {return map;                         }
-    public List<Ship> getShips()     {return ships;                       }
-    public Ship       getPlayer()    {return player;                      }
-    public int        getMinY()      {return -offset;                     }
-    public int        getMaxY()      {return (map.length -  1) - offset;  }
-    public int        getMinX()      {return -offset;                     }
-    public int        getMaxX()      {return (map[0].length - 1) - offset;}
-    public int        getTurns()     {return turns;                       }
+    public Sector[][] toArray()
+        {return map;}
+    
+    public List<Ship> getShips()
+        {return ships;}
+    
+    public Ship getPlayer()
+        {return player;}
+    
+    public int getTurn()
+        {return turn;}
+    
+    public int getMinY()
+        {return -offset;}
+    
+    public int getMaxY()
+        {return (map.length - 1) - offset;}
+    
+    public int getMinX()
+        {return -offset;}
+    
+    public int getMaxX()
+        {return (map[0].length - 1) - offset;}
     
     public Sector sectorAt(int x, int y)
         {return map[-y + offset][x + offset];}
@@ -227,9 +242,9 @@ public class Map
         }
         
         // Update relationships if there are more than two factions
-        if (turns >= (RELATION_UPDATE_FREQ / factions.length) &&
+        if (turn >= (RELATION_UPDATE_FREQ / factions.length) &&
                 factions.length > 2 &&
-                turns % (RELATION_UPDATE_FREQ / factions.length) == 0)
+                turn % (RELATION_UPDATE_FREQ / factions.length) == 0)
         {
             int tries = 0;
             do
@@ -243,19 +258,19 @@ public class Map
         
         // Update faction leaders periodically, or immediately if destroyed
         // Also update faction leaders immediately before gameplay starts
-        if (turns > 0)
+        if (turn > 0)
             updateFactionLeaders();
-        else if (turns == -1)
+        else if (turn == -1)
             updateFactionLeaders();
         
-        turns++;
+        turn++;
     }
     
     /** Updates the leader of each faction. */
     public void updateFactionLeaders()
     {
         for (Faction faction: factions)
-            if (turns - faction.getLastElection() == ELECTION_FREQ)
+            if (turn - faction.getLastElection() == ELECTION_FREQ)
                 faction.holdElection();
         
         updateDestroyedFactionLeaders();
