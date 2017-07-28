@@ -254,7 +254,8 @@ class StationScreen extends MenuScreen<AlignedMenu>
             index = addEntry(getItemString(module, false), index);
         
         for (Module module: player.getCargo())
-            index = addEntry(getItemString(module, false), index);
+            if (!player.getModules().contains(module))
+                index = addEntry(getItemString(module, false), index);
         
         if (getMenu().getSelectionIndex() == 0)
             getMenu().setSelectionIndex(buyStart);
