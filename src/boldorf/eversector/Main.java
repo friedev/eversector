@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
 import squidpony.squidmath.RNG;
 
 /** The main class for EverSector, which primarily manages player input. */
@@ -147,15 +146,11 @@ public class Main
         }
 
         readInitialFiles();
-        rng = new RNG();
 
         if (FileManager.checkExistence(Paths.OPTIONS))
             options = FileManager.load(Paths.OPTIONS);
         else
             options = new Properties();
-
-        setUpSeed();
-        nameGenerator = new NameGenerator(GENERAL, rng);
         
         List<ColorString> startMessages = startGame();
         
@@ -194,14 +189,16 @@ public class Main
         setOptionDefaults();
 
         // Create the map and update the player as needed
+        setUpSeed();
+        nameGenerator = new NameGenerator(GENERAL, rng);
         map = new Map();
+        
         boolean savedGame = FileManager.checkExistence(Paths.SAVE);
         if (savedGame)
         {
             Properties save = FileManager.load(Paths.SAVE);
-            if (optionIs(OPTION_TRUE,
-                    save.getProperty(Options.DISQUALIFIED)))
-                disqualified = true;
+            disqualified = optionIs(OPTION_TRUE,
+                    save.getProperty(Options.DISQUALIFIED));
             player = new Ship(map, save);
             map.setPlayer(player);
         }
@@ -222,8 +219,8 @@ public class Main
         }
         else
         {
-            startMessages.add(new ColorString("Welcome back to EverSector, "
-                    ).add(new ColorString(options.getProperty(Options.NAME),
+            startMessages.add(new ColorString("Welcome back to EverSector, ")
+                    .add(new ColorString(options.getProperty(Options.NAME),
                             COLOR_FIELD))
                     .add("!"));
         }
@@ -391,14 +388,19 @@ public class Main
             {
                 try
                 {
-                    long newSeed = Long.parseLong(seedString);
-                    rng = new RNG(newSeed);
+                    seed = Long.parseLong(seedString);
                 }
                 catch (NumberFormatException nf)
                 {
-                    // Do nothing, but don't set the seed
+                    seed = new RNG().nextLong();
                 }
             }
         }
+        else
+        {
+            seed = new RNG().nextLong();
+        }
+        
+        rng = new RNG(seed);
     }
 }

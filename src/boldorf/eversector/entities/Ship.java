@@ -137,7 +137,6 @@ public class Ship extends Nameable implements ColorStringObject,
         cargo     = new LinkedList<>();
         resources = Station.copyResources();
         
-        createReputations();
         setResourceDefaults();
         
         for (String key: properties.stringPropertyNames())
@@ -183,6 +182,9 @@ public class Ship extends Nameable implements ColorStringObject,
                 }
             }
         }
+        
+        // Must be done after location is set up
+        createReputations();
     }
     
     /**

@@ -38,17 +38,17 @@ public class Faction extends Nameable implements ColorStringObject
     
     /**
      * Generates a faction of the given name, type, and on the given map.
-     * @param n the name of the faction
-     * @param t the type of the faction
-     * @param m the map that the faction will be on
-     * @param c the faction's color
+     * @param name the name of the faction
+     * @param type the type of the faction
+     * @param map the map that the faction will be on
+     * @param color the faction's color
      */
-    public Faction(String n, String t, Map m, Color c)
+    public Faction(String name, String type, Map map, Color color)
     {
-        super(n);
-        color         = c;
-        type          = t;
-        map           = m;
+        super(name);
+        this.color    = color;
+        this.type     = type;
+        this.map      = map;
         relationships = new Relationship[map.getFactions().length -1];
         leader        = null;
         economy       = 0;
@@ -58,16 +58,16 @@ public class Faction extends Nameable implements ColorStringObject
     /**
      * Generates a faction of the given name, a random type, and on the given
      * map.
-     * @param n the name of the faction
-     * @param m the map that the faction will be on
-     * @param c the faction's color
+     * @param name the name of the faction
+     * @param map the map that the faction will be on
+     * @param color the faction's color
      */
-    public Faction(String n, Map m, Color c)
-        {this(n, (String) rng.getRandomElement(TYPES), m, c);}
+    public Faction(String name, Map map, Color color)
+        {this(name, (String) rng.getRandomElement(TYPES), map, color);}
     
     @Override
     public String toString()
-        {return super.toString() + " " + type;}
+        {return getName() + " " + type;}
     
     @Override
     public ColorString toColorString()

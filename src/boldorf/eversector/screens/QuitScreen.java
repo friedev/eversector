@@ -47,6 +47,9 @@ public class QuitScreen extends ConfirmationScreen implements
     {
         Properties save = player.toProperties();
         save.setProperty(Options.DISQUALIFIED, Boolean.toString(disqualified));
+        Main.options.setProperty(Options.SEED, Long.toString(Main.seed));
+        Main.options.setProperty(Options.KEEP_SEED, Options.OPTION_TRUE);
+        
         try
         {
             FileManager.save(save, Paths.SAVE);
@@ -59,6 +62,8 @@ public class QuitScreen extends ConfirmationScreen implements
     @Override
     public Screen onDeny()
     {
+        Main.options.setProperty(Options.KEEP_SEED, Options.OPTION_FALSE);
+        
         try
         {
             FileManager.save(Main.options, Paths.OPTIONS);
