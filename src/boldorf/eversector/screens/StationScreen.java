@@ -47,6 +47,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
     private boolean buying;
     private int buyStart;
     private int sellStart;
+    private int sellEnd;
     
     public StationScreen(Display display)
     {
@@ -70,9 +71,20 @@ class StationScreen extends MenuScreen<AlignedMenu>
         if (getMenu().updateSelection(direction))
         {
             int index = getMenu().getSelectionIndex();
-            if ((buying && index >= sellStart) ||
-                    (!buying && index < sellStart))
-                getMenu().updateSelection(direction.opposite());
+            if (buying)
+            {
+                if (index == sellStart)
+                    getMenu().setSelectionIndex(buyStart);
+                else if (index == sellEnd)
+                    getMenu().setSelectionIndex(sellStart - 2);
+            }
+            else
+            {
+                if (index == buyStart)
+                    getMenu().setSelectionIndex(sellStart);
+                else if (index < sellStart)
+                    getMenu().setSelectionIndex(sellEnd);
+            }
             return this;
         }
         
@@ -155,7 +167,11 @@ class StationScreen extends MenuScreen<AlignedMenu>
     }
 
     private void resetSelection()
-        {getMenu().setSelectionIndex(buying ? buyStart : sellStart);}
+    {
+        getMenu().setSelectionIndex(buying ||
+                getWindow().getContents().get(sellStart) == null ?
+                buyStart : sellStart);
+    }
     
     /**
      * Maxes out all of the player's resources, selling ore.
@@ -257,15 +273,13 @@ class StationScreen extends MenuScreen<AlignedMenu>
             if (!player.getModules().contains(module))
                 index = addEntry(getItemString(module, false), index);
         
+        sellEnd = index  - 1;
+        
         if (getMenu().getSelectionIndex() == 0)
             getMenu().setSelectionIndex(buyStart);
         
-        Item item = getSelectedItem();
-        if (item != null)
-        {
-            getWindow().addSeparator(new Line(true, 2, 1));
-            contents.addAll(item.define());
-        }
+        getWindow().addSeparator(new Line(true, 2, 1));
+        contents.addAll(getSelectedItem().define());
     }
     
     private Item getSelectedItem()
