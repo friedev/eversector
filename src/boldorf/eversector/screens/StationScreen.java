@@ -217,6 +217,9 @@ class StationScreen extends MenuScreen<AlignedMenu>
     
     private void setUpMenu()
     {
+        int prevOffset = getMenu().getSelectionIndex() -
+                (buying ? buyStart : sellStart);
+        
         List<ColorString> contents = getWindow().getContents();
         Station station = player.getSectorLocation().getStation();
         List<Ship> ships = station.getShips();
@@ -277,7 +280,14 @@ class StationScreen extends MenuScreen<AlignedMenu>
         sellEnd = index  - 1;
         
         if (getMenu().getSelectionIndex() == 0)
+        {
             getMenu().setSelectionIndex(buyStart);
+        }
+        else
+        {
+            getMenu().setSelectionIndex((buying ? buyStart : sellStart) +
+                    prevOffset);
+        }
         
         getWindow().addSeparator(new Line(true, 2, 1));
         contents.addAll(getSelectedItem().define());
