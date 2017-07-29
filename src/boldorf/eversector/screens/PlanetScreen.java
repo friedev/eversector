@@ -141,9 +141,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         window.addSeparator(new Line(false, 1, 2, 1));
         contents.add(new ColorString(region.toString()));
         if (region.isClaimed())
-        {
             contents.add(new ColorString("Ruler: ").add(region.getFaction()));
-        }
         
         if (region.hasOre())
         {

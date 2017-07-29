@@ -5,11 +5,14 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
+import boldorf.apwt.windows.Border;
+import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Main.playSoundEffect;
 import boldorf.eversector.entities.Planet;
+import boldorf.eversector.entities.Region;
 import boldorf.eversector.entities.locations.PlanetLocation;
 import static boldorf.eversector.storage.Paths.ENGINE;
 import boldorf.util.Utility;
@@ -31,10 +34,10 @@ public class LandScreen extends ConfirmationScreen
     {
         super(display);
         Planet planet = player.getSectorLocation().getPlanet();
-        window = new PopupWindow(display);
+        window = new PopupWindow(display, new Border(1), new Line(true, 1, 1));
         window.getContents().addAll(planet.toColorStrings());
         selection = new PlanetLocation(player.getSectorLocation(),
-                planet.getCenter());
+                Coord.get(0, 0));
     }
     
     @Override
@@ -76,13 +79,20 @@ public class LandScreen extends ConfirmationScreen
     
     private void setUpWindow()
     {
-        window.getContents().clear();
-        List<ColorString> colorStrings =
-                player.getSectorLocation().getPlanet().toColorStrings();
+        List<ColorString> contents = window.getContents();
+        contents.clear();
+        Planet planet = player.getSectorLocation().getPlanet();
+        List<ColorString> colorStrings = planet.toColorStrings();
         
         Coord regionCoords = selection.getRegionCoords();
         colorStrings.get(regionCoords.y).getColorCharAt(regionCoords.x)
                 .setBackground(COLOR_SELECTION_BACKGROUND);
-        window.getContents().addAll(colorStrings);
+        contents.addAll(colorStrings);
+        
+        window.addSeparator();
+        Region region = selection.getRegion();
+        contents.add(new ColorString(region.toString()));
+        if (region.isClaimed())
+            contents.add(new ColorString("Ruler: ").add(region.getFaction()));
     }
 }
