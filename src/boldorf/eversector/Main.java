@@ -327,17 +327,17 @@ public class Main
     /**
      * Returns true if the options property with the given key equals the given
      * String.
-     * @param s the String to compare with the property
+     * @param option the String to compare with the property
      * @param property the key of the property to check
      * @return true if the options property with the given key equals s
      */
-    public static boolean optionIs(String s, String property)
+    public static boolean optionIs(String option, String property)
     {
-        if (s == null || property == null ||
+        if (option == null || property == null ||
                 options.getProperty(property) == null)
             return false;
         
-        return s.equals(options.getProperty(property));
+        return option.equals(options.getProperty(property));
     }
     
     public static void setOptionDefaults()
