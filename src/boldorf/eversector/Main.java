@@ -22,13 +22,6 @@ import boldorf.eversector.screens.GameScreen;
 import boldorf.eversector.screens.StartScreen;
 import static boldorf.eversector.storage.Names.GENERAL;
 import boldorf.eversector.storage.Options;
-import static boldorf.eversector.storage.Options.DEBUG_DEFAULT;
-import static boldorf.eversector.storage.Options.DEFAULT_HEIGHT;
-import static boldorf.eversector.storage.Options.DEFAULT_WIDTH;
-import static boldorf.eversector.storage.Options.HEIGHT;
-import static boldorf.eversector.storage.Options.MENU_DEFAULT;
-import static boldorf.eversector.storage.Options.OPTION_TRUE;
-import static boldorf.eversector.storage.Options.WIDTH;
 import boldorf.eversector.storage.Paths;
 import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
@@ -158,8 +151,8 @@ public class Main
         List<ColorString> startMessages = startGame();
         
         display = new Display(new AsciiPanel(
-                Utility.parseInt(options.getProperty(WIDTH)),
-                Utility.parseInt(options.getProperty(HEIGHT)),
+                Utility.parseInt(options.getProperty(Options.WIDTH)),
+                Utility.parseInt(options.getProperty(Options.HEIGHT)),
                 AsciiFont.QBICFEET_10x10));
         
         display.setIconImage(FileManager.loadImage(Paths.ICON));
@@ -167,17 +160,9 @@ public class Main
         display.init(new StartScreen(display, startMessages));
 
         soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
-        if (!optionIs(OPTION_TRUE, Options.MUSIC))
-            soundtrack.stop();
-        
-        /*
-        // Volume control prototype
-        FloatControl gainControl = (FloatControl)
-                soundtrack.getControl(FloatControl.Type.MASTER_GAIN);
-        float range = gainControl.getMaximum() - gainControl.getMinimum();
-        float gain = (range * 1.0f) + gainControl.getMinimum();
-        gainControl.setValue(gain);
-        */
+        Integer volume = Utility.parseInt(Options.MUSIC);
+        if (volume != null)
+            FileManager.setVolume(soundtrack, volume);
     }
     
     public static List<ColorString> startGame() throws Exception
@@ -201,7 +186,7 @@ public class Main
         if (savedGame)
         {
             Properties save = FileManager.load(Paths.SAVE);
-            disqualified = optionIs(OPTION_TRUE,
+            disqualified = optionIs(Options.OPTION_TRUE,
                     save.getProperty(Options.DISQUALIFIED));
             player = new Ship(map, save);
             map.setPlayer(player);
@@ -243,7 +228,7 @@ public class Main
         }
         else
         {
-            if (optionIs(OPTION_TRUE, Options.KEEP_SEED))
+            if (optionIs(Options.OPTION_TRUE, Options.KEEP_SEED))
             {
                 startMessages.add(new ColorString("Your chosen seed is: ")
                         .add(new ColorString(Long.toString(seed),
@@ -271,12 +256,12 @@ public class Main
     
     public static void playSoundEffect(String path)
     {
-        if (!optionIs(OPTION_TRUE, Options.SFX))
-            return;
-        
         try
         {
+            Integer volume = Utility.parseInt(Options.SFX);
             FileManager.playAudio(path);
+            if (volume != null)
+                FileManager.setVolume(soundtrack, volume);
         }
         catch (Exception e) {}
     }
@@ -357,35 +342,51 @@ public class Main
     
     public static void setOptionDefaults()
     {
-        if (options.getProperty(WIDTH) == null ||
-                Utility.parseInt(options.getProperty(WIDTH)) == null)
+        if (options.getProperty(Options.WIDTH) == null ||
+                Utility.parseInt(options.getProperty(Options.WIDTH)) == null)
         {
-            options.setProperty(WIDTH, Integer.toString(DEFAULT_WIDTH));
+            options.setProperty(Options.WIDTH,
+                    Integer.toString(Options.DEFAULT_WIDTH));
         }
         
-        if (options.getProperty(HEIGHT) == null ||
-                Utility.parseInt(options.getProperty(HEIGHT)) == null)
+        if (options.getProperty(Options.HEIGHT) == null ||
+                Utility.parseInt(options.getProperty(Options.HEIGHT)) == null)
         {
-            options.setProperty(HEIGHT, Integer.toString(DEFAULT_HEIGHT));
+            options.setProperty(Options.HEIGHT,
+                    Integer.toString(Options.DEFAULT_HEIGHT));
+        }
+        
+        if (options.getProperty(Options.MUSIC) == null ||
+                Utility.parseInt(options.getProperty(Options.MUSIC)) == null)
+        {
+            options.setProperty(Options.MUSIC,
+                    Integer.toString(FileManager.MAX_VOLUME));
+        }
+        
+        if (options.getProperty(Options.SFX) == null ||
+                Utility.parseInt(options.getProperty(Options.SFX)) == null)
+        {
+            options.setProperty(Options.SFX,
+                    Integer.toString(FileManager.MAX_VOLUME));
         }
         
         for (String bool: Options.MENU_BOOLEANS)
         {
             if (options.getProperty(bool) == null)
-                options.setProperty(bool, MENU_DEFAULT);
+                options.setProperty(bool, Options.MENU_DEFAULT);
         }
         
         for (String bool: Options.DEBUG_BOOLEANS)
         {
             if (options.getProperty(bool) == null)
-                options.setProperty(bool, DEBUG_DEFAULT);
+                options.setProperty(bool, Options.DEBUG_DEFAULT);
         }
     }
     
     /** Set the seed based on the status of the keepSeed property. */
     public static void setUpSeed()
     {
-        if (optionIs(OPTION_TRUE, Options.KEEP_SEED))
+        if (optionIs(Options.OPTION_TRUE, Options.KEEP_SEED))
         {
             String seedString = options.getProperty(Options.SEED);
             if (seedString != null)

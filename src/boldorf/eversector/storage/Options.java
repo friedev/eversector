@@ -13,24 +13,25 @@ public abstract class Options
     SEED         = "Seed",
     DISQUALIFIED = "Disqualified",
     
-    WIDTH        = "Display Width",
-    HEIGHT       = "Display Height",
-    MUSIC        = "Music",
-    SFX          = "Sound Effects",
+    WIDTH       = "Display Width",
+    HEIGHT      = "Display Height",
+    MUSIC       = "Music Volume",
+    SFX         = "Sound Effect Volume",
     TIPS        = "Tips",
-    LEADERBOARD  = "Leaderboard",
-    VOTING       = "Voting Prompts",
-    NEWS         = "Faction News",
-    KEEP_SEED    = "Keep Seed",
-    FREEZE       = "Freeze";
+    LEADERBOARD = "Leaderboard",
+    VOTING      = "Voting Prompts",
+    NEWS        = "Faction News",
+    KEEP_SEED   = "Keep Seed",
+    FREEZE      = "Freeze";
     
     public static final String[]
-    MENU_BOOLEANS  = {MUSIC, SFX, TIPS, LEADERBOARD, VOTING, NEWS},
+    MENU_BOOLEANS  = {TIPS, LEADERBOARD, VOTING, NEWS},
+    MENU_NUMBERS   = {WIDTH, HEIGHT, MUSIC, SFX},
     DEBUG_BOOLEANS = {KEEP_SEED, FREEZE};
     
     public static final String
-    OPTION_TRUE    = "Enabled",
-    OPTION_FALSE   = "Disabled",
+    OPTION_TRUE  = "Enabled",
+    OPTION_FALSE = "Disabled",
     
     MENU_DEFAULT  = OPTION_TRUE,
     DEBUG_DEFAULT = OPTION_FALSE;
