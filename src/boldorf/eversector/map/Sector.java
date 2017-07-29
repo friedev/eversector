@@ -67,7 +67,6 @@ public class Sector extends Nameable
     private Station[]     stations;
     private List<Ship>    ships;
     private List<Integer> usedLetters;
-    private boolean       isDiscovered;
     
     /**
      * Creates a sector from a location and type.
@@ -81,7 +80,6 @@ public class Sector extends Nameable
         setNickname(Main.nameGenerator.generateName(2));
         
         this.location = location;
-        isDiscovered = false;
         usedLetters = new LinkedList<>();
         this.type = type != null && isValidType(type) ? type : generateType();
         star = EMPTY.equals(type) ? null : Star.generate();
@@ -115,15 +113,24 @@ public class Sector extends Nameable
     public String toString()
         {return "Sector " + super.toString();}
     
-    public Location getLocation()  {return location;       }
-    public String   getType()      {return type;           }
-    public Faction  getFaction()   {return faction;        }
-    public Star     getStar()      {return star;           }
-    public boolean  isDiscovered() {return isDiscovered;   }
-    public boolean  isClaimed()    {return faction != null;}
+    public Location getLocation() {return location;       }
+    public String   getType()     {return type;           }
+    public Faction  getFaction()  {return faction;        }
+    public Star     getStar()     {return star;           }
+    public boolean  isClaimed()   {return faction != null;}
     
     public int getOrbits()
         {return star == null ? 0 : star.getPower();}
+    
+    public boolean isDiscovered()
+        {return Main.sectorsDiscovered.contains(this);}
+    
+    /** Changes the sector's discovered status to true. */
+    public void discover()
+    {
+        if (!isDiscovered())
+            Main.sectorsDiscovered.add(this);
+    }
     
     /**
      * Calculates the dominant faction in the sector, based on their control of
@@ -264,7 +271,7 @@ public class Sector extends Nameable
      */
     public ColorChar getSymbol()
     {
-        if (!isDiscovered)
+        if (!isDiscovered())
             return SYMBOL_UNDISCOVERED;
         
         char symbol;
@@ -279,7 +286,7 @@ public class Sector extends Nameable
     
     public ColorChar getStarSymbol()
     {
-        if (!isDiscovered)
+        if (!isDiscovered())
             return SYMBOL_UNDISCOVERED;
         
         if (location.getMap().getPlayer().getLocation().getSector() == this)
@@ -561,10 +568,6 @@ public class Sector extends Nameable
         usedLetters.add(letterPlace);
         return generateNameFor(letterPlace);
     }
-    
-    /** Changes the sector's discovered status to true. */
-    public void discover()
-        {isDiscovered = true;}
     
     /**
      * Removes the given letter from the sector's list of used ship letters.

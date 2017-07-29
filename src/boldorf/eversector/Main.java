@@ -14,6 +14,7 @@ import boldorf.eversector.entities.Battle;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.entities.Station;
 import boldorf.eversector.map.Map;
+import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.faction.Election;
 import boldorf.eversector.map.faction.RelationshipChange;
 import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
@@ -92,17 +93,19 @@ public class Main
     /** The name generator to be used in creation of random nicknames. */
     public static NameGenerator nameGenerator;
     
+    /** Various game options in the form of a properties file. */
+    public static Properties options;
+    
+    /** The game music that will loop in the background. */
+    public static Clip soundtrack;
+    
     /** The map upon which the current game is played. */
     public static Map map;
     
     /** A reference to map.getPlayer() for use in the game. */
     public static Ship player;
     
-    /** Various game options in the form of a properties file. */
-    public static Properties options;
-    
-    /** The game music that will loop in the background. */
-    public static Clip soundtrack;
+    public static List<Sector> sectorsDiscovered;
     
     /** A list of ships that intend to attack the player. */
     public static Battle pendingBattle;
@@ -179,6 +182,7 @@ public class Main
     
     public static List<ColorString> startGame() throws Exception
     {
+        sectorsDiscovered = new LinkedList<>();
         disqualified = false;
         pendingElection = null;
         pendingRelationships = new LinkedList<>();
