@@ -11,12 +11,14 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import static boldorf.eversector.Main.COLOR_FIELD;
+import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.entities.Planet;
 import boldorf.eversector.entities.Region;
 import boldorf.eversector.entities.Ship;
+import boldorf.eversector.entities.locations.PlanetLocation;
 import static boldorf.eversector.storage.Paths.CLAIM;
 import static boldorf.eversector.storage.Paths.ENGINE;
 import static boldorf.eversector.storage.Paths.MINE;
@@ -34,6 +36,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         KeyScreen
 {
     private AlignedWindow window;
+    private PlanetLocation cursor;
     
     public PlanetScreen(Display display)
     {
@@ -55,10 +58,26 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         Screen nextScreen = this;
         
         Direction direction = Utility.keyToDirectionRestricted(key);
-        if (direction != null && player.relocate(direction))
+        if (direction != null)
         {
-            nextTurn = true;
-            playSoundEffect(ENGINE);
+            if (isLooking())
+            {
+                cursor = cursor.moveRegion(direction);
+            }
+            else if (player.relocate(direction))
+            {
+                nextTurn = true;
+                playSoundEffect(ENGINE);
+            }
+        }
+        else if (isLooking())
+        {
+            if (key.getKeyCode() == KeyEvent.VK_L ||
+                    key.getKeyCode() == KeyEvent.VK_ESCAPE ||
+                    key.getKeyCode() == KeyEvent.VK_ENTER)
+            {
+                cursor = null;
+            }
         }
         else
         {
@@ -86,6 +105,9 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
                         playSoundEffect(CLAIM);
                     }
                     break;
+                case KeyEvent.VK_L:
+                    cursor = player.getPlanetLocation();
+                    break;
             }
         }
         
@@ -104,6 +126,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding("takeoff", "escape"));
         keybindings.add(new Keybinding("mine", "enter"));
         keybindings.add(new Keybinding("claim", "c"));
+        keybindings.add(new Keybinding("look", "l"));
         return keybindings;
     }
     
@@ -111,13 +134,17 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
     public AlignedWindow getWindow()
         {return window;}
     
+    private boolean isLooking()
+        {return cursor != null;}
+    
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();
         contents.clear();
         window.getSeparators().clear();
         Planet planet = player.getSectorLocation().getPlanet();
-        Region region = player.getPlanetLocation().getRegion();
+        Region region = isLooking() ? cursor.getRegion() :
+                player.getPlanetLocation().getRegion();
         contents.add(new ColorString(planet.toString()));
         contents.add(new ColorString("Orbit: ").add(new ColorString(
                 Integer.toString(planet.getLocation().getOrbit()),
@@ -136,12 +163,22 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         window.addSeparator(new Line(true, 2, 1));
-        contents.addAll(planet.toColorStrings());
+        List<ColorString> colorStrings = planet.toColorStrings();
+        if (isLooking())
+        {
+            colorStrings.get(cursor.getRegionCoords().y)
+                    .getColorCharAt(cursor.getRegionCoords().x)
+                    .setBackground(COLOR_SELECTION_BACKGROUND);
+        }
+        contents.addAll(colorStrings);
         
         window.addSeparator(new Line(false, 1, 2, 1));
         contents.add(new ColorString(region.toString()));
         if (region.isClaimed())
             contents.add(new ColorString("Ruler: ").add(region.getFaction()));
+        
+        if (isLooking() && !cursor.equals(player.getLocation()))
+            return;
         
         if (region.hasOre())
         {
