@@ -397,7 +397,7 @@ public class Sector extends Nameable
     
     /**
      * Changes the sector's type to t and regenerates its planets and stations.
-     * @param newType the type value - to apply the change, it must be from 0 to 2
+     * @param newType the name of the type
      */
     public void setType(String newType)
     {

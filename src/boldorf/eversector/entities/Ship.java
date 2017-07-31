@@ -1359,10 +1359,10 @@ public class Ship extends Nameable implements ColorStringObject,
     
     /**
      * Will warp the ship to the designated coordinates.
-     * @param p the Coord to warp to, must be on the map
+     * @param destination the Coord to warp to, must be on the map
      * @return true if the warp was completed
      */
-    public boolean warpTo(Coord p)
+    public boolean warpTo(Coord destination)
     {
         if (!validateModule(Actions.WARP, "warp"))
             return false;
@@ -1370,12 +1370,12 @@ public class Ship extends Nameable implements ColorStringObject,
         if (!validateResources(Actions.WARP.getAction(), "charge warp drive"))
             return false;
         
-        Location target = location.moveTo(p);
+        Location targetLocation = location.moveTo(destination);
         
-        if (target == null)
+        if (targetLocation == null)
             return false;
         
-        setLocation(target);
+        setLocation(targetLocation);
         getResource(Actions.WARP.getResource())
                 .changeAmount(-Actions.WARP.getCost());
         return true;

@@ -64,21 +64,13 @@ public class Location
         StringBuilder params = new StringBuilder();
         
         if (this instanceof StationLocation)
-        {
             params.append(STATION_LOCATION);
-        }
         else if (this instanceof PlanetLocation)
-        {
             params.append(PLANET_LOCATION);
-        }
         else if (this instanceof SectorLocation)
-        {
             params.append(SECTOR_LOCATION);
-        }
         else
-        {
             params.append(LOCATION);
-        }
         
         params.append("; ").append(Utility.coordToOrderedPair(coords));
         
@@ -110,8 +102,10 @@ public class Location
         SectorLocation sectorLocation = new SectorLocation(location, orbit);
         
         if (PLANET_LOCATION.equals(params[0]))
+        {
             return new PlanetLocation(sectorLocation,
                     Utility.parseCoord(params[3]));
+        }
         
         if (STATION_LOCATION.equals(params[0]))
             return new StationLocation(sectorLocation);
