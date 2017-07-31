@@ -28,7 +28,7 @@ public class QuitScreen extends ConfirmationScreen implements
     public QuitScreen(Display display)
     {
         super(display);
-        LinkedList<ColorString> contents = new LinkedList<>();
+        List<ColorString> contents = new LinkedList<>();
         contents.add(new ColorString("Save before quitting?",
                 AsciiPanel.brightRed));
         window = new PopupWindow(display, contents);

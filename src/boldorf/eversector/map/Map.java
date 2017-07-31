@@ -654,7 +654,7 @@ public class Map
      */
     private void createFactions()
     {
-        LinkedList<String> usedTypes = new LinkedList<>();
+        List<String> usedTypes = new LinkedList<>();
         
         for (int i = 0; i < factions.length; i++)
         {

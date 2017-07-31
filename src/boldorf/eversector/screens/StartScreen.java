@@ -105,7 +105,7 @@ public class StartScreen extends Screen
     
     private void setUpTerminal()
     {
-        LinkedList<ColorString> contentList = new LinkedList<>();
+        List<ColorString> contentList = new LinkedList<>();
         contentList.add(new ColorString(
                 "Enter the name to use throughout all of your games."));
         
@@ -133,7 +133,7 @@ public class StartScreen extends Screen
         String infoLine = "(C) " + COPYRIGHT_YEAR + " " + new String(DEVELOPER)
                 + " " + padding + VERSION;
         
-        LinkedList<String> titleArt = new LinkedList<>();
+        List<String> titleArt = new LinkedList<>();
         
         // Comment above is final form; print is distorted by extra backslashes
         titleArt.add(" __________               ________          _____              ");

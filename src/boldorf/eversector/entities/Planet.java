@@ -218,7 +218,7 @@ public class Planet extends CelestialBody implements ColorStringObject
      */
     public Region getRandomRegion(Faction faction)
     {
-        ArrayList<Region> unclaimedRegions = new ArrayList<>();
+        List<Region> unclaimedRegions = new ArrayList<>();
         
         for (Region[] row: regions)
             for (Region region: row)
@@ -230,7 +230,7 @@ public class Planet extends CelestialBody implements ColorStringObject
     
     public Region getRandomOreRegion()
     {
-        ArrayList<Region> oreRegions = new ArrayList<>();
+        List<Region> oreRegions = new ArrayList<>();
         
         for (Region[] row: regions)
             for (Region region: row)

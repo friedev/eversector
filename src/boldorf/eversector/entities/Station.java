@@ -377,7 +377,7 @@ public class Station extends CelestialBody implements ColorStringObject
         
         // Modules must be copied to an ArrayList first to avoid problems with
         // array lengths
-        ArrayList<Module> moduleList = new ArrayList<>();
+        List<Module> moduleList = new ArrayList<>();
         
         for (Module module: MODULES)
         {
@@ -420,7 +420,7 @@ public class Station extends CelestialBody implements ColorStringObject
         List<String> modulePaths = FileManager.getFilesInFolder(Paths.MODULES);
         List<String> weaponPaths = FileManager.getFilesInFolder(Paths.WEAPONS);
         
-        ArrayList<Module> list = new ArrayList<>();
+        List<Module> list = new ArrayList<>();
         
         for (String modulePath: modulePaths)
             list.add(new Module(FileManager.load(modulePath)));
@@ -452,7 +452,7 @@ public class Station extends CelestialBody implements ColorStringObject
                     "Number of resources and expanders do not match.");
         }
         
-        ArrayList<BaseResource> list = new ArrayList<>();
+        List<BaseResource> list = new ArrayList<>();
         
         for (int i = 0; i < resourcePaths.size(); i++)
         {

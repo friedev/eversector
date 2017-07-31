@@ -806,7 +806,7 @@ public class Sector extends Nameable
     
     public List<ColorString> getOrbitContents(int orbit)
     {
-        LinkedList<ColorString> contents = new LinkedList<>();
+        List<ColorString> contents = new LinkedList<>();
         if (planets[orbit - 1] != null)
             contents.add(planets[orbit - 1].toColorString());
         

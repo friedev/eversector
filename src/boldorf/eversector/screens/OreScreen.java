@@ -18,7 +18,7 @@ public class OreScreen extends ConfirmationScreen
     public OreScreen(Display display)
     {
         super(display);
-        LinkedList<ColorString> list = new LinkedList<>();
+        List<ColorString> list = new LinkedList<>();
         for (Ore ore: Main.map.getOreTypes())
         {
             list.add(new ColorString(ore.toString() + ": "
