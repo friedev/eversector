@@ -133,17 +133,26 @@ public class Map
     public int getTurn()
         {return turn;}
     
-    public int getMinY()
-        {return -offset;}
+    public int getWidth()
+        {return map[0].length;}
     
-    public int getMaxY()
-        {return (map.length - 1) - offset;}
+    public int getHeight()
+        {return map.length;}
+    
+    public int getOffset()
+        {return offset;}
     
     public int getMinX()
         {return -offset;}
     
     public int getMaxX()
         {return (map[0].length - 1) - offset;}
+    
+    public int getMinY()
+        {return -offset;}
+    
+    public int getMaxY()
+        {return (map.length - 1) - offset;}
     
     public Sector sectorAt(int x, int y)
         {return map[-y + offset][x + offset];}
@@ -172,18 +181,25 @@ public class Map
     public boolean contains(Coord p)
         {return contains(p.x, p.y);}
     
+    public double[][] getLightMap()
+    {
+        double[][] lightMap = new double[map.length][map[0].length];
+        for (double[] row: lightMap)
+            Arrays.fill(row, 0.0);
+        return lightMap;
+    }
+    
     /**
      * Sets the player to a designated ship.
-     * @param p the ship to become the player
+     * @param player the ship to become the player
      */
-    public void setPlayer(Ship p)
-        {player = p;}
+    public void setPlayer(Ship player)
+        {this.player = player;}
     
     /** Creates the player, the starting sector, and the player's faction. */
     public void createNewPlayer()
     {
-        SectorLocation location = new Location(this, Coord.get(0, 0))
-                .enterSector();
+        SectorLocation location = new Location(this, getCenter()).enterSector();
         location =
                 location.setOrbit(location.getSector().getRandomStationOrbit());
         Faction faction = location.getStation().getFaction();

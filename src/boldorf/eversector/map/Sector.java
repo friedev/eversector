@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import squidpony.squidmath.Coord;
 
 /** A location on the map, possibly containing a star or station. */
 public class Sector extends Nameable
@@ -582,7 +581,7 @@ public class Sector extends Nameable
      * @return true if the sector's coordinates are both zero
      */
     public boolean isCenter()
-        {return location.getCoords().equals(Coord.get(0, 0));}
+        {return location.getCoords().equals(location.getMap().getCenter());}
     
     /**
      * Returns the first ship found with the given name.

@@ -6,12 +6,14 @@ import boldorf.eversector.entities.locations.PlanetLocation;
 import boldorf.eversector.entities.locations.SectorLocation;
 import boldorf.eversector.entities.locations.StationLocation;
 import boldorf.eversector.items.Module;
+import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
 import boldorf.eversector.storage.Resources;
 import boldorf.util.Utility;
 import java.util.List;
+import squidpony.squidmath.Coord;
 
 /**
  * 
@@ -226,7 +228,28 @@ public class AI
             }
         }
         
-        // TODO search for planets in other sectors
+        List<Coord> fov = ship.getFOV();
+        fov.sort(Utility.createDistanceComparator(
+                ship.getLocation().getCoords()));
+        Map map = ship.getLocation().getMap();
+        for (Coord coord: fov)
+        {
+            if (!map.contains(coord))
+                continue;
+            
+            Sector sector = map.sectorAt(coord);
+            if (Sector.EMPTY.equals(sector.getType()))
+                continue;
+            
+            for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
+            {
+                SectorLocation planetLocation = getPlanetDestination(
+                        sector.getPlanetAt(orbit));
+                if (planetLocation != null)
+                    return planetLocation;
+            }
+        }
+        
         return null;
     }
     
@@ -276,7 +299,29 @@ public class AI
             }
         }
         
-        // TODO search for stations in other sectors
+        
+        List<Coord> fov = ship.getFOV();
+        fov.sort(Utility.createDistanceComparator(
+                ship.getLocation().getCoords()));
+        Map map = ship.getLocation().getMap();
+        for (Coord coord: fov)
+        {
+            if (!map.contains(coord))
+                continue;
+            
+            Sector sector = map.sectorAt(coord);
+            if (!Sector.STATION_SYSTEM.equals(sector.getType()))
+                continue;
+            
+            for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
+            {
+                StationLocation stationLocation = getStationDestination(
+                        sector.getStationAt(orbit));
+                if (stationLocation != null)
+                    return stationLocation;
+            }
+        }
+        
         return null;
     }
     

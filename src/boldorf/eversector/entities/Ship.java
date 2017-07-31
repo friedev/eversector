@@ -32,6 +32,7 @@ import static boldorf.eversector.Main.addMessage;
 import static boldorf.eversector.Main.playSoundEffect;
 import boldorf.eversector.entities.locations.*;
 import boldorf.eversector.storage.Paths;
+import squidpony.squidgrid.FOV;
 
 /** A starship which can travel through and interact with the map. */
 public class Ship extends Nameable implements ColorStringObject,
@@ -397,7 +398,6 @@ public class Ship extends Nameable implements ColorStringObject,
         location = destination;
     }
     
-    /*
     public List<Coord> getFOV(double radius)
     {
         double[][] light = new FOV().calculateFOV(
@@ -415,7 +415,6 @@ public class Ship extends Nameable implements ColorStringObject,
     
     public List<Coord> getFOV()
         {return getFOV(FOV_RADIUS);}
-    */
     
     /**
      * Generates a list of the ship's properties and returns them.
