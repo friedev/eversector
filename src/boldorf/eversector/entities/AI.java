@@ -99,6 +99,9 @@ public class AI
     private boolean performStationAction()
     {
         sellDuplicates();
+        buyResources();
+        if (ship.claim())
+            return true;
         buyItems(); // TODO replace with a loop
         buyExpanders();
         return false;
@@ -123,15 +126,17 @@ public class AI
         }
     }
     
-    /** Buys an item from a list in order of importance. */
-    private void buyItems()
+    private void buyResources()
     {
         ship.buyResource(Resources.ORE, -ship.getMaxSellAmount(Resources.ORE));
         ship.buyResource(Resources.FUEL, ship.getMaxBuyAmount(Resources.FUEL));
         ship.buyResource(Resources.HULL, ship.getMaxBuyAmount(Resources.HULL));
         ship.buyResource(Resources.ENERGY,
                 ship.getMaxBuyAmount(Resources.ENERGY));
-        
+    }
+    
+    private void buyItems()
+    {
         if (!ship.hasModule(Actions.PULSE))
             ship.buyModule(Actions.PULSE);
         
@@ -148,7 +153,6 @@ public class AI
             ship.buyModule(Actions.REFINE);
     }
     
-    /** Purchases the expander with the highest priority (intended for NPCs). */
     private void buyExpanders()
     {
         int tanks  = ship.getResource(Resources.FUEL  ).getNExpanders();
