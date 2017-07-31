@@ -682,20 +682,14 @@ public class Map
         // If there are only two factions, they will always be at war
         if (factions.length == 2)
         {
-            Relationship r = new Relationship(factions[0], factions[1], WAR);
-            r.addToFactions();
+            new Relationship(factions[0], factions[1], WAR).addToFactions();
             return;
         }
         
         // Will pair up all factions with no duplicates
         for (int i = 0; i < factions.length; i++)
-        {
             for (int j = i + 1; j < factions.length; j++)
-            {
-                Relationship r = new Relationship(factions[i], factions[j]);
-                r.addToFactions();
-            }
-        }
+                new Relationship(factions[i], factions[j]).addToFactions();
     }
     
     private Ore[] generateOreTypes()
