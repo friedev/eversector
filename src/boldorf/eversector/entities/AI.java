@@ -64,13 +64,11 @@ public class AI
             }
         }
         
-        if (seekDestination())
-            return;
-        
-        updateDestination();
+        if (!destinationIsValid())
+            updateDestination();
         
         if (!seekDestination())
-            distressOrDestroy();
+            performEmergencyAction();
     }
     
     private boolean performSectorAction()
@@ -151,8 +149,14 @@ public class AI
         if (!ship.hasModule(Actions.SHIELD))
             ship.buyModule(Actions.SHIELD);
         
+        if (!ship.hasModule(Actions.WARP))
+            ship.buyModule(Actions.WARP);
+        
         if (!ship.hasModule(Actions.REFINE))
             ship.buyModule(Actions.REFINE);
+        
+        if (!ship.hasModule(Actions.SOLAR))
+            ship.buyModule(Actions.SOLAR);
     }
     
     private void buyExpanders()
@@ -336,10 +340,16 @@ public class AI
         return null;
     }
     
+    private boolean destinationIsValid()
+    {
+        return !(destination == null ||
+                ship.getLocation().equals(destination) ||
+                destination instanceof BattleLocation);
+    }
+    
     private boolean seekDestination()
     {
-        if (destination == null || ship.getLocation().equals(destination) ||
-                destination instanceof BattleLocation)
+        if (!destinationIsValid())
             return false;
         
         if (ship.isDocked())
@@ -387,17 +397,19 @@ public class AI
         if (ship.getLocation().getCoord().equals(destination.getCoord()))
             return ship.enter();
         
+        if (!destination.getCoord().isAdjacent(ship.getLocation().getCoord()) &&
+                ship.warpTo(destination.getCoord()))
+            return true;
+        
         return ship.burn(Utility.toGoToCardinal(ship.getLocation().getCoord(),
                 destination.getCoord()));
     }
     
-    /**
-     * Distress if respected enough, otherwise destroy the ship (intended for
-     * NPCs).
-     */
-    private void distressOrDestroy()
+    private void performEmergencyAction()
     {
-        if (ship.canDistress())
+        if (ship.refine())
+            return;
+        else if (ship.canDistress())
             ship.distress();
         else
             ship.destroy(false);
