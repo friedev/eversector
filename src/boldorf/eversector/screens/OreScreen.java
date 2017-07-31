@@ -9,6 +9,7 @@ import boldorf.eversector.Main;
 import boldorf.eversector.entities.Ore;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
+import java.util.List;
 
 /** A popup Screen used for temporarily displaying ore values. */
 public class OreScreen extends ConfirmationScreen
