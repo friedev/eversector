@@ -50,7 +50,7 @@ public class Ship extends Nameable implements ColorStringObject,
     public static final String CLOAKED   = "cloaked";
     
     /** The radius of the FOV without any scanners. */
-    public static final double FOV_RADIUS = 1.0;
+    public static final double FOV_RADIUS = 1.1;
     
     /** The amount of credits gained by sending a distress signal. */
     public static final int DISTRESS_CREDITS = 100;
@@ -400,15 +400,18 @@ public class Ship extends Nameable implements ColorStringObject,
     
     public List<Coord> getFOV(double radius)
     {
+        int offset = getLocation().getMap().getOffset();
         double[][] light = new FOV().calculateFOV(
                 getLocation().getMap().getLightMap(),
-                getLocation().getCoords().x, getLocation().getCoords().y,
+                getLocation().getCoords().x + offset,
+                getLocation().getCoords().y + offset,
                 radius);
         
         List<Coord> fov = new ArrayList<>();
         for (int y = 0; y < light.length; y++)
             for (int x = 0; x < light[y].length; x++)
-                fov.add(Coord.get(x, y));
+                if (light[y][x] > 0.0)
+                    fov.add(Coord.get(y - offset, x - offset));
         
         return fov;
     }
