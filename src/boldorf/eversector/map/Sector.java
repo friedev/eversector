@@ -577,13 +577,6 @@ public class Sector extends Nameable
         {return usedLetters.remove(letter);}
     
     /**
-     * Returns true if this sector is the center of the map.
-     * @return true if the sector's coordinates are both zero
-     */
-    public boolean isCenter()
-        {return location.getCoords().equals(location.getMap().getCenter());}
-    
-    /**
      * Returns the first ship found with the given name.
      * @param name the name of the ship to find
      * @return the first ship found with the given name, null if not found

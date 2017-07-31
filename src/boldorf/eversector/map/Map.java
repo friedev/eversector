@@ -109,8 +109,7 @@ public class Map
         map      = new Sector[size * 2 + 1][size * 2 + 1];
         offset   = (int) Math.floor((double) map.length / 2.0);
         ships    = new LinkedList<>();
-        factions = new Faction[rng.nextInt(FACTION_RANGE)
-                 + MIN_FACTIONS];
+        factions = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
         designations = new LinkedList<>();
         oreTypes = generateOreTypes();
         turn = -SIMULATED_TURNS;
@@ -118,7 +117,6 @@ public class Map
         // Factions must be created first so they can be assigned to ships
         createFactions();
         init();
-        sectorAt(0, 0).setType(Sector.STATION_SYSTEM);
     }
     
     public Sector[][] toArray()
@@ -199,9 +197,17 @@ public class Map
     /** Creates the player, the starting sector, and the player's faction. */
     public void createNewPlayer()
     {
-        SectorLocation location = new Location(this, getCenter()).enterSector();
-        location =
-                location.setOrbit(location.getSector().getRandomStationOrbit());
+        List<Coord> stationSystems = new LinkedList<>();
+        for (Sector[] row: map)
+            for (Sector sector: row)
+                if (Sector.STATION_SYSTEM.equals(sector.getType()))
+                    stationSystems.add(sector.getLocation().getCoords());
+        
+        SectorLocation location = new Location(this,
+                rng.getRandomElement(stationSystems)).enterSector();
+        location = location.setOrbit(location.getSector()
+                .getRandomStationOrbit());
+        
         Faction faction = location.getStation().getFaction();
         player = new Ship("Player", location, faction);
         player.setAI(null);

@@ -169,11 +169,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 if (sector.getShipsAt(orbit).size() <= 1)
                     break;
                 
-                if (sector.isCenter())
-                {
-                    popup = new CenterAttackScreen(getDisplay());
-                }
-                else if (sector.getShipsAt(orbit).size() == 2)
+                if (sector.getShipsAt(orbit).size() == 2)
                 {
                     return new BattleScreen(getDisplay(), player.startBattle(
                             sector.getFirstOtherShip(player)), true);

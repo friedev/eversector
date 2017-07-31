@@ -9,7 +9,6 @@ public abstract class Reputations
     LEAVE         = -50,
     KILL_ENEMY    = 75,
     KILL_ALLY     = -200,
-    CENTER_ATTACK = -125,
     CONVERT       = 100,
     CLAIM         = 175,
     CLAIM_ALLY    = 100,
