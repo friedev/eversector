@@ -29,7 +29,7 @@ public class BattleLocation extends SectorLocation
         
         BattleLocation cast = (BattleLocation) o;
         return getMap() == cast.getMap() &&
-                getCoords().equals(cast.getCoords()) &&
+                getCoord().equals(cast.getCoord()) &&
                 getOrbit() == cast.getOrbit();
     }
 }

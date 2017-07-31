@@ -17,35 +17,35 @@ public class Location
     public static final String STATION_LOCATION = "docked";
     
     private final Map map;
-    private final Coord coords;
+    private final Coord coord;
     
-    public Location(Map map, Coord coords)
+    public Location(Map map, Coord coord)
     {
-        if (!map.contains(coords))
+        if (!map.contains(coord))
         {
             throw new IndexOutOfBoundsException(
-                    "Given coords not found on the map");
+                    "Given coord not found on the map");
         }
         
         this.map = map;
-        this.coords = coords;
+        this.coord = coord;
     }
     
     public Location(Location copying)
-        {this(copying.map, copying.coords);}
+        {this(copying.map, copying.coord);}
     
     public Map getMap()
         {return map;}
     
-    public Coord getCoords()
-        {return coords;}
+    public Coord getCoord()
+        {return coord;}
     
     public Sector getSector()
-        {return map.sectorAt(coords);}
+        {return map.sectorAt(coord);}
     
     public Location move(Direction direction)
     {
-        return moveTo(coords.translate(Direction.getDirection(direction.deltaX,
+        return moveTo(coord.translate(Direction.getDirection(direction.deltaX,
                 -direction.deltaY)));
     }
     
@@ -72,7 +72,7 @@ public class Location
         else
             params.append(LOCATION);
         
-        params.append("; ").append(Utility.coordToOrderedPair(coords));
+        params.append("; ").append(Utility.coordToOrderedPair(coord));
         
         if (!(this instanceof SectorLocation))
             return params.toString();
@@ -82,7 +82,7 @@ public class Location
         if (this instanceof PlanetLocation)
         {
             params.append("; ").append(((PlanetLocation) this)
-                    .getRegionCoords());
+                    .getRegionCoord());
         }
         
         return params.toString();
@@ -92,8 +92,8 @@ public class Location
     {
         String[] params = value.split("; ");
         
-        Coord coords = Utility.parseCoord(params[1]);
-        Location location = new Location(map, coords);
+        Coord coord = Utility.parseCoord(params[1]);
+        Location location = new Location(map, coord);
         
         if (LOCATION.equals(params[0]))
             return location;
@@ -118,6 +118,6 @@ public class Location
         if (o instanceof SectorLocation)
             return false;
         
-        return map == o.map && coords.equals(o.coords);
+        return map == o.map && coord.equals(o.coord);
     }
 }

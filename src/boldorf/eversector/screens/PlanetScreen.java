@@ -166,8 +166,8 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         List<ColorString> colorStrings = planet.toColorStrings();
         if (isLooking())
         {
-            colorStrings.get(cursor.getRegionCoords().y)
-                    .getColorCharAt(cursor.getRegionCoords().x)
+            colorStrings.get(cursor.getRegionCoord().y)
+                    .getColorCharAt(cursor.getRegionCoord().x)
                     .setBackground(COLOR_SELECTION_BACKGROUND);
         }
         contents.addAll(colorStrings);

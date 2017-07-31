@@ -403,8 +403,8 @@ public class Ship extends Nameable implements ColorStringObject,
         int offset = getLocation().getMap().getOffset();
         double[][] light = new FOV().calculateFOV(
                 getLocation().getMap().getLightMap(),
-                getLocation().getCoords().x + offset,
-                getLocation().getCoords().y + offset,
+                getLocation().getCoord().x + offset,
+                getLocation().getCoord().y + offset,
                 radius);
         
         List<Coord> fov = new ArrayList<>();
@@ -1526,7 +1526,7 @@ public class Ship extends Nameable implements ColorStringObject,
     
     /** Reveals the player's sector (discovers surrounding sectors). */
     public void reveal()
-        {location.getMap().reveal(location.getCoords());}
+        {location.getMap().reveal(location.getCoord());}
     
     /**
      * Performs the scanning action, although all results must be performed
@@ -1659,17 +1659,17 @@ public class Ship extends Nameable implements ColorStringObject,
     
     /**
      * Lands on the planet at the ship's orbit, if possible.
-     * @param coords the index of the region to land in
+     * @param coord the index of the region to land in
      * @return true if the landing was successful
      */
-    public boolean land(Coord coords)
+    public boolean land(Coord coord)
     {
         if (!canLand())
             return false;
         
         Planet planet = getSectorLocation().getPlanet();
         
-        if (!planet.contains(coords))
+        if (!planet.contains(coord))
         {
             addPlayerError("The specified region was not found on " + planet
                     + ".");
@@ -1681,7 +1681,7 @@ public class Ship extends Nameable implements ColorStringObject,
         
         getResource(Actions.LAND.getResource())
                 .changeAmount(-Actions.LAND.getCost());
-        setLocation(getSectorLocation().land(coords));
+        setLocation(getSectorLocation().land(coord));
         return true;
     }
     

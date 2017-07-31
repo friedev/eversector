@@ -201,7 +201,7 @@ public class Map
         for (Sector[] row: map)
             for (Sector sector: row)
                 if (Sector.STATION_SYSTEM.equals(sector.getType()))
-                    stationSystems.add(sector.getLocation().getCoords());
+                    stationSystems.add(sector.getLocation().getCoord());
         
         SectorLocation location = new Location(this,
                 rng.getRandomElement(stationSystems)).enterSector();
@@ -353,21 +353,21 @@ public class Map
      * @param sector the sector whose location will be used in the reveal
      */
     public void reveal(Sector sector)
-        {reveal(sector.getLocation().getCoords());}
+        {reveal(sector.getLocation().getCoord());}
     
     /**
      * Scans the sector by revealing its surroundings
      * @param sector the sector whose location will be used in the scan
      */
     public void scan(Sector sector)
-        {scan(sector.getLocation().getCoords());}
+        {scan(sector.getLocation().getCoord());}
     
     /** Discovers all sectors. */
     public void discoverAll()
     {
         for (int y = 0; y < map.length; y++)
             for (int x = 0; x < map[y].length; x++)
-                sectorAt(map[y][x].getLocation().getCoords()).discover();
+                sectorAt(map[y][x].getLocation().getCoord()).discover();
     }
     
     /**
@@ -466,7 +466,7 @@ public class Map
             {
                 ColorChar symbol = new ColorChar(showStars ?
                         map[y][x].getStarSymbol() : map[y][x].getSymbol());
-                if (map[y][x].getLocation().getCoords().equals(cursor))
+                if (map[y][x].getLocation().getCoord().equals(cursor))
                     symbol.setBackground(COLOR_SELECTION_BACKGROUND);
                 line.add(symbol);
             }

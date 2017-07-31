@@ -66,8 +66,8 @@ public class SectorLocation extends Location
     public Location escapeSector()
         {return orbit == getSector().getOrbits() ? new Location(this) : null;}
     
-    public PlanetLocation land(Coord regionCoords)
-        {return new PlanetLocation(this, regionCoords);}
+    public PlanetLocation land(Coord regionCoord)
+        {return new PlanetLocation(this, regionCoord);}
     
     public StationLocation dock()
         {return new StationLocation(this);}
@@ -84,6 +84,6 @@ public class SectorLocation extends Location
         
         SectorLocation cast = (SectorLocation) o;
         return getMap() == cast.getMap() &&
-                getCoords().equals(cast.getCoords()) && orbit == cast.orbit;
+                getCoord().equals(cast.getCoord()) && orbit == cast.orbit;
     }
 }

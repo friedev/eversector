@@ -170,8 +170,8 @@ public class Sector extends Nameable
             }
         }
         
-        String locationString = "(" + location.getCoords().x + ","
-                + location.getCoords().y + ")";
+        String locationString = "(" + location.getCoord().x + ","
+                + location.getCoord().y + ")";
         
         // There was a tie in control, so no faction rules this sector
         if (index == -1)

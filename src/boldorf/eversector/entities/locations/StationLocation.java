@@ -19,7 +19,7 @@ public class StationLocation extends SectorLocation
         
         StationLocation cast = (StationLocation) o;
         return getMap() == cast.getMap() &&
-                getCoords().equals(cast.getCoords()) &&
+                getCoord().equals(cast.getCoord()) &&
                 getOrbit() == cast.getOrbit();
     }
 }

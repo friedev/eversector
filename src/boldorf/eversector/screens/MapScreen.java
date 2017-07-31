@@ -125,13 +125,13 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                         break;
                     warping = true;
                 case KeyEvent.VK_L:
-                    cursor = player.getLocation().getCoords();
+                    cursor = player.getLocation().getCoord();
                     break;
                 case KeyEvent.VK_S:
                     if (player.scan())
                     {
                         nextTurn = true;
-                        map.scan(player.getLocation().getCoords());
+                        map.scan(player.getLocation().getCoord());
                         playSoundEffect(SCAN);
                     }
                     break;
@@ -183,7 +183,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 player.hasModule(Actions.SCAN) && Main.showStars, cursor));
         
         window.addSeparator(new Line(true, 2, 1));
-        Coord location = isLooking() ? cursor: player.getLocation().getCoords();
+        Coord location = isLooking() ? cursor: player.getLocation().getCoord();
         if (!map.sectorAt(location).isDiscovered())
             contents.add(new ColorString("Undiscovered Sector"));
         else

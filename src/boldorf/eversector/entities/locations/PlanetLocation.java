@@ -9,29 +9,29 @@ import squidpony.squidmath.Coord;
  */
 public class PlanetLocation extends SectorLocation
 {
-    private final Coord regionCoords;
+    private final Coord regionCoord;
     
-    public PlanetLocation(SectorLocation location, Coord regionCoords)
+    public PlanetLocation(SectorLocation location, Coord regionCoord)
     {
         super(location);
         
-        if (!getPlanet().contains(regionCoords))
+        if (!getPlanet().contains(regionCoord))
         {
             throw new IndexOutOfBoundsException(
-                    "Given coords not found on planet");
+                    "Given coord not found on planet");
         }
         
-        this.regionCoords = regionCoords;
+        this.regionCoord = regionCoord;
     }
     
     public PlanetLocation(PlanetLocation copying)
-        {this(copying, copying.regionCoords);}
+        {this(copying, copying.regionCoord);}
     
-    public Coord getRegionCoords()
-        {return regionCoords;}
+    public Coord getRegionCoord()
+        {return regionCoord;}
     
     public Region getRegion()
-        {return getPlanet().regionAt(regionCoords);}
+        {return getPlanet().regionAt(regionCoord);}
     
     public SectorLocation takeoff()
         {return new SectorLocation(this);}
@@ -41,20 +41,20 @@ public class PlanetLocation extends SectorLocation
         if (direction.isDiagonal())
             return null;
         
-        Coord destination = regionCoords.translate(direction);
+        Coord destination = regionCoord.translate(direction);
         if (getPlanet().contains(destination))
             return new PlanetLocation(this, destination);
         
         if (direction.hasUp() || direction.hasDown())
         {
-            return new PlanetLocation(this, regionCoords.setX(getPlanet()
-                    .getOppositeSide(regionCoords.x)));
+            return new PlanetLocation(this, regionCoord.setX(getPlanet()
+                    .getOppositeSide(regionCoord.x)));
         }
         
         return direction.hasRight() ?
-                new PlanetLocation(this, regionCoords.setX(0)) :
+                new PlanetLocation(this, regionCoord.setX(0)) :
                 new PlanetLocation(this,
-                        regionCoords.setX(getPlanet().getNColumns() - 1));
+                        regionCoord.setX(getPlanet().getNColumns() - 1));
     }
     
     @Override
@@ -65,8 +65,8 @@ public class PlanetLocation extends SectorLocation
         
         PlanetLocation cast = (PlanetLocation) o;
         return getMap() == cast.getMap() &&
-                getCoords().equals(cast.getCoords()) &&
+                getCoord().equals(cast.getCoord()) &&
                 getOrbit() == cast.getOrbit() &&
-                regionCoords.equals(cast.regionCoords);
+                regionCoord.equals(cast.regionCoord);
     }
 }

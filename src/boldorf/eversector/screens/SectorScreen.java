@@ -236,8 +236,8 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
         
         contents.add(new ColorString(sector.toString()));
         contents.add(new ColorString("Location: ")
-                .add(new ColorString(sector.getLocation().getCoords().x + ","
-                        + sector.getLocation().getCoords().y, COLOR_FIELD)));
+                .add(new ColorString(sector.getLocation().getCoord().x + ","
+                        + sector.getLocation().getCoord().y, COLOR_FIELD)));
         contents.add(new ColorString("Star: ").add(sector.getStar()));
         contents.add(new ColorString("Ruler: ")
                 .add(sector.isClaimed() ? sector.getFaction().toColorString() :

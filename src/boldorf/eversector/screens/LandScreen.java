@@ -67,7 +67,7 @@ public class LandScreen extends ConfirmationScreen
     @Override
     public Screen onConfirm()
     {
-        if (player.land(selection.getRegionCoords()))
+        if (player.land(selection.getRegionCoord()))
         {
             playSoundEffect(ENGINE);
             player.getLocation().getMap().nextTurn();
@@ -84,8 +84,8 @@ public class LandScreen extends ConfirmationScreen
         Planet planet = player.getSectorLocation().getPlanet();
         List<ColorString> colorStrings = planet.toColorStrings();
         
-        Coord regionCoords = selection.getRegionCoords();
-        colorStrings.get(regionCoords.y).getColorCharAt(regionCoords.x)
+        Coord regionCoord = selection.getRegionCoord();
+        colorStrings.get(regionCoord.y).getColorCharAt(regionCoord.x)
                 .setBackground(COLOR_SELECTION_BACKGROUND);
         contents.addAll(colorStrings);
         

@@ -230,7 +230,7 @@ public class AI
         
         List<Coord> fov = ship.getFOV();
         fov.sort(Utility.createDistanceComparator(
-                ship.getLocation().getCoords()));
+                ship.getLocation().getCoord()));
         Map map = ship.getLocation().getMap();
         for (Coord coord: fov)
         {
@@ -302,7 +302,7 @@ public class AI
         
         List<Coord> fov = ship.getFOV();
         fov.sort(Utility.createDistanceComparator(
-                ship.getLocation().getCoords()));
+                ship.getLocation().getCoord()));
         Map map = ship.getLocation().getMap();
         for (Coord coord: fov)
         {
@@ -352,8 +352,8 @@ public class AI
                     ((SectorLocation) destination).getPlanet())
             {
                 return ship.relocate(Utility.toGoToCardinal(
-                        ship.getPlanetLocation().getRegionCoords(),
-                        ((PlanetLocation) destination).getRegionCoords()));
+                        ship.getPlanetLocation().getRegionCoord(),
+                        ((PlanetLocation) destination).getRegionCoord()));
             }
             
             return ship.takeoff();
@@ -373,7 +373,7 @@ public class AI
                     if (destination instanceof PlanetLocation)
                     {
                         return ship.land(((PlanetLocation) destination)
-                                .getRegionCoords());
+                                .getRegionCoord());
                     }
                 }
                 
@@ -384,11 +384,11 @@ public class AI
             return ship.orbit(true);
         }
         
-        if (ship.getLocation().getCoords().equals(destination.getCoords()))
+        if (ship.getLocation().getCoord().equals(destination.getCoord()))
             return ship.enter();
         
-        return ship.burn(Utility.toGoToCardinal(ship.getLocation().getCoords(),
-                destination.getCoords()));
+        return ship.burn(Utility.toGoToCardinal(ship.getLocation().getCoord(),
+                destination.getCoord()));
     }
     
     /**
@@ -556,13 +556,13 @@ public class AI
                     ship.getHigherLevel().equals(candidate.getHigherLevel()))
                 preferences[i] += 2;
             
-            if (ship.getLocation().getCoords().equals(
-                    candidate.getLocation().getCoords()))
+            if (ship.getLocation().getCoord().equals(
+                    candidate.getLocation().getCoord()))
             {
                 preferences[i] += 3;
             }
-            else if (ship.getLocation().getCoords()
-                    .isAdjacent(candidate.getLocation().getCoords()))
+            else if (ship.getLocation().getCoord()
+                    .isAdjacent(candidate.getLocation().getCoord()))
             {
                 preferences[i]++;
             }

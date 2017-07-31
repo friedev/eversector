@@ -245,7 +245,7 @@ public class Planet extends CelestialBody implements ColorStringObject
         Region oreRegion = getRandomOreRegion();
         if (oreRegion == null)
             return getRandomCoord();
-        return oreRegion.getLocation().getRegionCoords();
+        return oreRegion.getLocation().getRegionCoord();
     }
     
     /**
