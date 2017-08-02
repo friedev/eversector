@@ -1395,7 +1395,7 @@ public class Ship extends Nameable implements ColorStringObject,
             return false;
         }
         
-        if (Sector.EMPTY.equals(location.getSector().getType()))
+        if (location.getSector().isEmpty())
         {
             addPlayerError("There is nothing to orbit in this sector.");
             return false;
@@ -1566,7 +1566,7 @@ public class Ship extends Nameable implements ColorStringObject,
             return false;
         }
         
-        if (Sector.EMPTY.equals(sector.getType()))
+        if (sector.isEmpty())
         {
             addPlayerError("There is nothing in " + sector + ".");
             return false;

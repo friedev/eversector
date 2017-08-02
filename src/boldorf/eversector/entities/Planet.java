@@ -9,7 +9,6 @@ import boldorf.eversector.entities.locations.PlanetLocation;
 import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
-import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.faction.Faction;
 import java.util.Arrays;
 import squidpony.squidmath.Coord;
@@ -45,11 +44,10 @@ public class Planet extends CelestialBody implements ColorStringObject
      * Creates a planet with a name, location, and faction.
      * @param name the name of the planet
      * @param location the location of the planet
-     * @param faction the faction that has claimed the planet
      */
-    public Planet(String name, SectorLocation location, Faction faction)
+    public Planet(String name, SectorLocation location)
     {
-        super(name, location, faction);
+        super(name, location, null);
         
         generateType();
         
@@ -58,14 +56,6 @@ public class Planet extends CelestialBody implements ColorStringObject
         else
             ores = null;
     }
-    
-    /**
-     * Creates an unclaimed planet with a name and location.
-     * @param name the name of the planet
-     * @param location the location of the planet
-     */
-    public Planet(String name, SectorLocation location)
-        {this(name, location, null);}
     
     public void init()
     {
@@ -380,15 +370,9 @@ public class Planet extends CelestialBody implements ColorStringObject
         int widthMultiplier = rng.nextInt(REGION_MULTIPLIER_RANGE) + 1;
         regions = new Region[widthMultiplier + 1][widthMultiplier * 2];
         for (int y = 0; y < regions.length; y++)
-        {
             for (int x = 0; x < regions[y].length; x++)
-            {
                 regions[y][x] = new Region(new PlanetLocation(getLocation(),
-                        Coord.get(x, y)), Sector.STATION_SYSTEM.equals(
-                        getLocation().getSector().getType()) ?
-                        getLocation().getMap().getRandomFaction() : null);
-            }
-        }
+                        Coord.get(x, y)));
         
         updateFaction();
     }

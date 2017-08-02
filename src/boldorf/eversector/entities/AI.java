@@ -242,7 +242,7 @@ public class AI
                 continue;
             
             Sector sector = map.sectorAt(coord);
-            if (Sector.EMPTY.equals(sector.getType()))
+            if (sector.isEmpty())
                 continue;
             
             for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
@@ -285,7 +285,7 @@ public class AI
                 return ship.getSectorLocation().dock();
             
             Sector sector = ship.getLocation().getSector();
-            if (Sector.STATION_SYSTEM.equals(sector.getType()))
+            if (sector.hasStations())
             {
                 int orbit = ship.getSectorLocation().getOrbit();
                 for (int offset = 1; offset < sector.getOrbits(); offset++)
@@ -314,7 +314,7 @@ public class AI
                 continue;
             
             Sector sector = map.sectorAt(coord);
-            if (!Sector.STATION_SYSTEM.equals(sector.getType()))
+            if (!sector.hasStations())
                 continue;
             
             for (int orbit = sector.getOrbits(); orbit > 0; orbit--)

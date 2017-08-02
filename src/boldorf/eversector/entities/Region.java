@@ -41,9 +41,8 @@ public class Region implements ColorStringObject
     /**
      * Generates a claimed region of the given faction on the given planet.
      * @param location the location of the region
-     * @param faction the faction that starts with control of the region
      */
-    public Region(PlanetLocation location, Faction faction)
+    public Region(PlanetLocation location)
     {
         if (location == null)
             throw new NullPointerException();
@@ -51,16 +50,9 @@ public class Region implements ColorStringObject
         this.ships    = new LinkedList<>();
         this.location = location;
         this.type     = generateType();
-        this.faction  = faction;
+        this.faction  = null;
         this.ore      = location.getPlanet().getRandomOre();
     }
-    
-    /**
-     * Generates an unclaimed region on the given planet.
-     * @param location the location of the region
-     */
-    public Region(PlanetLocation location)
-        {this(location, null);}
     
     @Override
     public String toString()

@@ -1,7 +1,6 @@
 package boldorf.eversector.map;
 
 import asciiPanel.AsciiPanel;
-import boldorf.util.Utility;
 import boldorf.eversector.entities.Planet;
 import boldorf.eversector.entities.Station;
 import boldorf.eversector.entities.Ship;
@@ -19,7 +18,6 @@ import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.entities.locations.Location;
 import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,22 +43,14 @@ public class Sector extends Nameable
     /** The maximum number of stations that will be generated. */
     public static final int MAX_STATIONS = 3;
     
-    /** The maximum number of orbits possible. */
-    public static final int MAX_ORBITS = 10;
-    
     /**
      * The minimum number of ships that will be allowed to exist in station
      * systems.
      */
     public static final int MIN_SHIPS = 4;
     
-    public static final String STATION_SYSTEM = "Station System";
-    public static final String STAR_SYSTEM    = "Star System";
-    public static final String EMPTY          = "Empty";
-    
     private Star          star;
     private Location      location;
-    private String        type;
     private Faction       faction;
     private Planet[]      planets;
     private Station[]     stations;
@@ -68,20 +58,18 @@ public class Sector extends Nameable
     private List<Integer> usedLetters;
     
     /**
-     * Creates a sector from a location and type.
+     * Creates a sector from a location.
      * @param location the sector's location
-     * @param type the type of sector
      */
-    public Sector(Location location, String type)
+    public Sector(Location location)
     {
         // Constructor is done this way so generateName() can be initialized
         super(new String());
         setNickname(Main.nameGenerator.generateName(2));
         
         this.location = location;
+        ships = new LinkedList<>();
         usedLetters = new LinkedList<>();
-        this.type = type != null && isValidType(type) ? type : generateType();
-        star = EMPTY.equals(type) ? null : Star.generate();
         
         // Generate a name that isn't used
         String name;
@@ -93,19 +81,33 @@ public class Sector extends Nameable
         location.getMap().addDesignation(name);
     }
     
-    /**
-     * Creates a sector from a location, randomly generating the type.
-     * @param location the sector's location
-     */
-    public Sector(Location location)
-        {this(location, null);}
-    
     public void init()
     {
-        generatePlanets();
-        generateStations();
-        generateShips();
-        updateFaction();
+        if (rng.nextBoolean())
+        {
+            star = Star.generate();
+            planets = new Planet[star.getPower()];
+            stations = new Station[star.getPower()];
+            
+            generatePlanets();
+            
+            if (rng.nextBoolean())
+            {
+                generateStations();
+                generateShips(rng.nextInt(MIN_SHIPS * 2) + MIN_SHIPS);
+            }
+            else
+            {
+                generateShips(rng.nextInt(MIN_SHIPS + 1));
+            }
+            
+            updateFaction();
+        }
+        else
+        {
+            planets = new Planet[0];
+            stations = new Station[0];
+        }
     }
     
     @Override
@@ -113,13 +115,39 @@ public class Sector extends Nameable
         {return "Sector " + super.toString();}
     
     public Location getLocation() {return location;       }
-    public String   getType()     {return type;           }
     public Faction  getFaction()  {return faction;        }
     public Star     getStar()     {return star;           }
     public boolean  isClaimed()   {return faction != null;}
     
     public int getOrbits()
         {return star == null ? 0 : star.getPower();}
+    
+    public boolean isEmpty()
+        {return star == null;} 
+    
+    public boolean hasPlanets()
+    {
+        if (isEmpty())
+            return false;
+        
+        for (Planet planet: planets)
+            if (planet != null)
+                return true;
+        
+        return false;
+    }
+    
+    public boolean hasStations()
+    {
+        if (isEmpty())
+            return false;
+        
+        for (Station station: stations)
+            if (station != null)
+                return true;
+        
+        return false;
+    }
     
     public boolean isDiscovered()
         {return Main.sectorsDiscovered.contains(this);}
@@ -137,7 +165,7 @@ public class Sector extends Nameable
      */
     public final void updateFaction()
     {
-        if (planets == null || stations == null)
+        if (isEmpty())
             return;
         
         Map map = location.getMap();
@@ -254,13 +282,13 @@ public class Sector extends Nameable
      */
     public ColorChar getTypeSymbol()
     {
-        switch (type)
-        {
-            case EMPTY:          return SYMBOL_EMPTY;
-            case STAR_SYSTEM:    return SYMBOL_STAR_SYSTEM;
-            case STATION_SYSTEM: return SYMBOL_STATION_SYSTEM;
-            default:             return SYMBOL_UNDISCOVERED;
-        }
+        if (isEmpty())
+            return SYMBOL_EMPTY;
+        if (hasStations())
+            return SYMBOL_STATION_SYSTEM;
+        if (hasPlanets())
+            return SYMBOL_STAR_SYSTEM;
+        return SYMBOL_UNDISCOVERED;
     }
     
     /**
@@ -395,46 +423,14 @@ public class Sector extends Nameable
     public boolean isStationAt(int orbit)
         {return getStationAt(orbit) != null;}
     
-    /**
-     * Changes the sector's type to t and regenerates its planets and stations.
-     * @param newType the name of the type
-     */
-    public void setType(String newType)
-    {
-        if (isValidType(newType) && !type.equals(newType))
-        {
-            String oldType = type;
-            type = newType;
-            star = EMPTY.equals(type) ? null : Star.generate();
-            generatePlanets();
-            generateStations();
-            
-            if ((EMPTY.equals(oldType) && !EMPTY.equals(type)) ||
-               (STAR_SYSTEM.equals(oldType) && STATION_SYSTEM.equals(type)))
-                generateShips();
-            
-            updateFaction();
-        }
-    }
-    
-    /** Randomly generates the sector's type. */
-    private String generateType()
-    {
-        return (String) Utility.select(rng,
-                new String[] {EMPTY, STAR_SYSTEM, STATION_SYSTEM},
-                new double[] {0.5, 0.3, 0.2});
-    }
-    
     /** Randomly generates the planets and their number. */
     private void generatePlanets()
     {
-        if (EMPTY.equals(type))
+        if (isEmpty())
         {
             planets = new Planet[0];
             return;
         }
-        
-        planets = new Planet[star.getPower()];
         
         // The (... - 1) + 2 is to ensure at least one planet
         for (int i = 0; i < rng.nextInt(Math.min(MAX_PLANETS,
@@ -446,19 +442,11 @@ public class Sector extends Nameable
                 j = rng.nextInt(star.getPower());
             } while (planets[j] != null);
             
-            // Only generate a faction for the planet if this is an inhabitted
-            // sector
-            Faction planetFaction;
-            if (STATION_SYSTEM.equals(type))
-                planetFaction = location.getMap().getRandomFaction();
-            else
-                planetFaction = null;
-            
             // Make a new planet with the sector's name and i's corresponding
             // letter, this sector, and j adjusted from a whole number to a
             // natural number
             planets[j] = new Planet(generateNameFor(i),
-                    new SectorLocation(getLocation(), j + 1), planetFaction);
+                    new SectorLocation(getLocation(), j + 1));
             planets[j].init();
         }
     }
@@ -466,17 +454,9 @@ public class Sector extends Nameable
     /** Randomly generates the stations and their number. */
     private void generateStations()
     {
-        if (EMPTY.equals(type))
+        if (isEmpty())
         {
             stations = new Station[0];
-            return;
-        }
-            
-        stations = new Station[star.getPower()];
-        
-        if (!STATION_SYSTEM.equals(type))
-        {
-            Arrays.fill(stations, null);
             return;
         }
         
@@ -504,25 +484,9 @@ public class Sector extends Nameable
     }
     
     /** Randomly generates any ships and their number. */
-    private void generateShips()
+    private void generateShips(int nShips)
     {
         ships = new LinkedList<>();
-        int nShips;
-        
-        switch (type)
-        {
-            case EMPTY:
-                return;
-            case STAR_SYSTEM:
-                nShips = rng.nextInt(MIN_SHIPS + 1);
-                break;
-            case STATION_SYSTEM:
-                nShips = rng.nextInt(MIN_SHIPS * 2) + MIN_SHIPS;
-                break;
-            default:
-                // NOT REACHED
-                return;
-        }
         
         for (int i = 0; i < nShips; i++)
         {
@@ -684,19 +648,18 @@ public class Sector extends Nameable
      */
     public int getRandomStationOrbit()
     {
-        if (!STATION_SYSTEM.equals(type))
-            return -1;
-        
         int nStations = 0;
         
         for (Station station: stations)
             if (station != null)
                 nStations++;
         
+        if (nStations == 0)
+            return -1;
+        
         int[] stationOrbits = new int[nStations];
         
         int nextSlot = 0;
-        
         for (int i = 0; i < stations.length; i++)
         {
             if (stations[i] != null)
@@ -821,24 +784,13 @@ public class Sector extends Nameable
     }
     
     /**
-     * Returns true if the given String is a valid type.
-     * @param t the String to validate
-     * @return true if the String matches one of the sector types
-     */
-    private static boolean isValidType(String t)
-    {
-        return (EMPTY.equals(t) || STAR_SYSTEM.equals(t) ||
-                                   STATION_SYSTEM.equals(t));
-    }
-    
-    /**
      * Returns true if a specified orbit is valid, meaning it ranges between 1
      * and the constant number of orbits.
      * @param orbit the orbit to validate
      * @return true if the orbit is between 1 and the constant number of orbits
      */
     public boolean isValidOrbit(int orbit)
-        {return orbit >= 1 && orbit <= star.getPower();}
+        {return !isEmpty() && orbit >= 1 && orbit <= star.getPower();}
     
     /**
      * Returns true if there are any planets or stations in this sector that can
@@ -847,7 +799,7 @@ public class Sector extends Nameable
      */
     public boolean hasClaimableTerritory()
     {
-        if (STATION_SYSTEM.equals(type))
+        if (hasStations())
             return true;
         
         for (Planet planet: planets)

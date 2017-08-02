@@ -187,6 +187,17 @@ public class Map
         return lightMap;
     }
     
+    public Sector getRandomStationSystem()
+    {
+        List<Sector> stationSystems = new LinkedList<>();
+        for (Sector[] row: map)
+            for (Sector sector: row)
+                if (sector.hasStations())
+                    stationSystems.add(sector);
+        
+        return rng.getRandomElement(stationSystems);
+    }
+    
     /**
      * Sets the player to a designated ship.
      * @param player the ship to become the player
@@ -200,11 +211,11 @@ public class Map
         List<Coord> stationSystems = new LinkedList<>();
         for (Sector[] row: map)
             for (Sector sector: row)
-                if (Sector.STATION_SYSTEM.equals(sector.getType()))
+                if (sector.hasStations())
                     stationSystems.add(sector.getLocation().getCoord());
         
-        SectorLocation location = new Location(this,
-                rng.getRandomElement(stationSystems)).enterSector();
+        SectorLocation location = new Location(this, getRandomStationSystem()
+                .getLocation().getCoord()).enterSector();
         location = location.setOrbit(location.getSector()
                 .getRandomStationOrbit());
         
@@ -241,7 +252,7 @@ public class Map
                 Sector sector = map[y][x];
                 
                 if (sector.getNShips() < Sector.MIN_SHIPS &&
-                    Sector.STATION_SYSTEM.equals(sector.getType()))
+                        sector.hasStations())
                 {
                     Station station =
                             sector.getStationAt(sector.getRandomStationOrbit());
