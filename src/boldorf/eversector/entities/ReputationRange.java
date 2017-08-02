@@ -5,29 +5,30 @@ import java.awt.Color;
 
 public enum ReputationRange
 {
-    HEROIC("Heroic", "Admires", AsciiPanel.brightYellow, 600,
-            Integer.MAX_VALUE),
-    RESPECTED("Respected", "Respects", AsciiPanel.brightGreen, 150, 599),
-    POSITIVE ("Positive", "Likes", AsciiPanel.green, 50, 149),
-    NEUTRAL  ("Neutral", "Ignores", null, -49, 49),
-    NEGATIVE ("Negative", "Dislikes", AsciiPanel.red, -149, -50),
-    DESPISED ("Despised", "Despises", AsciiPanel.brightRed, -599, -150),
-    INFAMOUS ("Infamous", "Loathes", AsciiPanel.brightMagenta,
-            Integer.MIN_VALUE, -600);
+    HEROIC   ("Heroic",    "Admires",  AsciiPanel.brightYellow,   0.75,  1.0 ),
+    RESPECTED("Respected", "Respects", AsciiPanel.brightGreen,    0.5,   0.75),
+    POSITIVE ("Positive",  "Likes",    AsciiPanel.green,          0.25,  0.5 ),
+    NEGATIVE ("Negative",  "Dislikes", AsciiPanel.red,           -0.25, -0.5 ),
+    DESPISED ("Despised",  "Despises", AsciiPanel.brightRed,     -0.5,  -0.75),
+    INFAMOUS ("Infamous",  "Loathes",  AsciiPanel.brightMagenta, -0.75, -1.0 ),
+    NEUTRAL  ("Neutral",   "Ignores",  null,                     -0.25,  0.25);
 
+    public static final ReputationRange DEFAULT = NEUTRAL;
+    
     private String adjective;
     private String verb;
     private Color  color;
-    private int    min;
-    private int    max;
+    private double min;
+    private double max;
 
-    ReputationRange(String adjective, String verb, Color color, int min, int max)
+    ReputationRange(String adjective, String verb, Color color, double min,
+            double max)
     {
         this.adjective = adjective;
         this.verb      = verb;
         this.color     = color;
         this.min       = min;
-        this.max        = max;
+        this.max       = max;
     }
 
     public String getAdjective()
@@ -39,20 +40,20 @@ public enum ReputationRange
     public Color getColor()
         {return color;}
 
-    public int getMinValue()
+    public double getMin()
         {return min;}
 
-    public int getMaxValue()
+    public double getMax()
         {return max;}
+
+    public double getMin(double maxReputation)
+        {return min * maxReputation;}
+
+    public double getMax(double maxReputation)
+        {return max * maxReputation;}
     
-    public boolean isInRange(int value)
-        {return value >= min && value <= max;}
-    
-    public static ReputationRange getRange(int value)
+    public boolean isInRange(int value, double maxReputation)
     {
-        for (ReputationRange range: ReputationRange.values())
-            if (range.isInRange(value))
-                return range;
-        return null;
+        return value >= getMin(maxReputation) && value <= getMax(maxReputation);
     }
 }

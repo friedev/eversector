@@ -40,5 +40,13 @@ public class Reputation implements Comparable<Reputation>
         {return Integer.compare(reputation, other.reputation);}
     
     public ReputationRange getRange()
-        {return ReputationRange.getRange(reputation);}
+    {
+        double maxReputation = faction.getMaxReputation();
+        
+        for (ReputationRange range: ReputationRange.values())
+            if (range.isInRange(reputation, maxReputation))
+                return range;
+        
+        return ReputationRange.DEFAULT;
+    }
 }

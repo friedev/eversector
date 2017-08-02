@@ -148,6 +148,16 @@ public class Faction extends Nameable implements ColorStringObject
     public int getRank()
         {return map.getRank(this);}
     
+    public int getMaxReputation()
+    {
+        int maxReputation = Integer.MIN_VALUE;
+        for (Ship ship: map.getShips())
+            if (ship.isInFaction(this))
+                maxReputation = Math.max(maxReputation,
+                        ship.getReputation(this).get());
+        return maxReputation;
+    }
+    
     /**
      * Returns the faction's relationship with the specified faction.
      * @param faction the faction to find a relationship with
