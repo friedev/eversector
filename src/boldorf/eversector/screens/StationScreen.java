@@ -31,7 +31,6 @@ import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.storage.Paths.CLAIM;
 import static boldorf.eversector.storage.Paths.DOCK;
-import static boldorf.eversector.storage.Paths.ON;
 import static boldorf.eversector.storage.Paths.TRANSACTION;
 import boldorf.util.Utility;
 import java.awt.Color;
@@ -129,7 +128,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
             }
             case KeyEvent.VK_R:
                 if (restock())
-                    playSoundEffect(ON);
+                    playSoundEffect(TRANSACTION);
                 break;
             case KeyEvent.VK_C:
                 if (player.claim())
