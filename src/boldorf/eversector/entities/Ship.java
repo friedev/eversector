@@ -476,17 +476,17 @@ public class Ship extends Nameable implements ColorStringObject,
     /**
      * Returns the reputation object with the faction specified, null if not
      * found.
-     * @param f the faction to get a reputation with
+     * @param faction the faction to get a reputation with
      * @return the Reputation object with the faction specified, null if not
      * found
      */
-    public Reputation getReputation(Faction f)
+    public Reputation getReputation(Faction faction)
     {
-        if (f == null)
+        if (faction == null)
             return null;
         
         for (Reputation rep: reputations)
-            if (rep.getFaction() == f)
+            if (rep.getFaction() == faction)
                 return rep;
         
         return null;

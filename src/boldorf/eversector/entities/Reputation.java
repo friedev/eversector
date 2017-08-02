@@ -17,20 +17,20 @@ public class Reputation implements Comparable<Reputation>
     private int reputation;
     private Faction faction;
     
-    public Reputation(int r, Faction f)
+    public Reputation(int reputation, Faction faction)
     {
-        reputation = r;
-        faction = f;
+        this.reputation = reputation;
+        this.faction = faction;
     }
     
-    public Reputation(Faction f)
-        {this(0, f);}
+    public Reputation(Faction faction)
+        {this(0, faction);}
     
     public int get()
         {return reputation;}
     
-    public void change(int r)
-        {reputation += r;}
+    public void change(int reputation)
+        {this.reputation += reputation;}
     
     public Faction getFaction()
         {return faction;}
