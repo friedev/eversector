@@ -131,7 +131,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
                     playSoundEffect(TRANSACTION);
                 break;
             case KeyEvent.VK_C:
-                if (player.claim())
+                if (player.claim(true))
                 {
                     nextTurn = true;
                     playSoundEffect(CLAIM);

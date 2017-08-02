@@ -133,7 +133,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
             case KeyEvent.VK_LEFT:
                 Station station = player.getSectorLocation().getStation();
                 if (station != null && player.isHostile(station.getFaction()) &&
-                        player.canClaimStation(station, false))
+                        player.canClaim(station, false))
                 {
                     popup = new ClaimStationScreen(getDisplay());
                 }

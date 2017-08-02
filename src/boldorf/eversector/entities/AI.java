@@ -94,13 +94,13 @@ public class AI
     }
     
     private boolean performPlanetAction()
-        {return ship.claim() || ship.mine();}
+        {return ship.claim(false) || ship.mine();}
     
     private boolean performStationAction()
     {
         sellDuplicates();
         buyResources();
-        if (ship.claim())
+        if (ship.claim(false))
             return true;
         buyItems(); // TODO replace with a loop
         buyExpanders();
@@ -335,7 +335,7 @@ public class AI
             return null;
         
         if (!ship.isHostile(station.getFaction()) ||
-                ship.getCredits() >= station.getClaimCost())
+                ship.getCredits() >= Station.CLAIM_COST)
             return station.getLocation().dock();
         return null;
     }

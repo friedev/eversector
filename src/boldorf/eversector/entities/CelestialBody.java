@@ -7,9 +7,6 @@ import boldorf.util.Nameable;
 /** A stationary satellite that can have ships land on it. */
 public abstract class CelestialBody extends Nameable
 {
-    /** The base cost in credits to claim any celestial body. */
-    public static final int CLAIM_COST = 250;
-    
     /** The sector this body belongs to. */
     private final SectorLocation location;
     

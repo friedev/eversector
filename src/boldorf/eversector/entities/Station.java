@@ -19,10 +19,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import boldorf.eversector.map.faction.Faction;
+import boldorf.util.Nameable;
 
 /** A station at which ships can refuel and purchase upgrades. */
-public class Station extends CelestialBody implements ColorStringObject
+public class Station extends Nameable implements ColorStringObject
 {
+    /** The base cost in credits to claim any celestial body. */
+    public static final int CLAIM_COST = 250;
+    
     public static final String TRADE  = "Trade";
     public static final String BATTLE = "Battle";
     
@@ -41,6 +45,15 @@ public class Station extends CelestialBody implements ColorStringObject
      */
     public static BaseResource[] RESOURCES;
     
+    /** The type of station (trade or battle). */
+    private String type;
+    
+    /** The location of this station. */
+    private final SectorLocation location;
+    
+    /** The faction that owns this station. */
+    private Faction faction;
+    
     /** The ships that are currently docked with the station. */
     private List<Ship> ships;
     
@@ -50,9 +63,6 @@ public class Station extends CelestialBody implements ColorStringObject
     /** The resources that an individual station sells. */
     private BaseResource[] resources;
     
-    /** The type of station (trade or battle). */
-    private String type;
-    
     /**
      * Creates a station from a name, location, and faction.
      * @param name the name of the station
@@ -61,7 +71,9 @@ public class Station extends CelestialBody implements ColorStringObject
      */
     public Station(String name, SectorLocation location, Faction faction)
     {
-        super(name, location, faction);
+        super(name);
+        this.location = location;
+        this.faction = faction;
         ships = new LinkedList<>();
         type = generateType();
         
@@ -80,6 +92,28 @@ public class Station extends CelestialBody implements ColorStringObject
                 isClaimed() ? getFaction().getColor() : null);
     }
     
+    public SectorLocation getLocation()
+        {return location;}
+    
+    public Faction getFaction()
+        {return faction;}
+    
+    public boolean isClaimed()
+        {return faction != null;}
+    
+    /**
+     * Claims the celestial body for the specified faction.
+     * @param faction the faction that will claim the celestial body
+     */
+    public void claim(Faction faction)
+    {
+        if (this.faction == faction)
+            return;
+        
+        this.faction = faction;
+        location.getSector().updateFaction();
+    }
+    
     public String getType()
         {return type;}
     
@@ -92,10 +126,6 @@ public class Station extends CelestialBody implements ColorStringObject
         return new ColorChar(BATTLE.equals(type) ? '%' : '#',
                 getFaction().getColor());
     }
-    
-    @Override
-    public int getClaimCost()
-        {return CLAIM_COST;}
     
     /**
      * Returns true if the station sells the specified module.

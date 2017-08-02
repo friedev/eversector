@@ -1616,17 +1616,12 @@ public class Ship extends Nameable implements ColorStringObject,
         
         if (isHostile(station.getFaction()) && isAligned())
         {
-            if (!canClaimStation(station, false))
+            setLocation(getSectorLocation().dock());
+
+            if (!claim(false))
             {
                 addPlayerError(station + " is controlled by the hostile "
                         + station.getFaction() + ", who deny you entry.");
-                return false;
-            }
-            
-            setLocation(getSectorLocation().dock());
-
-            if (!claim())
-            {
                 undock();
                 return false;
             }
@@ -2352,62 +2347,58 @@ public class Ship extends Nameable implements ColorStringObject,
      * Claims a celestial body for the ship's faction.
      * @return true if the celestial body was claimed
      */
-    public boolean claim()
+    public boolean claim(boolean print)
     {
-        if (isLanded())
-            return claim(getPlanetLocation().getRegion());
-        
-        if (!canClaim(true))
+        if (!canClaim(print))
             return false;
         
-        CelestialBody claimableBody = getClaimableBody();
-        changeCredits(claimableBody.getFaction(),
-                -claimableBody.getClaimCost());
+        if (isLanded())
+        {
+            Region region = getPlanetLocation().getRegion();
+            Planet planet = getSectorLocation().getPlanet();
+            int nRegions = planet.getNRegions();
+            changeCredits(region.getFaction(), -planet.getClaimCost());
+
+            if (ALLIANCE == faction.getRelationship(region.getFaction()))
+                changeReputation(faction, Reputations.CLAIM_ALLY / nRegions);
+            else
+                changeReputation(faction, Reputations.CLAIM / nRegions);
+
+            changeReputation(region.getFaction(),
+                    -Reputations.CLAIM / nRegions);
+
+            // Claim must be done here so the faction relations can be checked
+            region.claim(faction);
+            return true;
+        }
+        
+        if (!isDocked())
+            return false;
+        
+        Station station = getSectorLocation().getStation();
+        changeCredits(station.getFaction(), -Station.CLAIM_COST);
         
         if (ALLIANCE.equals(faction.getRelationship(
-                claimableBody.getFaction())))
+                station.getFaction())))
             changeReputation(faction, Reputations.CLAIM_ALLY);
         else
             changeReputation(faction, Reputations.CLAIM);
         
-        changeReputation(claimableBody.getFaction(), -Reputations.CLAIM);
+        changeReputation(station.getFaction(), -Reputations.CLAIM);
         
         // Claim must be done here so the faction relations can be checked
-        claimableBody.claim(faction);
+        station.claim(faction);
         return true;
     }
     
-    public boolean claim(Region region)
+    public boolean canClaim(boolean print)
     {
-        if (!canClaimRegion(region))
-            return false;
-        
-        Planet planet = getSectorLocation().getPlanet();
-        int nRegions = planet.getNRegions();
-        changeCredits(region.getFaction(), -planet.getClaimCost());
-
-        if (ALLIANCE == faction.getRelationship(region.getFaction()))
-        {
-            changeReputation(faction, Reputations.CLAIM_ALLY / nRegions);
-        }
-        else
-        {
-            changeReputation(faction, Reputations.CLAIM / nRegions);
-        }
-
-        changeReputation(region.getFaction(), -Reputations.CLAIM / nRegions);
-
-        // Claim must be done here so the faction relations can be checked
-        region.claim(faction);
-        return true;
+        return (isLanded() && canClaim(getPlanetLocation().getPlanet(), print))
+                || (isDocked() && canClaim(getSectorLocation().getStation(),
+                        print));
     }
     
-    /**
-     * Returns true if the ship can claim a celestial body in the most general
-     * sense.
-     * @return true if the ship can claim a celestial body
-     */
-    private boolean canClaim(CelestialBody claiming, boolean print)
+    public boolean canClaim(Planet planet, boolean print)
     {
         if (!isAligned())
         {
@@ -2419,49 +2410,66 @@ public class Ship extends Nameable implements ColorStringObject,
             return false;
         }
         
-        if (credits < claiming.getClaimCost())
+        if (credits < planet.getClaimCost())
         {
             if (print)
             {
                 addPlayerError("You cannot afford the "
-                        + claiming.getClaimCost() + " credit cost to claim "
-                        + "territory on " + claiming + ".");
+                        + planet.getClaimCost() + " credit cost to claim "
+                        + "territory on " + planet + ".");
             }
             return false;
         }
-        
+
+        Region region = getPlanetLocation().getRegion();
+        if (region.getFaction() == faction)
+        {
+            addPlayerError("The " + region.toString().toLowerCase() + " is "
+                    + "already claimed by the " + faction + ".");
+            return false;
+        }
+
+        if (region.getNShips(region.getFaction()) > 0)
+        {
+            addPlayerError("There are currently ships of the "
+                    + region.getFaction() + " guarding the "
+                    + region.toString().toLowerCase() + ".");
+            return false;
+        }
+
         return true;
     }
     
-    private boolean canClaim(boolean print)
+    public boolean canClaim(Station station, boolean print)
     {
-        CelestialBody claiming = getClaimableBody();
-        
-        if (claiming == null)
+        if (!isAligned())
         {
             if (print)
             {
-                addPlayerError("Ship must be landed or docked to claim "
+                addPlayerError("You must be part of a faction to claim "
                         + "territory.");
             }
             return false;
         }
         
-        return canClaim(claiming, print);
-    }
-    
-    public boolean canClaimStation(Station station, boolean print)
-    {
-        if (!canClaim(station, print))
+        if (credits < Station.CLAIM_COST)
+        {
+            if (print)
+            {
+                addPlayerError("You cannot afford the "
+                        + Station.CLAIM_COST + " credit cost to claim "
+                        + station + ".");
+            }
             return false;
+        }
         
         // If the body is already claimed by solely your faction, return false
         if (station.getFaction() == faction)
         {
             if (print)
             {
-                addPlayerError(station + " is already claimed by the " + faction
-                        + ".");
+                addPlayerError(station + " is already claimed by the "
+                        + faction + ".");
             }
             return false;
         }
@@ -2471,84 +2479,13 @@ public class Ship extends Nameable implements ColorStringObject,
             if (print)
             {
                 addPlayerError("There are currently ships of the "
-                        + station.getFaction() + " guarding " + station + ".");
+                        + station.getFaction() + " guarding " + station
+                        + ".");
             }
             return false;
         }
         
         return true;
-    }
-    
-    /**
-     * Returns true if the ship can claim a station.
-     * @param print if true, will print any errors when claiming
-     * @return true if the ship can claim a station
-     */
-    public boolean canClaimStation(boolean print)
-    {
-        if (!isDocked())
-        {
-            if (print)
-                addPlayerError("Ship must be docked to claim a station.");
-            return false;
-        }
-        
-        return canClaimStation(getSectorLocation().getStation(), print);
-    }
-    
-    /**
-     * Returns true if the ship can claim the given region.
-     * @param region the region to check the ship's ability to claim on
-     * @return true if the ship can claim the given region
-     */
-    public boolean canClaimRegion(Region region)
-    {
-        if (!canClaim(true))
-            return false;
-        
-        if (region == null)
-        {
-            addPlayerError("Region not found.");
-            return false;
-        }
-        
-        if (!isLanded())
-        {
-            addPlayerError("Ship must be landed to claim a region.");
-            return false;
-        }
-        
-        if (region.getFaction() == faction)
-        {
-            addPlayerError("The " + region.toString().toLowerCase() + " is "
-                    + "already claimed by the " + faction + ".");
-            return false;
-        }
-        
-        if (region.getNShips(region.getFaction()) > 0)
-        {
-            addPlayerError("There are currently ships of the "
-                    + region.getFaction() + " guarding the "
-                    + region.toString().toLowerCase() + ".");
-            return false;
-        }
-        
-        return true;
-    }
-    
-    // TODO remove getClaimableBody()
-    
-    /**
-     * Returns the claimable celestial body that the ship is on.
-     * @return whichever claimable celestial body the player is on, landedOn
-     * will take precedence and null will be returned if neither are valid
-     */
-    public CelestialBody getClaimableBody()
-    {
-        // Returning null separately is unnecessary since it will be returned
-        // anyway when the ship isn't docked
-        return isLanded() ? getSectorLocation().getPlanet() :
-                getSectorLocation().getStation();
     }
     
     public Faction getDistressResponder()

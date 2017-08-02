@@ -10,11 +10,12 @@ import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.map.faction.Faction;
+import boldorf.util.Nameable;
 import java.util.Arrays;
 import squidpony.squidmath.Coord;
 
 /** A planet in a sector that can be interacted with in different ways. */
-public class Planet extends CelestialBody implements ColorStringObject
+public class Planet extends Nameable implements ColorStringObject
 {
     /**
      * The greatest number that region widths will be multiplied by, along with
@@ -37,6 +38,8 @@ public class Planet extends CelestialBody implements ColorStringObject
     public static final int ASTEROID_DAMAGE = 1;
     
     private PlanetType type;
+    private final SectorLocation location;
+    private Faction faction;
     private List<Ore>  ores;
     private Region[][] regions;
     
@@ -47,8 +50,8 @@ public class Planet extends CelestialBody implements ColorStringObject
      */
     public Planet(String name, SectorLocation location)
     {
-        super(name, location, null);
-        
+        super(name);
+        this.location = location;
         generateType();
         
         if (type.hasOre())
@@ -80,6 +83,32 @@ public class Planet extends CelestialBody implements ColorStringObject
     
     public PlanetType getType()
         {return type;}
+    
+    public SectorLocation getLocation()
+        {return location;}
+    
+    public Faction getFaction()
+        {return faction;}
+    
+    public boolean isClaimed()
+        {return faction != null;}
+    
+    /**
+     * Claims the celestial body for the specified faction.
+     * @param faction the faction that will claim the celestial body
+     */
+    private void claim(Faction faction)
+    {
+        if (this.faction == faction)
+            return;
+        
+        this.faction = faction;
+        location.getSector().updateFaction();
+    }
+    
+    /** Removes claimed status without updating sector factions. */
+    private void unclaim()
+        {faction = null;}
     
     public Region[][] getRegions()
         {return regions;}
@@ -135,6 +164,8 @@ public class Planet extends CelestialBody implements ColorStringObject
         
         if (type == null || !type.canLandOn())
         {
+            // claim(null) must be used instead of unclaim(), so that the
+            // sector's faction is updated
             claim(null);
             return;
         }
@@ -148,7 +179,7 @@ public class Planet extends CelestialBody implements ColorStringObject
                     control[getLocation().getMap().getIndex(
                             region.getFaction())]++;
         
-        int index     = -1;
+        int index = -1;
         int maxBodies = 0; // The most owned bodies in a faction
         
         for (int i = 0; i < control.length; i++)
@@ -156,7 +187,7 @@ public class Planet extends CelestialBody implements ColorStringObject
             if (control[i] > maxBodies)
             {
                 maxBodies = control[i];
-                index     = i;
+                index = i;
             }
             else if (control[i] == maxBodies)
             {
@@ -253,9 +284,8 @@ public class Planet extends CelestialBody implements ColorStringObject
      * Returns the cost to claim a region on the planet.
      * @return the cost of claiming a region on the planet, should be positive
      */
-    @Override
     public int getClaimCost()
-        {return CLAIM_COST / getNRegions();}
+        {return Station.CLAIM_COST / getNRegions();}
     
     /**
      * Returns a symbol for the planet's type.

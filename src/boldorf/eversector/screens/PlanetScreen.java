@@ -99,7 +99,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
                     }
                     break;
                 case KeyEvent.VK_C:
-                    if (player.claim(player.getPlanetLocation().getRegion()))
+                    if (player.claim(true))
                     {
                         nextTurn = true;
                         playSoundEffect(CLAIM);
