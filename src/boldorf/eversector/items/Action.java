@@ -11,13 +11,13 @@ public class Action
     
     /**
      * Creates an action with the name of the resource and the cost.
-     * @param r the name of the resource to use in the action
-     * @param c the amount of the resource needed to perform the action
+     * @param resource the name of the resource to use in the action
+     * @param cost the amount of the resource needed to perform the action
      */
-    public Action(String r, int c)
+    public Action(String resource, int cost)
     {
-        resource = r;
-        cost     = c;
+        this.resource = resource;
+        this.cost     = cost;
     }
     
     /**
@@ -35,9 +35,9 @@ public class Action
     public int getCost()
         {return cost;}
     
-    public void setResource(String r)
-        {resource = r;}
+    public void setResource(String resource)
+        {this.resource = resource;}
     
-    public void setCost(int c)
-        {cost = c;}
+    public void setCost(int cost)
+        {this.cost = cost;}
 }

@@ -5,25 +5,26 @@ import java.util.Properties;
 /** A resource to be sold in an undefined quantity by a station. */
 public class BaseResource extends Item
 {
-    /** The expander used to increase storage capacity of any Resources. */
-    private Expander expander;
-    
     /** True if the resource can be sold at stations. */
     private boolean sellable;
+    
+    /** The expander used to increase storage capacity of any Resources. */
+    private Expander expander;
     
     /**
      * Creates a new BaseResource with a name, description, value, and expander.
      * @param name the name of the BaseResource
      * @param description the description of the BaseResource
      * @param value the value of one unit of the BaseResource
+     * @param sellable true if the resource can be sold
      * @param expander the expander for the BaseResource
      */
     public BaseResource(String name, String description, int value,
-            Expander expander)
+            boolean sellable, Expander expander)
     {
         super(name, description, value);
+        this.sellable = sellable;
         this.expander = expander;
-        this.sellable = true;
     }
     
     /**
@@ -34,7 +35,7 @@ public class BaseResource extends Item
     public BaseResource(BaseResource copying)
     {
         this(copying.getName(), copying.getDescription(), copying.getValue(),
-            new Expander(copying.expander));
+                copying.isSellable(), new Expander(copying.expander));
     }
     
     /**

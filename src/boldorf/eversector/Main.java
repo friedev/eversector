@@ -12,7 +12,6 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
 import boldorf.eversector.entities.Battle;
 import boldorf.eversector.entities.Ship;
-import boldorf.eversector.entities.Station;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.faction.Election;
@@ -25,7 +24,6 @@ import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
 import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -141,7 +139,7 @@ public class Main
             FileManager.movePathUp();
         }
 
-        readInitialFiles();
+        Paths.initialize();
 
         if (FileManager.checkExistence(Paths.OPTIONS))
             options = FileManager.load(Paths.OPTIONS);
@@ -314,14 +312,6 @@ public class Main
         // Sort scores from highest to lowest
         scores.sort(Comparator.reverseOrder());
         return scores;
-    }
-    
-    public static void readInitialFiles() throws FileNotFoundException,
-            IOException
-    {
-        Paths.initialize();
-        Station.initializeModules();
-        Station.initializeResources();
     }
     
     /**

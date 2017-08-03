@@ -15,23 +15,27 @@ public class Weapon extends Module
     /**
      * Copying constructor that creates a new weapon identical to the one
      * provided.
-     * @param w the weapon to create a copy of
+     * @param copying the weapon to create a copy of
      */
-    public Weapon(Weapon w)
-    {this (w.getName(), w.getDescription(), w.getValue(), w.damage, w.action);}
+    public Weapon(Weapon copying)
+    {
+        this(copying.getName(), copying.getDescription(), copying.getValue(),
+                copying.damage, copying.action);
+    }
     
     /**
      * Creates a new weapon with a name, description, value, damage, and action.
-     * @param n the name of the weapon
-     * @param de the description of the weapon
-     * @param v the value of the weapon
-     * @param da the damage of the weapon
-     * @param a the action the weapon can perform
+     * @param name the name of the weapon
+     * @param description the description of the weapon
+     * @param value the value of the weapon
+     * @param damage the damage of the weapon
+     * @param action the action the weapon can perform
      */
-    public Weapon(String n, String de, int v, int da, Action a)
+    public Weapon(String name, String description, int value, int damage,
+            Action action)
     {
-        super(n, de, v, true, a);
-        damage = Math.abs(da);
+        super(name, description, value, true, action);
+        this.damage = Math.abs(damage);
     }
     
     /**

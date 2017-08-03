@@ -7,18 +7,16 @@ import boldorf.eversector.items.Resource;
 import boldorf.eversector.items.Module;
 import static boldorf.eversector.Main.rng;
 import java.util.ArrayList;
-import boldorf.eversector.storage.Paths;
-import boldorf.util.FileManager;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.entities.locations.SectorLocation;
+import boldorf.eversector.items.Action;
 import boldorf.eversector.items.Item;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.storage.Resources;
 import boldorf.util.Nameable;
 
 /** A station at which ships can refuel and purchase upgrades. */
@@ -34,18 +32,62 @@ public class Station extends Nameable implements ColorStringObject
     
     /**
      * The base modules that all stations sell, at their base prices.
-     * @see #loadModules()
      */
-    public static Module[] MODULES;
+    public static Module[] MODULES = new Module[]
+    {
+        new Module("Scanner", "Reveals locations from a distance.", 150, false,
+                new Action(Resources.ENERGY, 3)),
+        new Module("Refinery", "Can convert ore into fuel at a 1:1 ratio.", 250,
+                false, new Action(Resources.ENERGY, 1)),
+        new Module("Solar Array", "Passively generates energy each turn based "
+                + "on solar proximity.", 250, false,
+                new Action(Resources.ENERGY, 1)),
+        new Module("Warp Drive", "Facilitates long-range sector jumps powered "
+                + "by energy.", 400, false, new Action(Resources.ENERGY, 15)),
+        new Module("Shield", "When active, halves damage from oncoming energy "
+                + "weapon fire.", 200, true, Ship.SHIELDED,
+                new Action(Resources.ENERGY, 2)),
+        new Module("Cloaking Device", "When active, renders the ship "
+                + "impossible to track.", 300, true, Ship.CLOAKED,
+                new Action(Resources.ENERGY, 2)),
+        new Weapon("Laser", "A focused laser used to cut open enemy hulls.",
+                100, 2, new Action(Resources.ENERGY, 2)),
+        new Weapon("Torpedo Tube", "Fires guided torpedoes capable of "
+                + "bypassing energy shields.", 200, 4,
+                new Action(Resources.FUEL, 2)),
+        new Weapon("Pulse Beam", "A devastating laser capable of ripping "
+                + "through weak ships.", 500, 7,
+                new Action(Resources.ENERGY, 10))
+    };
     
     /**
      * The base resources that all stations sell, at the base prices for
      * themselves and their expanders.
-     * @see #loadResources()
      */
-    public static BaseResource[] RESOURCES;
+    public static BaseResource[] RESOURCES = new BaseResource[]
+    {
+        new BaseResource(Resources.FUEL,
+                "A reactive mixture able to create highly efficient thrust.",
+                10, true, new Expander(Resources.FUEL_EXPANDER,
+                            "A compact container able to withstand extreme "
+                                    + "pressures.", 70)),
+        new BaseResource(Resources.ENERGY,
+                "Highly concentrated electrical charge.", 5, false,
+                new Expander(Resources.ENERGY_EXPANDER,
+                        "A supercapacitor capable of retaining charge for long "
+                                + "durations.", 85)),
+        new BaseResource(Resources.ORE,
+                "A versatile compound that can be refined into fuel.", 10, true,
+                new Expander(Resources.ORE_EXPANDER,
+                        "An interior hold designed for containing large "
+                                + "quantities of ore.", 85)),
+        new BaseResource(Resources.HULL,
+                "Layered alloys and ceramics that protect the ship.", 15, false,
+                new Expander(Resources.HULL_EXPANDER, "A frame to allow the "
+                        + "mounting of additional plating.", 85)),
+    };
     
-    /** The type of station (trade or battle). */
+    /** The type of station. */
     private String type;
     
     /** The location of this station. */
@@ -57,10 +99,10 @@ public class Station extends Nameable implements ColorStringObject
     /** The ships that are currently docked with the station. */
     private List<Ship> ships;
     
-    /** The modules that an individual station sells. */
+    /** The modules that this station sells. */
     private Module[] modules;
     
-    /** The resources that an individual station sells. */
+    /** The resources that this station sells. */
     private BaseResource[] resources;
     
     /**
@@ -429,68 +471,5 @@ public class Station extends Nameable implements ColorStringObject
         
         for (int i = 0; i < RESOURCES.length; i++)
             resources[i] = new BaseResource(RESOURCES[i]);
-    }
-    
-    public static void initializeModules()
-            throws FileNotFoundException, IOException
-        {MODULES = loadModules();}
-    
-    public static void initializeResources()
-            throws FileNotFoundException, IOException
-        {RESOURCES = loadResources();}
-    
-    /**
-     * Loads the properties files of modules and weapons from their respective
-     * manifest files and returns an array of all of them.
-     * @return an array of every module and weapon
-     */
-    private static Module[] loadModules()
-            throws FileNotFoundException, IOException
-    {
-        List<String> modulePaths = FileManager.getFilesInFolder(Paths.MODULES);
-        List<String> weaponPaths = FileManager.getFilesInFolder(Paths.WEAPONS);
-        
-        List<Module> list = new ArrayList<>();
-        
-        for (String modulePath: modulePaths)
-            list.add(new Module(FileManager.load(modulePath)));
-        
-        for (String weaponPath: weaponPaths)
-            list.add(new Weapon(FileManager.load(weaponPath)));
-        
-        Module[] array = new Module[list.size()];
-        return list.toArray(array);
-    }
-    
-    /**
-     * Loads the properties files of resources and their expanders from their
-     * respective manifest files and returns an array of BaseResources.
-     * @return an array of BaseResources with expanders from the matching line
-     * of their manifest file
-     */
-    private static BaseResource[] loadResources()
-            throws FileNotFoundException, IOException
-    {
-        List<String> resourcePaths =
-                FileManager.getFilesInFolder(Paths.RESOURCES);
-        List<String> expanderPaths =
-                FileManager.getFilesInFolder(Paths.EXPANDERS);
-        
-        if (resourcePaths.size() != expanderPaths.size())
-        {
-            throw new IOException(
-                    "Number of resources and expanders do not match.");
-        }
-        
-        List<BaseResource> list = new ArrayList<>();
-        
-        for (int i = 0; i < resourcePaths.size(); i++)
-        {
-            list.add(new BaseResource(FileManager.load(resourcePaths.get(i)),
-                                      FileManager.load(expanderPaths.get(i))));
-        }
-        
-        BaseResource[] array = new BaseResource[list.size()];
-        return list.toArray(array);
     }
 }

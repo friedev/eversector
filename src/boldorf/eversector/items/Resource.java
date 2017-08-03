@@ -54,13 +54,13 @@ public class Resource extends BaseResource
      * @param value the value of one unit of the resource
      * @param capacity the capacity of the resource
      * @param amount the amount of the resource
+     * @param sellable true if the resource can be sold
      * @param expander the resource's expander
-     * @param sellable true if the resource is sellable
      */
     public Resource(String name, String description, int value, int capacity,
-            int amount, Expander expander, boolean sellable)
+            int amount, boolean sellable, Expander expander)
     {
-        super(name, description, value, expander);
+        super(name, description, value, sellable, expander);
         this.baseCapacity = Math.abs(capacity);
         this.capacity     = baseCapacity;
         this.amount       = Math.min(Math.abs(amount), capacity);
@@ -78,7 +78,7 @@ public class Resource extends BaseResource
     public Resource(BaseResource base, int capacity, int amount)
     {
         this(base.getName(), base.getDescription(), base.getValue(), capacity,
-                amount, base.getExpander(), base.isSellable());
+                amount, base.isSellable(), base.getExpander());
     }
     
     /**
@@ -91,7 +91,7 @@ public class Resource extends BaseResource
     public Resource(BaseResource base, int capacity)
     {
         this(base.getName(), base.getDescription(), base.getValue(), capacity,
-                capacity, base.getExpander(), base.isSellable());
+                capacity, base.isSellable(), base.getExpander());
     }
     
     /**
@@ -104,7 +104,7 @@ public class Resource extends BaseResource
     public Resource(BaseResource base)
     {
         this(base.getName(), base.getDescription(), base.getValue(), CAPACITY,
-                CAPACITY, base.getExpander(), base.isSellable());
+                CAPACITY, base.isSellable(), base.getExpander());
     }
     
     /**
@@ -132,7 +132,7 @@ public class Resource extends BaseResource
      */
     public Resource(String name, String description, int value, int capacity,
             int amount, Expander expander)
-        {this(name, description, value, capacity, amount, expander, true);}
+        {this(name, description, value, capacity, amount, true, expander);}
     
     /**
      * Creates a resource with a name, description, value, and expander, setting
