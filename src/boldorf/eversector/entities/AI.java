@@ -10,6 +10,7 @@ import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
+import boldorf.eversector.storage.Reputations;
 import boldorf.eversector.storage.Resources;
 import boldorf.util.Utility;
 import java.util.List;
@@ -504,44 +505,56 @@ public class AI
                     .add(" fires a pulse beam."));
             target.playPlayerSound(Paths.PULSE);
             ship.fire(Actions.PULSE, target);
-            return true;
         }
-        
-        if (ship.canFire(ship.getWeapon(Actions.TORPEDO.getName()), target))
+        else if (ship.canFire(ship.getWeapon(Actions.TORPEDO.getName()), target))
         {
             target.addPlayerColorMessage(ship.toColorString()
                     .add(" fires a torpedo."));
             target.playPlayerSound(Paths.TORPEDO);
             ship.fire(Actions.TORPEDO, target);
-            return true;
         }
-        
-        if (ship.canFire(Actions.LASER, target))
+        else if (ship.canFire(Actions.LASER, target))
         {
             target.addPlayerColorMessage(ship.toColorString()
                     .add(" fires a laser."));
             target.playPlayerSound(Paths.LASER);
             ship.fire(Actions.LASER, target);
-            return true;
         }
-        
-        // Note that the code above under !willAttack() is borrowed from here
-        
-        if (ship.validateResources(Actions.FLEE, "flee"))
+        else
         {
-            if (!ship.isCloaked() && ship.toggleActivation(Actions.CLOAK))
+            // The code above under !willAttack() is borrowed from here
+            if (ship.validateResources(Actions.FLEE, "flee"))
             {
+                if (!ship.isCloaked() && ship.toggleActivation(Actions.CLOAK))
+                {
+                    target.addPlayerColorMessage(ship.toColorString()
+                            .add(" activates a cloaking device."));
+                    // No return since cloaking is a free action
+                }
+
                 target.addPlayerColorMessage(ship.toColorString()
-                        .add(" activates a cloaking device."));
-                // No return since cloaking is a free action
+                        .add(" attempts to flee."));
             }
             
-            target.addPlayerColorMessage(ship.toColorString()
-                    .add(" attempts to flee."));
             return false;
         }
         
-        return false;
+        if (target.isDestroyed())
+        {
+            if (ship.isPassive(target))
+            {
+                ship.changeReputation(ship.getFaction(), Reputations.KILL_ALLY);
+            }
+            else
+            {
+                ship.changeReputation(ship.getFaction(),
+                        Reputations.KILL_ENEMY);
+            }
+            
+            ship.changeReputation(target.getFaction(), Reputations.KILL_ALLY);
+        }
+        
+        return true;
     }
     
     /**
