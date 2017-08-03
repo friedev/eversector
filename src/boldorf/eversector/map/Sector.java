@@ -357,7 +357,7 @@ public class Sector extends Nameable
         int nShips = 0;
         
         for (Ship ship: ships)
-            if (ship.isInFaction(faction))
+            if (ship.getFaction() == faction)
                 nShips++;
         
         for (Planet planet: planets)

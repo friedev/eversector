@@ -399,7 +399,7 @@ public class Station extends Nameable implements ColorStringObject
         int nShips = 0;
         
         for (Ship ship: ships)
-            if (ship.isInFaction(faction))
+            if (ship.getFaction() == faction)
                 nShips++;
         
         return nShips;

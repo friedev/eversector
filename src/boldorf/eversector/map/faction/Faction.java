@@ -104,7 +104,7 @@ public class Faction extends Nameable implements ColorStringObject
     public void holdElection(boolean emergency)
     {
         Election election = new Election(this, emergency);
-        if (map.getPlayer().isInFaction(this) && map.getTurn() >= 0)
+        if (map.getPlayer().getFaction() == this && map.getTurn() >= 0)
         {
             pendingElection = election;
             return;
@@ -152,7 +152,7 @@ public class Faction extends Nameable implements ColorStringObject
     {
         int maxReputation = Integer.MIN_VALUE;
         for (Ship ship: map.getShips())
-            if (ship.isInFaction(this))
+            if (ship.getFaction() == this)
                 maxReputation = Math.max(maxReputation,
                         ship.getReputation(this).get());
         return maxReputation;
@@ -334,7 +334,7 @@ public class Faction extends Nameable implements ColorStringObject
     public void addNews(ColorString news)
     {
         if (Main.optionIs(OPTION_TRUE, NEWS) && map.getPlayer() != null &&
-                map.getPlayer().isInFaction(this))
+                map.getPlayer().getFaction() == this)
         {
             Main.addColorMessage(news);
         }

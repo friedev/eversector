@@ -572,7 +572,7 @@ public class Map
         int nShips = 0;
         
         for (Ship ship: ships)
-            if (ship.isInFaction(faction))
+            if (ship.getFaction() == faction)
                 nShips++;
         
         return nShips;
@@ -586,7 +586,7 @@ public class Map
         
         for (Ship ship: ships)
         {
-            if (ship.isInFaction(faction))
+            if (ship.getFaction() == faction)
             {
                 total++;
                 

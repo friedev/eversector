@@ -266,19 +266,11 @@ public class Ship extends Nameable implements ColorStringObject,
         {return location.getMap().getPlayer() == this;}
     
     /**
-     * Returns true if the faction the ship belongs to is the one specified.
-     * @param faction the faction to compare
-     * @return true if the specified faction and actual faction are the same
-     */
-    public boolean isInFaction(Faction faction)
-        {return this.faction == faction;}
-    
-    /**
      * Returns true if this ship belongs to a faction.
      * @return true if this ship's faction is not null
      */
     public boolean isAligned()
-        {return !isInFaction(null);}
+        {return faction != null;}
     
     /**
      * Returns true if the ship is unaligned and their reputation is too low
@@ -314,20 +306,19 @@ public class Ship extends Nameable implements ColorStringObject,
      */
     public boolean isPassive(Ship ship)
     {
-        return ship.isAligned() && (!isAligned() ||
-               isInFaction(ship.faction) ||
+        return ship.isAligned() && (!isAligned() || faction == ship.faction ||
                !ship.getFaction().isRelationship(WAR, faction));
     }
     
     /**
      * Returns true if the specified faction is hostile to this ship.
-     * @param otherFaction the faction to check
+     * @param faction the faction to check
      * @return true if: the faction is not this ship's faction and is at war
      */
-    public boolean isHostile(Faction otherFaction)
+    public boolean isHostile(Faction faction)
     {
-        return !isInFaction(otherFaction) && (!isAligned() ||
-                faction.isRelationship(WAR, otherFaction));
+        return this.faction != faction && (!isAligned() ||
+                this.faction.isRelationship(WAR, faction));
     }
     
     /**
@@ -2282,16 +2273,16 @@ public class Ship extends Nameable implements ColorStringObject,
     
     /**
      * Joins the entered faction and adds the relevant reputation.
-     * @param f the faction to join (use leaveFaction() instead of setting this
-     * to null)
+     * @param faction the faction to join (use leaveFaction() instead of setting
+     * this to null)
      */
-    public void joinFaction(Faction f)
+    public void joinFaction(Faction faction)
     {
-        if (isInFaction(f))
+        if (this.faction == faction)
             return;
         
-        faction = f;
-        changeReputation(f, Reputations.JOIN);
+        this.faction = faction;
+        changeReputation(faction, Reputations.JOIN);
     }
     
     /**
@@ -2347,10 +2338,11 @@ public class Ship extends Nameable implements ColorStringObject,
      * @return true if the ship can be converted
      */
     public boolean canConvert(Ship ship)
-        {return isAligned() && !ship.isInFaction(faction) && !ship.isPlayer();}
+        {return isAligned() && faction != ship.faction && !ship.isPlayer();}
     
     /**
      * Claims a celestial body for the ship's faction.
+     * @param print if true and this is the player, will print error messages
      * @return true if the celestial body was claimed
      */
     public boolean claim(boolean print)

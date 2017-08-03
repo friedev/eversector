@@ -444,7 +444,7 @@ public class AI
         if (!other.isAligned())
             return 0;
 
-        if (ship.isInFaction(other.getFaction()))
+        if (ship.getFaction() == other.getFaction())
             return 4;
 
         switch (other.getFaction().getRelationship(ship.getFaction()))

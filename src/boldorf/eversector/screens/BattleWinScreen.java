@@ -49,7 +49,7 @@ public class BattleWinScreen extends ConfirmationScreen
     {
         if (looting.isLeader())
         {
-            if (player.isInFaction(looting.getFaction()))
+            if (player.getFaction() == looting.getFaction())
             {
                 looting.getFaction().addNews(player + " has destroyed our "
                         + "leader, " + looting.toString() + ".");

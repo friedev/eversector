@@ -78,8 +78,9 @@ public class Election
         
         for (Ship ship: faction.getMap().getShips())
         {
-            if (ship.isInFaction(faction) && (ship.getReputation(faction).get()
-                    > minRep) || candidates.size() < CANDIDATES)
+            if (faction == ship.getFaction() &&
+                    (ship.getReputation(faction).get() > minRep) ||
+                    candidates.size() < CANDIDATES)
             {
                 candidates.add(ship);
                 
@@ -110,7 +111,7 @@ public class Election
         
         for (Ship ship: faction.getMap().getShips())
         {
-            if (ship.isInFaction(faction) && !candidates.contains(ship))
+            if (faction == ship.getFaction() && !candidates.contains(ship))
             {
                 Ship vote = ship.getAI().vote(candidates);
                 int index = candidates.indexOf(vote);
