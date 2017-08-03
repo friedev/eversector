@@ -1,6 +1,6 @@
 package boldorf.eversector.entities;
 
-import static boldorf.apwt.ExtChars.DOT;
+import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
@@ -77,8 +77,8 @@ public class Region implements ColorStringObject
             }
         }
         
-        return new ColorChar(playerIsHere ? SYMBOL_PLAYER.getChar() : DOT,
-                isClaimed() ? faction.getColor() : null);
+        return new ColorChar(playerIsHere ? SYMBOL_PLAYER.getChar() :
+                ExtChars.SQUARE, isClaimed() ? faction.getColor() : null);
     }
     
     public PlanetLocation getLocation() {return location;}
