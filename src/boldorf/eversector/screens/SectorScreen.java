@@ -152,12 +152,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                     break;
                 }
                 
-                // Fix this creating a message when unable to mine an asteroid belt
                 if (player.canLand())
-                {
-                    // Make crash landings choose a random region
                     popup = new LandScreen(getDisplay());
-                }
+                else if (player.canCrashLand())
+                    popup = new CrashLandScreen(getDisplay());
                 break;
             case KeyEvent.VK_A:
             {

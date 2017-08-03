@@ -74,7 +74,7 @@ public class LandScreen extends ConfirmationScreen
             return new PlanetScreen(getDisplay());
         }
         
-        return player.canLand() ? new CrashLandScreen(getDisplay()) : null;
+        return null;
     }
     
     private void setUpWindow()

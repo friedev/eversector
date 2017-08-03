@@ -1671,9 +1671,6 @@ public class Ship extends Nameable implements ColorStringObject,
             return false;
         }
         
-        if (!validateResources(Actions.LAND, "land on " + planet))
-            return false;
-        
         getResource(Actions.LAND.getResource())
                 .changeAmount(-Actions.LAND.getCost());
         setLocation(getSectorLocation().land(coord));
@@ -1686,7 +1683,7 @@ public class Ship extends Nameable implements ColorStringObject,
      */
     public boolean crashLand()
     {
-        if (!canLand())
+        if (!canCrashLand())
             return false;
         
         if (getAmountOf(Resources.HULL) > CRASH_THRESHOLD)
@@ -1705,11 +1702,20 @@ public class Ship extends Nameable implements ColorStringObject,
         return true;
     }
     
+    public boolean canLand()
+    {
+        if (!canCrashLand())
+            return false;
+        
+        return validateResources(Actions.LAND,
+                "land on " + getSectorLocation().getPlanet());
+    }
+    
     /**
      * Returns true if there is a planet that the ship can land on at its orbit.
      * @return true if landing of any kind is possible in the ship's situation
      */
-    public boolean canLand()
+    public boolean canCrashLand()
     {
         if (!isInSector())
         {
