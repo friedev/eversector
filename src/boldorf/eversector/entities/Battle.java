@@ -1,5 +1,7 @@
 package boldorf.eversector.entities;
 
+import static boldorf.eversector.Main.rng;
+import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,12 +13,14 @@ public class Battle
 {
     private List<Ship> attackers;
     private List<Ship> defenders;
+    private List<Ship> fleeing;
     private List<Ship> destroyed;
     
     public Battle(List<Ship> attackers, List<Ship> defenders)
     {
         this.attackers = attackers;
         this.defenders = defenders;
+        this.fleeing   = new LinkedList<>(); 
         this.destroyed = new LinkedList<>();
     }
     
@@ -26,6 +30,7 @@ public class Battle
         attackers.add(attacker);
         defenders = new LinkedList<>();
         defenders.add(defender);
+        fleeing = new LinkedList<>();
         destroyed = new LinkedList<>();
     }
     
@@ -34,6 +39,9 @@ public class Battle
     
     public List<Ship> getDefenders()
         {return defenders;}
+    
+    public List<Ship> getFleeing()
+        {return fleeing;}
     
     public List<Ship> getDestroyed()
         {return destroyed;}
@@ -93,8 +101,61 @@ public class Battle
                 // Duplicate remove done to avoid concurrent modification
                 attackers.remove(ship);
                 defenders.remove(ship);
+                fleeing.remove(ship);
                 destroyed.add(ship);
             }
+        }
+        
+        if (!continues())
+            return false;
+        
+        for (Ship ship: fleeing)
+        {
+            List<Ship> pursuing = new LinkedList<>();
+            
+            for (Ship enemy: getEnemies(ship))
+            {
+                if (enemy.getAI() != null && !fleeing.contains(enemy) &&
+                        enemy.getAI().pursue())
+                {
+                    pursuing.add(enemy);
+                }
+            }
+            
+            SectorLocation destination = ship.getSectorLocation();
+            if (rng.nextBoolean())
+            {
+                SectorLocation test = destination.raiseOrbit();
+                destination = test == null ? destination.lowerOrbit() : test;
+            }
+            else
+            {
+                SectorLocation test = destination.lowerOrbit();
+                destination = test == null ? destination.raiseOrbit() : test;
+            }
+            
+            if (!pursuing.isEmpty())
+            {
+                List<Ship> defenderList = new LinkedList<>();
+                defenderList.add(ship);
+                Battle newBattle = new Battle(pursuing, defenderList);
+                destination = destination.joinBattle(newBattle);
+                
+                ship.setLocation(destination);
+                for (Ship pursuer: pursuing)
+                {
+                    pursuer.setLocation(destination);
+                    attackers.remove(pursuer);
+                    defenders.remove(pursuer);
+                }
+            }
+            else
+            {
+                ship.setLocation(destination);
+            }
+            
+            attackers.remove(ship);
+            defenders.remove(ship);
         }
         
         return attackMade && continues();

@@ -470,8 +470,9 @@ public class AI
         Ship target = null;
         for (Ship enemy: enemies)
         {
-            if (target == null || target.getAmountOf(Resources.HULL) <
-                    enemy.getAmountOf(Resources.HULL))
+            if (!battle.getFleeing().contains(enemy) && (target == null ||
+                    target.getAmountOf(Resources.HULL) <
+                    enemy.getAmountOf(Resources.HULL)))
             {
                 target = enemy;
             }
@@ -484,6 +485,8 @@ public class AI
         {
             if (ship.validateResources(Actions.FLEE, "flee"))
             {
+                ship.changeResourceBy(Actions.FLEE);
+                battle.getFleeing().add(ship);
                 target.addPlayerColorMessage(ship.toColorString()
                         .add(" attempts to flee."));
                 return false;
@@ -555,6 +558,12 @@ public class AI
         }
         
         return true;
+    }
+    
+    public boolean pursue()
+    {
+        return willAttack() && ship.validateResources(Actions.FLEE, "pursue") &&
+                ship.changeResourceBy(Actions.FLEE);
     }
     
     /**
