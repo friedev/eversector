@@ -179,7 +179,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                 if (distressResponder == null)
                     break;
                 
-                if (player.getFaction() != distressResponder)
+                if (player.getFaction() == distressResponder)
                 {
                     player.distress(distressResponder);
                     break;
