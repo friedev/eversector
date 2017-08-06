@@ -1032,6 +1032,8 @@ public class Ship extends Nameable implements ColorStringObject,
                 return false;
             }
             
+            changeCredits(station.getFaction(), resource.getPrice() *
+                    Math.max(0, resource.getAmount() - resource.getCapacity()));
             resource.expand(quantity);
             changeCredits(station.getFaction(), -price);
             return true;
