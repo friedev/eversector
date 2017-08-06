@@ -68,15 +68,8 @@ public class Battle
     public boolean continues()
         {return !attackers.isEmpty() && !defenders.isEmpty();}
     
-    /**
-     * Processes a turn of the battle.
-     * @return true if the battle will continue after this turn
-     */
-    public boolean processTurn()
+    public boolean processAttacks()
     {
-        if (!continues())
-            return false;
-        
         boolean attackMade = false;
         int size = Math.max(attackers.size(), defenders.size());
         for (int i = 0; i < size; i++)
@@ -106,13 +99,20 @@ public class Battle
             }
         }
         
-        if (!continues())
-            return false;
+        return attackMade;
+    }
+    
+    public void processEscape(Ship ship)
+    {
+        if (!fleeing.contains(ship))
+            return;
         
-        for (Ship ship: fleeing)
+        SectorLocation destination = ship.getSectorLocation();
+
+        if (!ship.isCloaked())
         {
             List<Ship> pursuing = new LinkedList<>();
-            
+
             for (Ship enemy: getEnemies(ship))
             {
                 if (enemy.getAI() != null && !fleeing.contains(enemy) &&
@@ -121,54 +121,56 @@ public class Battle
                     pursuing.add(enemy);
                 }
             }
-            
-            SectorLocation destination = ship.getSectorLocation();
+
             if (rng.nextBoolean())
             {
                 SectorLocation test = destination.raiseOrbit();
-                destination = test == null ? destination.lowerOrbit() : test;
+                destination = test == null ?
+                        destination.lowerOrbit() : test;
             }
             else
             {
                 SectorLocation test = destination.lowerOrbit();
-                destination = test == null ? destination.raiseOrbit() : test;
+                destination = test == null ?
+                        destination.raiseOrbit() : test;
             }
-            
-            if (!pursuing.isEmpty())
+
+            if (pursuing.isEmpty())
+            {
+                ship.addPlayerMessage("You successfully flee the battle.");
+            }
+            else
             {
                 List<Ship> defenderList = new LinkedList<>();
                 defenderList.add(ship);
                 Battle newBattle = new Battle(pursuing, defenderList);
                 destination = destination.joinBattle(newBattle);
-                
-                ship.setLocation(destination);
+
                 for (Ship pursuer: pursuing)
                 {
                     pursuer.setLocation(destination);
                     attackers.remove(pursuer);
                     defenders.remove(pursuer);
                 }
+                
+                ship.addPlayerMessage("You have been pursued.");
             }
-            else
-            {
-                ship.setLocation(destination);
-            }
-            
-            attackers.remove(ship);
-            defenders.remove(ship);
         }
-        
-        return attackMade && continues();
+        else
+        {
+            ship.addPlayerMessage("You escape cloaked and undetected.");
+        }
+
+        ship.setLocation(destination);
+        attackers.remove(ship);
+        defenders.remove(ship);
+        fleeing.remove(ship);
     }
     
-    public void processBattle()
+    public void processEscapes()
     {
-        while (continues())
-            if (!processTurn())
-                break;
-        
-        distributeLoot();
-        endBattle();
+        for (Ship ship: fleeing)
+            processEscape(ship);
     }
     
     public void distributeLoot()
@@ -188,6 +190,19 @@ public class Battle
         attackers.clear();
         defenders.clear();
         destroyed.clear();
+    }
+    
+    public void processBattle()
+    {
+        while (continues())
+        {
+            if (!processAttacks() || !continues())
+                break;
+            processEscapes();
+        }
+        
+        distributeLoot();
+        endBattle();
     }
     
     /*

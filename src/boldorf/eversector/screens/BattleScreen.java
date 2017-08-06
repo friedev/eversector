@@ -20,8 +20,10 @@ import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.entities.Battle;
 import boldorf.eversector.entities.Ship;
+import boldorf.eversector.items.Action;
 import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
+import static boldorf.eversector.storage.Paths.ENGINE;
 import static boldorf.eversector.storage.Paths.SCAN;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -106,7 +108,6 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                     playSoundEffect(Paths.PULSE);
                 }
                 break;
-            /*
             case KeyEvent.VK_F:
             {
                 Action flee = Actions.FLEE;
@@ -116,7 +117,9 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                 
                 player.changeResourceBy(flee);
                 playSoundEffect(ENGINE);
-
+                battle.getFleeing().add(player);
+                
+                /*
                 if (player.isCloaked() || !opponent.willPursue(player))
                 {
                     if (player.isCloaked())
@@ -133,15 +136,15 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
 
                     return endBattle();
                 }
+                */
 
                 // The opponent has enough resources to pursue because 
                 // it is checked in willPursue()
                 nextAttack = true;
-                addColorMessage(opponent.toColorString().add(" pursues you."));
-                opponent.changeResourceBy(flee);
+//                addColorMessage(opponent.toColorString().add(" pursues you."));
+//                opponent.changeResourceBy(flee);
                 break;
             }
-            */
             case KeyEvent.VK_S:
                 if (selected != player && !scanning.contains(selected) &&
                         player.scan())
@@ -213,7 +216,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         
         if (nextAttack)
         {
-            battle.processTurn();
+            battle.processAttacks();
             
             if (player.isDestroyed())
             {
@@ -221,11 +224,17 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                         new ColorString("You have been destroyed."), true);
             }
             
+            battle.processEscapes();
+            
+            if (player.isInBattle())
+                battle = player.getBattleLocation().getBattle();
+            else
+                return endBattle();
+            
             if (!battle.continues())
             {
                 battle.distributeLoot();
                 battle.endBattle();
-                Main.pendingBattle = null;
                 return endBattle();
             }
         }
@@ -291,7 +300,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
     }
     
     private SectorScreen endBattle()
-        {return new SectorScreen(getDisplay());}
+    {
+        Main.pendingBattle = null;
+        return new SectorScreen(getDisplay());
+    }
 
     @Override
     public List<Keybinding> getKeybindings()
