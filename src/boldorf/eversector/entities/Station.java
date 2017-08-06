@@ -84,7 +84,7 @@ public class Station extends Nameable implements ColorStringObject
         new BaseResource(Resources.HULL,
                 "Layered alloys and ceramics that protect the ship.", 15, false,
                 new Expander(Resources.HULL_EXPANDER, "A frame to allow the "
-                        + "mounting of additional plating.", 85)),
+                        + "mounting of additional plating.", 85, 2)),
     };
     
     /** The type of station. */
