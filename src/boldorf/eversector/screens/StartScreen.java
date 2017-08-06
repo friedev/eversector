@@ -1,7 +1,6 @@
 package boldorf.eversector.screens;
 
 import asciiPanel.AsciiPanel;
-import boldorf.util.Console;
 import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
@@ -19,6 +18,7 @@ import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
+import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -128,7 +128,7 @@ public class StartScreen extends Screen
         */
         
         String padding =
-                Console.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
+                Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
         
         String infoLine = "(C) " + COPYRIGHT_YEAR + " " + new String(DEVELOPER)
                 + " " + padding + VERSION;
