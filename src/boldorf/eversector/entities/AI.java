@@ -492,6 +492,7 @@ public class AI
                 return false;
             }
             
+            ship.destroy(true);
             return false;
         }
         
@@ -537,8 +538,10 @@ public class AI
 
                 target.addPlayerColorMessage(ship.toColorString()
                         .add(" attempts to flee."));
+                return false;
             }
             
+            ship.destroy(true);
             return false;
         }
         
@@ -562,8 +565,9 @@ public class AI
     
     public boolean pursue()
     {
-        return willAttack() && ship.validateResources(Actions.FLEE, "pursue") &&
-                ship.changeResourceBy(Actions.FLEE);
+        return willAttack() &&
+                ship.validateResources(Actions.PURSUE, "pursue") &&
+                ship.changeResourceBy(Actions.PURSUE);
     }
     
     /**

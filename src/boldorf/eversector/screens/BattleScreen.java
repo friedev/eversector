@@ -75,6 +75,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                 deniedConversion = true;
             */
             popup = result;
+            updateBattle();
             return popup instanceof SectorScreen ? popup : this;
         }
         
@@ -83,7 +84,8 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         
         boolean nextAttack = false;
         Ship selected = getSelectedShip();
-        boolean isOpponent = battle.getEnemies(player).contains(selected);
+        List<Ship> enemies = battle.getEnemies(player);
+        boolean isOpponent = enemies.contains(selected);
         
         switch (key.getKeyCode())
         {
@@ -224,10 +226,32 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                         new ColorString("You have been destroyed."), true);
             }
             
-            battle.processEscapes();
+            if (!battle.getFleeing().contains(player) &&
+                    player.validateResources(Actions.PURSUE, "pursue"))
+            {
+                List<Ship> enemiesEscaping = new LinkedList<>();
+                for (Ship escaping: battle.getFleeing())
+                {
+                    if (enemies.contains(escaping))
+                        enemiesEscaping.add(escaping);
+                    else
+                        battle.processEscape(escaping);
+                }
+                
+                if (!enemiesEscaping.isEmpty())
+                {
+                    popup = new PursuitScreen(getDisplay(), battle,
+                            enemiesEscaping);
+                    return this;
+                }
+            }
+            else
+            {
+                battle.processEscapes();
+            }
             
             if (player.isInBattle())
-                battle = player.getBattleLocation().getBattle();
+                updateBattle();
             else
                 return endBattle();
             
@@ -299,6 +323,9 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         return null;
     }
     
+    private void updateBattle()
+        {battle = player.getBattleLocation().getBattle();}
+    
     private SectorScreen endBattle()
     {
         Main.pendingBattle = null;
@@ -322,10 +349,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
             keybindings.add(new Keybinding("toggle module activation", "m"));
         if (player.hasModule(Actions.SCAN))
             keybindings.add(new Keybinding("scan selected ship", "s"));
-        if (player.isAligned())
-            keybindings.add(new Keybinding("convert opponent", "c"));
+//        if (player.isAligned())
+//            keybindings.add(new Keybinding("convert opponent", "c"));
         keybindings.add(new Keybinding("flee", "f"));
-        keybindings.add(new Keybinding("surrender", "u"));
+//        keybindings.add(new Keybinding("surrender", "u"));
         return keybindings;
     }
     

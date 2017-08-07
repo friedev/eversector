@@ -102,7 +102,23 @@ public class Battle
         return attackMade;
     }
     
-    public void processEscape(Ship ship)
+    public List<Ship> getPursuers(Ship ship)
+    {
+        List<Ship> pursuing = new LinkedList<>();
+
+        for (Ship enemy: getEnemies(ship))
+        {
+            if (enemy.getAI() != null && !fleeing.contains(enemy) &&
+                    enemy.getAI().pursue())
+            {
+                pursuing.add(enemy);
+            }
+        }
+        
+        return pursuing;
+    }
+    
+    public void processEscape(Ship ship, List<Ship> pursuing)
     {
         if (!fleeing.contains(ship))
             return;
@@ -111,17 +127,6 @@ public class Battle
 
         if (!ship.isCloaked())
         {
-            List<Ship> pursuing = new LinkedList<>();
-
-            for (Ship enemy: getEnemies(ship))
-            {
-                if (enemy.getAI() != null && !fleeing.contains(enemy) &&
-                        enemy.getAI().pursue())
-                {
-                    pursuing.add(enemy);
-                }
-            }
-
             if (rng.nextBoolean())
             {
                 SectorLocation test = destination.raiseOrbit();
@@ -167,6 +172,9 @@ public class Battle
         fleeing.remove(ship);
     }
     
+    public void processEscape(Ship ship)
+        {processEscape(ship, getPursuers(ship));}
+    
     public void processEscapes()
     {
         for (Ship ship: fleeing)
@@ -189,6 +197,7 @@ public class Battle
         
         attackers.clear();
         defenders.clear();
+        fleeing.clear();
         destroyed.clear();
     }
     
