@@ -1,6 +1,7 @@
 /nbproject/private/
 /build/
 /bundle/local/
+/bundle/jre/
 /dist/
 build.xml
 manifest.mf
