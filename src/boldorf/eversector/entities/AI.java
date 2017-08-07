@@ -565,8 +565,9 @@ public class AI
     
     public boolean pursue()
     {
-        return willAttack() &&
-                ship.validateResources(Actions.PURSUE, "pursue") &&
+        Battle battle = ship.getBattleLocation().getBattle();
+        return willAttack() && battle.getEnemies(ship).size() -
+                battle.getFleeing().size() < 1 &&
                 ship.changeResourceBy(Actions.PURSUE);
     }
     
