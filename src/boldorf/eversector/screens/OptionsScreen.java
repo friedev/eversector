@@ -42,20 +42,20 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                 int lowerBound;
                 int upperBound;
                 
-                if (Options.WIDTH.equals(option))
+                switch (option)
                 {
-                    lowerBound = Options.DEFAULT_WIDTH;
-                    upperBound = Integer.MAX_VALUE;
-                }
-                else if (Options.HEIGHT.equals(option))
-                {
-                    lowerBound = Options.DEFAULT_HEIGHT;
-                    upperBound = Integer.MAX_VALUE;
-                }
-                else
-                {
-                    lowerBound = 0;
-                    upperBound = FileManager.MAX_VOLUME;
+                    case Options.WIDTH:
+                        lowerBound = Options.DEFAULT_WIDTH;
+                        upperBound = Integer.MAX_VALUE;
+                        break;
+                    case Options.HEIGHT:
+                        lowerBound = Options.DEFAULT_HEIGHT;
+                        upperBound = Integer.MAX_VALUE;
+                        break;
+                    default:
+                        lowerBound = 0;
+                        upperBound = FileManager.MAX_VOLUME;
+                        break;
                 }
                 
                 if (key.getKeyCode() == KeyEvent.VK_LEFT)
