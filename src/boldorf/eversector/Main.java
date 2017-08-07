@@ -38,7 +38,7 @@ import squidpony.squidmath.RNG;
 public class Main
 {
     /** The version number of the game. */
-    public static final String VERSION = "v0.5";
+    public static final String VERSION = "v0.6";
     
     /**
      * If true, will adjust the path to work in the developer's IDE with sources
