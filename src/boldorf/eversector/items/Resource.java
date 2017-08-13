@@ -64,7 +64,7 @@ public class Resource extends BaseResource
         this.baseCapacity = Math.abs(capacity);
         this.capacity     = baseCapacity;
         this.amount       = Math.min(Math.abs(amount), capacity);
-        setSellable(sellable);
+        setCanSell(sellable);
     }
     
     /**
@@ -78,7 +78,7 @@ public class Resource extends BaseResource
     public Resource(BaseResource base, int capacity, int amount)
     {
         this(base.getName(), base.getDescription(), base.getValue(), capacity,
-                amount, base.isSellable(), base.getExpander());
+                amount, base.canSell(), base.getExpander());
     }
     
     /**
@@ -91,7 +91,7 @@ public class Resource extends BaseResource
     public Resource(BaseResource base, int capacity)
     {
         this(base.getName(), base.getDescription(), base.getValue(), capacity,
-                capacity, base.isSellable(), base.getExpander());
+                capacity, base.canSell(), base.getExpander());
     }
     
     /**
@@ -104,7 +104,7 @@ public class Resource extends BaseResource
     public Resource(BaseResource base)
     {
         this(base.getName(), base.getDescription(), base.getValue(), CAPACITY,
-                CAPACITY, base.isSellable(), base.getExpander());
+                CAPACITY, base.canSell(), base.getExpander());
     }
     
     /**

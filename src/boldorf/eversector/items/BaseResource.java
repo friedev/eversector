@@ -6,7 +6,7 @@ import java.util.Properties;
 public class BaseResource extends Item
 {
     /** True if the resource can be sold at stations. */
-    private boolean sellable;
+    private boolean canSell;
     
     /** The expander used to increase storage capacity of any Resources. */
     private Expander expander;
@@ -16,14 +16,14 @@ public class BaseResource extends Item
      * @param name the name of the BaseResource
      * @param description the description of the BaseResource
      * @param value the value of one unit of the BaseResource
-     * @param sellable true if the resource can be sold
+     * @param canSell true if the resource can be sold
      * @param expander the expander for the BaseResource
      */
     public BaseResource(String name, String description, int value,
-            boolean sellable, Expander expander)
+            boolean canSell, Expander expander)
     {
         super(name, description, value);
-        this.sellable = sellable;
+        this.canSell = canSell;
         this.expander = expander;
     }
     
@@ -35,7 +35,7 @@ public class BaseResource extends Item
     public BaseResource(BaseResource copying)
     {
         this(copying.getName(), copying.getDescription(), copying.getValue(),
-                copying.sellable, new Expander(copying.expander));
+                copying.canSell, new Expander(copying.expander));
     }
     
     /**
@@ -52,7 +52,7 @@ public class BaseResource extends Item
         expander = new Expander(expanderProperties);
         
         // False is checked because sellable should default to true
-        sellable = !"false".equals(properties.getProperty("sellable"));
+        canSell = !"false".equals(properties.getProperty("sellable"));
     }
     
     /**
@@ -66,13 +66,13 @@ public class BaseResource extends Item
      * Returns true if the resource can be sold.
      * @return true if the resource's sellable flag is enabled
      */
-    public boolean isSellable()
-        {return sellable;}
+    public boolean canSell()
+        {return canSell;}
     
     /**
      * Changes the resource's sellable status.
-     * @param newSellable the new value to be assigned to the sellable flag
+     * @param canSell the new value to be assigned to the sellable flag
      */
-    public void setSellable(boolean newSellable)
-        {sellable = newSellable;}
+    public void setCanSell(boolean canSell)
+        {this.canSell = canSell;}
 }

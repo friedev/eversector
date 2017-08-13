@@ -377,7 +377,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
                         return;
                     }
                     
-                    if (!((Resource) i).isSellable())
+                    if (!((Resource) i).canSell())
                     {
                         item = INVALID;
                         credits = DISABLED;

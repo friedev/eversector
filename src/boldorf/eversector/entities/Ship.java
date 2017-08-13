@@ -1042,7 +1042,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             return true;
         }
         
-        if (!resource.isSellable() && quantity < 0)
+        if (!resource.canSell() && quantity < 0)
         {
             addError(resource + " cannot be sold.");
             return false;
