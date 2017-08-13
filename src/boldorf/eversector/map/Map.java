@@ -208,12 +208,6 @@ public class Map
     /** Creates the player, the starting sector, and the player's faction. */
     public void createNewPlayer()
     {
-        List<Coord> stationSystems = new LinkedList<>();
-        for (Sector[] row: map)
-            for (Sector sector: row)
-                if (sector.hasStations())
-                    stationSystems.add(sector.getLocation().getCoord());
-        
         SectorLocation location = new Location(this, getRandomStationSystem()
                 .getLocation().getCoord()).enterSector();
         location = location.setOrbit(location.getSector()

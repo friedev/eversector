@@ -1,7 +1,17 @@
-package boldorf.eversector;
+package boldorf.eversector.screens;
 
-import boldorf.util.Nameable;
+import boldorf.apwt.glyphs.ColorString;
+import static boldorf.eversector.Main.DISPLAYED_SCORES;
+import boldorf.eversector.screens.EndScreen;
+import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
+import boldorf.eversector.storage.Paths;
+import boldorf.util.FileManager;
 import boldorf.util.Utility;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -87,7 +97,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         if (kills > 0)
         {
             builder.append(kills).append(" ")
-                    .append(Nameable.makePlural("Kill", kills)).append(", ");
+                    .append(Utility.makePlural("Kill", kills)).append(", ");
         }
         
         builder.append(reputation);
@@ -131,4 +141,54 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     @Override
     public int compareTo(LeaderboardScore other)
         {return Integer.compare(score, other.score);}
+    
+    public static List<ColorString> buildLeaderboard()
+    {
+        List<ColorString> leaderboard = new LinkedList<>();
+        FileManager.createContainingFolders(Paths.LEADERBOARD);
+        List<LeaderboardScore> scores = getLeaderboardScores();
+        
+        if (scores == null || scores.isEmpty())
+            return leaderboard;
+        
+        leaderboard.add(buildLeaderboardHeader(scores.size()));
+        for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
+            leaderboard.add(new ColorString(scores.get(i).toString()));
+        
+        return leaderboard;
+    }
+    
+    public static ColorString buildLeaderboardHeader(int nScores)
+    {
+        ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
+        if (nScores > DISPLAYED_SCORES)
+            header.add(" (" + nScores + " Scores Total)");
+        return header;
+    }
+    
+    /**
+     * Returns a sorted list of every leaderboard score.
+     * @return an ArrayList of Integers parsed from the leaderboard file and
+     * sorted from greatest to least
+     */
+    public static List<LeaderboardScore> getLeaderboardScores()
+    {
+        List<LeaderboardScore> scores = new ArrayList<>();
+        
+        try
+        {
+            int index = 1;
+            while (scores.add(new LeaderboardScore(FileManager.load(
+                    Paths.LEADERBOARD + "score_" + index + ".properties"))))
+            {
+                index++;
+            }
+        }
+        catch (IllegalArgumentException | IOException e) {}
+        // Do nothing, but stop the loop
+        
+        // Sort scores from highest to lowest
+        scores.sort(Comparator.reverseOrder());
+        return scores;
+    }
 }

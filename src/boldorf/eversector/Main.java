@@ -264,56 +264,6 @@ public class Main
         catch (Exception e) {}
     }
     
-    public static List<ColorString> buildLeaderboard()
-    {
-        List<ColorString> leaderboard = new LinkedList<>();
-        FileManager.createContainingFolders(Paths.LEADERBOARD);
-        List<LeaderboardScore> scores = getLeaderboardScores();
-        
-        if (scores == null || scores.isEmpty())
-            return leaderboard;
-        
-        leaderboard.add(buildLeaderboardHeader(scores.size()));
-        for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
-            leaderboard.add(new ColorString(scores.get(i).toString()));
-        
-        return leaderboard;
-    }
-    
-    public static ColorString buildLeaderboardHeader(int nScores)
-    {
-        ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
-        if (nScores > DISPLAYED_SCORES)
-            header.add(" (" + nScores + " Scores Total)");
-        return header;
-    }
-    
-    /**
-     * Returns a sorted list of every leaderboard score.
-     * @return an ArrayList of Integers parsed from the leaderboard file and
-     * sorted from greatest to least
-     */
-    public static List<LeaderboardScore> getLeaderboardScores()
-    {
-        List<LeaderboardScore> scores = new ArrayList<>();
-        
-        try
-        {
-            int index = 1;
-            while (scores.add(new LeaderboardScore(FileManager.load(
-                    Paths.LEADERBOARD + "score_" + index + ".properties"))))
-            {
-                index++;
-            }
-        }
-        catch (IllegalArgumentException | IOException e) {}
-        // Do nothing, but stop the loop
-        
-        // Sort scores from highest to lowest
-        scores.sort(Comparator.reverseOrder());
-        return scores;
-    }
-    
     /**
      * Returns true if the options property with the given key equals the given
      * String.

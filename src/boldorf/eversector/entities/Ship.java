@@ -18,7 +18,6 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import boldorf.util.Nameable;
 import static boldorf.eversector.Main.addColorMessage;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,8 +34,7 @@ import boldorf.eversector.storage.Paths;
 import squidpony.squidgrid.FOV;
 
 /** A starship which can travel through and interact with the map. */
-public class Ship extends Nameable implements ColorStringObject,
-        Comparable<Ship>
+public class Ship implements ColorStringObject, Comparable<Ship>
 {
     // Starting resource amounts
     public static final int FUEL    = 15;
@@ -79,6 +77,8 @@ public class Ship extends Nameable implements ColorStringObject,
     /** The number of characters used when printing status. */
     public static final int SPACING = 12;
     
+    /** The ship's identification. */
+    private String name;
     /** The ship's AI. */
     private AI ai;
     /** The ship's location. */
@@ -108,15 +108,15 @@ public class Ship extends Nameable implements ColorStringObject,
      */
     public Ship(String name, Location location, Faction faction)
     {
-        super(name);
-        ai            = new AI(this);
-        this.location = location;
-        flags         = new ArrayList<>();
-        this.faction  = faction;
-        credits       = CREDITS;
-        modules       = new LinkedList<>();
-        cargo         = new LinkedList<>();
-        resources     = Station.copyResources();
+        this.name      = name;
+        this.ai        = new AI(this);
+        this.location  = location;
+        this.flags     = new ArrayList<>();
+        this.faction   = faction;
+        this.credits   = CREDITS;
+        this.modules   = new LinkedList<>();
+        this.cargo     = new LinkedList<>();
+        this.resources = Station.copyResources();
         
         createReputations();
         setResourceDefaults();
@@ -129,9 +129,8 @@ public class Ship extends Nameable implements ColorStringObject,
      */
     public Ship(Map map, Properties properties)
     {
-        super("Player");
-        
         // Basic hard-coded definitions
+        name      = "Player";
         ai        = null;
         flags     = new ArrayList<>();
         modules   = new LinkedList<>();
@@ -165,7 +164,7 @@ public class Ship extends Nameable implements ColorStringObject,
                 switch (key)
                 {
                     case "name":
-                        setName(value);
+                        name = value;
                         break;
                     case "location":
                         location = Location.parseLocation(map, value);
@@ -198,10 +197,7 @@ public class Ship extends Nameable implements ColorStringObject,
     
     @Override
     public String toString()
-    {
-        return isPlayer() ?
-                super.toString() : getClassification() + " " + super.toString();
-    }
+        {return isPlayer() ? name : getClassification() + " " + name;}
     
     @Override
     public ColorString toColorString()
@@ -210,6 +206,7 @@ public class Ship extends Nameable implements ColorStringObject,
                 new ColorString(toString());
     }
     
+    public String       getName()      {return name;     }
     public AI           getAI()        {return ai;       }
     public Faction      getFaction()   {return faction;  }
     public int          getCredits()   {return credits;  }
@@ -321,6 +318,9 @@ public class Ship extends Nameable implements ColorStringObject,
                 this.faction.isRelationship(WAR, faction));
     }
     
+    public void setName(String name)
+        {this.name = name;}
+    
     /**
      * Sets the ship's AI to the given AI.
      * @param ai the AI to assign to this ship
@@ -417,7 +417,7 @@ public class Ship extends Nameable implements ColorStringObject,
     public Properties toProperties()
     {
         Properties properties = new Properties();
-        properties.setProperty("name", super.toString());
+        properties.setProperty("name", name);
         properties.setProperty("location", location.toString());
         if (isAligned())
             properties.setProperty("faction", faction.getName());
@@ -425,7 +425,7 @@ public class Ship extends Nameable implements ColorStringObject,
         
         StringBuilder builder = new StringBuilder();
         for (Module module: modules)
-            builder.append(module.getLowerCaseName()).append(", ");
+            builder.append(module.getName().toLowerCase()).append(", ");
         
         if (builder.length() > 0)
         {
@@ -434,8 +434,11 @@ public class Ship extends Nameable implements ColorStringObject,
         }
         
         for (Resource resource: resources)
-            properties.setProperty("r_" + resource.getLowerCaseName(),
-                                           resource.getAmountAsFraction());
+        {
+            properties.setProperty("r_" + resource.getName().toLowerCase(),
+                    resource.getAmountAsFraction());
+        }
+        
         return properties;
     }
     
@@ -1028,7 +1031,7 @@ public class Ship extends Nameable implements ColorStringObject,
             if (resource.getNExpanders() + quantity > MAX_EXPANDERS)
             {
                 addPlayerError("The ship cannot store over " + MAX_EXPANDERS
-                        + " " + expander.makePlural().toLowerCase() + ".");
+                        + " " + expander.getName().toLowerCase() + "s.");
                 return false;
             }
             
@@ -1739,8 +1742,7 @@ public class Ship extends Nameable implements ColorStringObject,
         if (!planet.getType().canLandOn())
         {
             addPlayerError("The ship cannot land on "
-                    + Nameable.getFullName(planet.getType().toString())
-                    + ".");
+                    + Utility.addArticle(planet.getType().toString()) + ".");
             return false;
         }
         
@@ -1813,7 +1815,7 @@ public class Ship extends Nameable implements ColorStringObject,
         {
             if (print)
             {
-                addMessage("Extracted 1 unit of " + ore.getLowerCaseName()
+                addMessage("Extracted 1 unit of " + ore.getName().toLowerCase()
                         + ".");
                 
                 if (discard > 0)
@@ -1937,7 +1939,7 @@ public class Ship extends Nameable implements ColorStringObject,
         
         if (effect == null)
         {
-            addPlayerError(module.getFullNameCapitalized()
+            addPlayerError(Utility.addCapitalizedArticle(module.getName())
                     + " cannot be activated.");
             return false;
         }
@@ -2058,10 +2060,10 @@ public class Ship extends Nameable implements ColorStringObject,
         if (!hasModule(module))
         {
             if (action == null)
-                addPlayerError(module.getFullNameCapitalized()
+                addPlayerError(Utility.addCapitalizedArticle(module.getName())
                         + " is required.");
             else
-                addPlayerError(module.getFullNameCapitalized()
+                addPlayerError(Utility.addCapitalizedArticle(module.getName())
                         + " is required to " + action + ".");
             return false;
         }
@@ -2077,8 +2079,8 @@ public class Ship extends Nameable implements ColorStringObject,
                         return true;
             }
             
-            addPlayerError("Your " + module.getLowerCaseName() + " is too "
-                    + "damaged to function.");
+            addPlayerError("Your " + module.getName().toLowerCase()
+                    + " is too damaged to function.");
             return false;
         }
         
@@ -2126,7 +2128,7 @@ public class Ship extends Nameable implements ColorStringObject,
     {
         if (resource != null && resource.getAmount() < cost)
         {
-            addPlayerError("Insufficient " + resource.getLowerCaseName()
+            addPlayerError("Insufficient " + resource.getName().toLowerCase()
                     + " reserves to " + actionString + "; have "
                     + resource.getAmount() + ", need " + cost + ".");
             return false;
@@ -2195,7 +2197,7 @@ public class Ship extends Nameable implements ColorStringObject,
             
             if (damagedModule.damage())
             {
-                addPlayerMessage("Your " + damagedModule.getLowerCaseName()
+                addPlayerMessage("Your " + damagedModule.getName().toLowerCase()
                         + " has been damaged by the impact.");
                 
                 if (damagedModule.isEffect(SHIELDED) && isShielded())
@@ -2205,7 +2207,7 @@ public class Ship extends Nameable implements ColorStringObject,
             }
             else
             {
-                addPlayerMessage("Your " + damagedModule.getLowerCaseName()
+                addPlayerMessage("Your " + damagedModule.getName().toLowerCase()
                         + " has been destroyed by the impact!");
                 modules.remove(damagedModule);
             }
@@ -2238,7 +2240,8 @@ public class Ship extends Nameable implements ColorStringObject,
                     rng.nextDouble() <= (1.0 / (double) LOOT_MODIFIER))
             {
                 addModule(module);
-                addPlayerMessage("Salvaged " + module.getFullName() + ".");
+                addPlayerMessage("Salvaged "
+                        + Utility.addArticle(module.getName()) + ".");
             }
         }
         
@@ -2254,8 +2257,9 @@ public class Ship extends Nameable implements ColorStringObject,
                 if (nExpanders > 0)
                 {
                     addPlayerMessage("Salvaged " + nExpanders + " "
-                            + Nameable.makePlural(resource.getExpander()
-                                    .getLowerCaseName(), nExpanders) + ".");
+                            + Utility.makePlural(resource.getExpander()
+                                    .getName().toLowerCase(), nExpanders)
+                            + ".");
                 }
                 
                 int oldAmount = yourResource.getAmount();
@@ -2267,7 +2271,7 @@ public class Ship extends Nameable implements ColorStringObject,
                 if (amountIncrease > 0)
                 {
                     addPlayerMessage("Salvaged " + amountIncrease + " "
-                            + resource.getLowerCaseName() + ".");
+                            + resource.getName().toLowerCase() + ".");
                 }
             }
         }
@@ -2574,8 +2578,7 @@ public class Ship extends Nameable implements ColorStringObject,
      */
     public void destroy(boolean print)
     {
-        location.getSector()
-                .removeLetter((int) getName().charAt(getName().length() - 1));
+        location.getSector().removeLetter((int) name.charAt(name.length() - 1));
         location.getSector().getShips().remove(this);
         
         if (isDocked())

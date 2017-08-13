@@ -1,25 +1,32 @@
 package boldorf.eversector.entities;
 
-import boldorf.util.Nameable;
-
 /** A type of ore with a name and density. */
-public class Ore extends Nameable implements Comparable<Ore>
+public class Ore implements Comparable<Ore>
 {
     /** The maximum density of any type of ore. */
     public static final int DENSITY = 10;
     
+    private String name;
     private int density;
     
-    public Ore(String n, int d)
+    public Ore(String name, int density)
     {
-        super(n);
-        density = d;
+        this.name = name;
+        this.density = density;
     }
+    
+    @Override
+    public String toString()
+        {return name;}
+    
+    public String getName()
+        {return name;}
     
     public int getDensity()
         {return density;}
-    public void setDensity(int d)
-        {density = d;}
+    
+    public void setDensity(int density)
+        {this.density = density;}
 
     @Override
     public int compareTo(Ore other)

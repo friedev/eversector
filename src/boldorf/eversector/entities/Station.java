@@ -17,18 +17,15 @@ import java.util.LinkedList;
 import java.util.List;
 import boldorf.eversector.map.faction.Faction;
 import boldorf.eversector.storage.Resources;
-import boldorf.util.Nameable;
 
 /** A station at which ships can refuel and purchase upgrades. */
-public class Station extends Nameable implements ColorStringObject
+public class Station implements ColorStringObject
 {
     /** The base cost in credits to claim any celestial body. */
     public static final int CLAIM_COST = 250;
     
     public static final String TRADE  = "Trade";
     public static final String BATTLE = "Battle";
-    
-    // TODO change some modules to items (Refinery and Solar Array)
     
     /**
      * The base modules that all stations sell, at their base prices.
@@ -87,6 +84,8 @@ public class Station extends Nameable implements ColorStringObject
                         + "mounting of additional plating.", 85, 2)),
     };
     
+    private String name;
+    
     /** The type of station. */
     private String type;
     
@@ -113,7 +112,7 @@ public class Station extends Nameable implements ColorStringObject
      */
     public Station(String name, SectorLocation location, Faction faction)
     {
-        super(name);
+        this.name = name;
         this.location = location;
         this.faction = faction;
         ships = new LinkedList<>();
@@ -125,7 +124,7 @@ public class Station extends Nameable implements ColorStringObject
     
     @Override
     public String toString()
-        {return type + " Station " + super.toString();}
+        {return type + " Station " + name;}
     
     @Override
     public ColorString toColorString()
@@ -133,6 +132,12 @@ public class Station extends Nameable implements ColorStringObject
         return new ColorString(toString(),
                 isClaimed() ? getFaction().getColor() : null);
     }
+    
+    public String getName()
+        {return name;}
+    
+    public String getType()
+        {return type;}
     
     public SectorLocation getLocation()
         {return location;}
@@ -155,9 +160,6 @@ public class Station extends Nameable implements ColorStringObject
         this.faction = faction;
         location.getSector().updateFaction();
     }
-    
-    public String getType()
-        {return type;}
     
     /**
      * Returns the symbol that corresponds to the station type.

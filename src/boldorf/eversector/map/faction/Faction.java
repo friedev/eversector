@@ -5,7 +5,6 @@ import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.util.Nameable;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.map.Map;
 import static boldorf.eversector.map.faction.RelationshipType.*;
@@ -14,7 +13,7 @@ import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import java.awt.Color;
 
 /** A group of ships with a name and relationships with other factions. */
-public class Faction extends Nameable implements ColorStringObject
+public class Faction implements ColorStringObject
 {
     /** All the possible "types" of factions that can be generated. */
     public static String[] TYPES = new String[]
@@ -28,6 +27,7 @@ public class Faction extends Nameable implements ColorStringObject
     public static final int ECONOMY_CREDITS = 10000;
     public static final int NEWS_LENGTH = 10;
     
+    private String name;
     private Color  color;
     private String type;
     private Map    map;
@@ -45,7 +45,7 @@ public class Faction extends Nameable implements ColorStringObject
      */
     public Faction(String name, String type, Map map, Color color)
     {
-        super(name);
+        this.name     = name;
         this.color    = color;
         this.type     = type;
         this.map      = map;
@@ -67,12 +67,13 @@ public class Faction extends Nameable implements ColorStringObject
     
     @Override
     public String toString()
-        {return getName() + " " + type;}
+        {return name + " " + type;}
     
     @Override
     public ColorString toColorString()
         {return new ColorString(toString(), color);}
     
+    public String  getName()            {return name;          }
     public Color   getColor()           {return color;         }
     public String  getType()            {return type;          }
     public Map     getMap()             {return map;           }

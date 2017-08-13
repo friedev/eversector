@@ -2,15 +2,15 @@ package boldorf.eversector.items;
 
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.rng;
-import boldorf.util.Nameable;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 /** An item with a name and price for both ships and stations. */
-public class Item extends Nameable
+public class Item
 {
+    private String name;
     private String description;
     private int value;
     private int price;
@@ -23,7 +23,7 @@ public class Item extends Nameable
      */
     public Item(String name, String description, int value)
     {
-        super(name);
+        this.name = name;
         this.description = description;
         this.value = Math.abs(value);
         this.price = value;
@@ -37,7 +37,7 @@ public class Item extends Nameable
      */
     public Item(Properties properties)
     {
-        super(properties);
+        name = properties.getProperty("name");
         description = properties.getProperty("description");
         if (description == null)
         {
@@ -48,6 +48,13 @@ public class Item extends Nameable
         value = Math.abs(Integer.parseInt(properties.getProperty("value")));
         price = value;
     }
+    
+    @Override
+    public String toString()
+        {return name;}
+    
+    public String getName()
+        {return name;}
     
     public String getDescription()
         {return description;}
@@ -73,7 +80,7 @@ public class Item extends Nameable
     public List<ColorString> define()
     {
         List<ColorString> definition = new LinkedList<>();
-        definition.add(new ColorString(getName().toUpperCase()));
+        definition.add(new ColorString(name.toUpperCase()));
         definition.add(new ColorString("Value: ")
                 .add(new ColorString(value + " Credits", COLOR_FIELD)));
         definition.add(new ColorString("Description: ")

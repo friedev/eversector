@@ -35,7 +35,7 @@ public class BaseResource extends Item
     public BaseResource(BaseResource copying)
     {
         this(copying.getName(), copying.getDescription(), copying.getValue(),
-                copying.isSellable(), new Expander(copying.expander));
+                copying.sellable, new Expander(copying.expander));
     }
     
     /**

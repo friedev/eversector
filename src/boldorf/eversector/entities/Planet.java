@@ -10,12 +10,11 @@ import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.map.faction.Faction;
-import boldorf.util.Nameable;
 import java.util.Arrays;
 import squidpony.squidmath.Coord;
 
 /** A planet in a sector that can be interacted with in different ways. */
-public class Planet extends Nameable implements ColorStringObject
+public class Planet implements ColorStringObject
 {
     /**
      * The greatest number that region widths will be multiplied by, along with
@@ -37,6 +36,7 @@ public class Planet extends Nameable implements ColorStringObject
      */
     public static final int ASTEROID_DAMAGE = 1;
     
+    private String name;
     private PlanetType type;
     private final SectorLocation location;
     private Faction faction;
@@ -50,7 +50,7 @@ public class Planet extends Nameable implements ColorStringObject
      */
     public Planet(String name, SectorLocation location)
     {
-        super(name);
+        this.name = name;
         this.location = location;
         generateType();
         
@@ -72,7 +72,7 @@ public class Planet extends Nameable implements ColorStringObject
     
     @Override
     public String toString()
-        {return type + " " + super.toString();}
+        {return type + " " + name;}
     
     @Override
     public ColorString toColorString()
@@ -80,6 +80,9 @@ public class Planet extends Nameable implements ColorStringObject
         return new ColorString(toString(),
                 isClaimed() ? getFaction().getColor() : null);
     }
+    
+    public String getName()
+        {return name;}
     
     public PlanetType getType()
         {return type;}

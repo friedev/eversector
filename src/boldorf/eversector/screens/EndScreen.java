@@ -9,14 +9,9 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
-import boldorf.util.Nameable;
-import boldorf.eversector.LeaderboardScore;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.DISPLAYED_SCORES;
-import static boldorf.eversector.Main.buildLeaderboard;
-import static boldorf.eversector.Main.buildLeaderboardHeader;
 import static boldorf.eversector.Main.disqualified;
-import static boldorf.eversector.Main.getLeaderboardScores;
 import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
@@ -28,6 +23,7 @@ import static boldorf.eversector.screens.StartScreen.getTitleArt;
 import static boldorf.eversector.storage.Options.LEADERBOARD;
 import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import boldorf.eversector.storage.Paths;
+import boldorf.util.Utility;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -120,8 +116,8 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             ReputationRange reputation = player.getReputation(
                     player.getFaction()).getRange();
             
-            String playerArticle = player.isLeader() ? "the" : Nameable
-                    .getArticle(reputation.getAdjective());
+            String playerArticle = player.isLeader() ? "the" :
+                    Utility.getArticle(reputation.getAdjective());
             String playerTitle = player.isLeader() ? "leader" : "member";
             
             contents.add(new ColorString("You were " + playerArticle + " ")
@@ -158,7 +154,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             contents.add(new ColorString("Thanks for playing ")
                     .add(new ColorString(Integer.toString(map.getTurn()),
                             COLOR_FIELD))
-                    .add(" " + Nameable.makePlural("turn", map.getTurn())
+                    .add(" " + Utility.makePlural("turn", map.getTurn())
                             + "!"));
         }
         
@@ -173,19 +169,19 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         
         if (disqualified)
         {
-            window.getContents().addAll(buildLeaderboard());
+            window.getContents().addAll(LeaderboardScore.buildLeaderboard());
             contents.add(new ColorString("Your score has been disqualified due "
                     + "to debug command usage.", COLOR_SCORE));
         }
         else if (map.getTurn() <= MIN_TURNS)
         {
-            window.getContents().addAll(buildLeaderboard());
+            window.getContents().addAll(LeaderboardScore.buildLeaderboard());
             contents.add(new ColorString("This game has been too short to log "
                     + "a score.", COLOR_SCORE));
         }
         else if (player.calculateShipValue() <= Ship.BASE_VALUE)
         {
-            window.getContents().addAll(buildLeaderboard());
+            window.getContents().addAll(LeaderboardScore.buildLeaderboard());
             contents.add(new ColorString("You have not scored enough for a "
                     + "leaderboard entry.", COLOR_SCORE));
         }
@@ -231,10 +227,10 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
      * regardless of position
      * @return the number of scores
      */
-    public int printLeaderboard(LeaderboardScore playerScore)
+    private int printLeaderboard(LeaderboardScore playerScore)
     {
         List<ColorString> contents = window.getContents();
-        List<LeaderboardScore> scores = getLeaderboardScores();
+        List<LeaderboardScore> scores = LeaderboardScore.getLeaderboardScores();
         
         if (scores == null || scores.isEmpty())
         {
@@ -248,7 +244,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         scores.sort(Comparator.reverseOrder());
         
         boolean playerScoreNoted = false;
-        contents.add(buildLeaderboardHeader(scores.size()));
+        contents.add(LeaderboardScore.buildLeaderboardHeader(scores.size()));
         
         for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
         {

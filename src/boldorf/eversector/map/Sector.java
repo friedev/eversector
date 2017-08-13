@@ -12,7 +12,6 @@ import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import boldorf.util.Nameable;
 import static boldorf.eversector.Main.SYMBOL_EMPTY;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.entities.locations.Location;
@@ -22,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** A location on the map, possibly containing a star or station. */
-public class Sector extends Nameable
+public class Sector
 {
     public static final ColorChar
     SYMBOL_UNDISCOVERED   = new ColorChar(ExtChars.BLOCK_SHADE_1,
@@ -49,6 +48,8 @@ public class Sector extends Nameable
      */
     public static final int MIN_SHIPS = 4;
     
+    private String        name;
+    private String        nickname;
     private Star          star;
     private Location      location;
     private Faction       faction;
@@ -63,21 +64,17 @@ public class Sector extends Nameable
      */
     public Sector(Location location)
     {
-        // Constructor is done this way so generateName() can be initialized
-        super(new String());
-        setNickname(Main.nameGenerator.generateName(2));
-        
+        // name generated below with generateName()
+        nickname = Main.nameGenerator.generateName(2);
         this.location = location;
         ships = new LinkedList<>();
         usedLetters = new LinkedList<>();
         
         // Generate a name that isn't used
-        String name;
         do
         {
             name = generateName();
         } while (location.getMap().isUsed(name));
-        setName(generateName());
         location.getMap().addDesignation(name);
     }
     
@@ -112,7 +109,7 @@ public class Sector extends Nameable
     
     @Override
     public String toString()
-        {return "Sector " + super.toString();}
+        {return "Sector " + name;}
     
     public Location getLocation() {return location;       }
     public Faction  getFaction()  {return faction;        }
@@ -508,7 +505,7 @@ public class Sector extends Nameable
      * @return a String containing the sector's name and the character form of i
      */
     public String generateNameFor(int i)
-        {return getName() + (char) (i + 65);}
+        {return name + (char) (i + 65);}
     
     /**
      * Generates a name for a ship consisting of the sector's name and a random
