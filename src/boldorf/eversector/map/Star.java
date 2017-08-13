@@ -1,63 +1,163 @@
 package boldorf.eversector.map;
 
 import asciiPanel.AsciiPanel;
-import boldorf.util.Utility;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.util.Utility;
 import boldorf.apwt.glyphs.ColorStringObject;
-import static boldorf.eversector.Main.rng;
+import boldorf.eversector.Main;
 import java.awt.Color;
 
 /** A star that possesses a type and a power level. */
-public enum Star implements ColorStringObject
+public class Star implements ColorStringObject
 {
-    YELLOW_DWARF("Yellow Dwarf", 7, false, AsciiPanel.brightYellow,
-            ExtChars.STAR),
-    RED_DWARF("Red Dwarf", 5, false, AsciiPanel.red, '*'),
-    NEUTRON_STAR("Neutron Star", 8, true, AsciiPanel.brightCyan, '*'),
-    SUPERGIANT("Supergiant", 10, true, AsciiPanel.brightRed, ExtChars.CIRCLE);
+    public static final double SPECIAL_CHANCE = 0.1;
     
-    private String  type;
-    private int     power;
-    private boolean nebular;
-    private Color   color;
-    private char    symbol;
-    
-    Star(String type, int power, boolean nebular, Color color, char symbol)
+    private enum StarSize
     {
-        this.type    = type;
-        this.power   = power;
-        this.nebular = nebular;
-        this.color   = color;
-        this.symbol  = symbol;
+        SUBDWARF  ("Subdwarf",   '+',             0.2,   4),
+        DWARF     ("Dwarf",      '*',             0.6,   5),
+        SUBGIANT  ("Subgiant",   ExtChars.STAR,   0.1,   7),
+        GIANT     ("Giant",      ExtChars.STAR,   0.05,  8),
+        SUPERGIANT("Supergiant", ExtChars.CIRCLE, 0.025, 10),
+        HYPERGIANT("Hypergiant", ExtChars.CIRCLE, 0.025, 12);
+        
+        private String name;
+        private char symbol;
+        private double probability;
+        private int mass;
+        
+        StarSize(String name, char symbol, double probability, int mass)
+        {
+            this.name = name;
+            this.symbol = symbol;
+            this.probability = probability;
+            this.mass = mass;
+        }
+        
+        @Override
+        public String toString()
+            {return name;}
+        
+        public String getName()
+            {return name;}
+        
+        public char getSymbol()
+            {return symbol;}
+        
+        public double getProbability()
+            {return probability;}
+        
+        public int getMass()
+            {return mass;}
+        
+        public static StarSize select()
+        {
+            double[] probabilities = new double[StarSize.values().length];
+            for (int i = 0; i < StarSize.values().length; i++)
+                probabilities[i] = StarSize.values()[i].probability;
+            return (StarSize) Utility.select(Main.rng, StarSize.values(),
+                    probabilities);
+        }
+    }
+    
+    private enum StarColor
+    {
+        BLUE  ("Blue",   AsciiPanel.brightCyan  ),
+        YELLOW("Yellow", AsciiPanel.brightYellow),
+        RED   ("Red",    AsciiPanel.brightRed   );
+        
+        private String name;
+        private Color color;
+        
+        StarColor(String name, Color color)
+        {
+            this.name = name;
+            this.color = color;
+        }
+        
+        @Override
+        public String toString()
+            {return name;}
+        
+        public String getName()
+            {return name;}
+        
+        public Color getColor()
+            {return color;}
+        
+        public static StarColor select()
+            {return Main.rng.getRandomElement(StarColor.values());}
+    }
+    
+    private enum SpecialStar
+    {
+        BROWN_DWARF(new Star("Brown Dwarf", AsciiPanel.yellow,
+                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass())),
+        WHITE_DWARF(new Star("White Dwarf", AsciiPanel.brightWhite,
+                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass())),
+        BINARY_STAR(new Star("Binary Star", AsciiPanel.brightWhite,
+                ExtChars.INFINITY, StarSize.SUBGIANT.getMass())),
+        NEUTRON_STAR(new Star("Neutron Star", AsciiPanel.brightCyan,
+                StarSize.SUBDWARF.getSymbol(), StarSize.GIANT.getMass())),
+        PULSAR(new Star("Pulsar", NEUTRON_STAR.star.color,
+                NEUTRON_STAR.star.symbol, NEUTRON_STAR.star.mass));
+        
+        private Star star;
+        
+        SpecialStar(Star star)
+            {this.star = star;}
+    }
+    
+    private String name;
+    private Color  color;
+    private char   symbol;
+    private int    mass;
+    
+    public Star(String name, Color color, char symbol, int mass)
+    {
+        this.name   = name;
+        this.mass   = mass;
+        this.color  = color;
+        this.symbol = symbol;
+    }
+    
+    public Star(Star copying)
+        {this(copying.name, copying.color, copying.symbol, copying.mass);}
+    
+    private Star(StarSize size, StarColor color)
+    {
+        this.name   = color.getName() + " " + size.getName();
+        this.color  = color.getColor();
+        this.symbol = size.getSymbol();
+        this.mass   = size.getMass();
+    }
+    
+    public Star()
+        {this(generate());}
+    
+    public static Star generate()
+    {
+        if (Utility.getChance(Main.rng, SPECIAL_CHANCE))
+            return Main.rng.getRandomElement(SpecialStar.values()).star;
+        return new Star(StarSize.select(), StarColor.select());
     }
     
     @Override
     public String toString()
-        {return type;}
+        {return name;}
     
     @Override
     public ColorString toColorString()
-        {return new ColorString(type, color);}
+        {return new ColorString(name, color);}
     
-    public String getType()
-        {return type;}
+    public String getName()
+        {return name;}
     
-    public int getPower()
-        {return power;}
+    public int getMass()
+        {return mass;}
     
-    /**
-     * Returns true if the star is large enough to be surrounded by nebulae.
-     * @return true if nebulae will generate in the orbits of the star
-     */
-    public boolean isNebular()
-        {return nebular;}
-    
-    /**
-     * Returns the symbol corresponding to the type of the star.
-     * @return the symbol representing the star type
-     */
     public ColorChar getSymbol()
         {return new ColorChar(symbol, color);}
     
@@ -69,7 +169,7 @@ public enum Star implements ColorStringObject
      * invalid
      */
     public int getPowerAt(int orbit)
-        {return orbit > 0 ? Math.max(0, power - (orbit - 1)) : -1;}
+        {return orbit > 0 ? Math.max(0, mass - (orbit - 1)) : -1;}
     
     /**
      * Calculates the amount of energy generated by a solar array at the given
@@ -80,16 +180,5 @@ public enum Star implements ColorStringObject
      * star, -1 if the orbit is invalid
      */
     public int getSolarPowerAt(int orbit)
-        {return getPowerAt(orbit) / (RED_DWARF.power + 1) + 1;}
-    
-    /**
-     * Randomly generates the type of the star.
-     * @return the type of the star as a String
-     */
-    public static Star generate()
-    {
-        return (Star) Utility.select(rng,
-                new Star[] {YELLOW_DWARF, RED_DWARF, NEUTRON_STAR, SUPERGIANT},
-                new double[] {0.35, 0.35, 0.15, 0.15});
-    }
+        {return getPowerAt(orbit) / (StarSize.SUBDWARF.getMass()) + 1;}
 }

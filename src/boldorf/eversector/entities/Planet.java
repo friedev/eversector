@@ -357,15 +357,6 @@ public class Planet extends Nameable implements ColorStringObject
      */
     private void generateType()
     {
-        // If the star is nebular, there is a 1/2 chance that a nebula is
-        // generated instead of a planet
-        if (getLocation().getSector().getStar().isNebular() &&
-                rng.nextBoolean())
-        {
-            type = PlanetType.NEBULA;
-            return;
-        }
-        
         PlanetType rocky = getRockyType();
         type = (PlanetType) Utility.select(rng, new PlanetType[]
                 {rocky, PlanetType.GAS_GIANT, PlanetType.ASTEROID_BELT},

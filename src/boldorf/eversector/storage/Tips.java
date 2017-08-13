@@ -5,7 +5,6 @@ public abstract class Tips
 {
     public static final String[] TIPS = new String[]
     {
-        "Powerful stars have more orbits, but may form nebulae.",
         "If you need to raise your faction standing, try claiming territory.",
         "Know your enemies. Attacking peaceful ships can hurt your reputation.",
         "Want a fresh start? Delete your local folder for a clean slate.",

@@ -86,8 +86,8 @@ public class Sector extends Nameable
         if (rng.nextBoolean())
         {
             star = Star.generate();
-            planets = new Planet[star.getPower()];
-            stations = new Station[star.getPower()];
+            planets = new Planet[star.getMass()];
+            stations = new Station[star.getMass()];
             
             generatePlanets();
             
@@ -120,7 +120,7 @@ public class Sector extends Nameable
     public boolean  isClaimed()   {return faction != null;}
     
     public int getOrbits()
-        {return star == null ? 0 : star.getPower();}
+        {return star == null ? 0 : star.getMass();}
     
     public boolean isEmpty()
         {return star == null;} 
@@ -434,12 +434,12 @@ public class Sector extends Nameable
         
         // The (... - 1) + 2 is to ensure at least one planet
         for (int i = 0; i < rng.nextInt(Math.min(MAX_PLANETS,
-                star.getPower()) - 1) + 2; i++)
+                star.getMass()) - 1) + 2; i++)
         {
             int j;
             do
             {
-                j = rng.nextInt(star.getPower());
+                j = rng.nextInt(star.getMass());
             } while (planets[j] != null);
             
             // Make a new planet with the sector's name and i's corresponding
@@ -463,12 +463,12 @@ public class Sector extends Nameable
         // The (...) + 1  is to ensure at least 1 station
         // Power is divided by 2 to avoid overpopulating small sectors
         for (int i = 0; i < rng.nextInt(Math.min(MAX_STATIONS,
-                star.getPower() / 2)) + 1; i++)
+                star.getMass() / 2)) + 1; i++)
         {
             int j;
             do
             {
-                j = rng.nextInt(star.getPower());
+                j = rng.nextInt(star.getMass());
             } while (stations[j] != null);
             
             // There is no need to do a check for if this is a station system,
@@ -494,7 +494,7 @@ public class Sector extends Nameable
             // letter, the sector's location, and its map
             Ship ship = new Ship(generateShipName(),
                     new SectorLocation(location,
-                            rng.nextInt(star.getPower()) + 1),
+                            rng.nextInt(star.getMass()) + 1),
                     location.getMap().getRandomFaction());
             ships.add(ship);
             location.getMap().addShip(ship);
@@ -790,7 +790,7 @@ public class Sector extends Nameable
      * @return true if the orbit is between 1 and the constant number of orbits
      */
     public boolean isValidOrbit(int orbit)
-        {return !isEmpty() && orbit >= 1 && orbit <= star.getPower();}
+        {return !isEmpty() && orbit >= 1 && orbit <= star.getMass();}
     
     /**
      * Returns true if there are any planets or stations in this sector that can

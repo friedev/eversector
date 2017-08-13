@@ -8,8 +8,7 @@ public enum PlanetType
     TERRAN_PLANET ("Terran Planet"),
     GLACIAL_PLANET("Glacial Planet"),
     GAS_GIANT     ("Gas Giant",     ExtChars.CIRCLE,   false, false, false),
-    ASTEROID_BELT ("Asteroid Belt", ExtChars.INFINITY, false, true,  false),
-    NEBULA        ("Nebula",        ExtChars.SPIRAL,   false, false, false);
+    ASTEROID_BELT ("Asteroid Belt", ExtChars.INFINITY, false, true,  false);
     
     private String type;
     private char symbol;
