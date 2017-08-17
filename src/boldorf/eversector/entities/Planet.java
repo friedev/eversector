@@ -1,21 +1,119 @@
 package boldorf.eversector.entities;
 
+import boldorf.apwt.ExtChars;
 import boldorf.util.Utility;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import boldorf.eversector.entities.Region.RegionType;
+import static boldorf.eversector.entities.Region.RegionType.*;
 import boldorf.eversector.entities.locations.PlanetLocation;
 import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.map.faction.Faction;
 import java.util.Arrays;
+import java.util.LinkedList;
+import squidpony.squidgrid.mapping.HeightMapFactory;
 import squidpony.squidmath.Coord;
 
 /** A planet in a sector that can be interacted with in different ways. */
 public class Planet implements ColorStringObject
 {
+    public enum PlanetType
+    {
+        /*
+        VOLCANIC [------XXXXXXX]
+        OCEAN    [---XXXXX-----]
+        TERRAN   [----XXX------]
+        ARID     [--XXXXXXXX---]
+        BARREN   [XXXXXXXXXXX--]
+        GLACIAL  [XXX----------]
+        */
+        
+        VOLCANIC("Volcanic", 6, 12, MAGMA,  ROCK,  MOUNTAIN        ),
+        OCEANIC ("Ocean",    3, 7,  OCEAN,  COAST, DESERT          ),
+        TERRAN  ("Terran",   4, 6,  OCEAN,  PLAIN, FOREST, MOUNTAIN),
+        ARID    ("Arid",     2, 8,  DESERT, DUNES, MOUNTAIN        ),
+        BARREN  ("Barren",   0, 10, ROCK,   MOUNTAIN               ),
+        GLACIAL ("Glacial",  0, 2,  FLATS,  GLACIER                ),
+        
+        GAS_GIANT     ("Gas Giant",     ExtChars.CIRCLE,   false, false),
+        ASTEROID_BELT ("Asteroid Belt", ExtChars.INFINITY, false, true );
+
+        private String type;
+        private char symbol;
+        private boolean canLandOn;
+        private boolean canMine;
+        private int minTemp;
+        private int maxTemp;
+        private RegionType[] regions;
+
+        PlanetType(String type, char symbol, boolean canLandOn, boolean canMine)
+        {
+            this.type      = type;
+            this.symbol    = symbol;
+            this.minTemp   = 0;
+            this.maxTemp   = Integer.MAX_VALUE;
+            this.canLandOn = canLandOn;
+            this.canMine   = canMine;
+            this.regions   = null;
+        }
+
+        PlanetType(String type, int minTemp, int maxTemp, RegionType... regions)
+        {
+            this.type      = type + " Planet";
+            this.symbol    = ExtChars.THETA;
+            this.minTemp   = minTemp;
+            this.maxTemp   = maxTemp;
+            this.canLandOn = true;
+            this.canMine   = true;
+            this.regions   = regions;
+        }
+
+        @Override
+        public String toString()
+            {return type;}
+
+        public String getType()
+            {return type;}
+
+        public char getSymbol()
+            {return symbol;}
+
+        public boolean canLandOn()
+            {return canLandOn;}
+
+        public boolean canMine()
+            {return canMine;}
+
+        public boolean isRocky()
+            {return canLandOn && canMine;}
+        
+        public boolean canMineFromOrbit()
+            {return !canLandOn && canMine;}
+        
+        public int getMinTemp()
+            {return minTemp;}
+        
+        public int getMaxTemp()
+            {return maxTemp;}
+        
+        public boolean isInTempRange(int temp)
+            {return minTemp <= temp && maxTemp >= temp;}
+        
+        public RegionType getRegionAtElevation(double elevation)
+        {
+            if (regions == null || regions.length == 0)
+                return null;
+            
+            elevation = Math.max(0.0, Math.min(1.0, elevation));
+            int index = (int) (((double) (regions.length - 1)) * elevation);
+            return regions[index];
+        }
+    }
+    
     /**
      * The greatest number that region widths will be multiplied by, along with
      * 2.
@@ -54,7 +152,7 @@ public class Planet implements ColorStringObject
         this.location = location;
         generateType();
         
-        if (type.hasOre())
+        if (type.canMine())
             generateOre();
         else
             ores = null;
@@ -204,20 +302,6 @@ public class Planet implements ColorStringObject
     }
     
     /**
-     * Returns true if there is a region with the given type on this planet.
-     * @param type the type of region to look for
-     * @return true if a search for the region does not return null
-     */
-    public boolean hasRegion(String type)
-    {
-        for (Region[] row: regions)
-            for (Region region: row)
-                if (region.getType().equalsIgnoreCase(type))
-                    return true;
-        return false;
-    }
-    
-    /**
      * Returns a random region on the planet.
      * @return any of the regions on the planet, chosen at random
      */
@@ -306,9 +390,7 @@ public class Planet implements ColorStringObject
      * @return the planet's ore type or a randomly generated one
      */
     public Ore getRandomOre()
-    {
-        return type.hasOre() ? ores.get(rng.nextInt(ores.size())) : null;
-    }
+        {return ores.isEmpty() ? null : ores.get(rng.nextInt(ores.size()));}
     
     public int getNShips()
     {
@@ -368,8 +450,15 @@ public class Planet implements ColorStringObject
     
     private PlanetType getRockyType()
     {
-        return PlanetType.getRockyType(getLocation().getSector().getStar()
-                .getPowerAt(getLocation().getOrbit()));
+        int temp = getLocation().getSector().getStar().getPowerAt(
+                getLocation().getOrbit());
+        
+        List<PlanetType> types = new LinkedList<>();
+        for (PlanetType rockyType: PlanetType.values())
+            if (rockyType.isRocky() && rockyType.isInTempRange(temp))
+                types.add(rockyType);
+        
+        return rng.getRandomElement(types);
     }
     
     private void generateOre()
@@ -393,10 +482,19 @@ public class Planet implements ColorStringObject
     {
         int widthMultiplier = rng.nextInt(REGION_MULTIPLIER_RANGE) + 1;
         regions = new Region[widthMultiplier + 1][widthMultiplier * 2];
+        
+        double[][] heights = HeightMapFactory.heightMap(regions.length,
+                regions[0].length, rng.nextDouble());
+        
         for (int y = 0; y < regions.length; y++)
+        {
             for (int x = 0; x < regions[y].length; x++)
+            {
                 regions[y][x] = new Region(new PlanetLocation(getLocation(),
-                        Coord.get(x, y)));
+                        Coord.get(x, y)),
+                        type.getRegionAtElevation(Math.abs(heights[y][x])));
+            }
+        }
         
         updateFaction();
     }
