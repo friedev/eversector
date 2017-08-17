@@ -17,28 +17,30 @@ public class Region implements ColorStringObject
 {
     public enum RegionType
     {
-        MAGMA("Magma", ExtChars.APPROX_EQUAL, AsciiPanel.brightRed),
-        ROCK("Rock", '+', AsciiPanel.brightBlack),
+        MAGMA("Magma", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightRed),
+        ROCK("Rock", true, '+', AsciiPanel.brightBlack),
         
-        DESERT("Desert", '+', AsciiPanel.brightYellow),
-        DUNES("Dunes", ExtChars.BUMP, AsciiPanel.brightYellow),
+        DESERT("Desert", true, '+', AsciiPanel.brightYellow),
+        DUNES("Dunes", true, ExtChars.BUMP, AsciiPanel.brightYellow),
         
-        OCEAN("Ocean", ExtChars.APPROX_EQUAL, AsciiPanel.brightBlue),
-        COAST("Coast", ExtChars.APPROX_EQUAL, AsciiPanel.brightCyan),
-        PLAIN("Plain", '+', AsciiPanel.brightGreen),
-        FOREST("Forest", ExtChars.SPADE, AsciiPanel.green),
-        MOUNTAIN("Mountain", ExtChars.TRIANGLE_U, AsciiPanel.brightBlack),
+        OCEAN("Ocean", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightBlue),
+        COAST("Coast", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightCyan),
+        PLAIN("Plain", true, '+', AsciiPanel.brightGreen),
+        FOREST("Forest", true, ExtChars.SPADE, AsciiPanel.green),
+        MOUNTAIN("Mountain", true, ExtChars.TRIANGLE_U, AsciiPanel.brightBlack),
         
-        FLATS("Flats", '+', AsciiPanel.brightCyan),
-        GLACIER("Glacier", ExtChars.BUMP, AsciiPanel.brightCyan);
+        FLATS("Flats", true, '+', AsciiPanel.brightCyan),
+        GLACIER("Glacier", true, ExtChars.BUMP, AsciiPanel.brightCyan);
         
         private String type;
         private ColorChar symbol;
+        private boolean hasOre;
         
-        RegionType(String type, char symbol, Color foreground)
+        RegionType(String type, boolean hasOre, char symbol, Color foreground)
         {
-            this.type = type;
+            this.type   = type;
             this.symbol = new ColorChar(symbol, foreground);
+            this.hasOre = hasOre;
         }
         
         @Override
@@ -50,6 +52,9 @@ public class Region implements ColorStringObject
         
         public ColorChar getSymbol()
             {return symbol;}
+        
+        public boolean hasOre()
+            {return hasOre;}
     }
     
     private final PlanetLocation location;
@@ -72,7 +77,9 @@ public class Region implements ColorStringObject
         this.location = location;
         this.type     = type;
         this.faction  = null;
-        this.ore      = location.getPlanet().getRandomOre();
+        
+        if (type.hasOre())
+            this.ore = location.getPlanet().getRandomOre();
     }
     
     @Override
