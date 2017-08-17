@@ -15,7 +15,7 @@ import boldorf.eversector.items.Action;
 import boldorf.eversector.items.Item;
 import java.util.LinkedList;
 import java.util.List;
-import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.faction.Faction;
 import boldorf.eversector.storage.Resources;
 
 /** A station at which ships can refuel and purchase upgrades. */

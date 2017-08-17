@@ -8,7 +8,7 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.pendingRelationships;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.map.faction.RelationshipChange;
+import boldorf.eversector.faction.RelationshipChange;
 
 /**
  * 

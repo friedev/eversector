@@ -6,7 +6,7 @@ import boldorf.eversector.entities.Station;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.entities.Levels;
 import boldorf.eversector.Main;
-import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.faction.Faction;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;

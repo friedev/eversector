@@ -1,11 +1,11 @@
-package boldorf.eversector.map.faction;
+package boldorf.eversector.faction;
 
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.pendingRelationships;
 import static boldorf.eversector.Main.rng;
 import boldorf.util.Utility;
 import boldorf.eversector.entities.Ship;
-import static boldorf.eversector.map.faction.RelationshipType.*;
+import static boldorf.eversector.faction.RelationshipType.*;
 
 /**
  * A relationship between factions, containing the two factions and the terms

@@ -12,7 +12,7 @@ import boldorf.eversector.entities.locations.PlanetLocation;
 import boldorf.eversector.entities.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
-import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.faction.Faction;
 import java.util.Arrays;
 import java.util.LinkedList;
 import squidpony.squidgrid.mapping.HeightMapFactory;

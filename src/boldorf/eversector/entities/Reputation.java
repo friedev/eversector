@@ -1,7 +1,7 @@
 package boldorf.eversector.entities;
 
 import asciiPanel.AsciiPanel;
-import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.faction.Faction;
 import java.awt.Color;
 
 /**

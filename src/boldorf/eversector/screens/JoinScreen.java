@@ -7,7 +7,7 @@ import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.faction.Faction;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 

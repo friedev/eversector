@@ -1,4 +1,4 @@
-package boldorf.eversector.map.faction;
+package boldorf.eversector.faction;
 
 import boldorf.eversector.Main;
 import static boldorf.eversector.Main.pendingElection;
@@ -7,7 +7,7 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.map.Map;
-import static boldorf.eversector.map.faction.RelationshipType.*;
+import static boldorf.eversector.faction.RelationshipType.*;
 import static boldorf.eversector.storage.Options.NEWS;
 import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import java.awt.Color;

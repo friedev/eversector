@@ -7,7 +7,7 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.entities.locations.PlanetLocation;
-import boldorf.eversector.map.faction.Faction;
+import boldorf.eversector.faction.Faction;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;

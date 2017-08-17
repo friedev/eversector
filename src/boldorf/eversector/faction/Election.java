@@ -1,4 +1,4 @@
-package boldorf.eversector.map.faction;
+package boldorf.eversector.faction;
 
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.player;
