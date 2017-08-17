@@ -16,10 +16,10 @@ public class Star implements ColorStringObject
     
     private enum StarSize
     {
-        SUBDWARF  ("Subdwarf",   '+',             0.2,   4),
-        DWARF     ("Dwarf",      '*',             0.6,   5),
-        SUBGIANT  ("Subgiant",   ExtChars.STAR,   0.1,   7),
-        GIANT     ("Giant",      ExtChars.STAR,   0.05,  8),
+        SUBDWARF  ("Subdwarf",   '+',             0.2,   4 ),
+        DWARF     ("Dwarf",      '*',             0.6,   5 ),
+        SUBGIANT  ("Subgiant",   ExtChars.STAR,   0.1,   7 ),
+        GIANT     ("Giant",      ExtChars.STAR,   0.05,  8 ),
         SUPERGIANT("Supergiant", ExtChars.CIRCLE, 0.025, 10),
         HYPERGIANT("Hypergiant", ExtChars.CIRCLE, 0.025, 12);
         
