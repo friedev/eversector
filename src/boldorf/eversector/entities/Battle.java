@@ -185,6 +185,9 @@ public class Battle
     {
         List<Ship> winners = getShips();
         
+        if (winners == null || winners.isEmpty())
+            return;
+        
         for (int i = 0; i < destroyed.size(); i++)
             winners.get(i % winners.size()).loot(destroyed.get(i));
     }
