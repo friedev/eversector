@@ -7,8 +7,8 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Battle;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Battle;
+import boldorf.eversector.ships.Ship;
 import boldorf.eversector.storage.Actions;
 import java.util.List;
 

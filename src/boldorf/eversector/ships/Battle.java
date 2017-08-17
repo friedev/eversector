@@ -1,7 +1,7 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.ships;
 
 import static boldorf.eversector.Main.rng;
-import boldorf.eversector.entities.locations.SectorLocation;
+import boldorf.eversector.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

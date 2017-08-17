@@ -10,7 +10,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Station;
+import boldorf.eversector.map.Station;
 import static boldorf.eversector.storage.Paths.CLAIM;
 
 /**

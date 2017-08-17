@@ -1,9 +1,9 @@
-package boldorf.eversector.entities.locations;
+package boldorf.eversector.locations;
 
-import boldorf.eversector.entities.Battle;
-import boldorf.eversector.entities.Planet;
-import boldorf.eversector.entities.Ship;
-import boldorf.eversector.entities.Station;
+import boldorf.eversector.ships.Battle;
+import boldorf.eversector.map.Planet;
+import boldorf.eversector.ships.Ship;
+import boldorf.eversector.map.Station;
 import java.util.List;
 import squidpony.squidmath.Coord;
 

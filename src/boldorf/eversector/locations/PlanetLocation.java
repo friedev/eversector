@@ -1,6 +1,6 @@
-package boldorf.eversector.entities.locations;
+package boldorf.eversector.locations;
 
-import boldorf.eversector.entities.Region;
+import boldorf.eversector.map.Region;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 

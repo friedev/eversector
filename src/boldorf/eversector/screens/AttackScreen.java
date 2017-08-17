@@ -9,7 +9,7 @@ import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Ship;
 
 /**
  * 

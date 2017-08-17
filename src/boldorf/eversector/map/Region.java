@@ -1,12 +1,13 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.map;
 
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import boldorf.eversector.ships.Ship;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
-import boldorf.eversector.entities.locations.PlanetLocation;
+import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.faction.Faction;
 import java.awt.Color;
 import java.util.LinkedList;

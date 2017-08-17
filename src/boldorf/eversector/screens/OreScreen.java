@@ -6,7 +6,7 @@ import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import boldorf.eversector.entities.Ore;
+import boldorf.eversector.map.Ore;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.List;

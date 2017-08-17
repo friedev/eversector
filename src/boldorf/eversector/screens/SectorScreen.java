@@ -17,7 +17,7 @@ import static boldorf.eversector.Main.pendingBattle;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Station;
+import boldorf.eversector.map.Station;
 import boldorf.eversector.map.Sector;
 import static boldorf.eversector.storage.Paths.DOCK;
 import static boldorf.eversector.storage.Paths.ENGINE;

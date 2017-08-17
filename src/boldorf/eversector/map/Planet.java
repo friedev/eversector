@@ -1,4 +1,4 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.map;
 
 import boldorf.apwt.ExtChars;
 import boldorf.util.Utility;
@@ -6,10 +6,10 @@ import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.eversector.entities.Region.RegionType;
-import static boldorf.eversector.entities.Region.RegionType.*;
-import boldorf.eversector.entities.locations.PlanetLocation;
-import boldorf.eversector.entities.locations.SectorLocation;
+import boldorf.eversector.map.Region.RegionType;
+import static boldorf.eversector.map.Region.RegionType.*;
+import boldorf.eversector.locations.PlanetLocation;
+import boldorf.eversector.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.faction.Faction;

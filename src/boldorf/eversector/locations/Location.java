@@ -1,4 +1,4 @@
-package boldorf.eversector.entities.locations;
+package boldorf.eversector.locations;
 
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;

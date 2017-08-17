@@ -1,10 +1,13 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.ships;
 
-import boldorf.eversector.entities.locations.BattleLocation;
-import boldorf.eversector.entities.locations.Location;
-import boldorf.eversector.entities.locations.PlanetLocation;
-import boldorf.eversector.entities.locations.SectorLocation;
-import boldorf.eversector.entities.locations.StationLocation;
+import boldorf.eversector.map.Station;
+import boldorf.eversector.map.Planet;
+import boldorf.eversector.map.Region;
+import boldorf.eversector.locations.BattleLocation;
+import boldorf.eversector.locations.Location;
+import boldorf.eversector.locations.PlanetLocation;
+import boldorf.eversector.locations.SectorLocation;
+import boldorf.eversector.locations.StationLocation;
 import boldorf.eversector.items.Module;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;

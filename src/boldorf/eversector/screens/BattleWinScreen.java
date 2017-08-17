@@ -8,7 +8,7 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Ship;
 import boldorf.eversector.storage.Reputations;
 
 /**

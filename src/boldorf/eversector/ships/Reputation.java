@@ -1,4 +1,4 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.ships;
 
 import asciiPanel.AsciiPanel;
 import boldorf.eversector.faction.Faction;

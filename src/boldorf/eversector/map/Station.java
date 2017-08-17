@@ -1,4 +1,4 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.map;
 
 import boldorf.eversector.items.Weapon;
 import boldorf.eversector.items.BaseResource;
@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.eversector.entities.locations.SectorLocation;
+import boldorf.eversector.ships.Ship;
+import boldorf.eversector.locations.SectorLocation;
 import boldorf.eversector.items.Action;
 import boldorf.eversector.items.Item;
 import java.util.LinkedList;

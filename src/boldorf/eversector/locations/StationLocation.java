@@ -1,4 +1,4 @@
-package boldorf.eversector.entities.locations;
+package boldorf.eversector.locations;
 
 /**
  * 

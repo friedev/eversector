@@ -1,6 +1,6 @@
-package boldorf.eversector.entities.locations;
+package boldorf.eversector.locations;
 
-import boldorf.eversector.entities.Battle;
+import boldorf.eversector.ships.Battle;
 
 /**
  * 

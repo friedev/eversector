@@ -1,10 +1,8 @@
 package boldorf.eversector.map;
 
 import asciiPanel.AsciiPanel;
-import boldorf.eversector.entities.Planet;
-import boldorf.eversector.entities.Station;
-import boldorf.eversector.entities.Ship;
-import boldorf.eversector.entities.Levels;
+import boldorf.eversector.ships.Ship;
+import boldorf.eversector.ships.Levels;
 import boldorf.eversector.Main;
 import boldorf.eversector.faction.Faction;
 import static boldorf.eversector.Main.rng;
@@ -14,8 +12,8 @@ import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.SYMBOL_EMPTY;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
-import boldorf.eversector.entities.locations.Location;
-import boldorf.eversector.entities.locations.SectorLocation;
+import boldorf.eversector.locations.Location;
+import boldorf.eversector.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

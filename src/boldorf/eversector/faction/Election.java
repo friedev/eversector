@@ -2,7 +2,7 @@ package boldorf.eversector.faction;
 
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Ship;
 import static boldorf.eversector.map.Map.CANDIDATES;
 import boldorf.eversector.storage.Reputations;
 import java.util.ArrayList;

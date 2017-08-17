@@ -1,5 +1,14 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.ships;
 
+import boldorf.eversector.locations.SectorLocation;
+import boldorf.eversector.locations.StationLocation;
+import boldorf.eversector.locations.PlanetLocation;
+import boldorf.eversector.locations.Location;
+import boldorf.eversector.locations.BattleLocation;
+import boldorf.eversector.map.Planet;
+import boldorf.eversector.map.Station;
+import boldorf.eversector.map.Region;
+import boldorf.eversector.map.Ore;
 import asciiPanel.AsciiPanel;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
@@ -29,7 +38,6 @@ import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 import static boldorf.eversector.Main.addMessage;
 import static boldorf.eversector.Main.playSoundEffect;
-import boldorf.eversector.entities.locations.*;
 import boldorf.eversector.storage.Paths;
 import squidpony.squidgrid.FOV;
 

@@ -9,8 +9,8 @@ import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.pendingElection;
-import boldorf.eversector.entities.Reputation.ReputationRange;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Reputation.ReputationRange;
+import boldorf.eversector.ships.Ship;
 import java.util.List;
 
 /**

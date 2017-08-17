@@ -1,4 +1,4 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.ships;
 
 /** A collection of ship classifications. */
 public abstract class Levels

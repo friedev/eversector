@@ -1,4 +1,4 @@
-package boldorf.eversector.entities;
+package boldorf.eversector.map;
 
 /** A type of ore with a name and density. */
 public class Ore implements Comparable<Ore>

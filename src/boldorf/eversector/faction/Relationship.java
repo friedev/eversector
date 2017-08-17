@@ -4,7 +4,7 @@ import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.pendingRelationships;
 import static boldorf.eversector.Main.rng;
 import boldorf.util.Utility;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Ship;
 import static boldorf.eversector.faction.RelationshipType.*;
 
 /**

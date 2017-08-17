@@ -1,6 +1,6 @@
 package boldorf.eversector.storage;
 
-import boldorf.eversector.entities.Station;
+import boldorf.eversector.map.Station;
 import boldorf.eversector.items.Action;
 import boldorf.eversector.items.Module;
 import boldorf.eversector.items.Weapon;

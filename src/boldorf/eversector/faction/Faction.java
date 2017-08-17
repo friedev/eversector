@@ -5,7 +5,7 @@ import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.eversector.entities.Ship;
+import boldorf.eversector.ships.Ship;
 import boldorf.eversector.map.Map;
 import static boldorf.eversector.faction.RelationshipType.*;
 import static boldorf.eversector.storage.Options.NEWS;
