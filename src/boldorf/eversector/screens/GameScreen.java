@@ -18,7 +18,7 @@ import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.pendingRelationships;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.entities.ReputationRange;
+import boldorf.eversector.entities.Reputation.ReputationRange;
 import boldorf.eversector.entities.Ship;
 import boldorf.eversector.map.faction.Faction;
 import boldorf.eversector.map.faction.RelationshipType;

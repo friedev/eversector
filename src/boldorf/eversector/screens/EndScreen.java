@@ -17,7 +17,7 @@ import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
 import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Main.startGame;
-import boldorf.eversector.entities.ReputationRange;
+import boldorf.eversector.entities.Reputation.ReputationRange;
 import boldorf.eversector.entities.Ship;
 import static boldorf.eversector.screens.StartScreen.getTitleArt;
 import static boldorf.eversector.storage.Options.LEADERBOARD;

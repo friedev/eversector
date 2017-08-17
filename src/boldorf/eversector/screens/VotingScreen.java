@@ -13,7 +13,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.pendingElection;
-import boldorf.eversector.entities.ReputationRange;
+import boldorf.eversector.entities.Reputation.ReputationRange;
 import boldorf.eversector.entities.Ship;
 import java.util.List;
 
