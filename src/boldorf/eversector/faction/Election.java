@@ -3,7 +3,6 @@ package boldorf.eversector.faction;
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.ships.Ship;
-import static boldorf.eversector.map.Map.CANDIDATES;
 import boldorf.eversector.storage.Reputations;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,6 +13,9 @@ import java.util.List;
  */
 public class Election
 {
+    /** The number of candidates that are selected for an election. */
+    public static final int CANDIDATES = 4;
+    
     private Faction faction;
     private List<Ship> candidates;
     private List<Integer> votes;

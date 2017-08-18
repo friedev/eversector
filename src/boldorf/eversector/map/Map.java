@@ -60,21 +60,6 @@ public class Map
     /** The frequency at which to elect for new faction leaders, in turns. */
     public static final int ELECTION_FREQ = 150;
     
-    /** The number of candidates that are selected for an election. */
-    public static final int CANDIDATES = 4;
-    
-    /**
-     * The amount by which the player's reputation will be multiplied when
-     * compared to other ships while checking for leaders.
-     */
-    public static final double PLAYER_REP_MODIFIER = 1.25;
-    
-    /**
-     * The number of election cycles before the player receives their reputation
-     * boost.
-     */
-    public static final int PLAYER_REP_TIME = 5;
-    
     /** The fewest types of ore that can exist. */
     public static final int MIN_ORE = 4;
     
