@@ -183,7 +183,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 player.hasModule(Actions.SCAN) && Main.showStars, cursor));
         
         window.addSeparator(new Line(true, 2, 1));
-        Coord location = isLooking() ? cursor: player.getLocation().getCoord();
+        Coord location = isLooking() ? cursor : player.getLocation().getCoord();
         if (!map.sectorAt(location).isDiscovered())
             contents.add(new ColorString("Undiscovered Sector"));
         else
@@ -192,5 +192,12 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         contents.add(new ColorString("Location: ")
                 .add(new ColorString(Utility.coordToOrderedPair(location),
                         COLOR_FIELD)));
+        
+        if (player.hasModule(Actions.SCAN) &&
+                map.sectorAt(location).isDiscovered())
+        {
+            contents.add(new ColorString("Star: ")
+                    .add(map.sectorAt(location).getStar()));
+        }
     }
 }
