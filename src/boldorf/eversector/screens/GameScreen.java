@@ -55,8 +55,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         super(display);
         statusWindow  = new AlignedWindow(display, Coord.get(1, 1));
         factionWindow = new AlignedWindow(display, Coord.get(1, 1));
-        messages = new LinkedList<>();
-        subscreen = new SectorScreen(display);
+        messages      = new LinkedList<>();
+        subscreen     = new SectorScreen(display);
         messageOffset = -1;
     }
     
