@@ -26,9 +26,9 @@ public class Region implements ColorStringObject
         
         OCEAN("Ocean", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightBlue),
         COAST("Coast", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightCyan),
-        PLAIN("Plain", true, '+', AsciiPanel.brightGreen),
+        PLAIN("Plains", true, '+', AsciiPanel.brightGreen),
         FOREST("Forest", true, ExtChars.SPADE, AsciiPanel.green),
-        MOUNTAIN("Mountain", true, ExtChars.TRIANGLE_U, AsciiPanel.brightBlack),
+        MOUNTAIN("Mountainous", true, ExtChars.TRIANGLE_U, AsciiPanel.brightBlack),
         
         FLATS("Flats", true, '+', AsciiPanel.brightCyan),
         GLACIER("Glacier", true, ExtChars.BUMP, AsciiPanel.brightCyan);
