@@ -21,8 +21,8 @@ public class Region implements ColorStringObject
         MAGMA("Magma", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightRed),
         ROCK("Rock", true, '+', AsciiPanel.brightBlack),
         
-        DESERT("Desert", true, '+', AsciiPanel.brightYellow),
-        DUNES("Dunes", true, ExtChars.BUMP, AsciiPanel.brightYellow),
+        DESERT("Desert", true, '+', AsciiPanel.yellow),
+        DUNES("Dunes", true, ExtChars.BUMP, AsciiPanel.yellow),
         
         OCEAN("Ocean", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightBlue),
         COAST("Coast", false, ExtChars.APPROX_EQUAL, AsciiPanel.brightCyan),
