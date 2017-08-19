@@ -34,14 +34,16 @@ public class Region implements ColorStringObject
         GLACIER("Glacier", true, ExtChars.BUMP, AsciiPanel.brightCyan);
         
         private String type;
-        private ColorChar symbol;
+        private char symbol;
+        private Color foreground;
         private boolean hasOre;
         
         RegionType(String type, boolean hasOre, char symbol, Color foreground)
         {
-            this.type   = type;
-            this.symbol = new ColorChar(symbol, foreground);
-            this.hasOre = hasOre;
+            this.type       = type;
+            this.hasOre     = hasOre;
+            this.symbol     = symbol;
+            this.foreground = foreground;
         }
         
         @Override
@@ -52,7 +54,7 @@ public class Region implements ColorStringObject
             {return type;}
         
         public ColorChar getSymbol()
-            {return symbol;}
+            {return new ColorChar(symbol, foreground);}
         
         public boolean hasOre()
             {return hasOre;}
