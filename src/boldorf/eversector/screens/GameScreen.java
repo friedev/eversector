@@ -471,7 +471,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
             
             if (currentOutput.length() >= getDisplay().getCharWidth() - 2)
             {
-                int splitIndex = getDisplay().getCharWidth() - 2;
+                int splitIndex = getDisplay().getCharWidth() - 3;
                 while (currentOutput.charAt(splitIndex) != ' ')
                     splitIndex--;
 
