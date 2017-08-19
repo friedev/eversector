@@ -105,7 +105,7 @@ public class Faction implements ColorStringObject
     public void holdElection(boolean emergency)
     {
         Election election = new Election(this, emergency);
-        if (map.getPlayer().getFaction() == this && map.getTurn() >= 0)
+        if (map.getTurn() >= 0 && map.getPlayer().getFaction() == this)
         {
             pendingElection = election;
             return;

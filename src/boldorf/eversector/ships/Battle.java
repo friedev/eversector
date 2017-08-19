@@ -169,7 +169,6 @@ public class Battle
         ship.setLocation(destination);
         attackers.remove(ship);
         defenders.remove(ship);
-        fleeing.remove(ship);
     }
     
     public void processEscape(Ship ship)
@@ -177,7 +176,7 @@ public class Battle
     
     public void processEscapes()
     {
-        for (Ship ship: fleeing)
+        for (Ship ship: new ArrayList<>(fleeing))
             processEscape(ship);
     }
     

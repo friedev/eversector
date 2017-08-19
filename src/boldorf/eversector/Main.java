@@ -13,7 +13,6 @@ import boldorf.apwt.screens.Screen;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.map.Map;
-import boldorf.eversector.map.Sector;
 import boldorf.eversector.faction.Election;
 import boldorf.eversector.faction.RelationshipChange;
 import boldorf.eversector.screens.GameScreen;
@@ -152,7 +151,7 @@ public class Main
         display.init(new StartScreen(display, startMessages));
 
         soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
-        Integer volume = Utility.parseInt(Options.MUSIC);
+        Integer volume = Utility.parseInt(options.getProperty(Options.MUSIC));
         if (volume != null)
             FileManager.setVolume(soundtrack, volume);
     }
@@ -227,6 +226,18 @@ public class Main
         }
 
         return startMessages;
+    }
+    
+    public static void changeGalaxy()
+    {
+        map = new Map();
+        for (int i = 0; i < Map.SIMULATED_TURNS; i++)
+            map.nextTurn();
+        
+        map.setPlayer(player);
+        player.setLocation(map.getRandomEdgeSector().getLocation());
+        player.setFaction(null);
+        player.createReputations();
     }
     
     public static void addColorMessage(ColorString message)

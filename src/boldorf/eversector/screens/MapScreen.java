@@ -29,9 +29,10 @@ import squidpony.squidmath.Coord;
  * 
  */
 public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
-        KeyScreen
+        PopupMaster, KeyScreen
 {
     private AlignedWindow window;
+    private Screen popup;
     private Coord cursor;
     private boolean warping;
     
@@ -39,6 +40,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
     {
         super(display);
         window = new AlignedWindow(display, Coord.get(0, 0), new Border(2));
+        popup = null;
         cursor = null;
         warping = false;
     }
@@ -48,11 +50,20 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
     {
         setUpWindow();
         window.display();
+        
+        if (popup != null)
+            popup.displayOutput();
     }
 
     @Override
     public Screen processInput(KeyEvent key)
     {
+        if (popup != null)
+        {
+            popup = popup.processInput(key);
+            return this;
+        }
+        
         boolean nextTurn = false;
         Screen nextScreen = this;
         Direction direction = Utility.keyToDirectionRestricted(key);
@@ -72,6 +83,15 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
             {
                 nextTurn = true;
                 playSoundEffect(ENGINE);
+            }
+            else if (player.getLocation().move(direction) == null)
+            {
+                if (player.getResource(Actions.BURN.getResource())
+                        .getAmount() >= Actions.BURN.getCost())
+                {
+                    popup = new IntergalacticScreen(getDisplay());
+                    return this;
+                }
             }
         }
         else if (isLooking())
@@ -148,10 +168,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding("enter a sector", "enter"));
         keybindings.add(new Keybinding("look", "l"));
         if (player.hasModule(Actions.SCAN))
-        {
-            keybindings.add(new Keybinding("scan nearby sectors", "s"));
             keybindings.add(new Keybinding("toggle star view", "v"));
-        }
         if (player.hasModule(Actions.WARP))
             keybindings.add(new Keybinding("warp to any sector", "w"));
         return keybindings;
@@ -160,6 +177,14 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
     @Override
     public AlignedWindow getWindow()
         {return window;}
+    
+    @Override
+    public Screen getPopup()
+        {return popup;}
+
+    @Override
+    public boolean hasPopup()
+        {return popup != null;}
     
     private boolean isLooking()
         {return cursor != null;}

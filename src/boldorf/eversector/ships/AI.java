@@ -444,7 +444,7 @@ public class AI
     
     private int getFriendliness(Ship other)
     {
-        if (!other.isAligned())
+        if (!other.isAligned() || !ship.isAligned())
             return 0;
 
         if (ship.getFaction() == other.getFaction())
@@ -544,7 +544,9 @@ public class AI
                 return false;
             }
             
-            ship.destroy(true);
+            ship.destroy(ship.getLocation().getMap().getPlayer() != null &&
+                    ship.getBattleLocation().getShips().contains(
+                            ship.getLocation().getMap().getPlayer()));
             return false;
         }
         

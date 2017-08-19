@@ -10,7 +10,6 @@ import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,19 +74,15 @@ public class Map
     private Ore[]        oreTypes;   
     private int          turn;
     
-    /**
-     * Generates a map with the default size.
-     * @throws java.io.FileNotFoundException if ore types cannot be loaded
-     */
-    public Map() throws FileNotFoundException
+    /** Generates a map with the default size. */
+    public Map()
         {this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));}
     
     /**
      * Generates a map of a specified size.
      * @param size the side length of the map in sectors
-     * @throws java.io.FileNotFoundException if ore types cannot be loaded
      */
-    public Map(int size) throws FileNotFoundException
+    public Map(int size)
     {
         map          = new Sector[size * 2 + 1][size * 2 + 1];
         offset       = (int) Math.floor((double) map.length / 2.0);
@@ -181,6 +176,19 @@ public class Map
         return rng.getRandomElement(stationSystems);
     }
     
+    public Sector getRandomEdgeSector()
+    {
+        int edgeCoord = rng.nextInt(map.length);
+        if (rng.nextBoolean())
+        {
+            return rng.nextBoolean() ?
+                    map[0][edgeCoord] : map[map.length - 1][edgeCoord];
+        }
+        
+        return rng.nextBoolean() ?
+                map[edgeCoord][0] : map[edgeCoord][map.length - 1];
+    }
+    
     /**
      * Sets the player to a designated ship.
      * @param player the ship to become the player
@@ -204,7 +212,8 @@ public class Map
     /** Plays through the next turn on the map. */
     public void nextTurn()
     {
-        player.updateContinuousEffects();
+        if (player != null)
+            player.updateContinuousEffects();
         
         for (Ship ship: ships)
             ship.getAI().act();
@@ -219,7 +228,8 @@ public class Map
             ship.fadeReputations();
         }
         
-        player.fadeReputations();
+        if (player != null)
+            player.fadeReputations();
         
         // Respawns ships if there are fewer than the minimum ships in a sector
         for (int y = 0; y < map.length; y++)

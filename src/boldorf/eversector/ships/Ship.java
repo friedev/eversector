@@ -2893,7 +2893,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
     
     /** Creates a Reputation object for each faction in the game. */
-    private void createReputations()
+    public void createReputations()
     {
         reputations = new Reputation[location.getMap().getFactions().length];
         
