@@ -19,6 +19,7 @@ import java.util.List;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
 import static boldorf.eversector.faction.RelationshipType.WAR;
+import static boldorf.eversector.map.Sector.SYMBOL_UNDISCOVERED;
 import static boldorf.eversector.storage.Names.ORE;
 import boldorf.util.Utility;
 import java.awt.Color;
@@ -410,40 +411,31 @@ public class Map
     public List<ColorString> toColorStrings(Ship ship, boolean showStars,
             Coord cursor)
     {
+        int fovRadius = (int) Math.floor(ship.getFOVRadius());
         LinkedList<ColorString> output = new LinkedList<>();
-        List<Coord> fov = ship.getFOV();
-        fov.sort(Utility.CARTESIAN_COORD_COMPARATOR);
         
-        int prevY = Integer.MIN_VALUE;
+        for (int y = 0; y < fovRadius * 2 - 1; y++)
+        {
+            output.add(new ColorString());
+            for (int x = 0; x < fovRadius * 2 - 1; x++)
+                output.getLast().add(SYMBOL_UNDISCOVERED);
+        }
+        
+        List<Coord> fov = ship.getFOV();
         
         for (Coord coord: fov)
         {
-            if (coord.y != prevY)
-                output.add(new ColorString());
-            
             ColorChar symbol = new ColorChar(showStars ?
                     sectorAt(coord).getStarSymbol() :
                     sectorAt(coord).getSymbol());
             
             if (sectorAt(coord).getLocation().getCoord().equals(cursor))
                 symbol.setBackground(COLOR_SELECTION_BACKGROUND);
-            output.getLast().add(symbol);
             
-            prevY = coord.y;
-        }
-        
-        int maxLength = 0;
-        
-        for (ColorString line: output)
-            maxLength = Math.max(maxLength, line.length());
-        
-        for (ColorString line: output)
-        {
-            while (line.length() < maxLength)
-            {
-                line.insert(0, Sector.SYMBOL_UNDISCOVERED);
-                line.add(Sector.SYMBOL_UNDISCOVERED);
-            }
+            int y = output.size() - (coord.y - ship.getLocation().getCoord().y +
+                    fovRadius);
+            int x = coord.x - ship.getLocation().getCoord().x + fovRadius - 1;
+            output.get(y).getCharacters().set(x, symbol);
         }
         
         return output;
