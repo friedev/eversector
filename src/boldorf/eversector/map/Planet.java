@@ -114,11 +114,9 @@ public class Planet implements ColorStringObject
         }
     }
     
-    /**
-     * The greatest number that region widths will be multiplied by, along with
-     * 2.
-     */
-    public static final int REGION_MULTIPLIER_RANGE = 3;
+    public static final int MIN_REGION_MULTIPLIER = 2;
+    
+    public static final int REGION_MULTIPLIER_RANGE = 4;
     
     /** The minimum number of ore types on a planet. */
     public static final int MIN_ORES = 1;
@@ -480,7 +478,8 @@ public class Planet implements ColorStringObject
     /** Generates a random amount of regions. */
     private void generateRegions()
     {
-        int widthMultiplier = rng.nextInt(REGION_MULTIPLIER_RANGE) + 1;
+        int widthMultiplier = rng.nextInt(REGION_MULTIPLIER_RANGE) +
+                MIN_REGION_MULTIPLIER;
         regions = new Region[widthMultiplier + 1][widthMultiplier * 2];
         
         double[][] heights = HeightMapFactory.heightMap(regions.length,
