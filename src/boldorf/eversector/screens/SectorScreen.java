@@ -154,7 +154,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
                 
                 if (player.canLand())
                     popup = new LandScreen(getDisplay());
-                else if (player.canCrashLand())
+                else if (player.canCrashLand(false))
                     popup = new CrashLandScreen(getDisplay());
                 break;
             case KeyEvent.VK_A:

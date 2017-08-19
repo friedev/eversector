@@ -1708,27 +1708,34 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                 "land on " + getSectorLocation().getPlanet());
     }
     
+    public boolean canCrashLand()
+        {return canCrashLand(true);}
+    
     /**
      * Returns true if there is a planet that the ship can land on at its orbit.
+     * @param print if true, will print error messages for the player
      * @return true if landing of any kind is possible in the ship's situation
      */
-    public boolean canCrashLand()
+    public boolean canCrashLand(boolean print)
     {
         if (!isInSector())
         {
-            addPlayerError("Ship must be at a planet's orbit to land.");
+            if (print)
+                addPlayerError("Ship must be at a planet's orbit to land.");
             return false;
         }
         
         if (isDocked())
         {
-            addPlayerError("Ship cannot land while docked.");
+            if (print)
+                addPlayerError("Ship cannot land while docked.");
             return false;
         }
         
         if (isLanded())
         {
-            addPlayerError("The ship is already landed.");
+            if (print)
+                addPlayerError("The ship is already landed.");
             return false;
         }
         
@@ -1736,14 +1743,19 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         
         if (planet == null)
         {
-            addPlayerError("There is no planet at this orbit.");
+            if (print)
+                addPlayerError("There is no planet at this orbit.");
             return false;
         }
         
         if (!planet.getType().canLandOn())
         {
-            addPlayerError("The ship cannot land on "
-                    + Utility.addArticle(planet.getType().toString()) + ".");
+            if (print)
+            {
+                addPlayerError("The ship cannot land on "
+                        + Utility.addArticle(planet.getType().toString())
+                        + ".");
+            }
             return false;
         }
         
