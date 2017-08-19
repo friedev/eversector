@@ -56,7 +56,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public static final String CLOAKED   = "cloaked";
     
     /** The radius of the FOV without any scanners. */
-    public static final double FOV_RADIUS = 1.1;
+    public static final double FOV_RADIUS = 3.0;
     
     /** The amount of credits gained by sending a distress signal. */
     public static final int DISTRESS_CREDITS = 100;
@@ -1355,9 +1355,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         getResource(Actions.BURN.getResource())
                 .changeAmount(-Actions.BURN.getCost());
         
-        if (isPlayer())
-            reveal();
-        
         return true;
     }
     
@@ -1527,10 +1524,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         setLocation(getSectorLocation().escapeSector());
         return true;
     }
-    
-    /** Reveals the player's sector (discovers surrounding sectors). */
-    public void reveal()
-        {location.getMap().reveal(location.getCoord());}
     
     /**
      * Performs the scanning action, although all results must be performed

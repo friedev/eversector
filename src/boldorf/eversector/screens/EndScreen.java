@@ -135,16 +135,6 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             contents.add(new ColorString("You were an unaligned wanderer."));
         }
         
-        // If the player has discovered any sectors, print the amount
-        int discoveredSectors = map.getNDiscoveredSectors();
-        if (discoveredSectors > 5)
-        {
-            contents.add(new ColorString("You revealed ")
-                    .add(new ColorString(Integer.toString(discoveredSectors),
-                            COLOR_FIELD))
-                    .add(" sectors."));
-        }
-        
         if (map.getTurn() == 0)
         {
             contents.add(new ColorString("Thanks for playing!"));
@@ -204,8 +194,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             
             LeaderboardScore playerScore = new LeaderboardScore(
                     player.calculateShipValue(), map.getTurn(), kills,
-                    map.getNDiscoveredSectors(), reputationAdjective,
-                    player.isLeader());
+                    reputationAdjective, player.isLeader());
 
             // Current player's score must be added after the leaderboard print
             // so that it isn't duplicated in the displayed list

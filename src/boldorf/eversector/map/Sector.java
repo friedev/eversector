@@ -144,16 +144,6 @@ public class Sector
         return false;
     }
     
-    public boolean isDiscovered()
-        {return Main.sectorsDiscovered.contains(this);}
-    
-    /** Changes the sector's discovered status to true. */
-    public void discover()
-    {
-        if (!isDiscovered())
-            Main.sectorsDiscovered.add(this);
-    }
-    
     /**
      * Calculates the dominant faction in the sector, based on their control of
      * claimable bodies.
@@ -287,15 +277,11 @@ public class Sector
     }
     
     /**
-     * Gets the sector's symbol, based on its discovered status, the player's
-     * presence, or its contents.
+     * Gets the sector's symbol, based on the player's presence or its contents.
      * @return the sector's symbol as a character
      */
     public ColorChar getSymbol()
     {
-        if (!isDiscovered())
-            return SYMBOL_UNDISCOVERED;
-        
         char symbol;
         if (location.getMap().getPlayer().getLocation().getSector() == this)
             symbol = SYMBOL_PLAYER.getChar();
@@ -308,9 +294,6 @@ public class Sector
     
     public ColorChar getStarSymbol()
     {
-        if (!isDiscovered())
-            return SYMBOL_UNDISCOVERED;
-        
         if (location.getMap().getPlayer().getLocation().getSector() == this)
             return SYMBOL_PLAYER;
         

@@ -16,7 +16,6 @@ import boldorf.eversector.map.Map;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.faction.Election;
 import boldorf.eversector.faction.RelationshipChange;
-import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
 import boldorf.eversector.screens.GameScreen;
 import boldorf.eversector.screens.StartScreen;
 import static boldorf.eversector.storage.Names.GENERAL;
@@ -24,9 +23,6 @@ import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
 import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -96,8 +92,6 @@ public class Main
     /** A reference to map.getPlayer() for use in the game. */
     public static Ship player;
     
-    public static List<Sector> sectorsDiscovered;
-    
     /** A list of ships that intend to attack the player. */
     public static Battle pendingBattle;
     
@@ -165,7 +159,6 @@ public class Main
     
     public static List<ColorString> startGame() throws Exception
     {
-        sectorsDiscovered = new LinkedList<>();
         disqualified = false;
         pendingElection = null;
         pendingRelationships = new LinkedList<>();
@@ -194,9 +187,6 @@ public class Main
             map.createNewPlayer();
             player = map.getPlayer();
         }
-
-        map.reveal(player.getLocation().getCoord());
-        // Reveal here to avoid overrideable calls in Map constructor
 
         List<ColorString> startMessages = new LinkedList<>();
 

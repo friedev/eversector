@@ -18,7 +18,6 @@ import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.storage.Actions;
 import static boldorf.eversector.storage.Paths.ENGINE;
-import static boldorf.eversector.storage.Paths.SCAN;
 import static boldorf.eversector.storage.Paths.WARP;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 Coord targetLocation = cursor.setY(-cursor.y)
                         .translate(direction);
                 targetLocation = targetLocation.setY(-targetLocation.y);
-                if (map.contains(targetLocation))
+                if (player.getFOV().contains(targetLocation))
                     cursor = targetLocation;
                 return this;
             }
@@ -127,14 +126,6 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 case KeyEvent.VK_L:
                     cursor = player.getLocation().getCoord();
                     break;
-                case KeyEvent.VK_S:
-                    if (player.scan())
-                    {
-                        nextTurn = true;
-                        map.scan(player.getLocation().getCoord());
-                        playSoundEffect(SCAN);
-                    }
-                    break;
                 case KeyEvent.VK_V:
                     Main.showStars = player.hasModule(Actions.SCAN) &&
                             !Main.showStars;
@@ -179,22 +170,18 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         contents.clear();
         window.getSeparators().clear();
         
-        contents.addAll(map.toColorStrings(
+        contents.addAll(map.toColorStrings(player,
                 player.hasModule(Actions.SCAN) && Main.showStars, cursor));
         
         window.addSeparator(new Line(true, 2, 1));
         Coord location = isLooking() ? cursor : player.getLocation().getCoord();
-        if (!map.sectorAt(location).isDiscovered())
-            contents.add(new ColorString("Undiscovered Sector"));
-        else
-            contents.add(new ColorString(map.sectorAt(location).toString()));
+        contents.add(new ColorString(map.sectorAt(location).toString()));
         
         contents.add(new ColorString("Location: ")
                 .add(new ColorString(Utility.coordToOrderedPair(location),
                         COLOR_FIELD)));
         
-        if (player.hasModule(Actions.SCAN) &&
-                map.sectorAt(location).isDiscovered())
+        if (player.hasModule(Actions.SCAN) && !map.sectorAt(location).isEmpty())
         {
             contents.add(new ColorString("Star: ")
                     .add(map.sectorAt(location).getStar()));

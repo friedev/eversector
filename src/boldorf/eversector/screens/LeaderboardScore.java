@@ -2,7 +2,6 @@ package boldorf.eversector.screens;
 
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.DISPLAYED_SCORES;
-import boldorf.eversector.screens.EndScreen;
 import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
 import boldorf.eversector.storage.Paths;
 import boldorf.util.FileManager;
@@ -26,7 +25,6 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     private Integer score;
     private Integer turns;
     private Integer kills;
-    private Integer sectors;
     private String  reputation;
     private boolean leader;
     
@@ -39,7 +37,6 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         score      = Utility.parseInt(properties.getProperty("score"));
         turns      = Utility.parseInt(properties.getProperty("turns"));
         kills      = Utility.parseInt(properties.getProperty("kills"));
-        sectors    = Utility.parseInt(properties.getProperty("sectors"));
         reputation = properties.getProperty("reputation");
         leader     = "true".equals(properties.getProperty("leader"));
     }
@@ -50,18 +47,16 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
      * @param score the score
      * @param turns the number of turns played
      * @param kills the number of ships destroyed
-     * @param sectors the number of sectors discovered
      * @param reputation the reputation
      * @param leader true if the player was a leader
      */
     public LeaderboardScore(String shipName, int score, int turns, int kills,
-            int sectors, String reputation, boolean leader)
+            String reputation, boolean leader)
     {
         this.shipName   = shipName;
         this.score      = score;
         this.turns      = turns;
         this.kills      = kills;
-        this.sectors    = sectors;
         this.reputation = reputation;
         this.leader     = leader;
     }
@@ -71,13 +66,12 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
      * @param score the score
      * @param turns the number of turns played
      * @param kills the number of ships destroyed
-     * @param sectors the number of sectors discovered
      * @param reputation the reputation of the score
      * @param leader true if the player was a leader
      */
-    public LeaderboardScore(int score, int turns, int kills, int sectors,
-            String reputation, boolean leader)
-        {this(null, score, turns, kills, sectors, reputation, leader);}
+    public LeaderboardScore(int score, int turns, int kills, String reputation,
+            boolean leader)
+        {this(null, score, turns, kills, reputation, leader);}
     
     @Override
     public String toString()
@@ -91,8 +85,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
             builder.append(shipName).append(": ");
         
         builder.append(score).append(" Credits, ")
-                .append(turns).append(" Turns, ")
-                .append(sectors).append(" Sectors, ");
+                .append(turns).append(" Turns, ");
         
         if (kills > 0)
         {
@@ -121,7 +114,6 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         properties.setProperty("score",      score.toString());
         properties.setProperty("turns",      turns.toString());
         properties.setProperty("kills",      kills.toString());
-        properties.setProperty("sectors",    sectors.toString());
         properties.setProperty("reputation", reputation);
         properties.setProperty("leader",     Boolean.toString(leader));
         return properties;
@@ -135,7 +127,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     public boolean isValid()
     {
         return score != null && turns != null && kills != null &&
-                sectors != null && reputation != null;
+                reputation != null;
     }
     
     @Override

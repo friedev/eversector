@@ -21,17 +21,17 @@ import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
 import static boldorf.eversector.faction.RelationshipType.WAR;
 import static boldorf.eversector.storage.Names.ORE;
+import boldorf.util.Utility;
 import java.awt.Color;
 import squidpony.squidmath.Coord;
 
 /** The Map class manages a 2D array of sectors and everything in them. */
 public class Map
 {
-    /**
-     * The default number of sectors on each side of the origin (central
-     * sector).
-     */
-    public static final int SIZE = 8;
+    /** The default number of sectors on each side of the central sector. */
+    public static final int MIN_RADIUS = 25;
+    
+    public static final int RADIUS_RANGE = 25;
     
     /** The minimum number of faction that will be present in the game. */
     public static final int MIN_FACTIONS = 2;
@@ -80,7 +80,7 @@ public class Map
      * @throws java.io.FileNotFoundException if ore types cannot be loaded
      */
     public Map() throws FileNotFoundException
-        {this(SIZE);}
+        {this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));}
     
     /**
      * Generates a map of a specified size.
@@ -89,13 +89,13 @@ public class Map
      */
     public Map(int size) throws FileNotFoundException
     {
-        map      = new Sector[size * 2 + 1][size * 2 + 1];
-        offset   = (int) Math.floor((double) map.length / 2.0);
-        ships    = new LinkedList<>();
-        factions = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
+        map          = new Sector[size * 2 + 1][size * 2 + 1];
+        offset       = (int) Math.floor((double) map.length / 2.0);
+        ships        = new LinkedList<>();
+        factions     = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
         designations = new LinkedList<>();
-        oreTypes = generateOreTypes();
-        turn = -SIMULATED_TURNS;
+        oreTypes     = generateOreTypes();
+        turn         = -SIMULATED_TURNS;
         
         // Factions must be created first so they can be assigned to ships
         createFactions();
@@ -299,82 +299,6 @@ public class Map
     }
     
     /**
-     * Reveals a given location, meaning all adjacent sectors will be marked as
-     * discovered.
-     * @param location the Coord to reveal
-     */
-    public void reveal(Coord location)
-    {
-        int x = location.x;
-        int y = location.y;
-        
-        if (contains(location))
-            sectorAt(location).discover();
-        if (contains(Coord.get(x - 1, y)))
-            sectorAt(Coord.get(x - 1, y)).discover();
-        if (contains(Coord.get(x + 1, y)))
-            sectorAt(Coord.get(x + 1, y)).discover();
-        if (contains(Coord.get(x, y - 1)))
-            sectorAt(Coord.get(x, y - 1)).discover();
-        if (contains(Coord.get(x, y + 1)))
-            sectorAt(Coord.get(x, y + 1)).discover();
-    }
-    
-    /**
-     * Scans a given location by revealing its surroundings..
-     * @param location the Coord to scan
-     */
-    public void scan(Coord location)
-    {
-        int x = location.x;
-        int y = location.y;
-        
-        reveal(Coord.get(x, y));
-        reveal(Coord.get(x - 1, y));
-        reveal(Coord.get(x + 1, y));
-        reveal(Coord.get(x, y - 1));
-        reveal(Coord.get(x, y + 1));
-    }
-    
-    /**
-     * Reveals the sectors surrounding the specified sector.
-     * @param sector the sector whose location will be used in the reveal
-     */
-    public void reveal(Sector sector)
-        {reveal(sector.getLocation().getCoord());}
-    
-    /**
-     * Scans the sector by revealing its surroundings
-     * @param sector the sector whose location will be used in the scan
-     */
-    public void scan(Sector sector)
-        {scan(sector.getLocation().getCoord());}
-    
-    /** Discovers all sectors. */
-    public void discoverAll()
-    {
-        for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[y].length; x++)
-                sectorAt(map[y][x].getLocation().getCoord()).discover();
-    }
-    
-    /**
-     * Returns the number of discovered sectors on the map.
-     * @return the number of sectors marked as discovered
-     */
-    public int getNDiscoveredSectors()
-    {
-        int discoveredSectors = 0;
-        
-        for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[y].length; x++)
-                if (map[y][x].isDiscovered())
-                    discoveredSectors++;
-        
-        return discoveredSectors;
-    }
-    
-    /**
      * Adds the given ship to the ships list.
      * @param ship the ship to add to the ships list
      * @return true if the addition was successful
@@ -460,6 +384,56 @@ public class Map
             }
             
             output.add(line);
+        }
+        
+        return output;
+    }
+    
+    /**
+     * Converts the FOV of a Ship into a List of ColorStrings for displaying.
+     * @param ship the ship whose FOV will be used as the rendering range
+     * @param showStars if true, will show the star symbols of sectors rather
+     * than their type symbols
+     * @param cursor the sector to show as selected
+     * @return the map as a List of ColorStrings
+     */
+    public List<ColorString> toColorStrings(Ship ship, boolean showStars,
+            Coord cursor)
+    {
+        LinkedList<ColorString> output = new LinkedList<>();
+        List<Coord> fov = ship.getFOV();
+        fov.sort(Utility.CARTESIAN_COORD_COMPARATOR);
+        
+        int prevY = Integer.MIN_VALUE;
+        
+        for (Coord coord: fov)
+        {
+            if (coord.y != prevY)
+                output.add(new ColorString());
+            
+            ColorChar symbol = new ColorChar(showStars ?
+                    sectorAt(coord).getStarSymbol() :
+                    sectorAt(coord).getSymbol());
+            
+            if (sectorAt(coord).getLocation().getCoord().equals(cursor))
+                symbol.setBackground(COLOR_SELECTION_BACKGROUND);
+            output.getLast().add(symbol);
+            
+            prevY = coord.y;
+        }
+        
+        int maxLength = 0;
+        
+        for (ColorString line: output)
+            maxLength = Math.max(maxLength, line.length());
+        
+        for (ColorString line: output)
+        {
+            while (line.length() < maxLength)
+            {
+                line.insert(0, Sector.SYMBOL_UNDISCOVERED);
+                line.add(Sector.SYMBOL_UNDISCOVERED);
+            }
         }
         
         return output;
