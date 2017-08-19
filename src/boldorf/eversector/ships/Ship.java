@@ -2439,6 +2439,13 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
 
         Region region = getPlanetLocation().getRegion();
+        if (!region.hasOre())
+        {
+            addPlayerError("The " + region.toString().toLowerCase()
+                    + " cannot be claimed.");
+            return false;
+        }
+        
         if (region.getFaction() == faction)
         {
             addPlayerError("The " + region.toString().toLowerCase() + " is "
