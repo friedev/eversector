@@ -63,7 +63,6 @@ public class Sector
     public Sector(Location location)
     {
         // name generated below with generateName()
-        nickname = Main.nameGenerator.generateName(2);
         this.location = location;
         ships = new LinkedList<>();
         usedLetters = new LinkedList<>();
@@ -96,6 +95,7 @@ public class Sector
                 generateShips(rng.nextInt(MIN_SHIPS + 1));
             }
             
+            nickname = Main.nameGenerator.generateName(2);
             updateFaction();
         }
         else
@@ -107,12 +107,19 @@ public class Sector
     
     @Override
     public String toString()
-        {return "Sector " + name;}
+    {
+        return hasNickname() ?
+                "Sector " + name + " \"" + nickname + "\"" : "Sector " + name;
+        
+    }
     
-    public Location getLocation() {return location;       }
-    public Faction  getFaction()  {return faction;        }
-    public Star     getStar()     {return star;           }
-    public boolean  isClaimed()   {return faction != null;}
+    public String   getName()     {return name;            }
+    public String   getNickname() {return nickname;        }
+    public Location getLocation() {return location;        }
+    public Faction  getFaction()  {return faction;         }
+    public Star     getStar()     {return star;            }
+    public boolean  hasNickname() {return nickname != null;}
+    public boolean  isClaimed()   {return faction != null; }
     
     public int getOrbits()
         {return star == null ? 0 : star.getMass();}
