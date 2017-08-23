@@ -21,8 +21,8 @@ import boldorf.eversector.faction.Relationship;
 import static boldorf.eversector.faction.RelationshipType.WAR;
 import static boldorf.eversector.map.Sector.SYMBOL_UNDISCOVERED;
 import static boldorf.eversector.storage.Names.ORE;
-import boldorf.util.Utility;
 import java.awt.Color;
+import squidpony.squidgrid.Splash;
 import squidpony.squidmath.Coord;
 
 /** The Map class manages a 2D array of sectors and everything in them. */
@@ -601,12 +601,37 @@ public class Map
     /** Initializes all the sectors on the map. */
     private void init()
     {
+        Splash nebulaGenerator = new Splash();
+        int nNebulae = rng.nextInt(map.length * map[0].length / 100);
+        List<List<Coord>> nebulae = new ArrayList<>(nNebulae);
+
+        char[][] level = new char[map.length][map[0].length];
+        for (int i = 0; i < nNebulae; i++)
+        {
+            nebulae.add(nebulaGenerator.spill(rng, level,
+                    rng.nextCoord(map[0].length, map.length), 100, 1));
+        }
+        
+        Nebula[] nebulaTypes = new Nebula[nNebulae];
+        for (int i = 0; i < nNebulae; i++)
+            nebulaTypes[i] = rng.getRandomElement(Nebula.values());
+        
         for (int y = 0; y < map.length; y++)
         {
             for (int x = 0; x < map[y].length; x++)
             {
+                Nebula nebula = null;
+                for (int i = 0; i < nNebulae; i++)
+                {
+                    if (nebulae.get(i).contains(Coord.get(x, y)))
+                    {
+                        nebula = nebulaTypes[i];
+                        break;
+                    }
+                }
+                
                 map[y][x] = new Sector(new Location(this,
-                        Coord.get(x - offset, -y + offset)));
+                        Coord.get(x - offset, -y + offset)), nebula);
                 map[y][x].init();
             }
         }

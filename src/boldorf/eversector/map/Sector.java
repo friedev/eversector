@@ -14,6 +14,7 @@ import static boldorf.eversector.Main.SYMBOL_EMPTY;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,8 +49,9 @@ public class Sector
     
     private String        name;
     private String        nickname;
-    private Star          star;
     private Location      location;
+    private Star          star;
+    private Nebula        nebula;
     private Faction       faction;
     private Planet[]      planets;
     private Station[]     stations;
@@ -58,14 +60,15 @@ public class Sector
     
     /**
      * Creates a sector from a location.
+     * @param nebula the nebula in this sector
      * @param location the sector's location
      */
-    public Sector(Location location)
+    public Sector(Location location, Nebula nebula)
     {
-        // name generated below with generateName()
         this.location = location;
-        ships = new LinkedList<>();
-        usedLetters = new LinkedList<>();
+        this.nebula   = nebula;
+        ships         = new LinkedList<>();
+        usedLetters   = new LinkedList<>();
         
         // Generate a name that isn't used
         do
@@ -79,8 +82,8 @@ public class Sector
     {
         if (rng.nextBoolean())
         {
-            star = Star.generate();
-            planets = new Planet[star.getMass()];
+            star     = Star.generate(nebula);
+            planets  = new Planet[star.getMass()];
             stations = new Station[star.getMass()];
             
             generatePlanets();
@@ -118,8 +121,10 @@ public class Sector
     public Location getLocation() {return location;        }
     public Faction  getFaction()  {return faction;         }
     public Star     getStar()     {return star;            }
+    public Nebula   getNebula()   {return nebula;          }
     public boolean  hasNickname() {return nickname != null;}
-    public boolean  isClaimed()   {return faction != null; }
+    public boolean  isClaimed()   {return faction  != null;}
+    public boolean  hasNebula()   {return nebula   != null;}
     
     public int getOrbits()
         {return star == null ? 0 : star.getMass();}
@@ -295,19 +300,26 @@ public class Sector
         else
             symbol = getTypeSymbol().getChar();
         
-        return isClaimed() ? new ColorChar(symbol, faction.getColor()) :
-                new ColorChar(symbol);
+        Color foreground = isClaimed() ? faction.getColor() : null;
+        Color background = hasNebula() ? nebula.getColor()  : null;
+        
+        return new ColorChar(symbol, foreground, background);
     }
     
     public ColorChar getStarSymbol()
     {
+        ColorChar symbol;
+        
         if (location.getMap().getPlayer().getLocation().getSector() == this)
-            return SYMBOL_PLAYER;
+            symbol = SYMBOL_PLAYER;
+        else if (star == null)
+            symbol = SYMBOL_EMPTY;
+        else
+            symbol = star.getSymbol();
         
-        if (star == null)
-            return SYMBOL_EMPTY;
-        
-        return star.getSymbol();
+        ColorChar copy = new ColorChar(symbol);
+        copy.setBackground(hasNebula() ? nebula.getColor() : null);
+        return copy;
     }
     
     /**

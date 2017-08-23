@@ -56,7 +56,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public static final String CLOAKED   = "cloaked";
     
     /** The radius of the FOV without any scanners. */
-    public static final double FOV_RADIUS = 3.0;
+    public static final double FOV_RADIUS = 10.0;
     
     /** The amount of credits gained by sending a distress signal. */
     public static final int DISTRESS_CREDITS = 100;

@@ -134,15 +134,21 @@ public class Star implements ColorStringObject
         this.mass   = size.getMass();
     }
     
+    public Star(Nebula nebula)
+        {this(generate(nebula));}
+    
     public Star()
         {this(generate());}
     
-    public static Star generate()
+    public static Star generate(Nebula nebula)
     {
         if (Utility.getChance(Main.rng, SPECIAL_CHANCE))
             return Main.rng.getRandomElement(SpecialStar.values()).star;
         return new Star(StarSize.select(), StarColor.select());
     }
+    
+    public static Star generate()
+        {return generate(null);}
     
     @Override
     public String toString()
