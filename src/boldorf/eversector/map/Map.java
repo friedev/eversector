@@ -158,12 +158,19 @@ public class Map
     public boolean contains(Coord p)
         {return contains(p.x, p.y);}
     
-    public double[][] getLightMap()
+    public double[][] getResistanceMap()
     {
-        double[][] lightMap = new double[map.length][map[0].length];
-        for (double[] row: lightMap)
-            Arrays.fill(row, 0.0);
-        return lightMap;
+        double[][] resistance = new double[map.length][map[0].length];
+        for (int y = 0; y < map.length; y++)
+        {
+            for (int x = 0; x < map[y].length; x++)
+            {
+                resistance[y][x] = map[y][x].hasNebula() ?
+                        map[y][x].getNebula().getOpacity() * 100.0 : 0.0;
+            }
+        }
+        
+        return resistance;
     }
     
     public Sector getRandomStationSystem()
@@ -425,12 +432,15 @@ public class Map
         
         for (Coord coord: fov)
         {
-            ColorChar symbol = new ColorChar(showStars ?
+            ColorChar symbol = showStars ?
                     sectorAt(coord).getStarSymbol() :
-                    sectorAt(coord).getSymbol());
+                    sectorAt(coord).getSymbol();
             
             if (sectorAt(coord).getLocation().getCoord().equals(cursor))
+            {
+                symbol = new ColorChar(symbol);
                 symbol.setBackground(COLOR_SELECTION_BACKGROUND);
+            }
             
             int y = output.size() - (coord.y - ship.getLocation().getCoord().y +
                     fovRadius);
