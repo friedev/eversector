@@ -1,6 +1,5 @@
 package boldorf.eversector.map;
 
-import asciiPanel.AsciiPanel;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.ships.Levels;
 import boldorf.eversector.Main;
@@ -23,8 +22,7 @@ import java.util.List;
 public class Sector
 {
     public static final ColorChar
-    SYMBOL_UNDISCOVERED   = new ColorChar(ExtChars.BLOCK_SHADE_1,
-            AsciiPanel.brightBlack),
+    SYMBOL_UNDISCOVERED   = new ColorChar(' '),
     SYMBOL_STAR_SYSTEM    = new ColorChar(ExtChars.STAR),
     SYMBOL_STATION_SYSTEM = new ColorChar('#'),
     SYMBOL_MANY_SHIPS     = new ColorChar('+');
