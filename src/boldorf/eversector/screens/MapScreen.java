@@ -211,5 +211,11 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
             contents.add(new ColorString("Star: ")
                     .add(map.sectorAt(location).getStar()));
         }
+        
+        if (map.sectorAt(location).hasNebula())
+        {
+            contents.add(new ColorString("Nebula: ")
+                    .add(map.sectorAt(location).getNebula()));
+        }
     }
 }
