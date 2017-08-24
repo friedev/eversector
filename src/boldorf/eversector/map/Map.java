@@ -166,7 +166,7 @@ public class Map
             for (int x = 0; x < map[y].length; x++)
             {
                 resistance[y][x] = map[y][x].hasNebula() ?
-                        map[y][x].getNebula().getOpacity() * 100.0 : 0.0;
+                        map[y][x].getNebula().getOpacity() * 0.0 : 0.0;
             }
         }
         

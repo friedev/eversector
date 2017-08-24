@@ -413,7 +413,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         for (int y = 0; y < light.length; y++)
             for (int x = 0; x < light[y].length; x++)
                 if (light[y][x] > 0.1)
-                    fov.add(Coord.get(x - offset, y - offset));
+                    fov.add(Coord.get(y - offset, x - offset));
     
         return fov;
     }
