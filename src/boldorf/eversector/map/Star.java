@@ -64,17 +64,19 @@ public class Star implements ColorStringObject
     
     private enum StarColor
     {
-        BLUE  ("Blue",   AsciiPanel.brightCyan  ),
-        YELLOW("Yellow", AsciiPanel.brightYellow),
-        RED   ("Red",    AsciiPanel.brightRed   );
+        BLUE  ("Blue",   AsciiPanel.brightCyan,   true),
+        YELLOW("Yellow", AsciiPanel.brightYellow, false),
+        RED   ("Red",    AsciiPanel.brightRed,    false);
         
-        private String name;
-        private Color color;
+        private String  name;
+        private Color   color;
+        private boolean radiation;
         
-        StarColor(String name, Color color)
+        StarColor(String name, Color color, boolean radiation)
         {
-            this.name = name;
-            this.color = color;
+            this.name      = name;
+            this.color     = color;
+            this.radiation = radiation;
         }
         
         @Override
@@ -87,6 +89,9 @@ public class Star implements ColorStringObject
         public Color getColor()
             {return color;}
         
+        public boolean hasRadiation()
+            {return radiation;}
+        
         public static StarColor select()
             {return Main.rng.getRandomElement(StarColor.values());}
     }
@@ -94,15 +99,17 @@ public class Star implements ColorStringObject
     private enum SpecialStar
     {
         BROWN_DWARF(new Star("Brown Dwarf", AsciiPanel.yellow,
-                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass())),
+                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass(),
+                false)),
         WHITE_DWARF(new Star("White Dwarf", AsciiPanel.brightWhite,
-                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass())),
+                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass(),
+                false)),
         BINARY_STAR(new Star("Binary Star", AsciiPanel.brightWhite,
-                ExtChars.INFINITY, StarSize.SUBGIANT.getMass())),
+                ExtChars.INFINITY, StarSize.SUBGIANT.getMass(), false)),
         NEUTRON_STAR(new Star("Neutron Star", AsciiPanel.brightCyan,
-                StarSize.SUBDWARF.getSymbol(), StarSize.GIANT.getMass())),
+                StarSize.SUBDWARF.getSymbol(), StarSize.GIANT.getMass(), true)),
         PULSAR(new Star("Pulsar", NEUTRON_STAR.star.color,
-                NEUTRON_STAR.star.symbol, NEUTRON_STAR.star.mass));
+                NEUTRON_STAR.star.symbol, NEUTRON_STAR.star.mass, true));
         
         private Star star;
         
@@ -110,28 +117,35 @@ public class Star implements ColorStringObject
             {this.star = star;}
     }
     
-    private String name;
-    private Color  color;
-    private char   symbol;
-    private int    mass;
+    private String  name;
+    private Color   color;
+    private char    symbol;
+    private int     mass;
+    private boolean radiation;
     
-    public Star(String name, Color color, char symbol, int mass)
+    public Star(String name, Color color, char symbol, int mass,
+            boolean radiation)
     {
-        this.name   = name;
-        this.mass   = mass;
-        this.color  = color;
-        this.symbol = symbol;
+        this.name      = name;
+        this.color     = color;
+        this.symbol    = symbol;
+        this.mass      = mass;
+        this.radiation = radiation;
     }
     
     public Star(Star copying)
-        {this(copying.name, copying.color, copying.symbol, copying.mass);}
+    {
+        this(copying.name, copying.color, copying.symbol, copying.mass,
+                copying.radiation);
+    }
     
     private Star(StarSize size, StarColor color)
     {
-        this.name   = color.getName() + " " + size.getName();
-        this.color  = color.getColor();
-        this.symbol = size.getSymbol();
-        this.mass   = size.getMass();
+        this.name      = color.getName() + " " + size.getName();
+        this.color     = color.getColor();
+        this.symbol    = size.getSymbol();
+        this.mass      = size.getMass();
+        this.radiation = color.hasRadiation();
     }
     
     public Star(Nebula nebula)
@@ -161,11 +175,14 @@ public class Star implements ColorStringObject
     public String getName()
         {return name;}
     
+    public ColorChar getSymbol()
+        {return new ColorChar(symbol, color);}
+    
     public int getMass()
         {return mass;}
     
-    public ColorChar getSymbol()
-        {return new ColorChar(symbol, color);}
+    public boolean hasRadiation()
+        {return radiation;}
     
     /**
      * Calculates the power level of the star at a certain orbit.

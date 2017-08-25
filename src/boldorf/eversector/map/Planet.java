@@ -1,7 +1,6 @@
 package boldorf.eversector.map;
 
 import boldorf.apwt.ExtChars;
-import boldorf.util.Utility;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
@@ -32,44 +31,49 @@ public class Planet implements ColorStringObject
         GLACIAL  [XXX----------]
         */
         
-        VOLCANIC("Volcanic", 6, 12, MAGMA,  ROCK,  MOUNTAIN        ),
-        OCEANIC ("Ocean",    3, 7,  OCEAN,  COAST, DESERT          ),
-        TERRAN  ("Terran",   4, 6,  OCEAN,  PLAIN, FOREST, MOUNTAIN),
-        ARID    ("Arid",     2, 8,  DESERT, DUNES, MOUNTAIN        ),
-        BARREN  ("Barren",   0, 10, ROCK,   MOUNTAIN               ),
-        GLACIAL ("Glacial",  0, 2,  FLATS,  GLACIER                ),
+        VOLCANIC("Volcanic", 6, 12, false, MAGMA,  ROCK,  MOUNTAIN        ),
+        OCEANIC ("Ocean",    3, 7,  true,  OCEAN,  COAST, DESERT          ),
+        TERRAN  ("Terran",   4, 6,  true,  OCEAN,  PLAIN, FOREST, MOUNTAIN),
+        ARID    ("Arid",     2, 8,  true,  DESERT, DUNES, MOUNTAIN        ),
+        BARREN  ("Barren",   0, 10, false, ROCK,   MOUNTAIN               ),
+        GLACIAL ("Glacial",  0, 2,  false, FLATS,  GLACIER                ),
         
-        GAS_GIANT     ("Gas Giant",     ExtChars.CIRCLE,   false, false),
-        ASTEROID_BELT ("Asteroid Belt", ExtChars.INFINITY, false, true );
+        GAS_GIANT     ("Gas Giant",     ExtChars.CIRCLE,   false, false, false),
+        ASTEROID_BELT ("Asteroid Belt", ExtChars.INFINITY, false, true,  false);
 
-        private String type;
-        private char symbol;
-        private boolean canLandOn;
-        private boolean canMine;
-        private int minTemp;
-        private int maxTemp;
+        private String       type;
+        private char         symbol;
+        private boolean      canLandOn;
+        private boolean      canMine;
+        private int          minTemp;
+        private int          maxTemp;
+        private boolean      atmosphere;
         private RegionType[] regions;
 
-        PlanetType(String type, char symbol, boolean canLandOn, boolean canMine)
+        PlanetType(String type, char symbol, boolean canLandOn, boolean canMine,
+                boolean atmosphere)
         {
-            this.type      = type;
-            this.symbol    = symbol;
-            this.minTemp   = 0;
-            this.maxTemp   = Integer.MAX_VALUE;
-            this.canLandOn = canLandOn;
-            this.canMine   = canMine;
-            this.regions   = null;
+            this.type       = type;
+            this.symbol     = symbol;
+            this.canLandOn  = canLandOn;
+            this.canMine    = canMine;
+            this.minTemp    = 0;
+            this.maxTemp    = Integer.MAX_VALUE;
+            this.atmosphere = atmosphere;
+            this.regions    = null;
         }
 
-        PlanetType(String type, int minTemp, int maxTemp, RegionType... regions)
+        PlanetType(String type, int minTemp, int maxTemp, boolean atmosphere,
+                RegionType... regions)
         {
-            this.type      = type + " Planet";
-            this.symbol    = ExtChars.THETA;
-            this.minTemp   = minTemp;
-            this.maxTemp   = maxTemp;
-            this.canLandOn = true;
-            this.canMine   = true;
-            this.regions   = regions;
+            this.type       = type + " Planet";
+            this.symbol     = ExtChars.THETA;
+            this.canLandOn  = true;
+            this.canMine    = true;
+            this.minTemp    = minTemp;
+            this.maxTemp    = maxTemp;
+            this.atmosphere = atmosphere;
+            this.regions    = regions;
         }
 
         @Override
@@ -102,6 +106,9 @@ public class Planet implements ColorStringObject
         
         public boolean isInTempRange(int temp)
             {return minTemp <= temp && maxTemp >= temp;}
+        
+        public boolean hasAtmosphere()
+            {return atmosphere;}
         
         public RegionType getRegionAtElevation(double elevation)
         {
@@ -440,23 +447,20 @@ public class Planet implements ColorStringObject
      */
     private void generateType()
     {
-        PlanetType rocky = getRockyType();
-        type = (PlanetType) Utility.select(rng, new PlanetType[]
-                {rocky, PlanetType.GAS_GIANT, PlanetType.ASTEROID_BELT},
-                new double[] {0.6, 0.3, 0.1});
-    }
-    
-    private PlanetType getRockyType()
-    {
-        int temp = getLocation().getSector().getStar().getPowerAt(
-                getLocation().getOrbit());
+        Star star = getLocation().getSector().getStar();
+        int temp = star.getPowerAt(getLocation().getOrbit());
         
         List<PlanetType> types = new LinkedList<>();
-        for (PlanetType rockyType: PlanetType.values())
-            if (rockyType.isRocky() && rockyType.isInTempRange(temp))
-                types.add(rockyType);
+        for (PlanetType curType: PlanetType.values())
+        {
+            if (curType.isInTempRange(temp) &&
+                    !(curType.hasAtmosphere() && star.hasRadiation()))
+            {
+                types.add(curType);
+            }
+        }
         
-        return rng.getRandomElement(types);
+        type = rng.getRandomElement(types);
     }
     
     private void generateOre()
