@@ -13,10 +13,12 @@ import static boldorf.eversector.Main.SYMBOL_EMPTY;
 import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
+import boldorf.util.Utility;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import squidpony.squidmath.Coord;
 
 /** A location on the map, possibly containing a star or station. */
 public class Sector
@@ -78,7 +80,8 @@ public class Sector
     
     public void init()
     {
-        if (rng.nextBoolean())
+        if (Utility.getChance(rng, 0.2 + Math.min(0.7, (1.0 /
+                (double) location.getCoord().distance(Coord.get(0, 0))))))
         {
             star     = Star.generate(nebula);
             planets  = new Planet[star.getMass()];
