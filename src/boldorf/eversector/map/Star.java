@@ -96,19 +96,24 @@ public class Star implements ColorStringObject
     
     private enum StarColor
     {
-        BLUE  ("Blue",   AsciiPanel.brightCyan,   true),
-        YELLOW("Yellow", AsciiPanel.brightYellow, false),
-        RED   ("Red",    AsciiPanel.brightRed,    false);
+        RED   ("Red",    AsciiPanel.brightRed,    false, StarSize.SUBDWARF.mass, StarSize.HYPERGIANT.mass),
+        YELLOW("Yellow", AsciiPanel.brightYellow, false, StarSize.DWARF.mass,    StarSize.HYPERGIANT.mass),
+        BLUE  ("Blue",   AsciiPanel.brightCyan,   true,  StarSize.GIANT.mass,    StarSize.HYPERGIANT.mass);
         
         private String  name;
         private Color   color;
         private boolean radiation;
+        private int     minSize;
+        private int     maxSize;
         
-        StarColor(String name, Color color, boolean radiation)
+        StarColor(String name, Color color, boolean radiation, int minSize,
+                int maxSize)
         {
             this.name      = name;
             this.color     = color;
             this.radiation = radiation;
+            this.minSize   = minSize;
+            this.maxSize   = maxSize;
         }
         
         @Override
@@ -124,8 +129,27 @@ public class Star implements ColorStringObject
         public boolean hasRadiation()
             {return radiation;}
         
+        public int getMinSize()
+            {return minSize;}
+        
+        public int getMaxSize()
+            {return maxSize;}
+        
+        public boolean isInSizeRange(int size)
+            {return minSize <= size && maxSize >= size;}
+        
         public static StarColor select()
             {return Main.rng.getRandomElement(StarColor.values());}
+        
+        public static StarColor select(StarSize size)
+        {
+            List<StarColor> colors = new LinkedList<>();
+            for (StarColor color: StarColor.values())
+                if (color.isInSizeRange(size.mass))
+                    colors.add(color);
+            
+            return Main.rng.getRandomElement(colors);
+        }
     }
     
     private enum SpecialStar
@@ -190,7 +214,10 @@ public class Star implements ColorStringObject
     {
         if (nebula == null && Utility.getChance(Main.rng, SPECIAL_CHANCE))
             return Main.rng.getRandomElement(SpecialStar.values()).star;
-        return new Star(StarSize.select(nebula), StarColor.select());
+        
+        StarSize size = StarSize.select(nebula);
+        StarColor color = StarColor.select(size);
+        return new Star(size, color);
     }
     
     public static Star generate()
