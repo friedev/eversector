@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import squidpony.squidmath.Coord;
 
 /** A location on the map, possibly containing a star or station. */
 public class Sector
@@ -80,8 +79,11 @@ public class Sector
     
     public void init()
     {
-        if (Utility.getChance(rng, 0.2 + Math.min(0.7, (1.0 /
-                (double) location.getCoord().distance(Coord.get(0, 0))))))
+        double chance = 0.2 + Math.min(0.7,
+                1.0 / (double) location.getCoord().distance(
+                        location.getMap().getCenter()));
+        
+        if (Utility.getChance(rng, chance))
         {
             star     = Star.generate(nebula);
             planets  = new Planet[star.getMass()];

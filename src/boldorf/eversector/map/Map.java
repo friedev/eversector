@@ -116,6 +116,9 @@ public class Map
     public int getHeight()
         {return map.length;}
     
+    public Coord getCenter()
+        {return Coord.get(0, 0);}
+    
     public int getOffset()
         {return offset;}
     
