@@ -12,7 +12,6 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
-import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
@@ -72,9 +71,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         {
             if (isLooking())
             {
-                Coord targetLocation = cursor.setY(-cursor.y)
-                        .translate(direction);
-                targetLocation = targetLocation.setY(-targetLocation.y);
+                Coord targetLocation = cursor.translate(direction);
                 if (player.getFOV().contains(targetLocation))
                     cursor = targetLocation;
                 return this;
