@@ -402,18 +402,17 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     
     public List<Coord> getFOV()
     {
-        int offset = getLocation().getMap().getOffset();
         double[][] light = new FOV().calculateFOV(
                 getLocation().getMap().getResistanceMap(),
-                getLocation().getCoord().x + offset,
-                getLocation().getCoord().y + offset,
+                getLocation().getCoord().x,
+                getLocation().getCoord().y,
                 getFOVRadius());
         
         List<Coord> fov = new ArrayList<>();
         for (int y = 0; y < light.length; y++)
             for (int x = 0; x < light[y].length; x++)
-                if (light[y][x] > 0.1)
-                    fov.add(Coord.get(y - offset, x - offset));
+                if (light[x][y] > 0.0)
+                    fov.add(Coord.get(x, y));
     
         return fov;
     }

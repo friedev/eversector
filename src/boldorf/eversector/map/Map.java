@@ -67,7 +67,6 @@ public class Map
     public static final int ORE_RANGE = 3;
     
     private Sector[][]   map;
-    private final int    offset;
     private Ship         player;
     private List<Ship>   ships;
     private Faction[]    factions;
@@ -86,7 +85,6 @@ public class Map
     public Map(int size)
     {
         map          = new Sector[size * 2 + 1][size * 2 + 1];
-        offset       = (int) Math.floor((double) map.length / 2.0);
         ships        = new LinkedList<>();
         factions     = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
         designations = new LinkedList<>();
@@ -119,23 +117,8 @@ public class Map
     public Coord getCenter()
         {return Coord.get(0, 0);}
     
-    public int getOffset()
-        {return offset;}
-    
-    public int getMinX()
-        {return -offset;}
-    
-    public int getMaxX()
-        {return (map[0].length - 1) - offset;}
-    
-    public int getMinY()
-        {return -offset;}
-    
-    public int getMaxY()
-        {return (map.length - 1) - offset;}
-    
     public Sector sectorAt(int x, int y)
-        {return map[-y + offset][x + offset];}
+        {return map[y][x];}
     
     public Sector sectorAt(Coord p)
         {return p == null ? null : sectorAt(p.x, p.y);}
@@ -147,10 +130,7 @@ public class Map
      * @return true if the coordinates correspond with a Coord on the map
      */
     public boolean contains(int x, int y)
-    {
-        return (x >= getMinX() && x <= getMaxX()) &&
-               (y >= getMinY() && y <= getMaxY());
-    }
+        {return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();}
     
     /**
      * Performs the same function as contains(int, int), except that it uses a
@@ -165,13 +145,8 @@ public class Map
     {
         double[][] resistance = new double[map.length][map[0].length];
         for (int y = 0; y < map.length; y++)
-        {
             for (int x = 0; x < map[y].length; x++)
-            {
-                resistance[y][x] = map[y][x].hasNebula() ?
-                        map[y][x].getNebula().getOpacity() * 0.0 : 0.0;
-            }
-        }
+                resistance[x][y] = map[y][x].hasNebula() ? 1.0 : 0.0;
         
         return resistance;
     }
@@ -445,9 +420,8 @@ public class Map
                 symbol.setBackground(COLOR_SELECTION_BACKGROUND);
             }
             
-            int y = output.size() - (coord.y - ship.getLocation().getCoord().y +
-                    fovRadius);
             int x = coord.x - ship.getLocation().getCoord().x + fovRadius - 1;
+            int y = coord.y - ship.getLocation().getCoord().y + fovRadius - 1;
             output.get(y).getCharacters().set(x, symbol);
         }
         
@@ -643,8 +617,8 @@ public class Map
                     }
                 }
                 
-                map[y][x] = new Sector(new Location(this,
-                        Coord.get(x - offset, -y + offset)), nebula);
+                map[y][x] = new Sector(new Location(this, Coord.get(x, y)),
+                        nebula);
                 map[y][x].init();
             }
         }

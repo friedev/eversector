@@ -10,19 +10,17 @@ import java.awt.Color;
  */
 public enum Nebula implements ColorStringObject
 {
-    EMISION   ("Emission",   AsciiPanel.red,        1.0 / 3.0),
-    REFLECTION("Reflection", AsciiPanel.cyan,       1.0 / 3.0),
-    DARK      ("Dark",       new Color(48, 48, 48), 2.0 / 3.0);
+    EMISION   ("Emission",   AsciiPanel.red       ),
+    REFLECTION("Reflection", AsciiPanel.cyan      ),
+    DARK      ("Dark",       new Color(48, 48, 48));
     
     private String name;
     private Color  color;
-    private double opacity;
     
-    Nebula(String name, Color color, double opacity)
+    Nebula(String name, Color color)
     {
         this.name    = name;
         this.color   = color;
-        this.opacity = opacity;
     }
     
     @Override
@@ -35,7 +33,4 @@ public enum Nebula implements ColorStringObject
     
     public Color getColor()
         {return color;}
-    
-    public double getOpacity()
-        {return opacity;}
 }

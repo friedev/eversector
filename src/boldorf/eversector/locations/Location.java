@@ -45,8 +45,8 @@ public class Location
     
     public Location move(Direction direction)
     {
-        return moveTo(coord.translate(Direction.getDirection(direction.deltaX,
-                -direction.deltaY)));
+        return moveTo(coord.translate(
+                Direction.getDirection(direction.deltaX, direction.deltaY)));
     }
     
     public Location moveTo(Coord destination)
