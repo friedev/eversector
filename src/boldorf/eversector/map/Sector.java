@@ -198,17 +198,11 @@ public class Sector
             }
         }
         
-        String locationString = "(" + location.getCoord().x + ","
-                + location.getCoord().y + ")";
-        
         // There was a tie in control, so no faction rules this sector
         if (index == -1)
         {
 //            if (faction != null)
-//            {
-//                faction.addNews(toString() + " " + locationString
-//                        + " has been lost.");
-//            }
+//                faction.addNews(toString() + " has been lost.");
             
             faction = null;
             return;
@@ -222,22 +216,20 @@ public class Sector
 //            {
 //                if (faction == null)
 //                {
-//                    ruler.addNews(toString() + " " + locationString
-//                            + " has been claimed.");
+//                    ruler.addNews(toString() + " has been claimed.");
 //                }
 //                else
 //                {
-//                    ruler.addNews(new ColorString(toString() + " "
-//                            + locationString + " has been taken from the ")
-//                            .add(faction).add("."));
+//                    ruler.addNews(new ColorString(toString()
+//                            + " has been taken from the ").add(faction)
+//                            .add("."));
 //                }
 //            }
 //            
 //            if (faction != null)
 //            {
-//                faction.addNews(new ColorString(toString() + " "
-//                        + locationString + " has been lost to the ").add(ruler)
-//                        .add("."));
+//                faction.addNews(new ColorString(toString()
+//                        + " has been lost to the ").add(ruler).add("."));
 //            }
 //        }
         
