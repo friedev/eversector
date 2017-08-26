@@ -64,7 +64,7 @@ public class Main
     COLOR_SELECTION_BACKGROUND = new Color(0, 0, 192);
     
     public static final ColorChar
-    SYMBOL_EMPTY  = new ColorChar(ExtChars.DOT),
+    SYMBOL_EMPTY  = new ColorChar(ExtChars.DOT, AsciiPanel.brightBlack),
     SYMBOL_PLAYER = new ColorChar('@', AsciiPanel.brightWhite);
     
     /** The Display used to display the game. */

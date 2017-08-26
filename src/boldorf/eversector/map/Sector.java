@@ -303,8 +303,19 @@ public class Sector
         else
             symbol = getTypeSymbol().getChar();
         
-        Color foreground = isClaimed() ? faction.getColor() : null;
-        Color background = hasNebula() ? nebula.getColor()  : null;
+        Color foreground;
+        if (isClaimed())
+            foreground = faction.getColor();
+        else if (isEmpty())
+            foreground = SYMBOL_EMPTY.getForeground();
+        else
+            foreground = null;
+        
+        Color background;
+        if (hasNebula())
+            background = nebula.getColor();
+        else
+            background = null;
         
         return new ColorChar(symbol, foreground, background);
     }
