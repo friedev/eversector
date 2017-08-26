@@ -94,7 +94,7 @@ public class Star implements ColorStringObject
         }
     }
     
-    private enum StarColor
+    private enum StarTemperature
     {
         RED   ("Red",    AsciiPanel.brightRed,    false, StarSize.SUBDWARF.mass, StarSize.HYPERGIANT.mass),
         YELLOW("Yellow", AsciiPanel.brightYellow, false, StarSize.DWARF.mass,    StarSize.HYPERGIANT.mass),
@@ -106,7 +106,7 @@ public class Star implements ColorStringObject
         private int     minSize;
         private int     maxSize;
         
-        StarColor(String name, Color color, boolean radiation, int minSize,
+        StarTemperature(String name, Color color, boolean radiation, int minSize,
                 int maxSize)
         {
             this.name      = name;
@@ -138,17 +138,17 @@ public class Star implements ColorStringObject
         public boolean isInSizeRange(int size)
             {return minSize <= size && maxSize >= size;}
         
-        public static StarColor select()
-            {return Main.rng.getRandomElement(StarColor.values());}
+        public static StarTemperature select()
+            {return Main.rng.getRandomElement(StarTemperature.values());}
         
-        public static StarColor select(StarSize size)
+        public static StarTemperature select(StarSize size)
         {
-            List<StarColor> colors = new LinkedList<>();
-            for (StarColor color: StarColor.values())
-                if (color.isInSizeRange(size.mass))
-                    colors.add(color);
+            List<StarTemperature> temperatures = new LinkedList<>();
+            for (StarTemperature temperature: StarTemperature.values())
+                if (temperature.isInSizeRange(size.mass))
+                    temperatures.add(temperature);
             
-            return Main.rng.getRandomElement(colors);
+            return Main.rng.getRandomElement(temperatures);
         }
     }
     
@@ -195,13 +195,13 @@ public class Star implements ColorStringObject
                 copying.radiation);
     }
     
-    private Star(StarSize size, StarColor color)
+    private Star(StarSize size, StarTemperature temperature)
     {
-        this.name      = color.getName() + " " + size.getName();
-        this.color     = color.getColor();
+        this.name      = temperature.getName() + " " + size.getName();
+        this.color     = temperature.getColor();
         this.symbol    = size.getSymbol();
         this.mass      = size.getMass();
-        this.radiation = color.hasRadiation();
+        this.radiation = temperature.hasRadiation();
     }
     
     public Star(Nebula nebula)
@@ -216,7 +216,7 @@ public class Star implements ColorStringObject
             return Main.rng.getRandomElement(SpecialStar.values()).star;
         
         StarSize size = StarSize.select(nebula);
-        StarColor color = StarColor.select(size);
+        StarTemperature color = StarTemperature.select(size);
         return new Star(size, color);
     }
     
