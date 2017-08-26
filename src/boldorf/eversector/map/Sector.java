@@ -204,9 +204,11 @@ public class Sector
         // There was a tie in control, so no faction rules this sector
         if (index == -1)
         {
-            if (faction != null)
-                faction.addNews(toString() + " " + locationString
-                        + " has been lost.");
+//            if (faction != null)
+//            {
+//                faction.addNews(toString() + " " + locationString
+//                        + " has been lost.");
+//            }
             
             faction = null;
             return;
@@ -214,30 +216,30 @@ public class Sector
         
         Faction ruler = map.getFaction(index);
         
-        if (faction != ruler)
-        {
-            if (map.getTurn() > -Map.SIMULATED_TURNS)
-            {
-                if (faction == null)
-                {
-                    ruler.addNews(toString() + " " + locationString
-                            + " has been claimed.");
-                }
-                else
-                {
-                    ruler.addNews(new ColorString(toString() + " "
-                            + locationString + " has been taken from the ")
-                            .add(faction).add("."));
-                }
-            }
-            
-            if (faction != null)
-            {
-                faction.addNews(new ColorString(toString() + " "
-                        + locationString + " has been lost to the ").add(ruler)
-                        .add("."));
-            }
-        }
+//        if (faction != ruler)
+//        {
+//            if (map.getTurn() > -Map.SIMULATED_TURNS)
+//            {
+//                if (faction == null)
+//                {
+//                    ruler.addNews(toString() + " " + locationString
+//                            + " has been claimed.");
+//                }
+//                else
+//                {
+//                    ruler.addNews(new ColorString(toString() + " "
+//                            + locationString + " has been taken from the ")
+//                            .add(faction).add("."));
+//                }
+//            }
+//            
+//            if (faction != null)
+//            {
+//                faction.addNews(new ColorString(toString() + " "
+//                        + locationString + " has been lost to the ").add(ruler)
+//                        .add("."));
+//            }
+//        }
         
         faction = ruler;
     }
