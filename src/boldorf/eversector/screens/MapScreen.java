@@ -202,10 +202,6 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         Coord location = isLooking() ? cursor : player.getLocation().getCoord();
         contents.add(new ColorString(map.sectorAt(location).toString()));
         
-        contents.add(new ColorString("Location: ")
-                .add(new ColorString(Utility.coordToOrderedPair(location),
-                        COLOR_FIELD)));
-        
         if (player.hasModule(Actions.SCAN) && !map.sectorAt(location).isEmpty())
         {
             contents.add(new ColorString("Star: ")
