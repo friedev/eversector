@@ -484,6 +484,11 @@ public class AI
         if (target == null)
             return false;
         
+        boolean playerInBattle =
+                ship.getLocation().getMap().getPlayer() != null &&
+                ship.getBattleLocation().getShips().contains(
+                        ship.getLocation().getMap().getPlayer());
+        
         if (!willAttack())
         {
             if (ship.validateResources(Actions.FLEE, "flee"))
@@ -495,7 +500,7 @@ public class AI
                 return false;
             }
             
-            ship.destroy(true);
+            ship.destroy(playerInBattle);
             return false;
         }
         
@@ -544,9 +549,7 @@ public class AI
                 return false;
             }
             
-            ship.destroy(ship.getLocation().getMap().getPlayer() != null &&
-                    ship.getBattleLocation().getShips().contains(
-                            ship.getLocation().getMap().getPlayer()));
+            ship.destroy(playerInBattle);
             return false;
         }
         
