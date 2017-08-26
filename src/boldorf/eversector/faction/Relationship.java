@@ -1,11 +1,13 @@
 package boldorf.eversector.faction;
 
+import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.glyphs.ColorStringObject;
 import static boldorf.eversector.Main.pendingRelationships;
 import static boldorf.eversector.Main.rng;
 import boldorf.util.Utility;
 import boldorf.eversector.ships.Ship;
-import static boldorf.eversector.faction.RelationshipType.*;
+import java.awt.Color;
 
 /**
  * A relationship between factions, containing the two factions and the terms
@@ -13,6 +15,33 @@ import static boldorf.eversector.faction.RelationshipType.*;
  */
 public class Relationship
 {
+    public enum RelationshipType implements ColorStringObject
+    {
+        WAR("War", AsciiPanel.brightRed),
+        PEACE("Peace", null),
+        ALLIANCE("Allied", AsciiPanel.brightGreen);
+
+        private String description;
+        private Color color;
+
+        RelationshipType(String description, Color color)
+        {
+            this.description = description;
+            this.color = color;
+        }
+
+        @Override
+        public String toString()
+            {return description;}
+
+        public Color getColor()
+            {return color;}
+
+        @Override
+        public ColorString toColorString()
+            {return new ColorString(description, color);}
+    }
+    
     private Faction faction1;
     private Faction faction2;
     private RelationshipType type;
@@ -117,7 +146,7 @@ public class Relationship
                 changeable  = false;
                 break;
             case PEACE:
-                if (type == WAR)
+                if (type == RelationshipType.WAR)
                 {
                     verb        = "made peace with";
                     actingVerb  = verb;
@@ -235,7 +264,6 @@ public class Relationship
     private RelationshipType generateRelationship()
     {
         return (RelationshipType) Utility.select(rng,
-                new RelationshipType[] {WAR, PEACE, ALLIANCE},
-                new double[] {0.5, 0.3, 0.2});
+                RelationshipType.values(), new double[] {0.5, 0.3, 0.2});
     }
 }

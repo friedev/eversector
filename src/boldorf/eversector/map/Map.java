@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
-import static boldorf.eversector.faction.RelationshipType.WAR;
 import static boldorf.eversector.map.Sector.SYMBOL_UNDISCOVERED;
 import static boldorf.eversector.storage.Names.ORE;
 import java.awt.Color;
@@ -680,7 +679,8 @@ public class Map
         // If there are only two factions, they will always be at war
         if (factions.length == 2)
         {
-            new Relationship(factions[0], factions[1], WAR).addToFactions();
+            new Relationship(factions[0], factions[1],
+                    Relationship.RelationshipType.WAR).addToFactions();
             return;
         }
         

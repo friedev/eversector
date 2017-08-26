@@ -21,7 +21,7 @@ import static boldorf.eversector.Main.player;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.faction.Faction;
-import boldorf.eversector.faction.RelationshipType;
+import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 import boldorf.eversector.storage.Actions;
 import static boldorf.eversector.storage.Paths.DISTRESS;
 import static boldorf.eversector.storage.Paths.REFINE;
@@ -390,8 +390,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                 if (playerFaction == faction)
                     contents.add(new ColorString("You", COLOR_FIELD));
                 else if (map.getFactions().length == 2)
-                    contents.add(new ColorString("Enemy",
-                            RelationshipType.WAR.getColor()));
+                    contents.add(new ColorString("Enemy", WAR.getColor()));
                 else
                     contents.add(playerFaction.getRelationship(faction)
                             .toColorString());

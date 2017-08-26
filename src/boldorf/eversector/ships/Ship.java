@@ -33,11 +33,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import boldorf.eversector.faction.Faction;
-import static boldorf.eversector.faction.RelationshipType.*;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 import static boldorf.eversector.Main.addMessage;
 import static boldorf.eversector.Main.playSoundEffect;
+import static boldorf.eversector.faction.Relationship.RelationshipType.*;
 import boldorf.eversector.storage.Paths;
 import squidpony.squidgrid.FOV;
 

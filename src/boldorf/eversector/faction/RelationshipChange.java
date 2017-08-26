@@ -1,6 +1,7 @@
 package boldorf.eversector.faction;
 
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.eversector.faction.Relationship.RelationshipType;
 
 /**
  * 

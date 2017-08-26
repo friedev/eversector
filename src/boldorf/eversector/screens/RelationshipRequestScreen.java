@@ -15,7 +15,7 @@ import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
-import boldorf.eversector.faction.RelationshipType;
+import boldorf.eversector.faction.Relationship.RelationshipType;
 import java.util.ArrayList;
 import java.util.List;
 
