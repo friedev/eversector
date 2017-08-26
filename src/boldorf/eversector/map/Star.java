@@ -162,10 +162,10 @@ public class Star implements ColorStringObject
                 false)),
         BINARY_STAR(new Star("Binary Star", AsciiPanel.brightWhite,
                 ExtChars.INFINITY, StarSize.SUBGIANT.getMass(), false)),
-        NEUTRON_STAR(new Star("Neutron Star", AsciiPanel.brightCyan,
-                StarSize.SUBDWARF.getSymbol(), StarSize.GIANT.getMass(), true)),
+        NEUTRON_STAR(new Star("Neutron Star", AsciiPanel.brightWhite,
+                StarSize.DWARF.getSymbol(), StarSize.GIANT.getMass(), true)),
         PULSAR(new Star("Pulsar", NEUTRON_STAR.star.color,
-                NEUTRON_STAR.star.symbol, NEUTRON_STAR.star.mass, true));
+                StarSize.GIANT.symbol, NEUTRON_STAR.star.mass, true));
         
         private Star star;
         
