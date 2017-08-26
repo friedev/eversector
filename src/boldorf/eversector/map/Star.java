@@ -8,6 +8,8 @@ import boldorf.util.Utility;
 import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.Main;
 import java.awt.Color;
+import java.util.LinkedList;
+import java.util.List;
 
 /** A star that possesses a type and a power level. */
 public class Star implements ColorStringObject
@@ -16,24 +18,27 @@ public class Star implements ColorStringObject
     
     private enum StarSize
     {
-        SUBDWARF  ("Subdwarf",   '+',             0.2,   4 ),
-        DWARF     ("Dwarf",      '*',             0.6,   5 ),
-        SUBGIANT  ("Subgiant",   ExtChars.STAR,   0.1,   7 ),
-        GIANT     ("Giant",      ExtChars.STAR,   0.05,  8 ),
-        SUPERGIANT("Supergiant", ExtChars.CIRCLE, 0.025, 10),
-        HYPERGIANT("Hypergiant", ExtChars.CIRCLE, 0.025, 12);
+        SUBDWARF  ("Subdwarf",   '+',             0.2,   4,  true ),
+        DWARF     ("Dwarf",      '*',             0.6,   5,  true ),
+        SUBGIANT  ("Subgiant",   ExtChars.STAR,   0.1,   7,  false),
+        GIANT     ("Giant",      ExtChars.STAR,   0.05,  8,  false),
+        SUPERGIANT("Supergiant", ExtChars.CIRCLE, 0.025, 10, false),
+        HYPERGIANT("Hypergiant", ExtChars.CIRCLE, 0.025, 12, false);
         
-        private String name;
-        private char symbol;
-        private double probability;
-        private int mass;
+        private String  name;
+        private char    symbol;
+        private double  probability;
+        private int     mass;
+        private boolean inNebula;
         
-        StarSize(String name, char symbol, double probability, int mass)
+        StarSize(String name, char symbol, double probability, int mass,
+                boolean inNebula)
         {
-            this.name = name;
-            this.symbol = symbol;
+            this.name        = name;
+            this.symbol      = symbol;
             this.probability = probability;
-            this.mass = mass;
+            this.mass        = mass;
+            this.inNebula    = inNebula;
         }
         
         @Override
@@ -52,12 +57,39 @@ public class Star implements ColorStringObject
         public int getMass()
             {return mass;}
         
+        public boolean inNebula()
+            {return inNebula;}
+        
         public static StarSize select()
         {
             double[] probabilities = new double[StarSize.values().length];
             for (int i = 0; i < StarSize.values().length; i++)
                 probabilities[i] = StarSize.values()[i].probability;
             return (StarSize) Utility.select(Main.rng, StarSize.values(),
+                    probabilities);
+        }
+        
+        public static StarSize select(Nebula nebula)
+        {
+            if (nebula == null)
+                return select();
+            
+            List<StarSize> sizes = new LinkedList<>();
+            for (StarSize size: values())
+                if (size.inNebula)
+                    sizes.add(size);
+            
+            double[] probabilities = new double[sizes.size()];
+            double totalProbability = 0.0;
+            for (int i = 0; i < sizes.size(); i++)
+            {
+                probabilities[i] = sizes.get(i).probability;
+                totalProbability += sizes.get(i).probability;
+            }
+            
+            probabilities[0] += 1.0 - totalProbability;
+            
+            return (StarSize) Utility.select(Main.rng, sizes.toArray(),
                     probabilities);
         }
     }
@@ -156,9 +188,9 @@ public class Star implements ColorStringObject
     
     public static Star generate(Nebula nebula)
     {
-        if (Utility.getChance(Main.rng, SPECIAL_CHANCE))
+        if (nebula == null && Utility.getChance(Main.rng, SPECIAL_CHANCE))
             return Main.rng.getRandomElement(SpecialStar.values()).star;
-        return new Star(StarSize.select(), StarColor.select());
+        return new Star(StarSize.select(nebula), StarColor.select());
     }
     
     public static Star generate()
