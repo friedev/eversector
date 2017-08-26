@@ -16,7 +16,7 @@ public class Star implements ColorStringObject
 {
     public static final double SPECIAL_CHANCE = 0.1;
     
-    private enum StarSize
+    private enum StarMass
     {
         SUBDWARF  ("Subdwarf",   '+',             0.2,   4,  true ),
         DWARF     ("Dwarf",      '*',             0.6,   5,  true ),
@@ -31,7 +31,7 @@ public class Star implements ColorStringObject
         private int     mass;
         private boolean inNebula;
         
-        StarSize(String name, char symbol, double probability, int mass,
+        StarMass(String name, char symbol, double probability, int mass,
                 boolean inNebula)
         {
             this.name        = name;
@@ -60,45 +60,45 @@ public class Star implements ColorStringObject
         public boolean inNebula()
             {return inNebula;}
         
-        public static StarSize select()
+        public static StarMass select()
         {
-            double[] probabilities = new double[StarSize.values().length];
-            for (int i = 0; i < StarSize.values().length; i++)
-                probabilities[i] = StarSize.values()[i].probability;
-            return (StarSize) Utility.select(Main.rng, StarSize.values(),
+            double[] probabilities = new double[StarMass.values().length];
+            for (int i = 0; i < StarMass.values().length; i++)
+                probabilities[i] = StarMass.values()[i].probability;
+            return (StarMass) Utility.select(Main.rng, StarMass.values(),
                     probabilities);
         }
         
-        public static StarSize select(Nebula nebula)
+        public static StarMass select(Nebula nebula)
         {
             if (nebula == null)
                 return select();
             
-            List<StarSize> sizes = new LinkedList<>();
-            for (StarSize size: values())
-                if (size.inNebula)
-                    sizes.add(size);
+            List<StarMass> masses = new LinkedList<>();
+            for (StarMass mass: values())
+                if (mass.inNebula)
+                    masses.add(mass);
             
-            double[] probabilities = new double[sizes.size()];
+            double[] probabilities = new double[masses.size()];
             double totalProbability = 0.0;
-            for (int i = 0; i < sizes.size(); i++)
+            for (int i = 0; i < masses.size(); i++)
             {
-                probabilities[i] = sizes.get(i).probability;
-                totalProbability += sizes.get(i).probability;
+                probabilities[i] = masses.get(i).probability;
+                totalProbability += masses.get(i).probability;
             }
             
             probabilities[0] += 1.0 - totalProbability;
             
-            return (StarSize) Utility.select(Main.rng, sizes.toArray(),
+            return (StarMass) Utility.select(Main.rng, masses.toArray(),
                     probabilities);
         }
     }
     
     private enum StarTemperature
     {
-        RED   ("Red",    AsciiPanel.brightRed,    false, StarSize.SUBDWARF.mass, StarSize.HYPERGIANT.mass),
-        YELLOW("Yellow", AsciiPanel.brightYellow, false, StarSize.DWARF.mass,    StarSize.HYPERGIANT.mass),
-        BLUE  ("Blue",   AsciiPanel.brightCyan,   true,  StarSize.GIANT.mass,    StarSize.HYPERGIANT.mass);
+        RED   ("Red",    AsciiPanel.brightRed,    false, StarMass.SUBDWARF.mass, StarMass.HYPERGIANT.mass),
+        YELLOW("Yellow", AsciiPanel.brightYellow, false, StarMass.DWARF.mass,    StarMass.HYPERGIANT.mass),
+        BLUE  ("Blue",   AsciiPanel.brightCyan,   true,  StarMass.GIANT.mass,    StarMass.HYPERGIANT.mass);
         
         private String  name;
         private Color   color;
@@ -135,17 +135,17 @@ public class Star implements ColorStringObject
         public int getMaxSize()
             {return maxSize;}
         
-        public boolean isInSizeRange(int size)
-            {return minSize <= size && maxSize >= size;}
+        public boolean isInMassRange(int mass)
+            {return minSize <= mass && maxSize >= mass;}
         
         public static StarTemperature select()
             {return Main.rng.getRandomElement(StarTemperature.values());}
         
-        public static StarTemperature select(StarSize size)
+        public static StarTemperature select(StarMass mass)
         {
             List<StarTemperature> temperatures = new LinkedList<>();
             for (StarTemperature temperature: StarTemperature.values())
-                if (temperature.isInSizeRange(size.mass))
+                if (temperature.isInMassRange(mass.mass))
                     temperatures.add(temperature);
             
             return Main.rng.getRandomElement(temperatures);
@@ -155,17 +155,17 @@ public class Star implements ColorStringObject
     private enum SpecialStar
     {
         BROWN_DWARF(new Star("Brown Dwarf", AsciiPanel.yellow,
-                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass(),
+                StarMass.SUBDWARF.getSymbol(), StarMass.SUBDWARF.getMass(),
                 false)),
         WHITE_DWARF(new Star("White Dwarf", AsciiPanel.brightWhite,
-                StarSize.SUBDWARF.getSymbol(), StarSize.SUBDWARF.getMass(),
+                StarMass.SUBDWARF.getSymbol(), StarMass.SUBDWARF.getMass(),
                 false)),
         BINARY_STAR(new Star("Binary Star", AsciiPanel.brightWhite,
-                ExtChars.INFINITY, StarSize.SUBGIANT.getMass(), false)),
+                ExtChars.INFINITY, StarMass.SUBGIANT.getMass(), false)),
         NEUTRON_STAR(new Star("Neutron Star", AsciiPanel.brightWhite,
-                StarSize.DWARF.getSymbol(), StarSize.GIANT.getMass(), true)),
+                StarMass.DWARF.getSymbol(), StarMass.GIANT.getMass(), true)),
         PULSAR(new Star("Pulsar", NEUTRON_STAR.star.color,
-                StarSize.GIANT.symbol, NEUTRON_STAR.star.mass, true));
+                StarMass.GIANT.symbol, NEUTRON_STAR.star.mass, true));
         
         private Star star;
         
@@ -195,12 +195,12 @@ public class Star implements ColorStringObject
                 copying.radiation);
     }
     
-    private Star(StarSize size, StarTemperature temperature)
+    private Star(StarMass mass, StarTemperature temperature)
     {
-        this.name      = temperature.getName() + " " + size.getName();
+        this.name      = temperature.getName() + " " + mass.getName();
         this.color     = temperature.getColor();
-        this.symbol    = size.getSymbol();
-        this.mass      = size.getMass();
+        this.symbol    = mass.getSymbol();
+        this.mass      = mass.getMass();
         this.radiation = temperature.hasRadiation();
     }
     
@@ -215,9 +215,9 @@ public class Star implements ColorStringObject
         if (nebula == null && Utility.getChance(Main.rng, SPECIAL_CHANCE))
             return Main.rng.getRandomElement(SpecialStar.values()).star;
         
-        StarSize size = StarSize.select(nebula);
-        StarTemperature color = StarTemperature.select(size);
-        return new Star(size, color);
+        StarMass mass = StarMass.select(nebula);
+        StarTemperature temperature = StarTemperature.select(mass);
+        return new Star(mass, temperature);
     }
     
     public static Star generate()
@@ -262,5 +262,5 @@ public class Star implements ColorStringObject
      * star, -1 if the orbit is invalid
      */
     public int getSolarPowerAt(int orbit)
-        {return getPowerAt(orbit) / (StarSize.SUBDWARF.getMass()) + 1;}
+        {return getPowerAt(orbit) / (StarMass.SUBDWARF.getMass()) + 1;}
 }
