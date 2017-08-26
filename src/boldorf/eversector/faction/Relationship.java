@@ -13,8 +13,6 @@ import static boldorf.eversector.faction.RelationshipType.*;
  */
 public class Relationship
 {
-    // TODO add a counter for how long the current relationship has lasted
-    
     private Faction faction1;
     private Faction faction2;
     private RelationshipType type;
@@ -201,8 +199,6 @@ public class Relationship
             {
                 Prompt.printNotification(
                         "The " + otherFaction + " has accepted your offer.");
-                
-                // TODO add a news event for failure here
                 
                 // Returning here prevents the news from being updated since the
                 // relationship ultimately stayed the same

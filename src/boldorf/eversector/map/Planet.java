@@ -258,8 +258,6 @@ public class Planet implements ColorStringObject
                 x + getNColumns() / 2 : x - getNColumns() / 2;
     }
     
-    // TODO change CelestialBody/Station regarding claiming changes to planet
-    
     /**
      * Calculates the dominant faction on the planet, based on region control.
      */

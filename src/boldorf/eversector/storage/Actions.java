@@ -20,9 +20,6 @@ public abstract class Actions
     FLEE     = new Action(Resources.FUEL,   1),
     PURSUE   = new Action(Resources.FUEL,   1);
     
-    // TODO give modules different capabilities stored as fields/properties
-    // This will replace constant storage of every specific module and allow
-    // modding in of new multitasking modules
     public static final Module
     SCAN   = Station.getBaseModule("Scanner"        ),
     REFINE = Station.getBaseModule("Refinery"       ),

@@ -106,8 +106,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     /** The resources on board the ship. */
     private Resource[] resources;
     
-    // TODO make an UnlimitedResource class for credits?
-    
     /**
      * Creates a ship from a name, location, and faction.
      * @param name the name of the ship
@@ -1845,8 +1843,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public boolean mine()
         {return mine(false);}
     
-    // TODO add more canX() methods
-    
     /**
      * Returns true if the ship is capable of mining in its current state.
      * @param print if true, will print any errors
@@ -2608,17 +2604,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         addFlag(DESTROYED);
         
         if (isPlayer())
-        {
             playSoundEffect(Paths.DEATH);
-            // TODO replace with constant checks in GameScreen
-//            Main.display.setScreen(new EndScreen(Main.display,
-//                    new ColorString("You have been destroyed.",
-//                            Main.COLOR_ERROR), true));
-        }
         else if (print)
-        {
             addColorMessage(toColorString().add(" has been destroyed."));
-        }
     }
     
     /**

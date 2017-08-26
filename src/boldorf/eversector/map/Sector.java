@@ -528,8 +528,6 @@ public class Sector
      */
     public String generateShipName()
     {
-        // TODO fix possible duplicate ship name bug
-        
         if (usedLetters.size() >= 26)
             return generateNameFor(rng.nextInt(26));
         
