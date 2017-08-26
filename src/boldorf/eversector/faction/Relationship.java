@@ -17,15 +17,16 @@ public class Relationship
     private Faction faction2;
     private RelationshipType type;
     
-    public Relationship(Faction f1, Faction f2)
-        {this(f1, f2, null);}
-    
-    public Relationship(Faction f1, Faction f2, RelationshipType r)
+    public Relationship(Faction faction1, Faction faction2,
+            RelationshipType type)
     {
-        faction1 = f1;
-        faction2 = f2;
-        type = r == null ? generateRelationship() : r;
+        this.faction1 = faction1;
+        this.faction2 = faction2;
+        this.type     = type == null ? generateRelationship() : type;
     }
+    
+    public Relationship(Faction faction1, Faction faction2)
+        {this(faction1, faction2, null);}
     
     public RelationshipType getType()
         {return type;}
