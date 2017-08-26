@@ -291,14 +291,19 @@ public class Sector
      */
     public ColorChar getSymbol()
     {
+        boolean playerHere =
+                location.getMap().getPlayer().getLocation().getSector() == this;
+        
         char symbol;
-        if (location.getMap().getPlayer().getLocation().getSector() == this)
+        if (playerHere)
             symbol = SYMBOL_PLAYER.getChar();
         else
             symbol = getTypeSymbol().getChar();
         
         Color foreground;
-        if (isClaimed())
+        if (playerHere)
+            foreground = SYMBOL_PLAYER.getForeground();
+        else if (isClaimed())
             foreground = faction.getColor();
         else if (isEmpty())
             foreground = SYMBOL_EMPTY.getForeground();
