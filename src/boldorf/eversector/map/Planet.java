@@ -1,6 +1,5 @@
 package boldorf.eversector.map;
 
-import boldorf.apwt.ExtChars;
 import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
@@ -12,10 +11,11 @@ import boldorf.eversector.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.faction.Faction;
+import boldorf.eversector.storage.Symbols;
 import java.util.Arrays;
 import java.util.LinkedList;
-import squidpony.squidgrid.mapping.HeightMapFactory;
 import squidpony.squidmath.Coord;
+import squidpony.squidmath.MerlinNoise;
 
 /** A planet in a sector that can be interacted with in different ways. */
 public class Planet implements ColorStringObject
@@ -38,8 +38,8 @@ public class Planet implements ColorStringObject
         BARREN  ("Barren",   0, 10, false, ROCK,   MOUNTAIN               ),
         GLACIAL ("Glacial",  0, 2,  false, FLATS,  GLACIER                ),
         
-        GAS_GIANT     ("Gas Giant",     ExtChars.CIRCLE,   false, false, false),
-        ASTEROID_BELT ("Asteroid Belt", ExtChars.INFINITY, false, true,  false);
+        GAS_GIANT     ("Gas Giant",     Symbols.gasGiant(),   false, false, false),
+        ASTEROID_BELT ("Asteroid Belt", Symbols.asteroidBelt(), false, true,  false);
 
         private String       type;
         private char         symbol;
@@ -67,7 +67,7 @@ public class Planet implements ColorStringObject
                 RegionType... regions)
         {
             this.type       = type + " Planet";
-            this.symbol     = ExtChars.THETA;
+            this.symbol     = Symbols.rockyPlanet();
             this.canLandOn  = true;
             this.canMine    = true;
             this.minTemp    = minTemp;
@@ -116,7 +116,8 @@ public class Planet implements ColorStringObject
                 return null;
             
             elevation = Math.max(0.0, Math.min(1.0, elevation));
-            int index = (int) (((double) (regions.length - 1)) * elevation);
+            int index = (int) Math.round(((double) (regions.length - 1))
+                    * elevation);
             return regions[index];
         }
     }
@@ -484,16 +485,16 @@ public class Planet implements ColorStringObject
                 MIN_REGION_MULTIPLIER;
         regions = new Region[widthMultiplier + 1][widthMultiplier * 2];
         
-        double[][] heights = HeightMapFactory.heightMap(regions.length,
-                regions[0].length, rng.nextDouble());
+        int[][] heights = MerlinNoise.preCalcNoise2D(regions.length,
+                regions[0].length, rng.nextLong());
         
         for (int y = 0; y < regions.length; y++)
         {
             for (int x = 0; x < regions[y].length; x++)
             {
                 regions[y][x] = new Region(new PlanetLocation(getLocation(),
-                        Coord.get(x, y)),
-                        type.getRegionAtElevation(Math.abs(heights[y][x])));
+                        Coord.get(x, y)), type.getRegionAtElevation(
+                                (double) heights[y][x] / 255.0));
             }
         }
         

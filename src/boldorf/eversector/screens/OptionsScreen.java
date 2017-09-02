@@ -12,6 +12,7 @@ import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
 import static boldorf.eversector.Main.options;
 import static boldorf.eversector.Main.soundtrack;
 import boldorf.eversector.storage.Options;
+import boldorf.eversector.storage.Tileset;
 import boldorf.util.FileManager;
 import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
@@ -44,6 +45,10 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                 
                 switch (option)
                 {
+                    case Options.FONT:
+                        lowerBound = 0;
+                        upperBound = Tileset.values().length - 1;
+                        break;
                     case Options.WIDTH:
                         lowerBound = Options.DEFAULT_WIDTH;
                         upperBound = Integer.MAX_VALUE;
@@ -52,7 +57,7 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                         lowerBound = Options.DEFAULT_HEIGHT;
                         upperBound = Integer.MAX_VALUE;
                         break;
-                    default:
+                    default: // MUSIC or SFX
                         lowerBound = 0;
                         upperBound = FileManager.MAX_VOLUME;
                         break;
@@ -72,21 +77,6 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                 return this;
             }
         }
-        
-        /*
-        if (Options.MUSIC.equals(key))
-        {
-            if (Options.toBoolean(options.getProperty(Options.MUSIC)))
-            {
-                soundtrack.start();
-                soundtrack.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-            else
-            {
-                soundtrack.stop();
-            }
-        }
-        */
         
         return super.processInput(key);
     }
@@ -118,8 +108,20 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
         {
             String key = Options.MENU_NUMBERS[i];
             String property = options.getProperty(key);
-            contents.add(new ColorString(key + ": ")
-                    .add(new ColorString(property, COLOR_FIELD)));
+            if (Options.FONT.equals(key))
+            {
+                Tileset tileset = Tileset.values()[Utility.parseInt(property)];
+                contents.add(new ColorString(key + ": ")
+                        .add(new ColorString(tileset.getName()
+                                + " (" + tileset.getSize() + "x"
+                                + tileset.getSize() + ")",
+                                COLOR_FIELD)));
+            }
+            else
+            {
+                contents.add(new ColorString(key + ": ")
+                        .add(new ColorString(property, COLOR_FIELD)));
+            }
             getMenu().getRestrictions().add(i);
         }
         
@@ -133,7 +135,7 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
             getMenu().getRestrictions().add(Options.MENU_NUMBERS.length + i);
         }
         
-        contents.add(new ColorString("Display dimension changes require a "
+        contents.add(new ColorString("Display and font changes require a "
                 + "restart to take effect."));
     }
 }

@@ -32,6 +32,7 @@ import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.storage.Paths.CLAIM;
 import static boldorf.eversector.storage.Paths.DOCK;
 import static boldorf.eversector.storage.Paths.TRANSACTION;
+import boldorf.eversector.storage.Symbols;
 import boldorf.util.Utility;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -323,7 +324,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
         ItemColors colors = new ItemColors(item, buying);
         return new ColorString(item.toString(), colors.item)
                 .add(new ColorString(" (" + Integer.toString(item.getPrice())
-                        + "C)", colors.credits));
+                        + Symbols.credits() + ")", colors.credits));
     }
     
     private class ItemColors

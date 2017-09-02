@@ -19,6 +19,7 @@ import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
 import boldorf.eversector.storage.Reputations;
 import boldorf.eversector.storage.Resources;
+import boldorf.eversector.storage.Symbols;
 import boldorf.util.Utility;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -2629,8 +2630,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public List<ColorString> getStatusList()
     {
         List<ColorString> contents = new LinkedList<>();
-        contents.add(new ColorString(Integer.toString(credits),
-                COLOR_FIELD).add(" Credits"));
+        contents.add(new ColorString("Credits: ").add(new ColorString(
+                Integer.toString(credits) + Symbols.credits(), COLOR_FIELD)));
         
         for (Resource resource: resources)
         {

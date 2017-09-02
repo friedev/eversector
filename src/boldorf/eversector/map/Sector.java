@@ -5,14 +5,12 @@ import boldorf.eversector.ships.Levels;
 import boldorf.eversector.Main;
 import boldorf.eversector.faction.Faction;
 import static boldorf.eversector.Main.rng;
-import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import static boldorf.eversector.Main.SYMBOL_EMPTY;
-import static boldorf.eversector.Main.SYMBOL_PLAYER;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
+import boldorf.eversector.storage.Symbols;
 import boldorf.util.Utility;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -22,18 +20,6 @@ import java.util.List;
 /** A location on the map, possibly containing a star or station. */
 public class Sector
 {
-    public static final ColorChar
-    SYMBOL_UNDISCOVERED   = new ColorChar(' '),
-    SYMBOL_STAR_SYSTEM    = new ColorChar(ExtChars.STAR),
-    SYMBOL_STATION_SYSTEM = new ColorChar('#'),
-    SYMBOL_MANY_SHIPS     = new ColorChar('+');
-    
-    public static final char
-    SYMBOL_WEAK_SHIP   = '>',
-    SYMBOL_MEDIUM_SHIP = ExtChars.ARROW2_R,
-    SYMBOL_STRONG_SHIP = ExtChars.SIGMA,
-    SYMBOL_LEADER      = ExtChars.PHI_UPPER;
-    
     /** The maximum number of planets that will be generated. */
     public static final int MAX_PLANETS = 10;
     
@@ -277,12 +263,12 @@ public class Sector
     public ColorChar getTypeSymbol()
     {
         if (isEmpty())
-            return SYMBOL_EMPTY;
+            return Symbols.empty();
         if (hasStations())
-            return SYMBOL_STATION_SYSTEM;
+            return new ColorChar(Symbols.stationSystem());
         if (hasPlanets())
-            return SYMBOL_STAR_SYSTEM;
-        return SYMBOL_UNDISCOVERED;
+            return new ColorChar(Symbols.starSystem());
+        return new ColorChar(Symbols.undiscovered());
     }
     
     /**
@@ -296,17 +282,17 @@ public class Sector
         
         char symbol;
         if (playerHere)
-            symbol = SYMBOL_PLAYER.getChar();
+            symbol = Symbols.player().getChar();
         else
             symbol = getTypeSymbol().getChar();
         
         Color foreground;
         if (playerHere)
-            foreground = SYMBOL_PLAYER.getForeground();
+            foreground = Symbols.player().getForeground();
         else if (isClaimed())
             foreground = faction.getColor();
         else if (isEmpty())
-            foreground = SYMBOL_EMPTY.getForeground();
+            foreground = Symbols.empty().getForeground();
         else
             foreground = null;
         
@@ -324,9 +310,9 @@ public class Sector
         ColorChar symbol;
         
         if (location.getMap().getPlayer().getLocation().getSector() == this)
-            symbol = SYMBOL_PLAYER;
+            symbol = Symbols.player();
         else if (star == null)
-            symbol = SYMBOL_EMPTY;
+            symbol = Symbols.empty();
         else
             symbol = star.getSymbol();
         
@@ -701,17 +687,16 @@ public class Sector
         if (stations[orbitIndex] != null)
             symbols.add(stations[orbitIndex].getSymbol());
         else
-            symbols.add(SYMBOL_EMPTY);
+            symbols.add(Symbols.empty());
         
         if (playerIsHere)
         {
-            symbols.add(SYMBOL_PLAYER);
+            symbols.add(Symbols.player());
         }
         else if (nShips > 0)
         {
             // Calculate the highest level of ship at this orbit
             int highestLevel = 0;
-            boolean isLeader = false;
             boolean isCommonFaction = true;
             Faction commonFaction = null;
             for (Ship ship: ships)
@@ -722,9 +707,6 @@ public class Sector
                     if (ship.getHighestLevel() > highestLevel)
                         highestLevel = ship.getHighestLevel();
                     
-                    if (ship.isLeader())
-                        isLeader = true;
-                    
                     if (commonFaction == null)
                         commonFaction = ship.getFaction();
                     else
@@ -733,20 +715,12 @@ public class Sector
             }
             
             char symbol;
-            // Append either the leader symbol or the symbol of the highest ship
-            if (isLeader)
+            // Print the corresponding symbol to the highest level
+            switch (highestLevel / Levels.LEVEL_AMT)
             {
-                symbol = SYMBOL_LEADER;
-            }
-            else
-            {
-                // Print the corresponding symbol to the highest level
-                switch (highestLevel / Levels.LEVEL_AMT)
-                {
-                    case 0: case 1: symbol = SYMBOL_WEAK_SHIP;   break;
-                    case 2:         symbol = SYMBOL_MEDIUM_SHIP; break;
-                    default:        symbol = SYMBOL_STRONG_SHIP; break;
-                }
+                case 0: case 1: symbol = Symbols.weakShip();   break;
+                case 2:         symbol = Symbols.mediumShip(); break;
+                default:        symbol = Symbols.strongShip(); break;
             }
             
             if (isCommonFaction && commonFaction != null)
@@ -756,13 +730,13 @@ public class Sector
         }
         else
         {
-            symbols.add(SYMBOL_EMPTY);
+            symbols.add(Symbols.empty());
         }
         
         if (planets[orbitIndex] != null)
             symbols.add(planets[orbitIndex].getSymbol());
         else
-            symbols.add(SYMBOL_EMPTY);
+            symbols.add(Symbols.empty());
         
         return symbols;
     }

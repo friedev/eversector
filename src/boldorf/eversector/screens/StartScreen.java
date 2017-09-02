@@ -2,7 +2,6 @@ package boldorf.eversector.screens;
 
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.Display;
-import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.PopupTerminal;
@@ -18,6 +17,7 @@ import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
+import boldorf.eversector.storage.Symbols;
 import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -28,12 +28,11 @@ import squidpony.squidmath.Coord;
 /** The menu screen that is displayed at the start of the game. */
 public class StartScreen extends Screen
 {
-    /** The number of stars in the background starfield. */
-    public static final int STARS = 60;
+    public static final double STARS_PER_TILE = 0.0125;
     
     /** The character printed for each star. */
     public static final ColorChar STAR_CHARACTER =
-            new ColorChar(ExtChars.DOT, AsciiPanel.brightWhite);
+            new ColorChar(Symbols.subdwarf(), AsciiPanel.brightWhite);
     
     private PopupWindow window;
     private PopupTerminal namePrompt;
@@ -43,7 +42,6 @@ public class StartScreen extends Screen
     {
         super(display);
         window = new PopupWindow(display, startMessages);
-        starCoords = new ArrayList<>(STARS);
         generateStarfield();
     }
     
@@ -130,8 +128,8 @@ public class StartScreen extends Screen
         String padding =
                 Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
         
-        String infoLine = "(C) " + COPYRIGHT_YEAR + " " + new String(DEVELOPER)
-                + " " + padding + VERSION;
+        String infoLine = Symbols.copyright() + " " + COPYRIGHT_YEAR + " "
+                + new String(DEVELOPER) + " " + padding + VERSION;
         
         List<String> titleArt = new LinkedList<>();
         
@@ -141,14 +139,17 @@ public class StartScreen extends Screen
         titleArt.add(" __  /___ | / /  _ \\_  ___/____ \\_  _ \\  ___/  __/  __ \\_  ___/");
         titleArt.add(" _  __/__ |/ //  __/  /   ____/ //  __/ /__ / /_ / /_/ /  /    ");
         titleArt.add(" / /___ ____/ \\___//_/    /____/ \\___/\\___/ \\__/ \\____//_/     ");
-        titleArt.add("/_____/ " + infoLine + "      ");
+        titleArt.add("/_____/ " + infoLine + "        ");
         
         return titleArt.toArray(new String[titleArt.size()]);
     }
     
     private void generateStarfield()
     {
-        for (int i = 0; i < STARS; i++)
+        int nStars = (int) (STARS_PER_TILE *
+                (getDisplay().getCharWidth() * getDisplay().getCharHeight()));
+        starCoords = new ArrayList<>(nStars);
+        for (int i = 0; i < nStars; i++)
         {
             starCoords.add(rng.nextCoord(getDisplay().getCharWidth(),
                     getDisplay().getCharHeight()));
@@ -157,7 +158,7 @@ public class StartScreen extends Screen
     
     private void drawStarfield()
     {
-        for (int i = 0; i < STARS; i++)
+        for (int i = 0; i < starCoords.size(); i++)
             getDisplay().write(starCoords.get(i), STAR_CHARACTER);
     }
 }

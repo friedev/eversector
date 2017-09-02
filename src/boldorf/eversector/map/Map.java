@@ -18,8 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
-import static boldorf.eversector.map.Sector.SYMBOL_UNDISCOVERED;
 import static boldorf.eversector.storage.Names.ORE;
+import boldorf.eversector.storage.Symbols;
 import java.awt.Color;
 import squidpony.squidgrid.Splash;
 import squidpony.squidmath.Coord;
@@ -402,7 +402,7 @@ public class Map
         {
             output.add(new ColorString());
             for (int x = 0; x < fovRadius * 2 - 1; x++)
-                output.getLast().add(SYMBOL_UNDISCOVERED);
+                output.getLast().add(Symbols.undiscovered());
         }
         
         List<Coord> fov = ship.getFOV();

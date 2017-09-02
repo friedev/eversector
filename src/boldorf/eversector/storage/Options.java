@@ -13,6 +13,8 @@ public abstract class Options
     SEED         = "Seed",
     DISQUALIFIED = "Disqualified",
     
+    FONT        = "Font",
+    TILES       = "Tiles",
     WIDTH       = "Display Width",
     HEIGHT      = "Display Height",
     MUSIC       = "Music Volume",
@@ -25,8 +27,8 @@ public abstract class Options
     FREEZE      = "Freeze";
     
     public static final String[]
-    MENU_BOOLEANS  = {TIPS, LEADERBOARD, VOTING, NEWS},
-    MENU_NUMBERS   = {WIDTH, HEIGHT, MUSIC, SFX},
+    MENU_NUMBERS   = {WIDTH, HEIGHT, MUSIC, SFX, FONT},
+    MENU_BOOLEANS  = {TILES, TIPS, LEADERBOARD, VOTING, NEWS},
     DEBUG_BOOLEANS = {KEEP_SEED, FREEZE};
     
     public static final String
@@ -41,8 +43,8 @@ public abstract class Options
     COLOR_FALSE = AsciiPanel.brightRed;
     
     public static final int
-    DEFAULT_WIDTH  = 80,
-    DEFAULT_HEIGHT = 60;
+    DEFAULT_WIDTH  = 90,
+    DEFAULT_HEIGHT = 50;
     
     public static Color getColor(String option)
     {

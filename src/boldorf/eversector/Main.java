@@ -6,8 +6,6 @@ import boldorf.util.FileManager;
 import boldorf.util.NameGenerator;
 import boldorf.util.Utility;
 import boldorf.apwt.Display;
-import boldorf.apwt.ExtChars;
-import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
 import boldorf.eversector.ships.Battle;
@@ -20,6 +18,7 @@ import boldorf.eversector.screens.StartScreen;
 import static boldorf.eversector.storage.Names.GENERAL;
 import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
+import boldorf.eversector.storage.Tileset;
 import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
 import java.util.LinkedList;
@@ -63,10 +62,6 @@ public class Main
     COLOR_SELECTION_FOREGROUND = null,
     COLOR_SELECTION_BACKGROUND = new Color(0, 0, 192);
     
-    public static final ColorChar
-    SYMBOL_EMPTY  = new ColorChar(ExtChars.DOT, AsciiPanel.brightBlack),
-    SYMBOL_PLAYER = new ColorChar('@', AsciiPanel.brightWhite);
-    
     /** The Display used to display the game. */
     public static Display display;
     
@@ -81,6 +76,11 @@ public class Main
     
     /** Various game options in the form of a properties file. */
     public static Properties options;
+    
+    /**
+     * The game's initial usage of tiles. Should not be changed during gameplay.
+     */
+    public static boolean tiles;
     
     /** The game music that will loop in the background. */
     public static Clip soundtrack;
@@ -141,10 +141,13 @@ public class Main
         
         List<ColorString> startMessages = startGame();
         
+        AsciiFont font = Tileset.values()
+                [Utility.parseInt(options.getProperty(Options.FONT))]
+                .toFont(Options.toBoolean(options.getProperty(Options.TILES)));
+        
         display = new Display(new AsciiPanel(
                 Utility.parseInt(options.getProperty(Options.WIDTH)),
-                Utility.parseInt(options.getProperty(Options.HEIGHT)),
-                AsciiFont.QBICFEET_10x10));
+                Utility.parseInt(options.getProperty(Options.HEIGHT)), font));
         
         display.setIconImage(FileManager.loadImage(Paths.ICON));
         display.setTitle("EverSector");
@@ -170,6 +173,7 @@ public class Main
         // Create the map and update the player as needed
         setUpSeed();
         nameGenerator = new NameGenerator(GENERAL, rng);
+        tiles = Options.toBoolean(options.getProperty(Options.TILES));
         map = new Map();
         
         boolean savedGame = FileManager.checkExistence(Paths.SAVE);
@@ -274,8 +278,7 @@ public class Main
      */
     public static boolean optionIs(String option, String property)
     {
-        if (option == null || property == null ||
-                options.getProperty(property) == null)
+        if (option == null || property == null)
             return false;
         
         return option.equals(options.getProperty(property));
@@ -283,6 +286,12 @@ public class Main
     
     public static void setOptionDefaults()
     {
+        if (options.getProperty(Options.FONT) == null ||
+                Utility.parseInt(options.getProperty(Options.FONT)) == null)
+        {
+            options.setProperty(Options.FONT, Integer.toString(0));
+        }
+        
         if (options.getProperty(Options.WIDTH) == null ||
                 Utility.parseInt(options.getProperty(Options.WIDTH)) == null)
         {
