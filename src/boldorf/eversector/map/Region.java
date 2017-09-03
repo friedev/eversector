@@ -35,12 +35,12 @@ public class Region implements ColorStringObject
         private String type;
         private char symbol;
         private Color foreground;
-        private boolean hasOre;
+        private boolean isLand;
         
-        RegionType(String type, boolean hasOre, char symbol, Color foreground)
+        RegionType(String type, boolean isLand, char symbol, Color foreground)
         {
             this.type       = type;
-            this.hasOre     = hasOre;
+            this.isLand     = isLand;
             this.symbol     = symbol;
             this.foreground = foreground;
         }
@@ -58,8 +58,8 @@ public class Region implements ColorStringObject
         public ColorChar getSymbol()
             {return new ColorChar(symbol, foreground);}
         
-        public boolean hasOre()
-            {return hasOre;}
+        public boolean isLand()
+            {return isLand;}
     }
     
     private final PlanetLocation location;
@@ -83,7 +83,7 @@ public class Region implements ColorStringObject
         this.type     = type;
         this.faction  = null;
         
-        if (type.hasOre())
+        if (type.isLand())
             this.ore = location.getPlanet().getRandomOre();
     }
     
