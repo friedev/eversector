@@ -128,8 +128,6 @@ public class Main
             FileManager.movePathUp();
         }
 
-        Paths.initialize();
-
         if (FileManager.checkExistence(Paths.OPTIONS))
             options = FileManager.load(Paths.OPTIONS);
         else

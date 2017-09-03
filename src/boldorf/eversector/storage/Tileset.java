@@ -31,7 +31,7 @@ public enum Tileset
     {
         String fileName = name.toLowerCase() + "_" + (tiles ? "tiles" : "ascii")
                 + ".png";
-        return new AsciiFont(FileManager.getPath() + "assets/fonts/"
+        return new AsciiFont(FileManager.getPath() + Paths.FONTS
                 + fileName, size, size);
     }
 }
