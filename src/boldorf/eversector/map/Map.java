@@ -19,7 +19,7 @@ import java.util.List;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
 import static boldorf.eversector.storage.Names.ORE;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import java.awt.Color;
 import squidpony.squidgrid.Splash;
 import squidpony.squidmath.Coord;
@@ -356,8 +356,8 @@ public class Map
     
     /**
      * Converts the map into a List of ColorStrings for displaying.
-     * @param showStars if true, will show the star symbols of sectors rather
-     * than their type symbols
+     * @param showStars if true, will show the star Symbol of sectors rather
+     * than their type Symbol
      * @param cursor the sector to show as selected
      * @return the map as a List of ColorStrings
      */
@@ -387,8 +387,8 @@ public class Map
     /**
      * Converts the FOV of a Ship into a List of ColorStrings for displaying.
      * @param ship the ship whose FOV will be used as the rendering range
-     * @param showStars if true, will show the star symbols of sectors rather
-     * than their type symbols
+     * @param showStars if true, will show the star Symbol of sectors rather
+     * than their type Symbol
      * @param cursor the sector to show as selected
      * @return the map as a List of ColorStrings
      */
@@ -402,7 +402,7 @@ public class Map
         {
             output.add(new ColorString());
             for (int x = 0; x < fovRadius * 2 - 1; x++)
-                output.getLast().add(Symbols.undiscovered());
+                output.getLast().add(Symbol.UNDISCOVERED.get());
         }
         
         List<Coord> fov = ship.getFOV();

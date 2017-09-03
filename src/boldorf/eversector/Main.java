@@ -18,6 +18,7 @@ import boldorf.eversector.screens.StartScreen;
 import static boldorf.eversector.storage.Names.GENERAL;
 import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
+import boldorf.eversector.storage.Symbol;
 import boldorf.eversector.storage.Tileset;
 import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
@@ -77,11 +78,6 @@ public class Main
     /** Various game options in the form of a properties file. */
     public static Properties options;
     
-    /**
-     * The game's initial usage of tiles. Should not be changed during gameplay.
-     */
-    public static boolean tiles;
-    
     /** The game music that will loop in the background. */
     public static Clip soundtrack;
     
@@ -101,7 +97,7 @@ public class Main
     public static Queue<RelationshipChange> pendingRelationships;
     
     /**
-     * If true, will show star symbols on the map instead of type symbols and
+     * If true, will show star Symbol on the map instead of type Symbol and
      * faction colors.
      */
     public static boolean showStars;
@@ -173,7 +169,7 @@ public class Main
         // Create the map and update the player as needed
         setUpSeed();
         nameGenerator = new NameGenerator(GENERAL, rng);
-        tiles = Options.toBoolean(options.getProperty(Options.TILES));
+        Symbol.setMap(Options.toBoolean(options.getProperty(Options.TILES)));
         map = new Map();
         
         boolean savedGame = FileManager.checkExistence(Paths.SAVE);

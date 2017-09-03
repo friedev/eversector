@@ -10,7 +10,7 @@ import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import boldorf.util.Utility;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -258,17 +258,17 @@ public class Sector
     
     /**
      * Returns corresponding symbol that represents the sector's type.
-     * @return the char from Symbols that represents the sector type
+     * @return the char from Symbol that represents the sector type
      */
     public ColorChar getTypeSymbol()
     {
         if (isEmpty())
-            return Symbols.empty();
+            return Symbol.empty();
         if (hasStations())
-            return new ColorChar(Symbols.stationSystem());
+            return new ColorChar(Symbol.STATION_SYSTEM.get());
         if (hasPlanets())
-            return new ColorChar(Symbols.starSystem());
-        return new ColorChar(Symbols.undiscovered());
+            return new ColorChar(Symbol.STAR_SYSTEM.get());
+        return new ColorChar(Symbol.UNDISCOVERED.get());
     }
     
     /**
@@ -282,17 +282,17 @@ public class Sector
         
         char symbol;
         if (playerHere)
-            symbol = Symbols.player().getChar();
+            symbol = Symbol.player().getChar();
         else
             symbol = getTypeSymbol().getChar();
         
         Color foreground;
         if (playerHere)
-            foreground = Symbols.player().getForeground();
+            foreground = Symbol.player().getForeground();
         else if (isClaimed())
             foreground = faction.getColor();
         else if (isEmpty())
-            foreground = Symbols.empty().getForeground();
+            foreground = Symbol.empty().getForeground();
         else
             foreground = null;
         
@@ -310,9 +310,9 @@ public class Sector
         ColorChar symbol;
         
         if (location.getMap().getPlayer().getLocation().getSector() == this)
-            symbol = Symbols.player();
+            symbol = Symbol.player();
         else if (star == null)
-            symbol = Symbols.empty();
+            symbol = Symbol.empty();
         else
             symbol = star.getSymbol();
         
@@ -687,11 +687,11 @@ public class Sector
         if (stations[orbitIndex] != null)
             symbols.add(stations[orbitIndex].getSymbol());
         else
-            symbols.add(Symbols.empty());
+            symbols.add(Symbol.empty());
         
         if (playerIsHere)
         {
-            symbols.add(Symbols.player());
+            symbols.add(Symbol.player());
         }
         else if (nShips > 0)
         {
@@ -714,29 +714,34 @@ public class Sector
                 }
             }
             
-            char symbol;
+            Symbol symbol;
             // Print the corresponding symbol to the highest level
             switch (highestLevel / Levels.LEVEL_AMT)
             {
-                case 0: case 1: symbol = Symbols.weakShip();   break;
-                case 2:         symbol = Symbols.mediumShip(); break;
-                default:        symbol = Symbols.strongShip(); break;
+                case 0: case 1: symbol = Symbol.WEAK_SHIP;   break;
+                case 2:         symbol = Symbol.MEDIUM_SHIP; break;
+                default:        symbol = Symbol.STRONG_SHIP; break;
             }
             
             if (isCommonFaction && commonFaction != null)
-                symbols.add(new ColorChar(symbol, commonFaction.getColor()));
+            {
+                symbols.add(new ColorChar(symbol.get(),
+                        commonFaction.getColor()));
+            }
             else
-                symbols.add(new ColorChar(symbol));
+            {
+                symbols.add(new ColorChar(symbol.get()));
+            }
         }
         else
         {
-            symbols.add(Symbols.empty());
+            symbols.add(Symbol.empty());
         }
         
         if (planets[orbitIndex] != null)
             symbols.add(planets[orbitIndex].getSymbol());
         else
-            symbols.add(Symbols.empty());
+            symbols.add(Symbol.empty());
         
         return symbols;
     }

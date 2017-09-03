@@ -25,7 +25,7 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 import boldorf.eversector.storage.Actions;
 import static boldorf.eversector.storage.Paths.DISTRESS;
 import static boldorf.eversector.storage.Paths.REFINE;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -438,7 +438,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         {
             factionWindow.addSeparator(new Line(true, 1, 1));
             contents.add(new ColorString("Economy: ").add(new ColorString(
-                    playerFaction.getEconomyCredits() + "" + Symbols.credits(),
+                    playerFaction.getEconomyCredits() + "" + Symbol.CREDITS,
                     COLOR_FIELD)));
             contents.add(new ColorString("Sectors: ").add(new ColorString(
                     Integer.toString(playerFaction.getSectorsControlled()),

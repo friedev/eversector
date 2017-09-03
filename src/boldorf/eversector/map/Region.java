@@ -7,7 +7,7 @@ import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.faction.Faction;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,20 +17,20 @@ public class Region implements ColorStringObject
 {
     public enum RegionType
     {
-        MAGMA("Magma", false, Symbols.liquidRegion(), AsciiPanel.brightRed),
-        ROCK ("Rock",  true,  Symbols.flatRegion(),   AsciiPanel.brightBlack),
+        MAGMA("Magma", false, Symbol.LIQUID_REGION, AsciiPanel.brightRed),
+        ROCK ("Rock",  true,  Symbol.FLAT_REGION,   AsciiPanel.brightBlack),
         
-        DESERT("Desert", true, Symbols.flatRegion(), AsciiPanel.yellow),
-        DUNES ("Dunes",  true, Symbols.hillRegion(), AsciiPanel.yellow),
+        DESERT("Desert", true, Symbol.FLAT_REGION, AsciiPanel.yellow),
+        DUNES ("Dunes",  true, Symbol.HILL_REGION, AsciiPanel.yellow),
         
-        OCEAN   ("Ocean",       false, Symbols.liquidRegion(),   AsciiPanel.brightBlue),
-        COAST   ("Coast",       false, Symbols.liquidRegion(),   AsciiPanel.brightCyan),
-        PLAIN   ("Plains",      true,  Symbols.flatRegion(),     AsciiPanel.brightGreen),
-        FOREST  ("Forest",      true,  Symbols.forestRegion(),   AsciiPanel.green),
-        MOUNTAIN("Mountainous", true,  Symbols.mountainRegion(), AsciiPanel.brightBlack),
+        OCEAN   ("Ocean",       false, Symbol.LIQUID_REGION,   AsciiPanel.brightBlue),
+        COAST   ("Coast",       false, Symbol.LIQUID_REGION,   AsciiPanel.brightCyan),
+        PLAIN   ("Plains",      true,  Symbol.FLAT_REGION,     AsciiPanel.brightGreen),
+        FOREST  ("Forest",      true,  Symbol.FOREST_REGION,   AsciiPanel.green),
+        MOUNTAIN("Mountainous", true,  Symbol.MOUNTAIN_REGION, AsciiPanel.brightBlack),
         
-        FLATS  ("Flats",   true, Symbols.flatRegion(), AsciiPanel.brightCyan),
-        GLACIER("Glacier", true, Symbols.hillRegion(), AsciiPanel.brightCyan);
+        FLATS  ("Flats",   true, Symbol.FLAT_REGION, AsciiPanel.brightCyan),
+        GLACIER("Glacier", true, Symbol.HILL_REGION, AsciiPanel.brightCyan);
         
         private String type;
         private char symbol;
@@ -44,6 +44,9 @@ public class Region implements ColorStringObject
             this.symbol     = symbol;
             this.foreground = foreground;
         }
+        
+        RegionType(String type, boolean hasOre, Symbol symbol, Color foreground)
+            {this(type, hasOre, symbol.get(), foreground);}
         
         @Override
         public String toString()
@@ -99,7 +102,8 @@ public class Region implements ColorStringObject
     {
         for (Ship ship: ships)
             if (ship.isPlayer())
-                return Symbols.player();
+                return new ColorChar(Symbol.PLAYER.get(),
+                        AsciiPanel.brightWhite);
         
         return type.getSymbol();
     }

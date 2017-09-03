@@ -17,7 +17,7 @@ import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.Map;
 import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import boldorf.util.Utility;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class StartScreen extends Screen
     
     /** The character printed for each star. */
     public static final ColorChar STAR_CHARACTER =
-            new ColorChar(Symbols.subdwarf(), AsciiPanel.brightWhite);
+            new ColorChar(Symbol.SUBDWARF.get(), AsciiPanel.brightWhite);
     
     private PopupWindow window;
     private PopupTerminal namePrompt;
@@ -128,7 +128,7 @@ public class StartScreen extends Screen
         String padding =
                 Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
         
-        String infoLine = Symbols.copyright() + " " + COPYRIGHT_YEAR + " "
+        String infoLine = Symbol.COPYRIGHT + " " + COPYRIGHT_YEAR + " "
                 + new String(DEVELOPER) + " " + padding + VERSION;
         
         List<String> titleArt = new LinkedList<>();

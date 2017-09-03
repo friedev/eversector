@@ -6,7 +6,7 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.util.Utility;
 import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.Main;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,12 +18,12 @@ public class Star implements ColorStringObject
     
     private enum StarMass
     {
-        SUBDWARF  ("Subdwarf",   Symbols.subdwarf(),   0.2,   4,  true ),
-        DWARF     ("Dwarf",      Symbols.dwarf(),      0.6,   5,  true ),
-        SUBGIANT  ("Subgiant",   Symbols.subgiant(),   0.1,   7,  false),
-        GIANT     ("Giant",      Symbols.giant(),      0.05,  8,  false),
-        SUPERGIANT("Supergiant", Symbols.supergiant(), 0.025, 10, false),
-        HYPERGIANT("Hypergiant", Symbols.hypergiant(), 0.025, 12, false);
+        SUBDWARF  ("Subdwarf",   Symbol.SUBDWARF,   0.2,   4,  true ),
+        DWARF     ("Dwarf",      Symbol.SUBDWARF,      0.6,   5,  true ),
+        SUBGIANT  ("Subgiant",   Symbol.SUBGIANT,   0.1,   7,  false),
+        GIANT     ("Giant",      Symbol.GIANT,      0.05,  8,  false),
+        SUPERGIANT("Supergiant", Symbol.SUPERGIANT, 0.025, 10, false),
+        HYPERGIANT("Hypergiant", Symbol.HYPERGIANT, 0.025, 12, false);
         
         private String  name;
         private char    symbol;
@@ -40,6 +40,10 @@ public class Star implements ColorStringObject
             this.mass        = mass;
             this.inNebula    = inNebula;
         }
+        
+        StarMass(String name, Symbol symbol, double probability, int mass,
+                boolean inNebula)
+            {this(name, symbol.get(), probability, mass, inNebula);}
         
         @Override
         public String toString()
@@ -161,11 +165,11 @@ public class Star implements ColorStringObject
                 StarMass.SUBDWARF.getSymbol(), StarMass.SUBDWARF.getMass(),
                 false)),
         BINARY_STAR(new Star("Binary Star", AsciiPanel.brightWhite,
-                Symbols.binaryStar(), StarMass.SUBGIANT.getMass(), false)),
+                Symbol.BINARY_STAR.get(), StarMass.SUBGIANT.getMass(), false)),
         NEUTRON_STAR(new Star("Neutron Star", AsciiPanel.brightWhite,
-                Symbols.neutronStar(), StarMass.GIANT.getMass(), true)),
+                Symbol.NEUTRON_STAR.get(), StarMass.GIANT.getMass(), true)),
         PULSAR(new Star("Pulsar", NEUTRON_STAR.star.color,
-                Symbols.pulsar(), NEUTRON_STAR.star.mass, true));
+                Symbol.PULSAR.get(), NEUTRON_STAR.star.mass, true));
         
         private Star star;
         

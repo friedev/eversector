@@ -11,7 +11,7 @@ import boldorf.eversector.locations.SectorLocation;
 import java.util.ArrayList;
 import java.util.List;
 import boldorf.eversector.faction.Faction;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import java.util.Arrays;
 import java.util.LinkedList;
 import squidpony.squidmath.Coord;
@@ -38,8 +38,8 @@ public class Planet implements ColorStringObject
         BARREN  ("Barren",   0, 10, false, ROCK,   MOUNTAIN               ),
         GLACIAL ("Glacial",  0, 2,  false, FLATS,  GLACIER                ),
         
-        GAS_GIANT     ("Gas Giant",     Symbols.gasGiant(),   false, false, false),
-        ASTEROID_BELT ("Asteroid Belt", Symbols.asteroidBelt(), false, true,  false);
+        GAS_GIANT     ("Gas Giant",     Symbol.GAS_GIANT.get(),     false, false, false),
+        ASTEROID_BELT ("Asteroid Belt", Symbol.ASTEROID_BELT.get(), false, true,  false);
 
         private String       type;
         private char         symbol;
@@ -67,7 +67,7 @@ public class Planet implements ColorStringObject
                 RegionType... regions)
         {
             this.type       = type + " Planet";
-            this.symbol     = Symbols.rockyPlanet();
+            this.symbol     = Symbol.ROCKY_PLANET.get();
             this.canLandOn  = true;
             this.canMine    = true;
             this.minTemp    = minTemp;

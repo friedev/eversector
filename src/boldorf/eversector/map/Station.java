@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.storage.Resources;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 
 /** A station at which ships can refuel and purchase upgrades. */
 public class Station implements ColorStringObject
@@ -170,7 +170,7 @@ public class Station implements ColorStringObject
     public ColorChar getSymbol()
     {
         return new ColorChar(BATTLE.equals(type) ?
-                Symbols.battleStation() : Symbols.tradeStation(),
+                Symbol.BATTLE_STATION.get() : Symbol.TRADE_STATION.get(),
                 getFaction().getColor());
     }
     

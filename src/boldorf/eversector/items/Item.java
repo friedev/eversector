@@ -3,7 +3,7 @@ package boldorf.eversector.items;
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.Main.rng;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import boldorf.eversector.storage.Symbols;
+import boldorf.eversector.storage.Symbol;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -83,7 +83,7 @@ public class Item
         List<ColorString> definition = new LinkedList<>();
         definition.add(new ColorString(name.toUpperCase()));
         definition.add(new ColorString("Value: ")
-                .add(new ColorString(value + "" + Symbols.credits(),
+                .add(new ColorString(value + "" + Symbol.CREDITS,
                         COLOR_FIELD)));
         definition.add(new ColorString("Description: ")
                 .add(new ColorString(description, COLOR_FIELD)));

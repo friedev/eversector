@@ -245,10 +245,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
         window.addSeparator(new Line(true, 2, 1));
         for (int orbit = 1; orbit <= sector.getOrbits(); orbit++)
         {
-            ColorString orbitSymbols = sector.getSymbolsForOrbit(orbit);
+            ColorString orbitSymbol = sector.getSymbolsForOrbit(orbit);
             if (cursor == orbit)
-                orbitSymbols.setBackground(COLOR_SELECTION_BACKGROUND);
-            contents.add(orbitSymbols);
+                orbitSymbol.setBackground(COLOR_SELECTION_BACKGROUND);
+            contents.add(orbitSymbol);
         }
         
         window.addSeparator(new Line(false, 1, 2, 1));
