@@ -29,8 +29,6 @@ public enum Symbol
     BINARY_STAR,
     NEUTRON_STAR,
     PULSAR,
-    STAR_SYSTEM,
-    STATION_SYSTEM,
     LIQUID_REGION,
     FLAT_REGION,
     HILL_REGION,
@@ -64,8 +62,6 @@ public enum Symbol
         tiles.put(BINARY_STAR,     (char) 14   );
         tiles.put(NEUTRON_STAR,    (char) 10   ); // SUBDWARF
         tiles.put(PULSAR,          (char) 15   );
-        tiles.put(STAR_SYSTEM,     (char) 11   ); // DWARF
-        tiles.put(STATION_SYSTEM,  (char) 8    ); // TRADE_STATION
         tiles.put(LIQUID_REGION,   (char) 19   );
         tiles.put(FLAT_REGION,     (char) 20   );
         tiles.put(HILL_REGION,     (char) 21   );
@@ -94,8 +90,6 @@ public enum Symbol
         ascii.put(BINARY_STAR,     ExtChars.INFINITY    );
         ascii.put(NEUTRON_STAR,    '+'                  );
         ascii.put(PULSAR,          '*'                  );
-        ascii.put(STAR_SYSTEM,     ExtChars.STAR        );
-        ascii.put(STATION_SYSTEM,  '#'                  );
         ascii.put(LIQUID_REGION,   ExtChars.APPROX_EQUAL);
         ascii.put(FLAT_REGION,     '+'                  );
         ascii.put(HILL_REGION,     ExtChars.BUMP        );

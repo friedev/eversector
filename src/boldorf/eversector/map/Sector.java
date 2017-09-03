@@ -264,10 +264,19 @@ public class Sector
     {
         if (isEmpty())
             return Symbol.empty();
+        
         if (hasStations())
-            return new ColorChar(Symbol.STATION_SYSTEM.get());
+        {
+            for (Station station: stations)
+                if (station != null && Station.BATTLE.equals(station.getType()))
+                    return new ColorChar(Symbol.BATTLE_STATION.get());
+            
+            return new ColorChar(Symbol.TRADE_STATION.get());
+        }
+        
         if (hasPlanets())
-            return new ColorChar(Symbol.STAR_SYSTEM.get());
+            return new ColorChar(star.getSymbol());
+        
         return new ColorChar(Symbol.UNDISCOVERED.get());
     }
     
