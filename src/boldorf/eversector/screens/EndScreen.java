@@ -9,17 +9,20 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.DISPLAYED_SCORES;
 import static boldorf.eversector.Main.disqualified;
 import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
+import static boldorf.eversector.Main.options;
 import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Main.startGame;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 import static boldorf.eversector.screens.StartScreen.getTitleArt;
+import boldorf.eversector.storage.Options;
 import static boldorf.eversector.storage.Options.LEADERBOARD;
 import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import boldorf.eversector.storage.Paths;
@@ -29,6 +32,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 
@@ -43,18 +47,45 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
     
     private PopupWindow window;
     
-    public EndScreen(Display display, ColorString message,
-            boolean leaderboard)
+    public EndScreen(Display display, ColorString message, boolean leaderboard,
+            boolean saved)
     {
         super(display);
         window = new PopupWindow(display, new Border(2), new Line(true, 2, 1));
         if (leaderboard && optionIs(OPTION_TRUE, LEADERBOARD))
             setUpLeaderboard();
         setUpWindow(message);
+        
+        if (saved)
+        {
+            Properties save = player.toProperties();
+            save.setProperty(Options.DISQUALIFIED, Boolean.toString(disqualified));
+            Main.options.setProperty(Options.SEED, Long.toString(Main.seed));
+            Main.options.setProperty(Options.KEEP_SEED, Options.OPTION_TRUE);
+
+            try
+            {
+                FileManager.save(save, Paths.SAVE);
+                FileManager.save(Main.options, Paths.OPTIONS);
+            }
+            catch (IOException io) {}
+        }
+        else
+        {
+            options.setProperty(Options.KEEP_SEED, Options.OPTION_FALSE);
+
+            try
+            {
+                FileManager.save(options, Paths.OPTIONS);
+            }
+            catch (IOException io) {}
+
+            FileManager.delete(Paths.SAVE);
+        }
     }
     
-    public EndScreen(Display display, boolean leaderboard)
-        {this(display, null, leaderboard);}
+    public EndScreen(Display display, boolean leaderboard, boolean saved)
+        {this(display, null, leaderboard, saved);}
 
     @Override
     public void displayOutput()
@@ -192,9 +223,21 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
                 reputationAdjective = "Wanderer";
             }
             
-            LeaderboardScore playerScore = new LeaderboardScore(
-                    player.calculateShipValue(), map.getTurn(), kills,
-                    reputationAdjective, player.isLeader());
+            String name = options.getProperty(Options.CAPTAIN_NAME);
+            
+            LeaderboardScore playerScore;
+            if (Options.DEFAULT_NAME.equals(name))
+            {
+                playerScore = new LeaderboardScore(player.calculateShipValue(),
+                        map.getTurn(), kills, reputationAdjective,
+                        player.isLeader());
+            }
+            else
+            {
+                playerScore = new LeaderboardScore(name,
+                        player.calculateShipValue(), map.getTurn(), kills,
+                        reputationAdjective, player.isLeader());
+            }
 
             // Current player's score must be added after the leaderboard print
             // so that it isn't duplicated in the displayed list
@@ -228,7 +271,6 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             return 1;
         }
         
-        // Sort scores again
         scores.add(playerScore);
         scores.sort(Comparator.reverseOrder());
         

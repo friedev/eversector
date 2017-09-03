@@ -14,14 +14,13 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * A score on the leaderboard, consisting of a ship name, credits, and
- * reputation.
+ * A score on the leaderboard, consisting of a  name, credits, and reputation.
  */
 public class LeaderboardScore implements Comparable<LeaderboardScore>
 {
     public static final String INVALID = "INVALID";
     
-    private String  shipName;
+    private String  name;
     private Integer score;
     private Integer turns;
     private Integer kills;
@@ -33,7 +32,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         if (properties == null || properties.isEmpty())
             throw new IllegalArgumentException();
         
-        shipName   = properties.getProperty("shipName");
+        name   = properties.getProperty("shipName");
         score      = Utility.parseInt(properties.getProperty("score"));
         turns      = Utility.parseInt(properties.getProperty("turns"));
         kills      = Utility.parseInt(properties.getProperty("kills"));
@@ -43,17 +42,17 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     
     /**
      * Creates a new LeaderboardScore from its three components.
-     * @param shipName the name of the ship to attribute the score to
+     * @param name the name of the captain to attribute the score to
      * @param score the score
      * @param turns the number of turns played
      * @param kills the number of ships destroyed
      * @param reputation the reputation
      * @param leader true if the player was a leader
      */
-    public LeaderboardScore(String shipName, int score, int turns, int kills,
+    public LeaderboardScore(String name, int score, int turns, int kills,
             String reputation, boolean leader)
     {
-        this.shipName   = shipName;
+        this.name   = name;
         this.score      = score;
         this.turns      = turns;
         this.kills      = kills;
@@ -62,7 +61,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     }
     
     /**
-     * Creates a new LeaderboardScore without a ship name accompanying it.
+     * Creates a new LeaderboardScore without a name accompanying it.
      * @param score the score
      * @param turns the number of turns played
      * @param kills the number of ships destroyed
@@ -81,8 +80,8 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
         
         StringBuilder builder = new StringBuilder();
         
-        if (shipName != null)
-            builder.append(shipName).append(": ");
+        if (name != null)
+            builder.append(name).append(": ");
         
         builder.append(score).append(" Credits, ")
                 .append(turns).append(" Turns, ");
@@ -108,8 +107,8 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     {
         Properties properties = new Properties();
         
-        if (shipName != null)
-            properties.setProperty("shipName", shipName);
+        if (name != null)
+            properties.setProperty("shipName", name);
         
         properties.setProperty("score",      score.toString());
         properties.setProperty("turns",      turns.toString());

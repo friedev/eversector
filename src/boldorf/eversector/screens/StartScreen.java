@@ -8,7 +8,6 @@ import boldorf.apwt.screens.PopupTerminal;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COPYRIGHT_YEAR;
 import static boldorf.eversector.Main.DEVELOPER;
 import static boldorf.eversector.Main.MAX_VERSION_LENGTH;
@@ -63,53 +62,37 @@ public class StartScreen extends Screen
         promptCheck:
         if (namePrompt != null)
         {
-            Screen result = namePrompt.processInput(key);
-            if (result == null)
-            {
-                String nameInput = namePrompt.getInput();
-                if (nameInput != null && nameInput.length() > 0)
-                {
-                    Main.options.setProperty(Options.NAME, nameInput);
-                    namePrompt = null;
-                    break promptCheck;
-                }
-                
-                namePrompt = null;
+            namePrompt = (PopupTerminal) namePrompt.processInput(key);
+            if (namePrompt != null)
                 return this;
-            }
-            
-            if (result instanceof PopupTerminal)
-                namePrompt = (PopupTerminal) result;
-            return this;
         }
         
         if (key.getKeyCode() == KeyEvent.VK_ESCAPE)
             return this;
         
-        if (Main.options.getProperty(Options.NAME) == null)
+        String name = Main.options.getProperty(Options.SHIP_NAME);
+        if (name == null || name.isEmpty())
         {
-            setUpTerminal();
+            namePrompt = new NamePromptScreen(getDisplay(), "your ship",
+                    Options.SHIP_NAME);
+            return this;
+        }
+        
+        name = Main.options.getProperty(Options.CAPTAIN_NAME);
+        if (name == null || name.isEmpty())
+        {
+            namePrompt = new NamePromptScreen(getDisplay(),
+                    "your ship's captain", Options.CAPTAIN_NAME);
             return this;
         }
         
         Main.playSoundEffect(Paths.START);
-        Main.player.setName(Main.options.getProperty(Options.NAME));
+        Main.player.setName(Main.options.getProperty(Options.SHIP_NAME));
         
         for (int i = 0; i < Map.SIMULATED_TURNS; i++)
             Main.map.nextTurn();
 
         return new GameScreen(getDisplay());
-    }
-    
-    private void setUpTerminal()
-    {
-        List<ColorString> contentList = new LinkedList<>();
-        contentList.add(new ColorString(
-                "Enter the name to use throughout all of your games."));
-        
-        namePrompt = new PopupTerminal(new PopupWindow(getDisplay(),
-                contentList), new ColorString(), getDisplay().getWidth() - 2,
-                COLOR_FIELD);
     }
     
     public static String[] getTitleArt()

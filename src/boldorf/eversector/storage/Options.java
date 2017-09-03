@@ -8,7 +8,8 @@ import java.awt.Color;
 public abstract class Options
 {
     public static final String
-    NAME         = "Name",
+    CAPTAIN_NAME = "Captain's Name",
+    SHIP_NAME    = "Ship's Name",
     SEED         = "Seed",
     DISQUALIFIED = "Disqualified",
     
@@ -39,6 +40,8 @@ public abstract class Options
     public static final Color
     COLOR_TRUE = AsciiPanel.brightGreen,
     COLOR_FALSE = AsciiPanel.brightRed;
+    
+    public static final String DEFAULT_NAME = "Player";
     
     public static final int
     DEFAULT_WIDTH  = 90,

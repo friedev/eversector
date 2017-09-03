@@ -181,24 +181,15 @@ public class Main
         }
         else
         {
+            options.setProperty(Options.CAPTAIN_NAME, "");
+            options.setProperty(Options.SHIP_NAME, "");
             map.createNewPlayer();
             player = map.getPlayer();
         }
 
         List<ColorString> startMessages = new LinkedList<>();
 
-        if (options.getProperty(Options.NAME) == null)
-        {
-            startMessages.add(new ColorString("Welcome to EverSector!"));
-        }
-        else
-        {
-            startMessages.add(new ColorString("Welcome back to EverSector, ")
-                    .add(new ColorString(options.getProperty(Options.NAME),
-                            COLOR_FIELD))
-                    .add("!"));
-        }
-
+        startMessages.add(new ColorString("Welcome to EverSector!"));
         startMessages.add(new ColorString("Please consult the "
                 + "bundled README to learn how to play."));
         startMessages.add(new ColorString("By playing, you accept the "

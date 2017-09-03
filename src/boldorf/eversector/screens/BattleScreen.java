@@ -223,7 +223,8 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
             if (player.isDestroyed())
             {
                 return new EndScreen(getDisplay(),
-                        new ColorString("You have been destroyed."), true);
+                        new ColorString("You have been destroyed."), true,
+                        false);
             }
             
             if (!battle.getFleeing().contains(player) &&
