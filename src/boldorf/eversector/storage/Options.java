@@ -8,7 +8,6 @@ import java.awt.Color;
 public abstract class Options
 {
     public static final String
-    DEBUG        = "Debug",
     NAME         = "Name",
     SEED         = "Seed",
     DISQUALIFIED = "Disqualified",
@@ -23,13 +22,12 @@ public abstract class Options
     LEADERBOARD = "Leaderboard",
     VOTING      = "Voting Prompts",
     NEWS        = "Faction News",
-    KEEP_SEED   = "Keep Seed",
-    FREEZE      = "Freeze";
+    KEEP_SEED   = "Keep Seed";
     
     public static final String[]
     MENU_NUMBERS   = {WIDTH, HEIGHT, MUSIC, SFX, FONT},
     MENU_BOOLEANS  = {TILES, TIPS, LEADERBOARD, VOTING, NEWS},
-    DEBUG_BOOLEANS = {KEEP_SEED, FREEZE};
+    DEBUG_BOOLEANS = {KEEP_SEED};
     
     public static final String
     OPTION_TRUE  = "Enabled",
