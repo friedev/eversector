@@ -228,7 +228,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         {
             subscreen = null;
             popup = new EndScreen(getDisplay(),
-                    new ColorString("You have been destroyed!"), true);
+                    new ColorString("You have been destroyed!"), true, false);
         }
         
         if (nextTurn)
