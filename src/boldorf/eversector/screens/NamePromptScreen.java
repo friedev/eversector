@@ -1,5 +1,6 @@
 package boldorf.eversector.screens;
 
+import asciiPanel.AsciiPanel;
 import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.PopupTerminal;
@@ -29,7 +30,8 @@ public class NamePromptScreen extends PopupTerminal
     {
         List<ColorString> contents = new ArrayList<>(1);
         contents.add(new ColorString("Enter the name of " + naming
-                + ". (Enter to skip.)"));
+                + ". ").add(new ColorString("(Enter to skip.)",
+                        AsciiPanel.brightBlack)));
         return contents;
     }
     
