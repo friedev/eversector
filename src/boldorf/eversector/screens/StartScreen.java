@@ -67,7 +67,8 @@ public class StartScreen extends Screen
                 return this;
         }
         
-        if (key.getKeyCode() == KeyEvent.VK_ESCAPE)
+        if (!(key.getKeyCode() == KeyEvent.VK_ENTER ||
+                key.getKeyCode() == KeyEvent.VK_SPACE))
             return this;
         
         String name = Main.options.getProperty(Options.SHIP_NAME);

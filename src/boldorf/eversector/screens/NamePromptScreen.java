@@ -28,7 +28,8 @@ public class NamePromptScreen extends PopupTerminal
     private static List<ColorString> toContentList(String naming)
     {
         List<ColorString> contents = new ArrayList<>(1);
-        contents.add(new ColorString("Enter the name of " + naming + "."));
+        contents.add(new ColorString("Enter the name of " + naming
+                + ". (Enter to skip.)"));
         return contents;
     }
     

@@ -197,10 +197,10 @@ public class Main
         startMessages.add(new ColorString("Tip: ", COLOR_FIELD)
                         .add(rng.getRandomElement(TIPS)));
 
+        String startAction;
         if (savedGame)
         {
-            startMessages.add(new ColorString(
-                    "Press any key to continue your saved game."));
+            startAction = "continue your saved game";
         }
         else
         {
@@ -211,8 +211,13 @@ public class Main
                                 COLOR_FIELD)));
             }
 
-            startMessages.add(new ColorString("Press any key to begin."));
+            startAction = "begin";
         }
+        
+        startMessages.add(new ColorString("Press ")
+                .add(new ColorString("enter", COLOR_FIELD))
+                .add(" or ").add(new ColorString("space", COLOR_FIELD))
+                .add(new ColorString(" to " + startAction + ".")));
 
         return startMessages;
     }
