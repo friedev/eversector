@@ -1806,7 +1806,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             region.extractOre(ore.getDensity());
             if (!region.hasOre())
             {
-                System.out.println("Region mined dry.");
                 addPlayerMessage("You have mined the " + region + " dry.");
                 changeGlobalReputation(Reputations.MINE_DRY);
             }
