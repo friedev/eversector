@@ -44,7 +44,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public static final String CLOAKED   = "cloaked";
     
     /** The radius of the FOV without any scanners. */
-    public static final double FOV_RADIUS = 10.0;
+    public static final double FOV_RADIUS = 5.0;
     
     /** The amount of credits gained by sending a distress signal. */
     public static final int DISTRESS_CREDITS = 100;
@@ -384,7 +384,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
     
     public double getFOVRadius()
-        {return FOV_RADIUS;}
+        {return hasModule(Actions.SCAN) ? FOV_RADIUS * 2.0 : FOV_RADIUS;}
     
     public List<Coord> getFOV()
     {
