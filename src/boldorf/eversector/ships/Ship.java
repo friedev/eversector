@@ -2508,6 +2508,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         if (isPirate())
         {
             addPlayerMessage("There is no response.");
+            changeGlobalReputation(Reputations.DISTRESS_ATTEMPT);
             return null;
         }
         
@@ -2518,6 +2519,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                 // Otherwise they will refuse, giving others a chance to help
                 addPlayerColorMessage(new ColorString("The ").add(faction)
                         .add(" refuses to help you."));
+                changeGlobalReputation(Reputations.DISTRESS_ATTEMPT);
             }
             else if (faction.getEconomyCredits() < DISTRESS_CREDITS)
             {
@@ -2539,6 +2541,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                 offerReputation.get() + Reputations.JOIN + Reputations.DISTRESS
                 <= Reputations.REQ_REJECTION)
         {
+            if (!isAligned())
+            {
+                addPlayerMessage("There is no response.");
+                changeGlobalReputation(Reputations.DISTRESS_ATTEMPT);
+            }
             return null;
         }
         

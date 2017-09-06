@@ -4,17 +4,18 @@ package boldorf.eversector.storage;
 public abstract class Reputations
 {
     public static int
-    MINE          = 3,
-    MINE_DRY      = -30,
-    JOIN          = 20,
-    LEAVE         = -50,
-    KILL_ENEMY    = 75,
-    KILL_ALLY     = -200,
-    CONVERT       = 100,
-    CLAIM         = 175,
-    CLAIM_ALLY    = 100,
-    DISTRESS      = -100,
-    NO_ELECTION   = -100,
-    REQ_SUPPORT   = 100,
-    REQ_REJECTION = -100;
+    MINE             = 3,
+    MINE_DRY         = -30,
+    JOIN             = 20,
+    LEAVE            = -50,
+    KILL_ENEMY       = 75,
+    KILL_ALLY        = -200,
+    CONVERT          = 100,
+    CLAIM            = 175,
+    CLAIM_ALLY       = 100,
+    DISTRESS_ATTEMPT = -10,
+    DISTRESS         = -100,
+    NO_ELECTION      = -100,
+    REQ_SUPPORT      = 100,
+    REQ_REJECTION    = -100;
 }
