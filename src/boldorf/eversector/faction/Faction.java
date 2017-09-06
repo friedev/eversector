@@ -160,6 +160,16 @@ public class Faction implements ColorStringObject
         return maxReputation;
     }
     
+    public int getMinReputation()
+    {
+        int minReputation = Integer.MAX_VALUE;
+        for (Ship ship: map.getShips())
+            if (ship.getFaction() == this)
+                minReputation = Math.min(minReputation,
+                        ship.getReputation(this).get());
+        return minReputation;
+    }
+    
     /**
      * Returns the faction's relationship with the specified faction.
      * @param faction the faction to find a relationship with

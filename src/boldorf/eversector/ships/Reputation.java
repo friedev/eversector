@@ -53,16 +53,31 @@ public class Reputation implements Comparable<Reputation>
         public double getMax()
             {return max;}
 
-        public double getMin(double maxReputation)
-            {return min * maxReputation;}
+        public double getMin(double range)
+            {return min * Math.abs(range);}
 
-        public double getMax(double maxReputation)
-            {return max * maxReputation;}
+        public double getMax(double range)
+            {return max * Math.abs(range);}
 
-        public boolean isInRange(int value, double maxReputation)
+        public boolean isInRange(int value, double range)
+            {return value >= getMin(range) && value <= getMax(range);}
+        
+        public static ReputationRange getHighestRange()
         {
-            return value >= getMin(maxReputation) &&
-                    value <= getMax(maxReputation);
+            ReputationRange highestRange = DEFAULT;
+            for (ReputationRange range: values())
+                if (range.getMax() > highestRange.getMax())
+                    highestRange = range;
+            return highestRange;
+        }
+        
+        public static ReputationRange getLowestRange()
+        {
+            ReputationRange lowestRange = DEFAULT;
+            for (ReputationRange range: values())
+                if (range.getMax() < lowestRange.getMax())
+                    lowestRange = range;
+            return lowestRange;
         }
     }
     
@@ -99,11 +114,17 @@ public class Reputation implements Comparable<Reputation>
     
     public ReputationRange getRange()
     {
-        double maxReputation = faction.getMaxReputation();
+        double range = reputation > 0 ?
+                faction.getMaxReputation() : faction.getMinReputation();
         
-        for (ReputationRange range: ReputationRange.values())
-            if (range.isInRange(reputation, maxReputation))
-                return range;
+        if (reputation > 0 && reputation > range)
+            return ReputationRange.getHighestRange();
+        else if (reputation < 0 && reputation < range)
+            return ReputationRange.getLowestRange();
+        
+        for (ReputationRange rangeLevel: ReputationRange.values())
+            if (rangeLevel.isInRange(reputation, range))
+                return rangeLevel;
         
         return ReputationRange.DEFAULT;
     }
