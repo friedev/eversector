@@ -2023,8 +2023,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     
     public Battle startBattle(Ship opponent)
     {
-        if (!opponent.isOrbital() || getSectorLocation().getOrbit() !=
-                opponent.getSectorLocation().getOrbit())
+        if (!location.equals(opponent.location))
             return null;
         
         Battle battle = new Battle(this, opponent);
@@ -2036,13 +2035,13 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             if (other.ai != null && !other.isInBattle())
                 other.ai.joinBattle(battle);
         
-        for (Ship ship: battle.getShips())
+        if (opponent.isPlayer())
         {
-            if (ship.isPlayer())
-            {
-                Main.pendingBattle = battle;
-                return battle;
-            }
+            Main.pendingBattle = battle;
+            opponent.addPlayerColorMessage(
+                    new ColorString("You are under attack from ").add(this)
+                            .add("!"));
+            return battle;
         }
         
         battle.processBattle();

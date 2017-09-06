@@ -44,6 +44,9 @@ public class AI
         if (ship.isCloaked())
             ship.toggleActivation(Actions.CLOAK);
         
+        if (attack())
+            return;
+        
         if (destination != null && ship.getLocation().equals(destination))
         {
             if (ship.isDocked())
@@ -78,23 +81,8 @@ public class AI
     private boolean performSectorAction()
     {
         Planet planet = ship.getSectorLocation().getPlanet();
-        if (planet != null && planet.getType().canMineFromOrbit() &&
-                ship.mine())
-            return true;
-        
-        if (!ship.hasWeapons())
-            return false;
-        
-        List<Ship> others = ship.getSectorLocation().getShips();
-        if (others.isEmpty())
-            return false;
-        
-        for (Ship other: others)
-            if (ship.isHostile(other.getFaction()) &&
-                    ship.startBattle(other) != null)
-                return true;
-        
-        return false;
+        return planet != null && planet.getType().canMineFromOrbit() &&
+                ship.mine();
     }
     
     private boolean performPlanetAction()
@@ -191,6 +179,31 @@ public class AI
         // Buy hull frames by default
         ship.buyResource(Resources.HULL_EXPANDER, ship.getMaxBuyAmount(
                 ship.getExpander(Resources.HULL_EXPANDER)));
+    }
+    
+    private boolean attack()
+    {
+        if (!ship.hasWeapons() || !ship.isOrbital())
+            return false;
+        
+        Ship player = ship.getLocation().getMap().getPlayer();
+        if (player.getLocation().equals(ship.getLocation()) &&
+                ship.isHostile(player.getFaction()) &&
+                ship.startBattle(player) != null)
+        {
+            return true;
+        }
+
+        List<Ship> others = ship.getSectorLocation().getShips();
+        if (!others.isEmpty())
+        {
+            for (Ship other: others)
+                if (ship.isHostile(other.getFaction()) &&
+                        ship.startBattle(other) != null)
+                    return true;
+        }
+        
+        return false;
     }
     
     private void updateDestination()
@@ -306,7 +319,6 @@ public class AI
                 }
             }
         }
-        
         
         List<Coord> fov = ship.getFOV();
         fov.sort(Utility.createDistanceComparator(
