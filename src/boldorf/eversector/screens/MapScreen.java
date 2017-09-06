@@ -144,8 +144,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                     cursor = player.getLocation().getCoord();
                     break;
                 case KeyEvent.VK_V:
-                    Main.showStars = player.hasModule(Actions.SCAN) &&
-                            !Main.showStars;
+                    Main.showStars = !Main.showStars;
                     break;
             }
         }
@@ -164,8 +163,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 ExtChars.ARROW1_R));
         keybindings.add(new Keybinding("enter a sector", "enter"));
         keybindings.add(new Keybinding("look", "l"));
-        if (player.hasModule(Actions.SCAN))
-            keybindings.add(new Keybinding("toggle star view", "v"));
+        keybindings.add(new Keybinding("toggle star view", "v"));
         if (player.hasModule(Actions.WARP))
             keybindings.add(new Keybinding("warp to any sector", "w"));
         return keybindings;
@@ -192,14 +190,12 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         contents.clear();
         window.getSeparators().clear();
         
-        contents.addAll(map.toColorStrings(player,
-                player.hasModule(Actions.SCAN) && Main.showStars, cursor));
-        
+        contents.addAll(map.toColorStrings(player, Main.showStars, cursor));
         window.addSeparator(new Line(true, 2, 1));
         Coord location = isLooking() ? cursor : player.getLocation().getCoord();
         contents.add(new ColorString(map.sectorAt(location).toString()));
         
-        if (player.hasModule(Actions.SCAN) && !map.sectorAt(location).isEmpty())
+        if (!map.sectorAt(location).isEmpty())
         {
             contents.add(new ColorString("Star: ")
                     .add(map.sectorAt(location).getStar()));
@@ -209,6 +205,12 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         {
             contents.add(new ColorString("Nebula: ")
                     .add(map.sectorAt(location).getNebula()));
+        }
+        
+        if (map.sectorAt(location).isClaimed())
+        {
+            contents.add(new ColorString("Faction: ")
+                    .add(map.sectorAt(location).getFaction()));
         }
     }
 }
