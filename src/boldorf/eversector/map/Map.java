@@ -114,7 +114,7 @@ public class Map
         {return map.length;}
     
     public Coord getCenter()
-        {return Coord.get(0, 0);}
+        {return Coord.get(getWidth() / 2, getHeight() / 2);}
     
     public Sector sectorAt(int x, int y)
         {return map[y][x];}
