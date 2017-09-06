@@ -9,7 +9,7 @@ import boldorf.eversector.items.Weapon;
 public abstract class Actions
 {
     public static final Action
-    BURN     = new Action(Resources.FUEL,   6),
+    BURN     = new Action(Resources.FUEL,   4),
     ORBIT    = new Action(Resources.FUEL,   1),
     RELOCATE = new Action(Resources.FUEL,   1),
     ENTER    = new Action(Resources.FUEL,   1),
