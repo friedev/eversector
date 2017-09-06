@@ -4,6 +4,7 @@ import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import static boldorf.eversector.Main.rng;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.faction.Faction;
@@ -62,11 +63,15 @@ public class Region implements ColorStringObject
             {return isLand;}
     }
     
+    public static final int MIN_ORE = 100;
+    public static final int ORE_RANGE = 901;
+    
     private final PlanetLocation location;
     private List<Ship> ships;
     private RegionType type;
     private Faction    faction;
     private Ore        ore;
+    private int        nOre;
     
     /**
      * Generates a claimed region of the given faction on the given planet.
@@ -84,7 +89,10 @@ public class Region implements ColorStringObject
         this.faction  = null;
         
         if (type.isLand())
+        {
             this.ore = location.getPlanet().getRandomOre();
+            this.nOre = rng.nextInt(ORE_RANGE) + MIN_ORE;
+        }
     }
     
     @Override
@@ -112,6 +120,7 @@ public class Region implements ColorStringObject
     public RegionType getType()    {return type;           }
     public Faction    getFaction() {return faction;        }
     public Ore        getOre()     {return ore;            }
+    public int        getNOre()    {return nOre;           }
     public boolean    isClaimed()  {return faction != null;}
     public boolean    hasOre()     {return ore != null;    }
     public List<Ship> getShips()   {return ships;          }
@@ -128,6 +137,18 @@ public class Region implements ColorStringObject
         
         this.faction = faction;
         location.getPlanet().updateFaction();
+    }
+    
+    public boolean extractOre(int extracted)
+    {
+        if (nOre < extracted)
+            return false;
+        
+        nOre -= extracted;
+        if (nOre == 0)
+            ore = null;
+        
+        return true;
     }
     
     /**

@@ -5,6 +5,7 @@ public abstract class Reputations
 {
     public static int
     MINE          = 3,
+    MINE_DRY      = -30,
     JOIN          = 20,
     LEAVE         = -50,
     KILL_ENEMY    = 75,

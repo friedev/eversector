@@ -1800,11 +1800,21 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                 .getDensity());
         resource.changeAmount(-Actions.MINE.getCost());
         
-        if (!isLanded() && rng.nextBoolean())
+        if (isLanded())
+        {
+            Region region = getPlanetLocation().getRegion();
+            region.extractOre(ore.getDensity());
+            if (!region.hasOre())
+            {
+                System.out.println("Region mined dry.");
+                addPlayerMessage("You have mined the " + region + " dry.");
+                changeGlobalReputation(Reputations.MINE_DRY);
+            }
+        }
+        else if (rng.nextBoolean())
         {
             // Chance of taking damage if mining from an asteroid belt
             damage(Planet.ASTEROID_DAMAGE, false);
-            
             addPlayerMessage("Collided with an asteroid, dealing "
                     + Planet.ASTEROID_DAMAGE + " damage.");
         }
