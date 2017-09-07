@@ -4,7 +4,7 @@ package boldorf.eversector.ships;
 public abstract class Levels
 {
     /** The amount of points per level. */
-    public static final int LEVEL_AMT = 3;
+    public static final int LEVEL_AMOUNT = 3;
     
     /** The first level above the lowest possible level. */
     public static final int BASE_LEVEL = 1;

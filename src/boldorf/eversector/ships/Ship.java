@@ -2788,7 +2788,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * capacity, will be non-negative
      */
     private int getBattleLevel()
-        {return getAbsoluteBattleLevel() / Levels.LEVEL_AMT;}
+        {return getAbsoluteBattleLevel() / Levels.LEVEL_AMOUNT;}
     
     /**
      * Returns the ship's absolute "level" of power in battle, to be used in
@@ -2799,7 +2799,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public int getAbsoluteBattleLevel()
     {
         int level = 0;
-        level += getWeaponsUsed() * Levels.LEVEL_AMT;
+        level += getWeaponsUsed() * Levels.LEVEL_AMOUNT;
         level += getResource(Resources.HULL).getNExpanders() * 2;
         return level;
     }
@@ -2811,7 +2811,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * ore capacity, will be non-negative
      */
     private int getMiningLevel()
-        {return getAbsoluteMiningLevel() / Levels.LEVEL_AMT;}
+        {return getAbsoluteMiningLevel() / Levels.LEVEL_AMOUNT;}
     
     /**
      * Returns the ship's absolute "level" of mining ability, to be used in
@@ -2822,7 +2822,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public int getAbsoluteMiningLevel()
     {
         int level = 0;
-        level += (getModulesUsed() - getWeaponsUsed()) * Levels.LEVEL_AMT;
+        level += (getModulesUsed() - getWeaponsUsed()) * Levels.LEVEL_AMOUNT;
         level += getResource(Resources.ORE).getNExpanders() * 2;
         return level;
     }

@@ -725,7 +725,7 @@ public class Sector
             
             Symbol symbol;
             // Print the corresponding symbol to the highest level
-            switch (highestLevel / Levels.LEVEL_AMT)
+            switch (highestLevel / Levels.LEVEL_AMOUNT)
             {
                 case 0: case 1: symbol = Symbol.WEAK_SHIP;   break;
                 case 2:         symbol = Symbol.MEDIUM_SHIP; break;
