@@ -2798,6 +2798,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public int getAbsoluteBattleLevel()
     {
+        if (!hasWeapons())
+            return 0;
+        
         int level = 0;
         level += getWeaponsUsed() * Levels.LEVEL_AMOUNT;
         level += getResource(Resources.HULL).getNExpanders() * 2;
