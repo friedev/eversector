@@ -19,15 +19,13 @@ public abstract class Options
     HEIGHT      = "Display Height",
     MUSIC       = "Music Volume",
     SFX         = "Sound Effect Volume",
-    TIPS        = "Tips",
     LEADERBOARD = "Leaderboard",
     VOTING      = "Voting Prompts",
-    NEWS        = "Faction News",
     KEEP_SEED   = "Keep Seed";
     
     public static final String[]
     MENU_NUMBERS   = {WIDTH, HEIGHT, MUSIC, SFX, FONT},
-    MENU_BOOLEANS  = {TILES, TIPS, LEADERBOARD, VOTING, NEWS},
+    MENU_BOOLEANS  = {TILES, LEADERBOARD, VOTING},
     DEBUG_BOOLEANS = {KEEP_SEED};
     
     public static final String

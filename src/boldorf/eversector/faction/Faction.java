@@ -9,7 +9,6 @@ import boldorf.eversector.faction.Relationship.RelationshipType;
 import static boldorf.eversector.faction.Relationship.RelationshipType.*;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.map.Map;
-import static boldorf.eversector.storage.Options.NEWS;
 import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import java.awt.Color;
 
@@ -345,10 +344,7 @@ public class Faction implements ColorStringObject
     
     public void addNews(ColorString news)
     {
-        if (Main.optionIs(OPTION_TRUE, NEWS) && map.getPlayer() != null &&
-                map.getPlayer().getFaction() == this)
-        {
+        if (map.getPlayer() != null && map.getPlayer().getFaction() == this)
             Main.addColorMessage(news);
-        }
     }
 }
