@@ -166,8 +166,8 @@ public class Galaxy
         int edgeCoord = rng.nextInt(sectors.length);
         if (rng.nextBoolean())
         {
-            return rng.nextBoolean() ?
-                    sectors[0][edgeCoord] : sectors[sectors.length - 1][edgeCoord];
+            return rng.nextBoolean() ? sectors[0][edgeCoord] :
+                    sectors[sectors.length - 1][edgeCoord];
         }
         
         return rng.nextBoolean() ?
@@ -229,16 +229,17 @@ public class Galaxy
                     Station station =
                             sector.getStationAt(sector.getRandomStationOrbit());
                     
-                    if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
-                    {
-                        Ship newShip = new Ship(sector.generateNameFor(
-                                rng.nextInt(26)), new SectorLocation(
-                                        sector.getLocation(),
-                                        station.getLocation().getOrbit()),
-                                station.getFaction());
-                        newShip.dock();
-                        ships.add(newShip);
-                    }
+//                    if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
+//                    {
+                    Ship newShip = new Ship(
+                            sector.generateNameFor(rng.nextInt(26)),
+                            new SectorLocation(
+                                    sector.getLocation(),
+                                    station.getLocation().getOrbit()),
+                            station.getFaction());
+                    newShip.dock();
+                    ships.add(newShip);
+//                    }
                 }
                 
                 // Only known way to fix duplicate ship bug
