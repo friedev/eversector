@@ -59,7 +59,7 @@ public class Reputation implements Comparable<Reputation>
         public double getMax(double range)
             {return max * Math.abs(range);}
 
-        public boolean isInRange(int value, double range)
+        public boolean isInRange(double value, double range)
             {return value >= getMin(range) && value <= getMax(range);}
         
         public static ReputationRange getHighestRange()
@@ -75,7 +75,7 @@ public class Reputation implements Comparable<Reputation>
         {
             ReputationRange lowestRange = DEFAULT;
             for (ReputationRange range: values())
-                if (range.getMax() < lowestRange.getMax())
+                if (range.getMin() < lowestRange.getMin())
                     lowestRange = range;
             return lowestRange;
         }
@@ -117,10 +117,12 @@ public class Reputation implements Comparable<Reputation>
         double range = reputation > 0 ?
                 faction.getMaxReputation() : faction.getMinReputation();
         
-        if (reputation > 0 && reputation > range)
+        if (reputation > 0 && reputation >= range)
             return ReputationRange.getHighestRange();
-        else if (reputation < 0 && reputation < range)
+        if (reputation < 0 && reputation <= range)
             return ReputationRange.getLowestRange();
+        if (ReputationRange.DEFAULT.isInRange(reputation, range))
+            return ReputationRange.DEFAULT;
         
         for (ReputationRange rangeLevel: ReputationRange.values())
             if (rangeLevel.isInRange(reputation, range))
