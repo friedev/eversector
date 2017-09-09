@@ -14,7 +14,6 @@ import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.pendingBattle;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.map.Station;
@@ -26,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import squidpony.squidmath.Coord;
+import static boldorf.eversector.Main.galaxy;
 
 /** The Screen used for navigating Sectors. */
 class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
@@ -184,7 +184,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         if (nextTurn)
-            map.nextTurn();
+            galaxy.nextTurn();
         
         if (pendingBattle != null)
             return new BattleScreen(getDisplay(), pendingBattle, false);

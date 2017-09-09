@@ -28,7 +28,7 @@ public class BattleLocation extends SectorLocation
             return false;
         
         BattleLocation cast = (BattleLocation) o;
-        return getMap() == cast.getMap() &&
+        return getGalaxy() == cast.getGalaxy() &&
                 getCoord().equals(cast.getCoord()) &&
                 getOrbit() == cast.getOrbit();
     }

@@ -20,7 +20,7 @@ public class OreScreen extends ConfirmationScreen
     {
         super(display);
         List<ColorString> list = new LinkedList<>();
-        for (Ore ore: Main.map.getOreTypes())
+        for (Ore ore: Main.galaxy.getOreTypes())
         {
             list.add(new ColorString(ore.toString() + ": "
                     + ore.getDensity() + " Density"));

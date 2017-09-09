@@ -14,7 +14,6 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.map.Station;
@@ -37,6 +36,7 @@ import boldorf.util.Utility;
 import java.awt.Color;
 import java.util.ArrayList;
 import squidpony.squidgrid.Direction;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * 
@@ -149,7 +149,7 @@ class StationScreen extends MenuScreen<AlignedMenu>
         }
         
         if (nextTurn)
-            map.nextTurn();
+            galaxy.nextTurn();
         return nextScreen;
     }
     

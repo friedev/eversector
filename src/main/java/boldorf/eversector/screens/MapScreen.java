@@ -12,7 +12,6 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.storage.Actions;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * 
@@ -150,7 +150,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         if (nextTurn)
-            map.nextTurn();
+            galaxy.nextTurn();
         return nextScreen;
     }
     
@@ -190,27 +190,27 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
         contents.clear();
         window.getSeparators().clear();
         
-        contents.addAll(map.toColorStrings(player, Main.showStars, cursor));
+        contents.addAll(galaxy.toColorStrings(player, Main.showStars, cursor));
         window.addSeparator(new Line(true, 2, 1));
         Coord location = isLooking() ? cursor : player.getLocation().getCoord();
-        contents.add(new ColorString(map.sectorAt(location).toString()));
+        contents.add(new ColorString(galaxy.sectorAt(location).toString()));
         
-        if (!map.sectorAt(location).isEmpty())
+        if (!galaxy.sectorAt(location).isEmpty())
         {
             contents.add(new ColorString("Star: ")
-                    .add(map.sectorAt(location).getStar()));
+                    .add(galaxy.sectorAt(location).getStar()));
         }
         
-        if (map.sectorAt(location).hasNebula())
+        if (galaxy.sectorAt(location).hasNebula())
         {
             contents.add(new ColorString("Nebula: ")
-                    .add(map.sectorAt(location).getNebula()));
+                    .add(galaxy.sectorAt(location).getNebula()));
         }
         
-        if (map.sectorAt(location).isClaimed())
+        if (galaxy.sectorAt(location).isClaimed())
         {
             contents.add(new ColorString("Faction: ")
-                    .add(map.sectorAt(location).getFaction()));
+                    .add(galaxy.sectorAt(location).getFaction()));
         }
     }
 }

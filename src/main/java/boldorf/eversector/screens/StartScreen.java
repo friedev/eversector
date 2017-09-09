@@ -13,7 +13,7 @@ import static boldorf.eversector.Main.DEVELOPER;
 import static boldorf.eversector.Main.MAX_VERSION_LENGTH;
 import static boldorf.eversector.Main.VERSION;
 import static boldorf.eversector.Main.rng;
-import boldorf.eversector.map.Map;
+import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
 import boldorf.eversector.storage.Symbol;
@@ -90,8 +90,8 @@ public class StartScreen extends Screen
         Main.playSoundEffect(Paths.START);
         Main.player.setName(Main.options.getProperty(Options.SHIP_NAME));
         
-        for (int i = 0; i < Map.SIMULATED_TURNS; i++)
-            Main.map.nextTurn();
+        for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++)
+            Main.galaxy.nextTurn();
 
         return new GameScreen(getDisplay());
     }

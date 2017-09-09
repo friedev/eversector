@@ -78,7 +78,7 @@ public class Election
     {
         int minRep = 0;
         
-        for (Ship ship: faction.getMap().getShips())
+        for (Ship ship: faction.getGalaxy().getShips())
         {
             if (faction == ship.getFaction() &&
                     (ship.getReputation(faction).get() > minRep) ||
@@ -111,7 +111,7 @@ public class Election
         for (Ship candidate: candidates)
             votes.add(0);
         
-        for (Ship ship: faction.getMap().getShips())
+        for (Ship ship: faction.getGalaxy().getShips())
         {
             if (faction == ship.getFaction() && !candidates.contains(ship))
             {

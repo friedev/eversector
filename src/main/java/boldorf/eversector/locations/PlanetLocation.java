@@ -64,7 +64,7 @@ public class PlanetLocation extends SectorLocation
             return false;
         
         PlanetLocation cast = (PlanetLocation) o;
-        return getMap() == cast.getMap() &&
+        return getGalaxy() == cast.getGalaxy() &&
                 getCoord().equals(cast.getCoord()) &&
                 getOrbit() == cast.getOrbit() &&
                 regionCoord.equals(cast.regionCoord);

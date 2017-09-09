@@ -70,7 +70,7 @@ public class LandScreen extends ConfirmationScreen
         if (player.land(selection.getRegionCoord()))
         {
             playSoundEffect(ENGINE);
-            player.getLocation().getMap().nextTurn();
+            player.getLocation().getGalaxy().nextTurn();
             return new PlanetScreen(getDisplay());
         }
         

@@ -10,7 +10,7 @@ import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.locations.SectorLocation;
 import boldorf.eversector.locations.StationLocation;
 import boldorf.eversector.items.Module;
-import boldorf.eversector.map.Map;
+import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.storage.Actions;
 import boldorf.eversector.storage.Paths;
@@ -194,7 +194,7 @@ public class AI
         if (!ship.hasWeapons() || !ship.isOrbital())
             return false;
         
-        Ship player = ship.getLocation().getMap().getPlayer();
+        Ship player = ship.getLocation().getGalaxy().getPlayer();
         if (player.getLocation().equals(ship.getLocation()) &&
                 ship.isHostile(player.getFaction()) &&
                 ship.startBattle(player) != null)
@@ -272,13 +272,13 @@ public class AI
         List<Coord> fov = ship.getFOV();
         fov.sort(Utility.createDistanceComparator(
                 ship.getLocation().getCoord()));
-        Map map = ship.getLocation().getMap();
+        Galaxy galaxy = ship.getLocation().getGalaxy();
         for (Coord coord: fov)
         {
-            if (!map.contains(coord))
+            if (!galaxy.contains(coord))
                 continue;
             
-            Sector sector = map.sectorAt(coord);
+            Sector sector = galaxy.sectorAt(coord);
             if (sector.isEmpty())
                 continue;
             
@@ -350,13 +350,13 @@ public class AI
         List<Coord> fov = ship.getFOV();
         fov.sort(Utility.createDistanceComparator(
                 ship.getLocation().getCoord()));
-        Map map = ship.getLocation().getMap();
+        Galaxy galaxy = ship.getLocation().getGalaxy();
         for (Coord coord: fov)
         {
-            if (!map.contains(coord))
+            if (!galaxy.contains(coord))
                 continue;
             
-            Sector sector = map.sectorAt(coord);
+            Sector sector = galaxy.sectorAt(coord);
             if (!sector.hasStations())
                 continue;
             
@@ -565,9 +565,9 @@ public class AI
             return false;
         
         boolean playerInBattle =
-                ship.getLocation().getMap().getPlayer() != null &&
+                ship.getLocation().getGalaxy().getPlayer() != null &&
                 ship.getBattleLocation().getShips().contains(
-                        ship.getLocation().getMap().getPlayer());
+                        ship.getLocation().getGalaxy().getPlayer());
         
         if (!willAttack())
         {

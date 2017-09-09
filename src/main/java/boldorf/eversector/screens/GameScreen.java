@@ -13,7 +13,6 @@ import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.addError;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.pendingRelationships;
 import static boldorf.eversector.Main.playSoundEffect;
@@ -33,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * The main screen on which gameplay will take place. This screen will process
@@ -192,7 +192,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                         distressResponder);
                 break;
             case KeyEvent.VK_N:
-                if (player.isLeader() && map.getFactions().length > 2)
+                if (player.isLeader() && galaxy.getFactions().length > 2)
                     popup = new RelationshipRequestScreen(getDisplay());
                 break;
             case KeyEvent.VK_M:
@@ -235,7 +235,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         if (nextTurn)
-            map.nextTurn();
+            galaxy.nextTurn();
         
         if (!pendingRelationships.isEmpty())
         {
@@ -272,7 +272,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding(player.isAligned() ?
                 "join/leave faction" : "join faction", "j"));
         keybindings.add(new Keybinding("broadcast distress signal", "d"));
-        if (player.isLeader() && map.getFactions().length > 2)
+        if (player.isLeader() && galaxy.getFactions().length > 2)
             keybindings.add(new Keybinding("negotiate relationship", "n"));
         if (player.hasActivationModules())
             keybindings.add(new Keybinding("toggle module activation", "m"));
@@ -370,7 +370,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         
         statusWindow.addSeparator(new Line(true, 1, 1));
         contents.add(new ColorString("Turn ")
-                .add(new ColorString(Integer.toString(Main.map.getTurn()),
+                .add(new ColorString(Integer.toString(Main.galaxy.getTurn()),
                         COLOR_FIELD)));
     }
     
@@ -383,17 +383,17 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         
         Faction playerFaction = player.getFaction();
         
-        for (Faction faction: map.getFactions())
+        for (Faction faction: galaxy.getFactions())
             contents.add(faction.toColorString());
 
         if (playerFaction != null)
         {
             factionWindow.addSeparator(new Line(false, 1, 1));
-            for (Faction faction: map.getFactions())
+            for (Faction faction: galaxy.getFactions())
             {
                 if (playerFaction == faction)
                     contents.add(new ColorString("You", COLOR_FIELD));
-                else if (map.getFactions().length == 2)
+                else if (galaxy.getFactions().length == 2)
                     contents.add(new ColorString("Enemy", WAR.getColor()));
                 else
                     contents.add(playerFaction.getRelationship(faction)
@@ -402,12 +402,12 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         factionWindow.addSeparator(new Line(false, 1, 1));
-        for (Faction faction: map.getFactions())
+        for (Faction faction: galaxy.getFactions())
             contents.add(new ColorString("Rank ").add(new ColorString("#" +
                     faction.getRank(), COLOR_FIELD)));
         
         factionWindow.addSeparator(new Line(false, 1, 1));
-        for (Faction faction: map.getFactions())
+        for (Faction faction: galaxy.getFactions())
         {
             ReputationRange reputation =
                     player.getReputation(faction).getRange();

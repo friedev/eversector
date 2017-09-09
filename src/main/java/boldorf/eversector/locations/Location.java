@@ -1,6 +1,6 @@
 package boldorf.eversector.locations;
 
-import boldorf.eversector.map.Map;
+import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.map.Sector;
 import boldorf.util.Utility;
 import squidpony.squidgrid.Direction;
@@ -16,32 +16,32 @@ public class Location
     public static final String PLANET_LOCATION  = "landed";
     public static final String STATION_LOCATION = "docked";
     
-    private final Map map;
+    private final Galaxy galaxy;
     private final Coord coord;
     
-    public Location(Map map, Coord coord)
+    public Location(Galaxy galaxy, Coord coord)
     {
-        if (!map.contains(coord))
+        if (!galaxy.contains(coord))
         {
             throw new IndexOutOfBoundsException(
                     "Given coord not found on the map");
         }
         
-        this.map = map;
+        this.galaxy = galaxy;
         this.coord = coord;
     }
     
     public Location(Location copying)
-        {this(copying.map, copying.coord);}
+        {this(copying.galaxy, copying.coord);}
     
-    public Map getMap()
-        {return map;}
+    public Galaxy getGalaxy()
+        {return galaxy;}
     
     public Coord getCoord()
         {return coord;}
     
     public Sector getSector()
-        {return map.sectorAt(coord);}
+        {return galaxy.sectorAt(coord);}
     
     public Location move(Direction direction)
     {
@@ -51,8 +51,8 @@ public class Location
     
     public Location moveTo(Coord destination)
     {
-        return map.contains(destination) ?
-                new Location(map, destination) : null;
+        return galaxy.contains(destination) ?
+                new Location(galaxy, destination) : null;
     }
     
     public SectorLocation enterSector()
@@ -88,7 +88,7 @@ public class Location
         return params.toString();
     }
     
-    public static Location parseLocation(Map map, String value)
+    public static Location parseLocation(Galaxy map, String value)
     {
         String[] params = value.split("; ");
         
@@ -118,6 +118,6 @@ public class Location
         if (o instanceof SectorLocation)
             return false;
         
-        return map == o.map && coord.equals(o.coord);
+        return galaxy == o.galaxy && coord.equals(o.coord);
     }
 }

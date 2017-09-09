@@ -1,4 +1,4 @@
 /**
- * Components of maps and their tiles, as well as multi-sector concepts.
+ * Components on the map, such as galaxies, sectors, and planets.
  */
 package boldorf.eversector.map;

@@ -83,7 +83,7 @@ public class SectorLocation extends Location
             return false;
         
         SectorLocation cast = (SectorLocation) o;
-        return getMap() == cast.getMap() &&
+        return getGalaxy() == cast.getGalaxy() &&
                 getCoord().equals(cast.getCoord()) && orbit == cast.orbit;
     }
 }

@@ -12,7 +12,6 @@ import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.map.Planet;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * 
@@ -112,7 +112,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         if (nextTurn)
-            map.nextTurn();
+            galaxy.nextTurn();
         return nextScreen;
     }
     

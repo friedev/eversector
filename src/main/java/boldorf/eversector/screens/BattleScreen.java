@@ -15,7 +15,6 @@ import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.COLOR_SELECTION_FOREGROUND;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.ships.Battle;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import squidpony.squidmath.Coord;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * 
@@ -51,7 +51,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         
         // If possible, do this after the battle is over
         if (nextTurn)
-            map.nextTurn();
+            galaxy.nextTurn();
     }
     
     @Override

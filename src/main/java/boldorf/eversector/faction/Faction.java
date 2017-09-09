@@ -8,8 +8,7 @@ import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.faction.Relationship.RelationshipType;
 import static boldorf.eversector.faction.Relationship.RelationshipType.*;
 import boldorf.eversector.ships.Ship;
-import boldorf.eversector.map.Map;
-import static boldorf.eversector.storage.Options.OPTION_TRUE;
+import boldorf.eversector.map.Galaxy;
 import java.awt.Color;
 
 /** A group of ships with a name and relationships with other factions. */
@@ -30,7 +29,7 @@ public class Faction implements ColorStringObject
     private String name;
     private Color  color;
     private String type;
-    private Map    map;
+    private Galaxy galaxy;
     private Relationship[] relationships;
     private Ship   leader;
     private int    economy;
@@ -40,30 +39,30 @@ public class Faction implements ColorStringObject
      * Generates a faction of the given name, type, and on the given map.
      * @param name the name of the faction
      * @param type the type of the faction
-     * @param map the map that the faction will be on
+     * @param galaxy the galaxy that the faction will be in
      * @param color the faction's color
      */
-    public Faction(String name, String type, Map map, Color color)
+    public Faction(String name, String type, Galaxy galaxy, Color color)
     {
         this.name     = name;
         this.color    = color;
         this.type     = type;
-        this.map      = map;
-        relationships = new Relationship[map.getFactions().length -1];
+        this.galaxy   = galaxy;
+        relationships = new Relationship[galaxy.getFactions().length -1];
         leader        = null;
         economy       = 0;
-        lastElection  = -Map.SIMULATED_TURNS;
+        lastElection  = -Galaxy.SIMULATED_TURNS;
     }
     
     /**
      * Generates a faction of the given name, a random type, and on the given
-     * map.
+     * galaxy.
      * @param name the name of the faction
-     * @param map the map that the faction will be on
+     * @param galaxy the galaxy that the faction will be in
      * @param color the faction's color
      */
-    public Faction(String name, Map map, Color color)
-        {this(name, (String) rng.getRandomElement(TYPES), map, color);}
+    public Faction(String name, Galaxy galaxy, Color color)
+        {this(name, (String) rng.getRandomElement(TYPES), galaxy, color);}
     
     @Override
     public String toString()
@@ -76,7 +75,7 @@ public class Faction implements ColorStringObject
     public String  getName()            {return name;          }
     public Color   getColor()           {return color;         }
     public String  getType()            {return type;          }
-    public Map     getMap()             {return map;           }
+    public Galaxy  getGalaxy()          {return galaxy;           }
     public Ship    getLeader()          {return leader;        }
     public int     getEconomyCredits()  {return economy;       }
     public boolean isLeader(Ship ship)  {return leader == ship;}
@@ -84,7 +83,7 @@ public class Faction implements ColorStringObject
     
     public void setLeader(Ship leader)
     {
-        lastElection = map.getTurn();
+        lastElection = galaxy.getTurn();
         
         /*
         if (this.leader == leader)
@@ -105,7 +104,7 @@ public class Faction implements ColorStringObject
     public void holdElection(boolean emergency)
     {
         Election election = new Election(this, emergency);
-        if (map.getTurn() >= 0 && map.getPlayer().getFaction() == this)
+        if (galaxy.getTurn() >= 0 && galaxy.getPlayer().getFaction() == this)
         {
             pendingElection = election;
             return;
@@ -125,34 +124,34 @@ public class Faction implements ColorStringObject
     }
     
     public int getSectorsControlled()
-        {return map.getSectorsControlledBy(this);}
+        {return galaxy.getSectorsControlledBy(this);}
     
     public int getPlanetsControlled()
-        {return map.getPlanetsControlledBy(this);}
+        {return galaxy.getPlanetsControlledBy(this);}
     
     public int getNStationsControlled()
-        {return map.getNStationsControlledBy(this);}
+        {return galaxy.getNStationsControlledBy(this);}
     
     public String getStationTypes()
-        {return map.getStationTypesControlledBy(this);}
+        {return galaxy.getStationTypesControlledBy(this);}
     
     public int getNShips()
-        {return map.getNShipsIn(this);}
+        {return galaxy.getNShipsIn(this);}
     
     public String getShipTypes()
-        {return map.getShipTypesIn(this);}
+        {return galaxy.getShipTypesIn(this);}
     
     /**
      * Returns the rank of this faction among any others.
-     * @return the amount returned by map.getRank()
+     * @return the amount returned by galaxy.getRank()
      */
     public int getRank()
-        {return map.getRank(this);}
+        {return galaxy.getRank(this);}
     
     public int getMaxReputation()
     {
         int maxReputation = Integer.MIN_VALUE;
-        for (Ship ship: map.getShips())
+        for (Ship ship: galaxy.getShips())
             if (ship.getFaction() == this)
                 maxReputation = Math.max(maxReputation,
                         ship.getReputation(this).get());
@@ -162,7 +161,7 @@ public class Faction implements ColorStringObject
     public int getMinReputation()
     {
         int minReputation = Integer.MAX_VALUE;
-        for (Ship ship: map.getShips())
+        for (Ship ship: galaxy.getShips())
             if (ship.getFaction() == this)
                 minReputation = Math.min(minReputation,
                         ship.getReputation(this).get());
@@ -344,7 +343,7 @@ public class Faction implements ColorStringObject
     
     public void addNews(ColorString news)
     {
-        if (map.getPlayer() != null && map.getPlayer().getFaction() == this)
+        if (galaxy.getPlayer() != null && galaxy.getPlayer().getFaction() == this)
             Main.addColorMessage(news);
     }
 }

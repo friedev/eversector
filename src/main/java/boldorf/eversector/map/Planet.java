@@ -275,13 +275,13 @@ public class Planet implements ColorStringObject
             return;
         }
         
-        int[] control = new int[getLocation().getMap().getFactions().length];
+        int[] control = new int[getLocation().getGalaxy().getFactions().length];
         
         // Increase the respective counter for each claimed body
         for (Region[] row: regions)
             for (Region region: row)
                 if (region != null && region.isClaimed())
-                    control[getLocation().getMap().getIndex(
+                    control[getLocation().getGalaxy().getIndex(
                             region.getFaction())]++;
         
         int index = -1;
@@ -302,7 +302,7 @@ public class Planet implements ColorStringObject
             }
         }
         
-        claim(index == -1 ? null : getLocation().getMap().getFaction(index));
+        claim(index == -1 ? null : getLocation().getGalaxy().getFaction(index));
     }
     
     /**
@@ -468,7 +468,7 @@ public class Planet implements ColorStringObject
         int nOres = rng.nextInt(ORE_RANGE) + MIN_ORES;
         for (int i = 0; i < nOres; i++)
         {
-            Ore ore = getLocation().getMap().getRandomOre();
+            Ore ore = getLocation().getGalaxy().getRandomOre();
             
             if (!ores.contains(ore))
                 ores.add(ore);

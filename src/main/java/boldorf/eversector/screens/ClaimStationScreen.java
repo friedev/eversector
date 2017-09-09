@@ -7,11 +7,11 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
 import boldorf.eversector.map.Station;
 import static boldorf.eversector.storage.Paths.CLAIM;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class ClaimStationScreen extends ConfirmationScreen
     {
         player.dock();
         playSoundEffect(CLAIM);
-        map.nextTurn();
+        galaxy.nextTurn();
         return new StationScreen(getDisplay());
     }
 }

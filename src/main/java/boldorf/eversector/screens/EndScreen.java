@@ -14,7 +14,6 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.DISPLAYED_SCORES;
 import static boldorf.eversector.Main.disqualified;
 import static boldorf.eversector.Main.kills;
-import static boldorf.eversector.Main.map;
 import static boldorf.eversector.Main.optionIs;
 import static boldorf.eversector.Main.options;
 import static boldorf.eversector.Main.player;
@@ -33,6 +32,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
+import static boldorf.eversector.Main.galaxy;
 
 /**
  * 
@@ -166,16 +166,16 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             contents.add(new ColorString("You were an unaligned wanderer."));
         }
         
-        if (map.getTurn() == 0)
+        if (galaxy.getTurn() == 0)
         {
             contents.add(new ColorString("Thanks for playing!"));
         }
         else
         {
             contents.add(new ColorString("Thanks for playing ")
-                    .add(new ColorString(Integer.toString(map.getTurn()),
+                    .add(new ColorString(Integer.toString(galaxy.getTurn()),
                             COLOR_FIELD))
-                    .add(" " + Utility.makePlural("turn", map.getTurn())
+                    .add(" " + Utility.makePlural("turn", galaxy.getTurn())
                             + "!"));
         }
         
@@ -194,7 +194,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             contents.add(new ColorString("Your score has been disqualified due "
                     + "to debug command usage.", COLOR_SCORE));
         }
-        else if (map.getTurn() <= MIN_TURNS)
+        else if (galaxy.getTurn() <= MIN_TURNS)
         {
             window.getContents().addAll(LeaderboardScore.buildLeaderboard());
             contents.add(new ColorString("This game has been too short to log "
@@ -229,13 +229,13 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             if (Options.DEFAULT_NAME.equals(name))
             {
                 playerScore = new LeaderboardScore(player.calculateShipValue(),
-                        map.getTurn(), kills, reputationAdjective,
+                        galaxy.getTurn(), kills, reputationAdjective,
                         player.isLeader());
             }
             else
             {
                 playerScore = new LeaderboardScore(name,
-                        player.calculateShipValue(), map.getTurn(), kills,
+                        player.calculateShipValue(), galaxy.getTurn(), kills,
                         reputationAdjective, player.isLeader());
             }
 

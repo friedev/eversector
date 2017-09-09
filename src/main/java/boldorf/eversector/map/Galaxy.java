@@ -24,8 +24,8 @@ import java.awt.Color;
 import squidpony.squidgrid.Splash;
 import squidpony.squidmath.Coord;
 
-/** The Map class manages a 2D array of sectors and everything in them. */
-public class Map
+/** A 2D array of sectors representing a galaxy. */
+public class Galaxy
 {
     /** The default number of sectors on each side of the central sector. */
     public static final int MIN_RADIUS = 25;
@@ -41,7 +41,7 @@ public class Map
      */
     public static final int FACTION_RANGE = 4;
     
-    /** The number of turns that are simulated before the map is used. */
+    /** The number of turns that are simulated before the galaxy is used. */
     public static final int SIMULATED_TURNS = 50;
     
     /**
@@ -65,7 +65,7 @@ public class Map
     /** The range of possible amounts of ore types over the minimum. */
     public static final int ORE_RANGE = 3;
     
-    private Sector[][]   map;
+    private Sector[][]   sectors;
     private Ship         player;
     private List<Ship>   ships;
     private Faction[]    factions;
@@ -73,17 +73,17 @@ public class Map
     private Ore[]        oreTypes;   
     private int          turn;
     
-    /** Generates a map with the default size. */
-    public Map()
+    /** Generates a galaxy with the default size. */
+    public Galaxy()
         {this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));}
     
     /**
-     * Generates a map of a specified size.
-     * @param size the side length of the map in sectors
+     * Generates a galaxy of a specified size.
+     * @param size the side length of the galaxy in sectors
      */
-    public Map(int size)
+    public Galaxy(int size)
     {
-        map          = new Sector[size * 2 + 1][size * 2 + 1];
+        sectors      = new Sector[size * 2 + 1][size * 2 + 1];
         ships        = new LinkedList<>();
         factions     = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
         designations = new LinkedList<>();
@@ -96,7 +96,7 @@ public class Map
     }
     
     public Sector[][] toArray()
-        {return map;}
+        {return sectors;}
     
     public List<Ship> getShips()
         {return ships;}
@@ -108,16 +108,16 @@ public class Map
         {return turn;}
     
     public int getWidth()
-        {return map[0].length;}
+        {return sectors[0].length;}
     
     public int getHeight()
-        {return map.length;}
+        {return sectors.length;}
     
     public Coord getCenter()
         {return Coord.get(getWidth() / 2, getHeight() / 2);}
     
     public Sector sectorAt(int x, int y)
-        {return map[y][x];}
+        {return sectors[y][x];}
     
     public Sector sectorAt(Coord p)
         {return p == null ? null : sectorAt(p.x, p.y);}
@@ -142,10 +142,10 @@ public class Map
     
     public double[][] getResistanceMap()
     {
-        double[][] resistance = new double[map.length][map[0].length];
-        for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[y].length; x++)
-                resistance[x][y] = map[y][x].hasNebula() ? 1.0 : 0.0;
+        double[][] resistance = new double[sectors.length][sectors[0].length];
+        for (int y = 0; y < sectors.length; y++)
+            for (int x = 0; x < sectors[y].length; x++)
+                resistance[x][y] = sectors[y][x].hasNebula() ? 1.0 : 0.0;
         
         return resistance;
     }
@@ -153,7 +153,7 @@ public class Map
     public Sector getRandomStationSystem()
     {
         List<Sector> stationSystems = new LinkedList<>();
-        for (Sector[] row: map)
+        for (Sector[] row: sectors)
             for (Sector sector: row)
                 if (sector.hasStations())
                     stationSystems.add(sector);
@@ -163,15 +163,15 @@ public class Map
     
     public Sector getRandomEdgeSector()
     {
-        int edgeCoord = rng.nextInt(map.length);
+        int edgeCoord = rng.nextInt(sectors.length);
         if (rng.nextBoolean())
         {
             return rng.nextBoolean() ?
-                    map[0][edgeCoord] : map[map.length - 1][edgeCoord];
+                    sectors[0][edgeCoord] : sectors[sectors.length - 1][edgeCoord];
         }
         
         return rng.nextBoolean() ?
-                map[edgeCoord][0] : map[edgeCoord][map.length - 1];
+                sectors[edgeCoord][0] : sectors[edgeCoord][sectors.length - 1];
     }
     
     /**
@@ -194,7 +194,7 @@ public class Map
         player.setAI(null);
     }
     
-    /** Plays through the next turn on the map. */
+    /** Processes the next turn. */
     public void nextTurn()
     {
         if (player != null)
@@ -217,11 +217,11 @@ public class Map
             player.fadeReputations();
         
         // Respawns ships if there are fewer than the minimum ships in a sector
-        for (int y = 0; y < map.length; y++)
+        for (int y = 0; y < sectors.length; y++)
         {
-            for (int x = 0; x < map[y].length; x++)
+            for (int x = 0; x < sectors[y].length; x++)
             {
-                Sector sector = map[y][x];
+                Sector sector = sectors[y][x];
                 
                 if (sector.getNShips() < Sector.MIN_SHIPS &&
                         sector.hasStations())
@@ -355,25 +355,25 @@ public class Map
     }
     
     /**
-     * Converts the map into a List of ColorStrings for displaying.
+     * Converts the galaxy into a List of ColorStrings for displaying.
      * @param showStars if true, will show the star Symbol of sectors rather
      * than their type Symbol
      * @param cursor the sector to show as selected
-     * @return the map as a List of ColorStrings
+     * @return the galaxy as a List of ColorStrings
      */
     public List<ColorString> toColorStrings(boolean showStars, Coord cursor)
     {
-        List<ColorString> output = new ArrayList<>(map.length);
+        List<ColorString> output = new ArrayList<>(sectors.length);
         
-        for (int y = 0; y < map.length; y++)
+        for (int y = 0; y < sectors.length; y++)
         {
             ColorString line = new ColorString();
             
-            for (int x = 0; x < map[y].length; x++)
+            for (int x = 0; x < sectors[y].length; x++)
             {
                 ColorChar symbol = new ColorChar(showStars ?
-                        map[y][x].getStarSymbol() : map[y][x].getSymbol());
-                if (map[y][x].getLocation().getCoord().equals(cursor))
+                        sectors[y][x].getStarSymbol() : sectors[y][x].getSymbol());
+                if (sectors[y][x].getLocation().getCoord().equals(cursor))
                     symbol.setBackground(COLOR_SELECTION_BACKGROUND);
                 line.add(symbol);
             }
@@ -390,7 +390,7 @@ public class Map
      * @param showStars if true, will show the star Symbol of sectors rather
      * than their type Symbol
      * @param cursor the sector to show as selected
-     * @return the map as a List of ColorStrings
+     * @return the galaxy as a List of ColorStrings
      */
     public List<ColorString> toColorStrings(Ship ship, boolean showStars,
             Coord cursor)
@@ -455,9 +455,9 @@ public class Map
     {
         int sectorsClaimed = 0;
         
-        for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[y].length; x++)
-                if (map[y][x].getFaction() == faction)
+        for (int y = 0; y < sectors.length; y++)
+            for (int x = 0; x < sectors[y].length; x++)
+                if (sectors[y][x].getFaction() == faction)
                     sectorsClaimed++;
         
         return sectorsClaimed;
@@ -467,9 +467,9 @@ public class Map
     {
         int planetsClaimed = 0;
         
-        for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[y].length; x++)
-                planetsClaimed += map[y][x].getPlanetsControlledBy(faction);
+        for (int y = 0; y < sectors.length; y++)
+            for (int x = 0; x < sectors[y].length; x++)
+                planetsClaimed += sectors[y][x].getPlanetsControlledBy(faction);
         
         return planetsClaimed;
     }
@@ -478,9 +478,9 @@ public class Map
     {
         int stationsClaimed = 0;
         
-        for (int y = 0; y < map.length; y++)
-            for (int x = 0; x < map[y].length; x++)
-                stationsClaimed += map[y][x].getStationsControlledBy(faction);
+        for (int y = 0; y < sectors.length; y++)
+            for (int x = 0; x < sectors[y].length; x++)
+                stationsClaimed += sectors[y][x].getStationsControlledBy(faction);
         
         return stationsClaimed;
     }
@@ -490,13 +490,13 @@ public class Map
         int trade  = 0;
         int battle = 0;
         
-        for (int y = 0; y < map.length; y++)
+        for (int y = 0; y < sectors.length; y++)
         {
-            for (int x = 0; x < map[y].length; x++)
+            for (int x = 0; x < sectors[y].length; x++)
             {
-                trade += map[y][x].getStationTypesControlledBy(faction,
+                trade += sectors[y][x].getStationTypesControlledBy(faction,
                         Station.TRADE);
-                battle += map[y][x].getStationTypesControlledBy(faction,
+                battle += sectors[y][x].getStationTypesControlledBy(faction,
                         Station.BATTLE);
             }
         }
@@ -584,27 +584,27 @@ public class Map
     public Ore getRandomOre()
         {return oreTypes[rng.nextInt(oreTypes.length)];}
     
-    /** Initializes all the sectors on the map. */
+    /** Initializes all the sectors in the galaxy. */
     private void init()
     {
         Splash nebulaGenerator = new Splash();
-        int nNebulae = rng.nextInt(map.length * map[0].length / 100);
+        int nNebulae = rng.nextInt(sectors.length * sectors[0].length / 100);
         List<List<Coord>> nebulae = new ArrayList<>(nNebulae);
 
-        char[][] level = new char[map.length][map[0].length];
+        char[][] level = new char[sectors.length][sectors[0].length];
         for (int i = 0; i < nNebulae; i++)
         {
             nebulae.add(nebulaGenerator.spill(rng, level,
-                    rng.nextCoord(map[0].length, map.length), 100, 1));
+                    rng.nextCoord(sectors[0].length, sectors.length), 100, 1));
         }
         
         Nebula[] nebulaTypes = new Nebula[nNebulae];
         for (int i = 0; i < nNebulae; i++)
             nebulaTypes[i] = rng.getRandomElement(Nebula.values());
         
-        for (int y = 0; y < map.length; y++)
+        for (int y = 0; y < sectors.length; y++)
         {
-            for (int x = 0; x < map[y].length; x++)
+            for (int x = 0; x < sectors[y].length; x++)
             {
                 Nebula nebula = null;
                 for (int i = 0; i < nNebulae; i++)
@@ -616,9 +616,9 @@ public class Map
                     }
                 }
                 
-                map[y][x] = new Sector(new Location(this, Coord.get(x, y)),
+                sectors[y][x] = new Sector(new Location(this, Coord.get(x, y)),
                         nebula);
-                map[y][x].init();
+                sectors[y][x].init();
             }
         }
     }

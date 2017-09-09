@@ -107,7 +107,7 @@ public class Relationship
         RelationshipType newRelationship;
         Faction chooser;
         Faction receiver;
-        Ship player            = faction1.getMap().getPlayer();
+        Ship player            = faction1.getGalaxy().getPlayer();
         Faction playerFaction  = player.getFaction();
         Faction otherFaction   = getOtherFaction(playerFaction);
         boolean playerInvolved = otherFaction != null;

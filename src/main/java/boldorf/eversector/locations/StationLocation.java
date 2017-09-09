@@ -18,7 +18,7 @@ public class StationLocation extends SectorLocation
             return false;
         
         StationLocation cast = (StationLocation) o;
-        return getMap() == cast.getMap() &&
+        return getGalaxy() == cast.getGalaxy() &&
                 getCoord().equals(cast.getCoord()) &&
                 getOrbit() == cast.getOrbit();
     }

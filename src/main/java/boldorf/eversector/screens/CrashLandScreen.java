@@ -50,7 +50,7 @@ public class CrashLandScreen extends ConfirmationScreen
             }
             
             playSoundEffect(TORPEDO);
-            player.getLocation().getMap().nextTurn();
+            player.getLocation().getGalaxy().nextTurn();
             return new PlanetScreen(getDisplay());
         }
         return null;

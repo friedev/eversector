@@ -59,15 +59,15 @@ public class Sector
         do
         {
             name = generateName();
-        } while (location.getMap().isUsed(name));
-        location.getMap().addDesignation(name);
+        } while (location.getGalaxy().isUsed(name));
+        location.getGalaxy().addDesignation(name);
     }
     
     public void init()
     {
         double chance = 0.2 + Math.min(0.7,
                 1.0 / (double) location.getCoord().distance(
-                        location.getMap().getCenter()));
+                        location.getGalaxy().getCenter()));
         
         if (Utility.getChance(rng, chance))
         {
@@ -154,17 +154,17 @@ public class Sector
         if (isEmpty())
             return;
         
-        Map map = location.getMap();
-        int[] control = new int[map.getFactions().length];
+        Galaxy galaxy = location.getGalaxy();
+        int[] control = new int[galaxy.getFactions().length];
         
         // Increase the respective counter for each claimed body
         for (Planet planet: planets)
             if (planet != null && planet.isClaimed())
-                control[map.getIndex(planet.getFaction())]++;
+                control[galaxy.getIndex(planet.getFaction())]++;
         
         for (Station station: stations)
             if (station != null && station.isClaimed())
-                control[map.getIndex(station.getFaction())]++;
+                control[galaxy.getIndex(station.getFaction())]++;
         
         int index = -1;
         int maxBodies = 0; // The most owned bodies in a faction
@@ -194,11 +194,11 @@ public class Sector
             return;
         }
         
-        Faction ruler = map.getFaction(index);
+        Faction ruler = galaxy.getFaction(index);
         
 //        if (faction != ruler)
 //        {
-//            if (map.getTurn() > -Map.SIMULATED_TURNS)
+//            if (galaxy.getTurn() > -Galaxy.SIMULATED_TURNS)
 //            {
 //                if (faction == null)
 //                {
@@ -287,7 +287,7 @@ public class Sector
     public ColorChar getSymbol()
     {
         boolean playerHere =
-                location.getMap().getPlayer().getLocation().getSector() == this;
+                location.getGalaxy().getPlayer().getLocation().getSector() == this;
         
         char symbol;
         if (playerHere)
@@ -318,7 +318,7 @@ public class Sector
     {
         ColorChar symbol;
         
-        if (location.getMap().getPlayer().getLocation().getSector() == this)
+        if (location.getGalaxy().getPlayer().getLocation().getSector() == this)
             symbol = Symbol.player();
         else if (star == null)
             symbol = Symbol.empty();
@@ -484,7 +484,7 @@ public class Sector
             // natural number
             stations[j] = new Station(generateNameFor(i),
                     new SectorLocation(getLocation(), j + 1),
-                    location.getMap().getRandomFaction());
+                    location.getGalaxy().getRandomFaction());
         }
     }
     
@@ -496,13 +496,13 @@ public class Sector
         for (int i = 0; i < nShips; i++)
         {
             // Make a new ship with the sector's name and i's corresponding
-            // letter, the sector's location, and its map
+            // letter, the sector's location, and a random faction
             Ship ship = new Ship(generateShipName(),
                     new SectorLocation(location,
                             rng.nextInt(star.getMass()) + 1),
-                    location.getMap().getRandomFaction());
+                    location.getGalaxy().getRandomFaction());
             ships.add(ship);
-            location.getMap().addShip(ship);
+            location.getGalaxy().addShip(ship);
         }
     }
     
@@ -682,7 +682,7 @@ public class Sector
         int nShips = getShipsAt(orbit).size();
         
         boolean playerIsHere;
-        Location playerLocation = location.getMap().getPlayer().getLocation();
+        Location playerLocation = location.getGalaxy().getPlayer().getLocation();
         if (playerLocation instanceof SectorLocation)
         {
             SectorLocation sectorLocation = (SectorLocation) playerLocation;

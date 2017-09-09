@@ -117,11 +117,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
     
     /**
-     * Creates the ship from a map and a set of properties.
-     * @param map the map the ship will use
+     * Creates the ship in a galaxy using a set of properties.
+     * @param galaxy the galaxy the ship will use
      * @param properties the properties of the ship
      */
-    public Ship(Map map, Properties properties)
+    public Ship(Galaxy galaxy, Properties properties)
     {
         // Basic hard-coded definitions
         name      = "Player";
@@ -161,10 +161,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                         name = value;
                         break;
                     case "location":
-                        location = Location.parseLocation(map, value);
+                        location = Location.parseLocation(galaxy, value);
                         break;
                     case "faction":
-                        faction = map.getFaction(value);
+                        faction = galaxy.getFaction(value);
                         break;
                     case "credits":
                         credits = Utility.parseInt(value, CREDITS);
@@ -254,7 +254,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if this is equal to the map's specified player
      */
     public boolean isPlayer()
-        {return location.getMap().getPlayer() == this;}
+        {return location.getGalaxy().getPlayer() == this;}
     
     /**
      * Returns true if this ship belongs to a faction.
@@ -389,7 +389,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public List<Coord> getFOV()
     {
         double[][] light = new FOV().calculateFOV(
-                getLocation().getMap().getResistanceMap(),
+                getLocation().getGalaxy().getResistanceMap(),
                 getLocation().getCoord().x,
                 getLocation().getCoord().y,
                 getFOVRadius());
@@ -1786,7 +1786,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         if (isLanded())
             ore = getPlanetLocation().getRegion().getOre();
         else
-            ore = location.getMap().getRandomOre();
+            ore = location.getGalaxy().getRandomOre();
         
         if (ore == null)
         {
@@ -2907,10 +2907,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     /** Creates a Reputation object for each faction in the game. */
     public void createReputations()
     {
-        reputations = new Reputation[location.getMap().getFactions().length];
+        reputations = new Reputation[location.getGalaxy().getFactions().length];
         
         for (int i = 0; i < reputations.length; i++)
-            reputations[i] = new Reputation(location.getMap().getFactions()[i]);
+            reputations[i] = new Reputation(location.getGalaxy().getFactions()[i]);
     }
 
     @Override

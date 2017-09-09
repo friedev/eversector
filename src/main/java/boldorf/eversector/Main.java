@@ -12,7 +12,7 @@ import static boldorf.eversector.Main.addColorMessage;
 import static boldorf.eversector.Main.optionIs;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
-import boldorf.eversector.map.Map;
+import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.faction.Election;
 import boldorf.eversector.faction.RelationshipChange;
 import boldorf.eversector.screens.GameScreen;
@@ -83,10 +83,10 @@ public class Main
     /** The game music that will loop in the background. */
     public static Clip soundtrack;
     
-    /** The map upon which the current game is played. */
-    public static Map map;
+    /** The galaxy in which the current game is played. */
+    public static Galaxy galaxy;
     
-    /** A reference to map.getPlayer() for use in the game. */
+    /** A reference to galaxy.getPlayer() for use in the game. */
     public static Ship player;
     
     /** A list of ships that intend to attack the player. */
@@ -166,11 +166,11 @@ public class Main
 
         setOptionDefaults();
 
-        // Create the map and update the player as needed
+        // Create the galaxy and update the player as needed
         setUpSeed();
         nameGenerator = new NameGenerator(GENERAL, rng);
         Symbol.setMap(Options.toBoolean(options.getProperty(Options.TILES)));
-        map = new Map();
+        galaxy = new Galaxy();
         
         boolean savedGame = FileManager.checkExistence(Paths.SAVE);
         if (savedGame)
@@ -178,15 +178,15 @@ public class Main
             Properties save = FileManager.load(Paths.SAVE);
             disqualified = optionIs(Options.OPTION_TRUE,
                     save.getProperty(Options.DISQUALIFIED));
-            player = new Ship(map, save);
-            map.setPlayer(player);
+            player = new Ship(galaxy, save);
+            galaxy.setPlayer(player);
         }
         else
         {
             options.setProperty(Options.CAPTAIN_NAME, "");
             options.setProperty(Options.SHIP_NAME, "");
-            map.createNewPlayer();
-            player = map.getPlayer();
+            galaxy.createNewPlayer();
+            player = galaxy.getPlayer();
         }
 
         List<ColorString> startMessages = new LinkedList<>();
@@ -226,12 +226,12 @@ public class Main
     
     public static void changeGalaxy()
     {
-        map = new Map();
-        for (int i = 0; i < Map.SIMULATED_TURNS; i++)
-            map.nextTurn();
+        galaxy = new Galaxy();
+        for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++)
+            galaxy.nextTurn();
         
-        map.setPlayer(player);
-        player.setLocation(map.getRandomEdgeSector().getLocation());
+        galaxy.setPlayer(player);
+        player.setLocation(galaxy.getRandomEdgeSector().getLocation());
         player.setFaction(null);
         player.createReputations();
     }
