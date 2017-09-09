@@ -3,4 +3,5 @@
 /build/
 /bundle/local/
 /bundle/jre/
+/bundle/EverSector.jar
 *.wav

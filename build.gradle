@@ -1,5 +1,7 @@
 apply plugin: 'java'
 
+libsDirName = '../bundle'
+
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
