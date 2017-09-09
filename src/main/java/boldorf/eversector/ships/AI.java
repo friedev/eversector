@@ -1,5 +1,6 @@
 package boldorf.eversector.ships;
 
+import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.Station;
 import boldorf.eversector.map.Planet;
 import boldorf.eversector.map.Region;
@@ -239,13 +240,20 @@ public class AI
             {
                 SectorLocation minusOffset = getPlanetDestination(
                         sector.getPlanetAt(orbit - offset));
-                if (minusOffset != null)
-                    return minusOffset;
-                
                 SectorLocation plusOffset = getPlanetDestination(
                         sector.getPlanetAt(orbit + offset));
-                if (plusOffset != null)
+                
+                if (minusOffset != null)
+                {
+                    if (plusOffset == null)
+                        return minusOffset;
+                    
+                    return rng.nextBoolean() ? minusOffset : plusOffset;
+                }
+                else if (plusOffset != null)
+                {
                     return plusOffset;
+                }
             }
         }
         
@@ -309,13 +317,20 @@ public class AI
                 {
                     StationLocation minusOffset = getStationDestination(
                             sector.getStationAt(orbit - offset));
-                    if (minusOffset != null)
-                        return minusOffset;
-                    
                     StationLocation plusOffset = getStationDestination(
                             sector.getStationAt(orbit + offset));
-                    if (plusOffset != null)
+                
+                    if (minusOffset != null)
+                    {
+                        if (plusOffset == null)
+                            return minusOffset;
+
+                        return rng.nextBoolean() ? minusOffset : plusOffset;
+                    }
+                    else if (plusOffset != null)
+                    {
                         return plusOffset;
+                    }
                 }
             }
         }
