@@ -81,7 +81,7 @@ public class Item
     public List<ColorString> define()
     {
         List<ColorString> definition = new LinkedList<>();
-        definition.add(new ColorString(name.toUpperCase()));
+        definition.add(new ColorString(name, COLOR_FIELD));
         definition.add(new ColorString("Value: ")
                 .add(new ColorString(value + "" + Symbol.CREDITS,
                         COLOR_FIELD)));
