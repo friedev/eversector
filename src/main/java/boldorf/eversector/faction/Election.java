@@ -124,7 +124,7 @@ public class Election
     
     public Ship getWinner()
     {
-        int winnerIndex = 1;
+        int winnerIndex = 0;
         int highestVotes = 0;
         
         for (int i = 0; i < votes.size(); i++)
