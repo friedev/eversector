@@ -95,8 +95,12 @@ public class AI
         buyResources();
         if (ship.claim(false))
             return true;
-        buyItems(); // TODO replace with a loop
-        buyExpanders();
+        
+        if (rng.nextBoolean())
+        {
+            buyItems(); // TODO replace with a loop
+            buyExpanders();
+        }
         return false;
     }
     
@@ -212,10 +216,15 @@ public class AI
     
     private void updateDestination()
     {
-        if (ship.isLanded() || (ship.isInSector() &&
-                ship.getSectorLocation().isPlanet() &&
-                ship.getSectorLocation().getPlanet().getType()
-                        .canMineFromOrbit()))
+        Location unclaimedTerritory = findClosestUnclaimedTerritory();
+        if (unclaimedTerritory != null)
+        {
+            destination = unclaimedTerritory;
+            return;
+        }
+        
+        if (ship.getResource(Resources.ORE).isFull() ||
+                !ship.validateResources(Actions.MINE, "mine"))
         {
             destination = findClosestStation();
             return;
@@ -232,7 +241,7 @@ public class AI
             if (ship.isLanded())
                 return ship.getPlanetLocation();
             
-            SectorLocation current = getPlanetDestination(
+            SectorLocation current = getPlanetMiningDestination(
                     ship.getSectorLocation().getPlanet());
             if (current != null)
                 return current;
@@ -241,9 +250,9 @@ public class AI
             int orbit = ship.getSectorLocation().getOrbit();
             for (int offset = 1; offset < sector.getOrbits(); offset++)
             {
-                SectorLocation minusOffset = getPlanetDestination(
+                SectorLocation minusOffset = getPlanetMiningDestination(
                         sector.getPlanetAt(orbit - offset));
-                SectorLocation plusOffset = getPlanetDestination(
+                SectorLocation plusOffset = getPlanetMiningDestination(
                         sector.getPlanetAt(orbit + offset));
                 
                 if (minusOffset != null)
@@ -275,7 +284,7 @@ public class AI
             
             for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
             {
-                SectorLocation planetLocation = getPlanetDestination(
+                SectorLocation planetLocation = getPlanetMiningDestination(
                         sector.getPlanetAt(orbit));
                 if (planetLocation != null)
                     return planetLocation;
@@ -285,7 +294,7 @@ public class AI
         return null;
     }
     
-    private SectorLocation getPlanetDestination(Planet planet)
+    private SectorLocation getPlanetMiningDestination(Planet planet)
     {
         if (planet == null)
             return null;
@@ -372,6 +381,47 @@ public class AI
                 ship.getCredits() >= Station.CLAIM_COST)
             return station.getLocation().dock();
         return null;
+    }
+    
+    private Location findClosestUnclaimedTerritory()
+    {
+        if (!ship.isInSector())
+            return null;
+        
+        Sector sector = ship.getLocation().getSector();
+        int orbit = ship.getSectorLocation().getOrbit();
+        for (int offset = 1; offset < sector.getOrbits(); offset++)
+        {
+            SectorLocation minusOffset = getPlanetClaimingDestination(
+                    sector.getPlanetAt(orbit - offset));
+            SectorLocation plusOffset = getPlanetClaimingDestination(
+                    sector.getPlanetAt(orbit + offset));
+
+            if (minusOffset != null &&
+                    ship.getCredits() >= minusOffset.getPlanet().getClaimCost())
+            {
+                if (plusOffset != null && ship.getCredits() >=
+                        plusOffset.getPlanet().getClaimCost())
+                    return rng.nextBoolean() ? minusOffset : plusOffset;
+                
+                return minusOffset;
+            }
+            else if (plusOffset != null)
+            {
+                return plusOffset;
+            }
+        }
+        
+        return null;
+    }
+    
+    private PlanetLocation getPlanetClaimingDestination(Planet planet)
+    {
+        if (planet == null || !planet.getType().canLandOn())
+            return null;
+        
+        Region unclaimedRegion = planet.getRandomRegion(ship.getFaction()); 
+        return unclaimedRegion == null ? null : unclaimedRegion.getLocation();
     }
     
     private boolean destinationIsValid()
