@@ -63,8 +63,8 @@ public class Region implements ColorStringObject
             {return isLand;}
     }
     
-    public static final int MIN_ORE = 100;
-    public static final int ORE_RANGE = 901;
+    public static final int MIN_ORE = 50;
+    public static final int ORE_RANGE = 451;
     
     private final PlanetLocation location;
     private List<Ship> ships;
@@ -139,16 +139,15 @@ public class Region implements ColorStringObject
         location.getPlanet().updateFaction();
     }
     
-    public boolean extractOre(int extracted)
+    public int extractOre(int extracted)
     {
-        if (nOre < extracted)
-            return false;
+        int actualExtracted = Math.min(nOre, extracted);
         
         nOre -= extracted;
-        if (nOre == 0)
+        if (nOre <= 0)
             ore = null;
         
-        return true;
+        return actualExtracted;
     }
     
     /**

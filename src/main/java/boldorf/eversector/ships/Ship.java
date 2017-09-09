@@ -1796,14 +1796,14 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             return false;
         }
         
-        int discard = getResource(Resources.ORE).changeAmountWithDiscard(ore
-                .getDensity());
+        int discard = getResource(Resources.ORE).changeAmountWithDiscard(
+                ore.getDensity());
         resource.changeAmount(-Actions.MINE.getCost());
         
         if (isLanded())
         {
             Region region = getPlanetLocation().getRegion();
-            region.extractOre(ore.getDensity());
+            region.extractOre(1);
             if (!region.hasOre())
             {
                 addPlayerMessage("You have mined the " + region + " dry.");
