@@ -334,7 +334,7 @@ public class Planet implements ColorStringObject
         
         for (Region[] row: regions)
             for (Region region: row)
-                if (region.getFaction() != faction)
+                if (region.getType().isLand() && region.getFaction() != faction)
                     unclaimedRegions.add(region);
         
         return getRandomRegion(unclaimedRegions);
