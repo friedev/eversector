@@ -2430,7 +2430,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
 
         Region region = getPlanetLocation().getRegion();
-        if (!region.hasOre())
+        if (!region.getType().isLand())
         {
             addPlayerError("The " + region.toString().toLowerCase()
                     + " cannot be claimed.");
