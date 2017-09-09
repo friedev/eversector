@@ -150,6 +150,9 @@ public class AI
         
         if (!ship.hasModule(Actions.SOLAR))
             ship.buyModule(Actions.SOLAR);
+        
+        if (!ship.hasModule(Actions.SCAN))
+            ship.buyModule(Actions.SCAN);
     }
     
     private void buyExpanders()
