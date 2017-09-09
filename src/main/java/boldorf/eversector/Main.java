@@ -8,6 +8,8 @@ import boldorf.util.Utility;
 import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
+import static boldorf.eversector.Main.addColorMessage;
+import static boldorf.eversector.Main.optionIs;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.map.Map;
@@ -120,7 +122,7 @@ public class Main
     {
         if (DEV_PATH)
         {
-            FileManager.movePathUp(4);
+            FileManager.movePathUp(3);
             FileManager.addToPath("EverSector/bundle/");
         }
         else

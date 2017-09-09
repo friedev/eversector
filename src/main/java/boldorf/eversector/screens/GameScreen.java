@@ -59,6 +59,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         messages      = new LinkedList<>();
         subscreen     = new SectorScreen(display);
         messageOffset = -1;
+        
+//        player.getResource("Fuel").setCapacity(1000000);
+//        player.getResource("Fuel").fill();
     }
     
     @Override

@@ -1,10 +1,6 @@
-/nbproject/private/
+.gradle
+.nb-gradle
 /build/
 /bundle/local/
 /bundle/jre/
-/dist/
-build.xml
-manifest.mf
 *.wav
-*.jar
-*.exe
