@@ -1,5 +1,6 @@
 package boldorf.eversector.screens;
 
+import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorString;
 import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
 import boldorf.eversector.storage.Paths;
@@ -155,7 +156,10 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
     {
         ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
         if (nScores > DISPLAYED_SCORES)
-            header.add(" (" + nScores + " Scores Total)");
+        {
+            header.add(new ColorString(" (" + nScores + " Scores Total)",
+                    AsciiPanel.brightBlack));
+        }
         return header;
     }
     
