@@ -363,7 +363,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         for (ColorString line: statusList)
         {
             if (line == null)
-                statusWindow.addSeparator(new Line(true, 1, 1));
+                statusWindow.addSeparator(new Line(false, 1, 1));
             else
                 statusWindow.getContents().add(line);
         }
