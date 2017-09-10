@@ -147,10 +147,14 @@ public class Main
         display.setTitle("EverSector");
         display.init(new StartScreen(display, startMessages));
 
-        soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
-        Integer volume = Utility.parseInt(options.getProperty(Options.MUSIC));
-        if (volume != null)
-            FileManager.setVolume(soundtrack, volume);
+        try
+        {
+            soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
+            Integer volume = Utility.parseInt(options.getProperty(Options.MUSIC));
+            if (volume != null)
+                FileManager.setVolume(soundtrack, volume);
+        }
+        catch (Exception e) {}
     }
     
     public static List<ColorString> startGame() throws Exception
