@@ -1,5 +1,6 @@
 package boldorf.eversector.map;
 
+import asciiPanel.AsciiPanel;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.ships.Levels;
 import boldorf.eversector.Main;
@@ -764,16 +765,32 @@ public class Sector
         if (stations[orbit - 1] != null)
             contents.add(stations[orbit - 1].toColorString());
         
+        int notShown = 0;
         for (Ship ship: ships)
         {
             if (ship != null && ship.getSectorLocation().getOrbit() == orbit &&
                     !ship.isPlayer())
             {
+                // 12 is the max number of orbits in a sector
+                // TODO reference Star.StarMass
+                if (contents.size() >= 12)
+                {
+                    notShown++;
+                    break;
+                }
+                
                 ColorString shipString = ship.toColorString();
                 if (ship.isLeader())
                     shipString.add(new ColorString(" (Leader)", COLOR_FIELD));
                 contents.add(shipString);
             }
+        }
+        
+        if (notShown > 0)
+        {
+            // (notShown + 1) accounts for the replaced line
+            contents.set(11, new ColorString("(" + (notShown + 1) + " more)",
+                    AsciiPanel.brightBlack));
         }
         
         return contents;
