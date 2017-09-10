@@ -69,13 +69,13 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
     {
         if (popup != null)
         {
-            Screen result = popup.processInput(key);
-            /*
-            if (result == null && popup instanceof BattleConvertScreen)
-                deniedConversion = true;
-            */
-            popup = result;
+            popup = popup.processInput(key);
             updateBattle();
+            if (battle.getEnemies(player).isEmpty())
+            {
+                battle.endBattle();
+                return endBattle();
+            }
             return popup instanceof SectorScreen ? popup : this;
         }
         
@@ -120,31 +120,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
                 player.changeResourceBy(flee);
                 playSoundEffect(ENGINE);
                 battle.getFleeing().add(player);
-                
-                /*
-                if (player.isCloaked() || !opponent.willPursue(player))
-                {
-                    if (player.isCloaked())
-                    {
-                        addColorMessage(new ColorString("You have escaped ")
-                                .add(opponent)
-                                .add(" with the help of your cloaking."));
-                    }
-                    else if (!opponent.willPursue(player))
-                    {
-                        addColorMessage(opponent.toColorString()
-                                .add(" does not pursue you."));
-                    }
-
-                    return endBattle();
-                }
-                */
 
                 // The opponent has enough resources to pursue because 
                 // it is checked in willPursue()
                 nextAttack = true;
-//                addColorMessage(opponent.toColorString().add(" pursues you."));
-//                opponent.changeResourceBy(flee);
                 break;
             }
             case KeyEvent.VK_S:
@@ -265,54 +244,6 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
         }
         
         return this;
-        
-        /*
-        if (!nextAttack)
-            return this;
-        
-        if (!deniedConversion && opponent.willConvert()
-                && opponent.canConvert(player)
-                && opponent.getAmountOf(Resources.HULL)
-                > player.getAmountOf(Resources.HULL))
-        {
-            popup = new BattleConvertScreen(getDisplay(), opponent);
-        }
-        else if (!opponent.attack(player))
-        {
-            if (!opponent.validateResources(Actions.FLEE, "flee"))
-            {
-                if (opponent.isLeader() &&
-                        player.isInFaction(opponent.getFaction()))
-                {
-                    popup = new SuccessionScreen(getDisplay(), opponent);
-                    return this;
-                }
-
-                popup = new BattleWinScreen(getDisplay(), opponent,
-                        opponent.toColorString()
-                                .add(" surrenders its cargo to you."));
-                return this;
-            }
-            
-            opponent.changeResourceBy(Actions.FLEE);
-
-            if (opponent.isCloaked())
-            {
-                addColorMessage(opponent.toColorString()
-                .add(" becomes impossible to track due to their cloaking."));
-                return endBattle();
-            }
-
-            if (!player.validateResources(Actions.PURSUE, "pursue"))
-            {
-                addColorMessage(opponent.toColorString()
-                       .add(" escapes freely."));
-                return endBattle();
-            }
-            
-            popup = new PursueScreen(getDisplay(), opponent);
-        }
-        */
     }
     
     private Ship getSelectedShip()
@@ -350,10 +281,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu>
             keybindings.add(new Keybinding("toggle module activation", "m"));
         if (player.hasModule(Actions.SCAN))
             keybindings.add(new Keybinding("scan selected ship", "s"));
-//        if (player.isAligned())
-//            keybindings.add(new Keybinding("convert opponent", "c"));
         keybindings.add(new Keybinding("flee", "f"));
-//        keybindings.add(new Keybinding("surrender", "u"));
         return keybindings;
     }
     

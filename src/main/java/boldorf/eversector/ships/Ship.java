@@ -2044,7 +2044,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             return battle;
         }
         
-        battle.processBattle();
+        if (!isPlayer())
+            battle.processBattle();
         return battle;
     }
     
