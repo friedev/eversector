@@ -2865,9 +2865,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     {
         if (hasModule(Actions.SOLAR) && isInSector() && !isLanded())
         {
-            changeResource(Actions.SOLAR.getResource(), Actions.SOLAR.getCost()
-                    * location.getSector().getStar().getSolarPowerAt(
-                            getSectorLocation().getOrbit()));
+            getResource(Actions.SOLAR.getResource()).changeAmountWithDiscard(
+                    Actions.SOLAR.getCost()
+                            * location.getSector().getStar().getSolarPowerAt(
+                                    getSectorLocation().getOrbit()));
         }
         
         if (isShielded() && !changeResourceBy(Actions.SHIELD.getAction()))
