@@ -8,6 +8,7 @@ public abstract class Paths
     SAVE        = "local/save.propeties",
     OPTIONS     = "local/options.properties",
     LEADERBOARD = "local/leaderboard/",
+    CRASH       = "crash.txt",
     // Images
     FONTS       = "assets/fonts/",
     ICON        = "assets/icon.png",

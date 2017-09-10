@@ -8,10 +8,6 @@ import boldorf.apwt.screens.PopupTerminal;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import static boldorf.eversector.Main.COPYRIGHT_YEAR;
-import static boldorf.eversector.Main.DEVELOPER;
-import static boldorf.eversector.Main.MAX_VERSION_LENGTH;
-import static boldorf.eversector.Main.VERSION;
 import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.storage.Options;
@@ -27,6 +23,22 @@ import squidpony.squidmath.Coord;
 /** The menu screen that is displayed at the start of the game. */
 public class StartScreen extends Screen
 {
+    /** The version number of the game. */
+    public static final String VERSION = "v0.6";
+    
+    /** The longest version that can be compensated for with spaces. */
+    public static final int MAX_VERSION_LENGTH = 22;
+    
+    /**
+     * The name of the game's developer, stored as an array to make it harder to
+     * find in one piece and change.
+     */
+    public static final char[] DEVELOPER = {'B', 'o', 'l', 'd', 'o', 'r', 'f',
+                             ' ', 'S', 'm', 'o', 'k', 'e', 'b', 'a', 'n', 'e'};
+    
+    /** The year the game is copyrighted in. */
+    public static final int COPYRIGHT_YEAR = 2017;
+    
     public static final double STARS_PER_TILE = 0.0125;
     
     /** The character printed for each star. */

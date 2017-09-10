@@ -34,27 +34,11 @@ import squidpony.squidmath.RNG;
 /** The main class for EverSector, which primarily manages player input. */
 public class Main
 {
-    /** The version number of the game. */
-    public static final String VERSION = "v0.6";
-    
     /**
      * If true, will adjust the path to work in the developer's IDE with sources
      * and libraries separate.
      */
     public static final boolean DEV_PATH = true;
-    
-    /** The longest version that can be compensated for with spaces. */
-    public static final int MAX_VERSION_LENGTH = 22;
-    
-    /**
-     * The name of the game's developer, stored as an array to make it harder to
-     * find in one piece and change.
-     */
-    public static final char[] DEVELOPER = {'B', 'o', 'l', 'd', 'o', 'r', 'f',
-                             ' ', 'S', 'm', 'o', 'k', 'e', 'b', 'a', 'n', 'e'};
-    
-    /** The year the game is copyrighted in. */
-    public static final int COPYRIGHT_YEAR = 2017;
     
     /** The number of scores to display on the leaderboard. */
     public static final int DISPLAYED_SCORES = 5;
@@ -120,15 +104,32 @@ public class Main
      */
     public static void main(String[] args) throws Exception
     {
-        if (DEV_PATH)
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) ->
         {
-            FileManager.movePathUp(3);
-            FileManager.addToPath("EverSector/bundle/");
-        }
-        else
-        {
-            FileManager.movePathUp();
-        }
+            try
+            {
+                FileManager.delete(Paths.CRASH);
+
+                StackTraceElement[] stackTrace = e.getStackTrace();
+                String[] stackTraceStrings = new String[stackTrace.length + 1];
+                
+                stackTraceStrings[0] =
+                        "The game has crashed! Please send the contents of "
+                        + "this file to the developer to help fix the problem.";
+                for (int i = 0; i < stackTrace.length; i++)
+                    stackTraceStrings[i + 1] = stackTrace[i].toString();
+
+                FileManager.writeToFile(Paths.CRASH, stackTraceStrings);
+            }
+            catch (Exception ex)
+            {}
+            finally
+            {
+                System.exit(1);
+            }
+        });
+        
+        FileManager.movePathUp();
 
         if (FileManager.checkExistence(Paths.OPTIONS))
             options = FileManager.load(Paths.OPTIONS);
