@@ -9,12 +9,32 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = 'boldorf.eversector.Main'
 }
 
+jar {
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+      attributes('Main-Class': 'boldorf.eversector.Main')
+    }
+}
+
 repositories {
     flatDir {
-        dirs 'bundle/lib'
+        dirs 'lib'
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'bundle/lib', include: ['*.jar'])
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+}
+
+buildscript {
+    dependencies {
+        classpath fileTree(dir: 'lib', include: ['*.jar'])
+    }
 }

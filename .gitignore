@@ -1,8 +1,9 @@
 .gradle
 .nb-gradle
 /build/
+/bundle/assets/audio/
 /bundle/local/
 /bundle/jre/
 /bundle/EverSector.jar
 /bundle/crash.txt
-*.wav
+*.exe

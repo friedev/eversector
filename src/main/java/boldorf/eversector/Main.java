@@ -105,6 +105,8 @@ public class Main
         {
             try
             {
+                e.printStackTrace();
+                
                 FileManager.delete(Paths.CRASH);
 
                 StackTraceElement[] stackTrace = e.getStackTrace();
@@ -126,8 +128,12 @@ public class Main
             }
         });
         
-        FileManager.movePathUp();
-
+        if (FileManager.getPath().contains("lib"))
+        {
+            FileManager.movePathUp();
+            FileManager.addToPath("bundle/");
+        }
+        
         if (FileManager.checkExistence(Paths.OPTIONS))
             options = FileManager.load(Paths.OPTIONS);
         else
