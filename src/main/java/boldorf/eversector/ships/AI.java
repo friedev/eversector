@@ -216,10 +216,17 @@ public class AI
     
     private void updateDestination()
     {
-        Location unclaimedTerritory = findClosestUnclaimedTerritory();
-        if (unclaimedTerritory != null)
+        Location invasionDestination = findInvasionDestination();
+        if (invasionDestination != null)
         {
-            destination = unclaimedTerritory;
+            destination = invasionDestination;
+            return;
+        }
+        
+        Location claimingDestination = findClosestUnclaimedTerritory();
+        if (claimingDestination != null)
+        {
+            destination = claimingDestination;
             return;
         }
         
@@ -422,6 +429,84 @@ public class AI
         
         Region unclaimedRegion = planet.getRandomRegion(ship.getFaction()); 
         return unclaimedRegion == null ? null : unclaimedRegion.getLocation();
+    }
+    
+    private StationLocation findInvasionDestination()
+    {
+        if (ship.getCredits() < Station.CLAIM_COST || !ship.hasWeapons() ||
+                !ship.getResource(Resources.FUEL).isFull())
+            return null;
+        
+        if (ship.isInSector())
+        {
+            if (ship.getSectorLocation().isStation())
+            {
+                StationLocation invasionDestination =
+                        getStationInvasionDestination(
+                        ship.getSectorLocation().getStation());
+                if (invasionDestination != null)
+                    return invasionDestination;
+            }
+            
+            Sector sector = ship.getLocation().getSector();
+            if (sector.hasStations())
+            {
+                int orbit = ship.getSectorLocation().getOrbit();
+                for (int offset = 1; offset < sector.getOrbits(); offset++)
+                {
+                    StationLocation minusOffset = getStationInvasionDestination(
+                            sector.getStationAt(orbit - offset));
+                    StationLocation plusOffset = getStationInvasionDestination(
+                            sector.getStationAt(orbit + offset));
+                
+                    if (minusOffset != null)
+                    {
+                        if (plusOffset == null)
+                            return minusOffset;
+
+                        return rng.nextBoolean() ? minusOffset : plusOffset;
+                    }
+                    else if (plusOffset != null)
+                    {
+                        return plusOffset;
+                    }
+                }
+            }
+        }
+        
+        List<Coord> fov = ship.getFOV();
+        fov.sort(Utility.createDistanceComparator(
+                ship.getLocation().getCoord()));
+        Galaxy galaxy = ship.getLocation().getGalaxy();
+        for (Coord coord: fov)
+        {
+            if (!galaxy.contains(coord))
+                continue;
+            
+            Sector sector = galaxy.sectorAt(coord);
+            if (!sector.hasStations())
+                continue;
+            
+            for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
+            {
+                StationLocation stationLocation = getStationInvasionDestination(
+                        sector.getStationAt(orbit));
+                if (stationLocation != null)
+                    return stationLocation;
+            }
+        }
+        
+        return null;
+    }
+    
+    private StationLocation getStationInvasionDestination(Station station)
+    {
+        if (station == null)
+            return null;
+        
+        if (ship.isHostile(station.getFaction()))
+            return station.getLocation().dock();
+        return null;
     }
     
     private boolean destinationIsValid()
