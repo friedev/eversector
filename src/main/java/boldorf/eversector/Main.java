@@ -40,9 +40,6 @@ public class Main
      */
     public static final boolean DEV_PATH = true;
     
-    /** The number of scores to display on the leaderboard. */
-    public static final int DISPLAYED_SCORES = 5;
-    
     public static final Color
     COLOR_FIELD = AsciiPanel.brightWhite,
     COLOR_ERROR = AsciiPanel.brightRed,

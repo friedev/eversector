@@ -1,7 +1,6 @@
 package boldorf.eversector.screens;
 
 import boldorf.apwt.glyphs.ColorString;
-import static boldorf.eversector.Main.DISPLAYED_SCORES;
 import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
 import boldorf.eversector.storage.Paths;
 import boldorf.util.FileManager;
@@ -18,6 +17,9 @@ import java.util.Properties;
  */
 public class LeaderboardScore implements Comparable<LeaderboardScore>
 {
+    /** The number of scores to display on the leaderboard. */
+    public static final int DISPLAYED_SCORES = 5;
+    
     public static final String INVALID = "INVALID";
     
     private String  name;

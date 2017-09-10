@@ -11,7 +11,6 @@ import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
-import static boldorf.eversector.Main.DISPLAYED_SCORES;
 import static boldorf.eversector.Main.disqualified;
 import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.optionIs;
@@ -33,6 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import static boldorf.eversector.Main.galaxy;
+import static boldorf.eversector.screens.LeaderboardScore.DISPLAYED_SCORES;
 
 /**
  * 
