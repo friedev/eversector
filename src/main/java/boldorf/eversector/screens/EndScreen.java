@@ -114,8 +114,10 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             return null;
         }
         
-        System.exit(0);
-        return null;
+        if (key.getKeyCode() == KeyEvent.VK_Q && key.isShiftDown())
+             System.exit(0);
+        
+        return this;
     }
 
     @Override
@@ -181,7 +183,9 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         
         contents.add(new ColorString("Press ")
                 .add(new ColorString("r", COLOR_FIELD))
-                .add(" to play again or anything else to quit."));
+                .add(" to play again or ")
+                .add(new ColorString("Q", COLOR_FIELD))
+                .add(" to quit."));
     }
     
     private void setUpLeaderboard()
