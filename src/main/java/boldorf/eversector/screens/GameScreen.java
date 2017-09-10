@@ -33,6 +33,8 @@ import java.util.List;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 import static boldorf.eversector.Main.galaxy;
+import static boldorf.eversector.Main.options;
+import boldorf.eversector.storage.Options;
 
 /**
  * The main screen on which gameplay will take place. This screen will process
@@ -209,6 +211,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
                     messageOffset = 0;
                 break;
             case KeyEvent.VK_B:
+                if (!Options.toBoolean(options.getProperty(Options.LEADERBOARD)))
+                    break;
+                
                 List<ColorString> leaderboard =
                         LeaderboardScore.buildLeaderboard();
                 if (!leaderboard.isEmpty())
@@ -281,7 +286,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding("wait one turn", ".", "space"));
         if (messages.size() > MESSAGE_LINES)
             keybindings.add(new Keybinding("message history", "h"));
-        if (!LeaderboardScore.buildLeaderboard().isEmpty())
+        if (Options.toBoolean(options.getProperty(Options.LEADERBOARD)) &&
+                !LeaderboardScore.buildLeaderboard().isEmpty())
             keybindings.add(new Keybinding("leaderboard", "b"));
         keybindings.add(new Keybinding("options", "o"));
         keybindings.add(new Keybinding("keybindings", "?"));
