@@ -7,4 +7,6 @@ pipelines:
           - gradle
         script:
           - bash ./gradlew build
-          - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"bundle"
+          - mv bundle EverSector
+          - zip -r EverSector.zip EverSector
+          - curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"EverSector.zip"
