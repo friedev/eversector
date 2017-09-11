@@ -30,12 +30,8 @@ public class StartScreen extends Screen
     /** The longest version that can be compensated for with spaces. */
     public static final int MAX_VERSION_LENGTH = 22;
     
-    /**
-     * The name of the game's developer, stored as an array to make it harder to
-     * find in one piece and change.
-     */
-    public static final char[] DEVELOPER = {'B', 'o', 'l', 'd', 'o', 'r', 'f',
-                             ' ', 'S', 'm', 'o', 'k', 'e', 'b', 'a', 'n', 'e'};
+    /** The name of the game's developer. */
+    public static final String DEVELOPER = "Boldorf Smokebane";
     
     /** The year the game is copyrighted in. */
     public static final int COPYRIGHT_YEAR = 2017;
@@ -126,7 +122,7 @@ public class StartScreen extends Screen
         String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
         
         String infoLine = Symbol.COPYRIGHT + " " + COPYRIGHT_YEAR + " "
-                + new String(DEVELOPER) + " " + padding + VERSION;
+                + DEVELOPER + " " + padding + VERSION;
         
         List<ColorString> titleArt = new LinkedList<>();
         
