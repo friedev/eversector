@@ -8,6 +8,7 @@ import boldorf.apwt.screens.PopupTerminal;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.rng;
 import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.storage.Options;
@@ -24,7 +25,7 @@ import squidpony.squidmath.Coord;
 public class StartScreen extends Screen
 {
     /** The version number of the game. */
-    public static final String VERSION = "v0.6";
+    public static final String VERSION = "v0.7";
     
     /** The longest version that can be compensated for with spaces. */
     public static final int MAX_VERSION_LENGTH = 22;
@@ -60,9 +61,10 @@ public class StartScreen extends Screen
     public void displayOutput()
     {
         drawStarfield();
+        ColorString[] titleArt = getTitleArt();
         getDisplay().writeCenter(getDisplay().getCenterY() - 
-                getTitleArt().length / 2 - window.getContents().size() / 2 - 2,
-                getTitleArt());
+                titleArt.length / 2 - window.getContents().size() / 2 - 1,
+                titleArt);
         window.display();
         if (namePrompt != null)
             namePrompt.displayOutput();
@@ -86,8 +88,8 @@ public class StartScreen extends Screen
         String name = Main.options.getProperty(Options.SHIP_NAME);
         if (name == null || name.isEmpty())
         {
-            namePrompt = new NamePromptScreen(getDisplay(), "your ship",
-                    Options.SHIP_NAME);
+            namePrompt = new NamePromptScreen(getDisplay(),
+                    "your ship", Options.SHIP_NAME);
             return this;
         }
         
@@ -108,7 +110,7 @@ public class StartScreen extends Screen
         return new GameScreen(getDisplay());
     }
     
-    public static String[] getTitleArt()
+    public static ColorString[] getTitleArt()
     {
         // Art credit goes to patorjk.com/software/taag/
         
@@ -118,26 +120,25 @@ public class StartScreen extends Screen
          __  / __ | / /  _ \_  ___/____ \_  _ \  ___/  __/  __ \_  ___/
          _  __/__ |/ //  __/  /   ____/ //  __/ /__ / /_ / /_/ /  /
          / /___ ____/ \___//_/    /____/ \___/\___/ \__/ \____//_/
-        /_____/ (C) 20XX Boldorf Smokebane                 vX.X.X
+        /_____/ C 20XX Boldorf Smokebane                   vX.X.X
         */
         
-        String padding =
-                Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
+        String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
         
         String infoLine = Symbol.COPYRIGHT + " " + COPYRIGHT_YEAR + " "
                 + new String(DEVELOPER) + " " + padding + VERSION;
         
-        List<String> titleArt = new LinkedList<>();
+        List<ColorString> titleArt = new LinkedList<>();
         
         // Comment above is final form; print is distorted by extra backslashes
-        titleArt.add(" __________               ________          _____              ");
-        titleArt.add(" ___  ____/  _______________  ___/____________  /______________");
-        titleArt.add(" __  /___ | / /  _ \\_  ___/____ \\_  _ \\  ___/  __/  __ \\_  ___/");
-        titleArt.add(" _  __/__ |/ //  __/  /   ____/ //  __/ /__ / /_ / /_/ /  /    ");
-        titleArt.add(" / /___ ____/ \\___//_/    /____/ \\___/\\___/ \\__/ \\____//_/     ");
-        titleArt.add("/_____/ " + infoLine + "        ");
+        titleArt.add(new ColorString(" __________               ________          _____              "));
+        titleArt.add(new ColorString(" ___  ____/  _______________  ___/____________  /______________"));
+        titleArt.add(new ColorString(" __  /___ | / /  _ \\_  ___/____ \\_  _ \\  ___/  __/  __ \\_  ___/"));
+        titleArt.add(new ColorString(" _  __/__ |/ //  __/  /   ____/ //  __/ /__ / /_ / /_/ /  /    "));
+        titleArt.add(new ColorString(" / /___ ____/ \\___//_/    /____/ \\___/\\___/ \\__/ \\____//_/     "));
+        titleArt.add(new ColorString("/_____/ ").add(new ColorString(infoLine, COLOR_FIELD)).add("        "));
         
-        return titleArt.toArray(new String[titleArt.size()]);
+        return titleArt.toArray(new ColorString[titleArt.size()]);
     }
     
     private void generateStarfield()
