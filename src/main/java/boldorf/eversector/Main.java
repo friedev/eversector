@@ -86,6 +86,11 @@ public class Main
     public static boolean showStars;
     
     /**
+     * If true, will show faction colors instead of region colors on planets.
+     */
+    public static boolean showFactions;
+    
+    /**
      * True if the current run's final score is disqualified from the
      * leaderboard.
      */
@@ -165,12 +170,13 @@ public class Main
     
     public static List<ColorString> startGame() throws Exception
     {
-        disqualified = false;
-        pendingElection = null;
+        disqualified         = false;
+        pendingElection      = null;
         pendingRelationships = new LinkedList<>();
-        pendingBattle = null;
-        showStars = false;
-        kills = 0;
+        pendingBattle        = null;
+        showStars            = false;
+        showFactions         = false;
+        kills                = 0;
 
         setOptionDefaults();
 

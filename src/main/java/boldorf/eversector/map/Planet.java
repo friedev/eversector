@@ -424,7 +424,7 @@ public class Planet implements ColorStringObject
         return nShips;
     }
     
-    public List<ColorString> toColorStrings()
+    public List<ColorString> toColorStrings(boolean showFactions)
     {
         List<ColorString> list = new ArrayList<>(getNRows());
         
@@ -432,7 +432,20 @@ public class Planet implements ColorStringObject
         {
             ColorString rowString = new ColorString();
             for (Region region: row)
-                rowString.add(region.toColorChar());
+            {
+                if (showFactions)
+                {
+                    ColorChar regionChar = new ColorChar(region.toColorChar());
+                    regionChar.setForeground(region.isClaimed() ?
+                            region.getFaction().getColor() : null);
+                    rowString.add(regionChar);
+                }
+                else
+                {
+                    rowString.add(region.toColorChar());
+                }
+            }
+            
             list.add(rowString);
         }
         

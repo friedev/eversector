@@ -10,6 +10,7 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
+import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.playSoundEffect;
@@ -108,6 +109,9 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
                 case KeyEvent.VK_L:
                     cursor = player.getPlanetLocation();
                     break;
+                case KeyEvent.VK_V:
+                    Main.showFactions = !Main.showFactions;
+                    break;
             }
         }
         
@@ -127,6 +131,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         keybindings.add(new Keybinding("mine", "enter"));
         keybindings.add(new Keybinding("claim", "c"));
         keybindings.add(new Keybinding("look", "l"));
+        keybindings.add(new Keybinding("toggle faction view", "v"));
         return keybindings;
     }
     
@@ -163,7 +168,8 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
         
         window.addSeparator(new Line(true, 2, 1));
-        List<ColorString> colorStrings = planet.toColorStrings();
+        List<ColorString> colorStrings =
+                planet.toColorStrings(Main.showFactions);
         if (isLooking())
         {
             colorStrings.get(cursor.getRegionCoord().y)

@@ -8,6 +8,7 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Main.playSoundEffect;
@@ -35,7 +36,7 @@ public class LandScreen extends ConfirmationScreen
         super(display);
         Planet planet = player.getSectorLocation().getPlanet();
         window = new PopupWindow(display, new Border(1), new Line(true, 1, 1));
-        window.getContents().addAll(planet.toColorStrings());
+        window.getContents().addAll(planet.toColorStrings(Main.showFactions));
         selection = new PlanetLocation(player.getSectorLocation(),
                 Coord.get(0, 0));
     }
@@ -82,7 +83,8 @@ public class LandScreen extends ConfirmationScreen
         List<ColorString> contents = window.getContents();
         contents.clear();
         Planet planet = player.getSectorLocation().getPlanet();
-        List<ColorString> colorStrings = planet.toColorStrings();
+        List<ColorString> colorStrings =
+                planet.toColorStrings(Main.showFactions);
         
         Coord regionCoord = selection.getRegionCoord();
         colorStrings.get(regionCoord.y).getColorCharAt(regionCoord.x)
