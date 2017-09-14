@@ -119,7 +119,7 @@ public class StartScreen extends Screen
         /_____/ C 20XX Boldorf Smokebane                   vX.X.X
         */
         
-        String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
+        String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length() + 2);
         
         String infoLine = Symbol.COPYRIGHT + " " + COPYRIGHT_YEAR + " "
                 + DEVELOPER + " " + padding + VERSION;
@@ -132,7 +132,7 @@ public class StartScreen extends Screen
         titleArt.add(new ColorString(" __  /___ | / /  _ \\_  ___/____ \\_  _ \\  ___/  __/  __ \\_  ___/"));
         titleArt.add(new ColorString(" _  __/__ |/ //  __/  /   ____/ //  __/ /__ / /_ / /_/ /  /    "));
         titleArt.add(new ColorString(" / /___ ____/ \\___//_/    /____/ \\___/\\___/ \\__/ \\____//_/     "));
-        titleArt.add(new ColorString("/_____/ ").add(new ColorString(infoLine, COLOR_FIELD)).add("        "));
+        titleArt.add(new ColorString("/_____/ ").add(new ColorString(infoLine, COLOR_FIELD)).add("      "));
         
         return titleArt.toArray(new ColorString[titleArt.size()]);
     }
