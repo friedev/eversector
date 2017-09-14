@@ -2520,7 +2520,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                 // Otherwise they will refuse, giving others a chance to help
                 addPlayerColorMessage(new ColorString("The ").add(faction)
                         .add(" refuses to help you."));
-                changeGlobalReputation(Reputations.DISTRESS_ATTEMPT);
+                changeReputation(faction, Reputations.DISTRESS_ATTEMPT);
             }
             else if (faction.getEconomyCredits() < DISTRESS_CREDITS)
             {
@@ -2540,7 +2540,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         if (offerFaction == null ||
                 offerFaction.getEconomyCredits() < DISTRESS_CREDITS ||
                 offerReputation.get() + Reputations.JOIN + Reputations.DISTRESS
-                <= Reputations.REQ_REJECTION)
+                < 0)
         {
             if (!isAligned())
             {
@@ -2586,9 +2586,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         if (!isAligned())
             return false;
         
-        return getReputation(faction).get()
-                + Math.abs(Reputations.REQ_REJECTION)
-                > Math.abs(Reputations.DISTRESS);
+        return getReputation(faction).get() >= Math.abs(Reputations.DISTRESS);
     }
     
     /**
