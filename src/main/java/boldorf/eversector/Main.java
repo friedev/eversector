@@ -22,7 +22,6 @@ import boldorf.eversector.storage.Options;
 import boldorf.eversector.storage.Paths;
 import boldorf.eversector.storage.Symbol;
 import boldorf.eversector.storage.Tileset;
-import static boldorf.eversector.storage.Tips.TIPS;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
@@ -210,8 +209,6 @@ public class Main
                 + "bundled README to learn how to play."));
         startMessages.add(new ColorString("By playing, you accept the "
                 + "Terms of Use in the README."));
-        startMessages.add(new ColorString("Tip: ", COLOR_FIELD)
-                        .add(rng.getRandomElement(TIPS)));
 
         String startAction;
         if (savedGame)

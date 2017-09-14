@@ -78,21 +78,48 @@ though generally it can be used to leave the dialog without performing
 an action. To navigate menus, use the arrow keys. In some cases, <span style="font-family: monospace;">wasd</span>, the VI
 keys, and the number pad may also be used to navigate. The current
 selection is often denoted by a blue highlight.<br>
-<h3>Getting Started</h3>
-<br>
-You begin in the central sector of the galaxy, a place free of pirates
-and hostilities. To start earning credits, find a planet or asteroid
-belt to mine, and sell the ore at a station. The number next to the ore
-indicates its density, or how many units you will get from mining it.
-You can use the <span style="font-family: monospace;">r</span>
-key to automatically restock all of your resources at a station, as
-well as selling ore. If you find yourself in a sector with no planets,
-you will have to escape the sector by flying down past the outermost
-orbit. From there, search for another station system (<span style="font-family: monospace;">#</span>). If you
-happen to run out of fuel, you can try broadcasting a distress signal.
-Once you have secured a source of income, you can choose to spend your
-credits on various items. Soon your power will grow and you can embark
-on your own path through the depths of space.
+<h3>Interface Overview</h3>
+<h4>Galaxy</h4>
+The galaxy map shows you the layout of nearby sectors in your galaxy.
+Each tile is a sector, though only some of them have star systems you
+can enter. Any tile other than a dot is a star system and highlighted
+sectors contain nebulae that block vision. You can also switch between
+normal view and star view by pressing <span style="font-family: monospace;">v</span>. Normal view
+colors sectors based on the faction that controls them and shows
+systems with stations in them. Star view displays only star sizes and
+colors. You can look around with <span style="font-family: monospace;">l</span> to what each
+sector contains.
+<h4>Sector</h4>
+The sector interface is primarily a list of orbits with a comprehensive
+list of their contents in the panel on the right. The uppermost orbits
+are the closest to the star and lower ones are further away. Traveling
+away from the star once at the furthest orbit will cause you to escape
+the sector. The size of star determines the number of possible orbits
+around it. You and other ships are displayed in the middle column, with
+stations on the left and planets on the right. As with the galaxy map, <span style="font-family: monospace;">l</span> can be used
+to look around and reveal the contents of different orbits.
+<h4>Planet</h4>
+The planet interface is a display of all regions on a planet. When
+traveling around the planet, note that traveling east and west will
+take you to the other side of the world. Traveling north or south over
+a pole will take you to the opposite side of the planet, not to the
+other pole. You can choose to show the colors of factions rather than
+default region colors by pressing <span style="font-family: monospace;">v</span>. Also note
+that solar arrays won't work on planets as most light exposure will be
+inconsistent.
+<h4>Station</h4>
+The interface for stations lists items you can purchase on the left and
+items you can sell on the right. To save time when mining, you can
+press <span style="font-family: monospace;">r</span>
+at a station to "restock," selling all ore and refilling other
+resources. Docking with a station will automatically repair any damaged
+modules you may have for no cost.<br>
+<h4>Battle</h4>
+The battle interface is a simple list of your allies and enemies.
+Pressing one of the combat keys (as listed after pressing <span style="font-family: monospace;">?</span>) will perform
+its action on the currently selected ship. You will be able to view the
+information of ships you've scanned on a panel to the right. Note that
+the more modules a ship has, the more likely one is to get damaged.
 <h3>Goal</h3>
 EverSector is, in some sense, a sandbox. There are no goals imposed
 upon you, and you are given the freedom to play as you wish. The most
@@ -139,7 +166,8 @@ MacLeod</a></li>
 by&nbsp;<a href="https://frozenfractal.com/">Thomas
 ten Cate (Frozen Fractal)</a></li>
 </ul>
-All licenses can be found in the&nbsp;<span style="font-family: monospace;">licenses</span> folder.
+All licenses can be found in the&nbsp;<span style="font-family: monospace;">licenses</span>
+folder.
 <h2><a name="Changelog"></a>Changelog</h2>
 <h3>Version History</h3>
 <ul>
@@ -177,7 +205,7 @@ All licenses can be found in the&nbsp;<span style="font-family: monospace;">lice
 <li>The universe is divided into multiple galaxies, each of
 which are much larger than previous maps</li>
 <ul>
-<li>Travelling off the edge of a galaxy allows to you travel
+<li>Traveling off the edge of a galaxy allows to you travel
 to a new one</li>
 <li>The density of stars is greater near the center of each
 galaxy</li>
@@ -399,7 +427,7 @@ inconsistent light exposure</li>
 <li>New command system with files</li>
 <ul>
 <li>All commands are now stored in files and thus
-customizeable</li>
+customizable</li>
 <li>There are multiple ways to trigger a single command</li>
 <li>Most submenus now have hotkeys as well</li>
 <li>A&nbsp;master manifest is now used, allowing every
