@@ -66,9 +66,7 @@ public class Sector
     
     public void init()
     {
-        double chance = 0.2 + Math.min(0.7,
-                1.0 / (double) location.getCoord().distance(
-                        location.getGalaxy().getCenter()));
+        double chance = 0.2 + Math.min(0.7, 1.0 / location.getCoord().distance(location.getGalaxy().getCenter()));
         
         if (Utility.getChance(rng, chance))
         {
@@ -188,39 +186,11 @@ public class Sector
         // There was a tie in control, so no faction rules this sector
         if (index == -1)
         {
-//            if (faction != null)
-//                faction.addNews(toString() + " has been lost.");
-            
             faction = null;
             return;
         }
         
-        Faction ruler = galaxy.getFaction(index);
-        
-//        if (faction != ruler)
-//        {
-//            if (galaxy.getTurn() > -Galaxy.SIMULATED_TURNS)
-//            {
-//                if (faction == null)
-//                {
-//                    ruler.addNews(toString() + " has been claimed.");
-//                }
-//                else
-//                {
-//                    ruler.addNews(new ColorString(toString()
-//                            + " has been taken from the ").add(faction)
-//                            .add("."));
-//                }
-//            }
-//            
-//            if (faction != null)
-//            {
-//                faction.addNews(new ColorString(toString()
-//                        + " has been lost to the ").add(ruler).add("."));
-//            }
-//        }
-        
-        faction = ruler;
+        faction = galaxy.getFaction(index);
     }
     
     public int getPlanetsControlledBy(Faction f)
@@ -828,7 +798,7 @@ public class Sector
      * possible designations, enough for a grid of 260x260 sectors.
      * @return a String consisting of two characters, a hyphen, and two numbers
      */
-    public static final String generateName()
+    public static String generateName()
     {
         char c = (char) (rng.nextInt(25) + 65);
         char d = (char) (rng.nextInt(25) + 65);

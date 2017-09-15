@@ -11,7 +11,7 @@ import java.awt.Color;
 
 /**
  * A relationship between factions, containing the two factions and the terms
- * between them. 
+ * between them.
  */
 public class Relationship
 {

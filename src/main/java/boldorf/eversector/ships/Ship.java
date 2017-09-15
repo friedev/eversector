@@ -286,7 +286,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the leader of the ship's faction is itself
      */
     public boolean isLeader()
-        {return isAligned() ? faction.isLeader(this) : false;}
+        {return isAligned() && faction.isLeader(this);}
     
     /**
      * Returns true if the specified ship is considered non-hostile (including
@@ -374,8 +374,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                 getSectorLocation().getStation().getShips().remove(this);
             }
         }
-        else if (location instanceof SectorLocation &&
-                !(destination instanceof SectorLocation))
+        else if (location instanceof SectorLocation)
         {
             location.getSector().getShips().remove(this);
         }
@@ -564,7 +563,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the addition was successful
      */
     public final boolean addFlag(String flag)
-        {return flags.contains(flag) ? false : flags.add(flag);}
+        {return !flags.contains(flag) && flags.add(flag);}
     
     /**
      * Removes the given String from the flag list.
@@ -637,11 +636,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public boolean changeResource(String name, int change)
     {
         Resource resource = getResource(name);
-        
-        if (resource == null)
-            return false;
-        
-        return resource.changeAmount(change);
+        return resource != null && resource.changeAmount(change);
     }
     
     /**
@@ -969,7 +964,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public boolean changeResourceBy(Action action)
     {
-        return action == null ? false : getResource(action.getResource())
+        return action != null && getResource(action.getResource())
                 .changeAmount(-action.getCost());
     }
     
@@ -1686,11 +1681,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     
     public boolean canLand()
     {
-        if (!canCrashLand())
-            return false;
-        
-        return validateResources(Actions.LAND,
-                "land on " + getSectorLocation().getPlanet());
+        return canCrashLand() &&
+                validateResources(Actions.LAND, "land on " + getSectorLocation().getPlanet());
     }
     
     public boolean canCrashLand()
@@ -2582,12 +2574,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship's reputation is high enough to distress
      */
     public boolean canDistress()
-    {
-        if (!isAligned())
-            return false;
-        
-        return getReputation(faction).get() >= Math.abs(Reputations.DISTRESS);
-    }
+        {return isAligned() && getReputation(faction).get() >= Math.abs(Reputations.DISTRESS);}
     
     /**
      * Removes the ship from all collections and marks it as destroyed.

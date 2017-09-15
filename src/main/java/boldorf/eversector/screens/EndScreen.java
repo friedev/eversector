@@ -13,7 +13,6 @@ import boldorf.eversector.Main;
 import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.disqualified;
 import static boldorf.eversector.Main.kills;
-import static boldorf.eversector.Main.optionIs;
 import static boldorf.eversector.Main.options;
 import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Main.startGame;
@@ -21,8 +20,6 @@ import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 import static boldorf.eversector.screens.StartScreen.getTitleArt;
 import boldorf.eversector.storage.Options;
-import static boldorf.eversector.storage.Options.LEADERBOARD;
-import static boldorf.eversector.storage.Options.OPTION_TRUE;
 import boldorf.eversector.storage.Paths;
 import boldorf.util.Utility;
 import java.awt.Color;
@@ -52,7 +49,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
     {
         super(display);
         window = new PopupWindow(display, new Border(2), new Line(true, 2, 1));
-        if (leaderboard && optionIs(OPTION_TRUE, LEADERBOARD))
+        if (leaderboard && Options.toBoolean(options.getProperty(Options.LEADERBOARD)))
             setUpLeaderboard();
         setUpWindow(message);
         

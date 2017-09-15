@@ -22,10 +22,7 @@ public class Faction implements ColorStringObject
         "Empire", "Federation", "Group", "Guild", "Hivemind", "League",
         "Network", "Order", "Organization", "Republic", "Union"
     };
-    
-    public static final int ECONOMY_CREDITS = 10000;
-    public static final int NEWS_LENGTH = 10;
-    
+
     private String name;
     private Color  color;
     private String type;
@@ -62,7 +59,7 @@ public class Faction implements ColorStringObject
      * @param color the faction's color
      */
     public Faction(String name, Galaxy galaxy, Color color)
-        {this(name, (String) rng.getRandomElement(TYPES), galaxy, color);}
+        {this(name, rng.getRandomElement(TYPES), galaxy, color);}
     
     @Override
     public String toString()

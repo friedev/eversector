@@ -217,18 +217,16 @@ public class Galaxy
             player.fadeReputations();
         
         // Respawns ships if there are fewer than the minimum ships in a sector
-        for (int y = 0; y < sectors.length; y++)
+        for (Sector[] row : sectors)
         {
-            for (int x = 0; x < sectors[y].length; x++)
+            for (Sector sector: row)
             {
-                Sector sector = sectors[y][x];
-                
                 if (sector.getNShips() < Sector.MIN_SHIPS &&
                         sector.hasStations())
                 {
                     Station station =
                             sector.getStationAt(sector.getRandomStationOrbit());
-                    
+
 //                    if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
 //                    {
                     Ship newShip = new Ship(
@@ -241,7 +239,7 @@ public class Galaxy
                     ships.add(newShip);
 //                    }
                 }
-                
+
                 // Only known way to fix duplicate ship bug
                 sector.resetDuplicateShips();
             }
@@ -365,20 +363,20 @@ public class Galaxy
     public List<ColorString> toColorStrings(boolean showStars, Coord cursor)
     {
         List<ColorString> output = new ArrayList<>(sectors.length);
-        
-        for (int y = 0; y < sectors.length; y++)
+
+        for (Sector[] row : sectors)
         {
             ColorString line = new ColorString();
-            
-            for (int x = 0; x < sectors[y].length; x++)
+
+            for (Sector sector : row)
             {
                 ColorChar symbol = new ColorChar(showStars ?
-                        sectors[y][x].getStarSymbol() : sectors[y][x].getSymbol());
-                if (sectors[y][x].getLocation().getCoord().equals(cursor))
+                        sector.getStarSymbol() : sector.getSymbol());
+                if (sector.getLocation().getCoord().equals(cursor))
                     symbol.setBackground(COLOR_SELECTION_BACKGROUND);
                 line.add(symbol);
             }
-            
+
             output.add(line);
         }
         
@@ -455,10 +453,10 @@ public class Galaxy
     public int getSectorsControlledBy(Faction faction)
     {
         int sectorsClaimed = 0;
-        
-        for (int y = 0; y < sectors.length; y++)
-            for (int x = 0; x < sectors[y].length; x++)
-                if (sectors[y][x].getFaction() == faction)
+
+        for (Sector[] row : sectors)
+            for (Sector sector : row)
+                if (sector.getFaction() == faction)
                     sectorsClaimed++;
         
         return sectorsClaimed;
@@ -467,10 +465,10 @@ public class Galaxy
     public int getPlanetsControlledBy(Faction faction)
     {
         int planetsClaimed = 0;
-        
-        for (int y = 0; y < sectors.length; y++)
-            for (int x = 0; x < sectors[y].length; x++)
-                planetsClaimed += sectors[y][x].getPlanetsControlledBy(faction);
+
+        for (Sector[] row : sectors)
+            for (Sector sector : row)
+                planetsClaimed += sector.getPlanetsControlledBy(faction);
         
         return planetsClaimed;
     }
@@ -478,10 +476,10 @@ public class Galaxy
     public int getNStationsControlledBy(Faction faction)
     {
         int stationsClaimed = 0;
-        
-        for (int y = 0; y < sectors.length; y++)
-            for (int x = 0; x < sectors[y].length; x++)
-                stationsClaimed += sectors[y][x].getStationsControlledBy(faction);
+
+        for (Sector[] row : sectors)
+            for (Sector sector : row)
+                stationsClaimed += sector.getStationsControlledBy(faction);
         
         return stationsClaimed;
     }
@@ -490,21 +488,19 @@ public class Galaxy
     {
         int trade  = 0;
         int battle = 0;
-        
-        for (int y = 0; y < sectors.length; y++)
+
+        for (Sector[] row : sectors)
         {
-            for (int x = 0; x < sectors[y].length; x++)
+            for (Sector sector : row)
             {
-                trade += sectors[y][x].getStationTypesControlledBy(faction,
+                trade += sector.getStationTypesControlledBy(faction,
                         Station.TRADE);
-                battle += sectors[y][x].getStationTypesControlledBy(faction,
+                battle += sector.getStationTypesControlledBy(faction,
                         Station.BATTLE);
             }
         }
         
-        return new StringBuilder().append(trade + battle).append(" (")
-                .append(trade).append(" Trade, ").append(battle)
-                .append(" Battle)").toString();
+        return (trade + battle) + " (" + trade + " Trade, " + battle + " Battle)";
     }
     
     public int getNShipsIn(Faction faction)
@@ -537,9 +533,7 @@ public class Galaxy
             }
         }
         
-        return new StringBuilder().append(total).append(" (").append(mining)
-                .append(" Mining, ").append(battle).append(" Battle)")
-                .toString();
+        return total + " (" + mining + " Mining, " + battle + " Battle)";
     }
     
     public Faction[] getFactions()
@@ -659,9 +653,9 @@ public class Galaxy
             String name = Main.nameGenerator.generateName(2);
 
             // Ensure no factions are of the same type
-            String type = (String) rng.getRandomElement(Faction.TYPES);
+            String type = rng.getRandomElement(Faction.TYPES);
             while (usedTypes.contains(type))
-                type = (String) rng.getRandomElement(Faction.TYPES);
+                type = rng.getRandomElement(Faction.TYPES);
 
             usedTypes.add(type);
             Color color;

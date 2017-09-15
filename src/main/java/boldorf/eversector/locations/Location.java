@@ -114,10 +114,5 @@ public class Location
     }
     
     public boolean equals(Location o)
-    {
-        if (o instanceof SectorLocation)
-            return false;
-        
-        return galaxy == o.galaxy && coord.equals(o.coord);
-    }
+        {return !(o instanceof SectorLocation) && galaxy == o.galaxy && coord.equals(o.coord);}
 }

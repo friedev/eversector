@@ -520,24 +520,24 @@ public class AI
     {
         if (!destinationIsValid())
             return false;
-        
+
         if (ship.isDocked())
             return ship.undock();
-        
+
         if (ship.isLanded())
         {
             if (destination instanceof PlanetLocation &&
                     ship.getSectorLocation().getPlanet() ==
-                    ((SectorLocation) destination).getPlanet())
+                            ((SectorLocation) destination).getPlanet())
             {
                 return ship.relocate(Utility.toGoToCardinal(
                         ship.getPlanetLocation().getRegionCoord(),
                         ((PlanetLocation) destination).getRegionCoord()));
             }
-            
+
             return ship.takeoff();
         }
-        
+
         if (ship.isInSector())
         {
             if (destination instanceof SectorLocation &&
@@ -548,32 +548,29 @@ public class AI
                 {
                     if (destination instanceof StationLocation)
                         return ship.dock();
-                    
+
                     if (destination instanceof PlanetLocation)
                     {
                         return ship.land(((PlanetLocation) destination)
                                 .getRegionCoord());
                     }
                 }
-                
+
                 return ship.orbit(ship.getSectorLocation().getOrbit() <
                         ((SectorLocation) destination).getOrbit());
             }
-            
+
             return ship.orbit(true);
         }
-        
+
         if (ship.getLocation().getCoord().equals(destination.getCoord()))
             return ship.enter();
-        
-        if (!destination.getCoord().isAdjacent(ship.getLocation().getCoord()) &&
-                ship.warpTo(destination.getCoord()))
-            return true;
-        
-        return ship.burn(Utility.toGoToCardinal(ship.getLocation().getCoord(),
-                destination.getCoord()));
+
+        return (!destination.getCoord().isAdjacent(ship.getLocation().getCoord()) &&
+                ship.warpTo(destination.getCoord())) ||
+                ship.burn(Utility.toGoToCardinal(ship.getLocation().getCoord(), destination.getCoord()));
     }
-    
+
     private void performEmergencyAction()
     {
         if (ship.refine())
@@ -583,30 +580,30 @@ public class AI
         else
             ship.destroy(false);
     }
-    
+
     public boolean joinBattle(Battle battle)
     {
         if (!willAttack() || !ship.isOrbital())
             return false;
-        
+
         int attackerFriendliness = 0;
         int defenderFriendliness = 0;
-        
+
         for (Ship attacker: battle.getAttackers())
             attackerFriendliness += getFriendliness(attacker);
-        
+
         for (Ship defender: battle.getDefenders())
             defenderFriendliness += getFriendliness(defender);
-        
+
         if (attackerFriendliness > defenderFriendliness)
             battle.getAttackers().add(ship);
         else
             battle.getDefenders().add(ship);
-        
+
         ship.setLocation(ship.getSectorLocation().joinBattle(battle));
         return true;
     }
-    
+
     private int getFriendliness(Ship other)
     {
         if (!other.isAligned() || !ship.isAligned())

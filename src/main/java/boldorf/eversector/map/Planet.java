@@ -455,7 +455,6 @@ public class Planet implements ColorStringObject
     /**
      * Generates a random planet type, including temperature based on distance
      * from the nearest orbit.
-     * @return a String for the planet type
      */
     private void generateType()
     {

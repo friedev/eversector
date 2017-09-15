@@ -8,8 +8,6 @@ import boldorf.util.Utility;
 import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
-import static boldorf.eversector.Main.addColorMessage;
-import static boldorf.eversector.Main.optionIs;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import boldorf.eversector.map.Galaxy;
@@ -33,12 +31,6 @@ import squidpony.squidmath.RNG;
 /** The main class for EverSector, which primarily manages player input. */
 public class Main
 {
-    /**
-     * If true, will adjust the path to work in the developer's IDE with sources
-     * and libraries separate.
-     */
-    public static final boolean DEV_PATH = true;
-    
     public static final Color
     COLOR_FIELD = AsciiPanel.brightWhite,
     COLOR_ERROR = AsciiPanel.brightRed,
@@ -189,8 +181,7 @@ public class Main
         if (savedGame)
         {
             Properties save = FileManager.load(Paths.SAVE);
-            disqualified = optionIs(Options.OPTION_TRUE,
-                    save.getProperty(Options.DISQUALIFIED));
+            disqualified = Options.toBoolean(options.getProperty(Options.DISQUALIFIED));
             player = new Ship(galaxy, save);
             galaxy.setPlayer(player);
         }
@@ -217,7 +208,7 @@ public class Main
         }
         else
         {
-            if (optionIs(Options.OPTION_TRUE, Options.KEEP_SEED))
+            if (Options.toBoolean(options.getProperty(Options.KEEP_SEED)))
             {
                 startMessages.add(new ColorString("Your chosen seed is: ")
                         .add(new ColorString(Long.toString(seed),
@@ -272,21 +263,6 @@ public class Main
         catch (Exception e) {}
     }
     
-    /**
-     * Returns true if the options property with the given key equals the given
-     * String.
-     * @param option the String to compare with the property
-     * @param property the key of the property to check
-     * @return true if the options property with the given key equals s
-     */
-    public static boolean optionIs(String option, String property)
-    {
-        if (option == null || property == null)
-            return false;
-        
-        return option.equals(options.getProperty(property));
-    }
-    
     public static void setOptionDefaults()
     {
         if (options.getProperty(Options.FONT) == null ||
@@ -339,7 +315,7 @@ public class Main
     /** Set the seed based on the status of the keepSeed property. */
     public static void setUpSeed()
     {
-        if (optionIs(Options.OPTION_TRUE, Options.KEEP_SEED))
+        if (Options.toBoolean(options.getProperty(Options.KEEP_SEED)))
         {
             String seedString = options.getProperty(Options.SEED);
             if (seedString != null)
