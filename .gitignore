@@ -5,5 +5,5 @@
 /bundle/local/
 /bundle/jre/
 /bundle/EverSector.jar
+/bundle/EverSector.exe
 /bundle/crash.txt
-*.exe
