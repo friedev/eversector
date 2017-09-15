@@ -1,9 +1,10 @@
 .*/
 EverSector.iml
-/build/
-/bundle/assets/audio/
-/bundle/local/
-/bundle/jre/
-/bundle/EverSector.jar
-/bundle/EverSector.exe
-/bundle/crash.txt
+build/
+out/
+bundle/assets/audio/
+bundle/local/
+bundle/jre/
+bundle/EverSector.jar
+bundle/EverSector.exe
+bundle/crash.txt
