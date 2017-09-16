@@ -1,13 +1,15 @@
 package boldorf.eversector.ships;
 
-import static boldorf.eversector.Main.rng;
 import boldorf.eversector.locations.SectorLocation;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static boldorf.eversector.Main.rng;
+
 /**
- * 
+ *
  */
 public class Battle
 {
@@ -15,15 +17,15 @@ public class Battle
     private List<Ship> defenders;
     private List<Ship> fleeing;
     private List<Ship> destroyed;
-    
+
     public Battle(List<Ship> attackers, List<Ship> defenders)
     {
         this.attackers = attackers;
         this.defenders = defenders;
-        this.fleeing   = new LinkedList<>(); 
+        this.fleeing = new LinkedList<>();
         this.destroyed = new LinkedList<>();
     }
-    
+
     public Battle(Ship attacker, Ship defender)
     {
         attackers = new LinkedList<>();
@@ -33,19 +35,19 @@ public class Battle
         fleeing = new LinkedList<>();
         destroyed = new LinkedList<>();
     }
-    
+
     public List<Ship> getAttackers()
-        {return attackers;}
-    
+    {return attackers;}
+
     public List<Ship> getDefenders()
-        {return defenders;}
-    
+    {return defenders;}
+
     public List<Ship> getFleeing()
-        {return fleeing;}
-    
+    {return fleeing;}
+
     public List<Ship> getDestroyed()
-        {return destroyed;}
-    
+    {return destroyed;}
+
     public List<Ship> getShips()
     {
         List<Ship> ships = new ArrayList<>(attackers.size() + defenders.size());
@@ -53,7 +55,7 @@ public class Battle
         ships.addAll(defenders);
         return ships;
     }
-    
+
     public List<Ship> getAllies(Ship ship)
     {
         List<Ship> allies = new LinkedList<>();
@@ -61,13 +63,13 @@ public class Battle
         allies.remove(ship);
         return allies;
     }
-    
+
     public List<Ship> getEnemies(Ship ship)
-        {return attackers.contains(ship) ? defenders : attackers;}
-    
+    {return attackers.contains(ship) ? defenders : attackers;}
+
     public boolean continues()
-        {return !attackers.isEmpty() && !defenders.isEmpty();}
-    
+    {return !attackers.isEmpty() && !defenders.isEmpty();}
+
     public boolean processAttacks()
     {
         boolean attackMade = false;
@@ -76,18 +78,16 @@ public class Battle
         {
             if (attackers.size() >= i + 1 && attackers.get(i).getAI() != null)
             {
-                attackMade = attackMade ||
-                        attackers.get(i).getAI().performBattleAction();
+                attackMade = attackMade || attackers.get(i).getAI().performBattleAction();
             }
-            
+
             if (defenders.size() >= i + 1 && defenders.get(i).getAI() != null)
             {
-                attackMade = attackMade ||
-                        defenders.get(i).getAI().performBattleAction();
+                attackMade = attackMade || defenders.get(i).getAI().performBattleAction();
             }
         }
-        
-        for (Ship ship: getShips())
+
+        for (Ship ship : getShips())
         {
             if (ship.isDestroyed())
             {
@@ -98,31 +98,32 @@ public class Battle
                 destroyed.add(ship);
             }
         }
-        
+
         return attackMade;
     }
-    
+
     public List<Ship> getPursuers(Ship ship)
     {
         List<Ship> pursuing = new LinkedList<>();
 
-        for (Ship enemy: getEnemies(ship))
+        for (Ship enemy : getEnemies(ship))
         {
-            if (enemy.getAI() != null && !fleeing.contains(enemy) &&
-                    enemy.getAI().pursue())
+            if (enemy.getAI() != null && !fleeing.contains(enemy) && enemy.getAI().pursue())
             {
                 pursuing.add(enemy);
             }
         }
-        
+
         return pursuing;
     }
-    
+
     public void processEscape(Ship ship, List<Ship> pursuing)
     {
         if (!fleeing.contains(ship))
+        {
             return;
-        
+        }
+
         SectorLocation destination = ship.getSectorLocation();
 
         if (!ship.isCloaked())
@@ -130,14 +131,12 @@ public class Battle
             if (rng.nextBoolean())
             {
                 SectorLocation test = destination.raiseOrbit();
-                destination = test == null ?
-                        destination.lowerOrbit() : test;
+                destination = test == null ? destination.lowerOrbit() : test;
             }
             else
             {
                 SectorLocation test = destination.lowerOrbit();
-                destination = test == null ?
-                        destination.raiseOrbit() : test;
+                destination = test == null ? destination.raiseOrbit() : test;
             }
 
             if (pursuing.isEmpty())
@@ -151,13 +150,13 @@ public class Battle
                 Battle newBattle = new Battle(pursuing, defenderList);
                 destination = destination.joinBattle(newBattle);
 
-                for (Ship pursuer: pursuing)
+                for (Ship pursuer : pursuing)
                 {
                     pursuer.setLocation(destination);
                     attackers.remove(pursuer);
                     defenders.remove(pursuer);
                 }
-                
+
                 ship.addPlayerMessage("You have been pursued.");
             }
         }
@@ -170,48 +169,60 @@ public class Battle
         attackers.remove(ship);
         defenders.remove(ship);
     }
-    
+
     public void processEscape(Ship ship)
-        {processEscape(ship, getPursuers(ship));}
-    
+    {processEscape(ship, getPursuers(ship));}
+
     public void processEscapes()
     {
-        for (Ship ship: new ArrayList<>(fleeing))
+        for (Ship ship : new ArrayList<>(fleeing))
+        {
             processEscape(ship);
+        }
     }
-    
+
     public void distributeLoot()
     {
         List<Ship> winners = getShips();
-        
+
         if (winners == null || winners.isEmpty())
+        {
             return;
-        
+        }
+
         for (int i = 0; i < destroyed.size(); i++)
+        {
             winners.get(i % winners.size()).loot(destroyed.get(i));
+        }
     }
-    
+
     public void endBattle()
     {
-        for (Ship ship: getShips())
+        for (Ship ship : getShips())
+        {
             if (ship.isInBattle())
+            {
                 ship.setLocation(ship.getBattleLocation().leaveBattle());
-        
+            }
+        }
+
         attackers.clear();
         defenders.clear();
         fleeing.clear();
         destroyed.clear();
     }
-    
+
     public void processBattle()
     {
         while (continues())
         {
             if (!processAttacks() || !continues())
+            {
                 break;
+            }
             processEscapes();
         }
-        
+
         distributeLoot();
         endBattle();
     }
@@ -224,9 +235,9 @@ public class Battle
             // If this ship chooses to flee but is pursued
             if (!attack(ship))
             {
-                if (changeResourceBy(Actions.FLEE) &&
+                if (changeResourceBy(Action.FLEE) &&
                         (!ship.willPursue(this) ||
-                         !ship.changeResourceBy(Actions.PURSUE)))
+                         !ship.changeResourceBy(Action.PURSUE)))
                 {
                     // If the other ship is powerful enough, they will convert
                     // this ship
@@ -244,8 +255,8 @@ public class Battle
             // If the other ship flees but is pursued
             if (!ship.attack(this))
             {
-                if (ship.changeResourceBy(Actions.PURSUE) &&
-                        (!willPursue(ship) || !changeResourceBy(Actions.FLEE)))
+                if (ship.changeResourceBy(Action.PURSUE) &&
+                        (!willPursue(ship) || !changeResourceBy(Action.FLEE)))
                 {
                     if (willConvert() && convert(ship))
                         return;
@@ -254,7 +265,7 @@ public class Battle
         } while (!isDestroyed() && !ship.isDestroyed());
         
         // If this ship is destroyed or cannot flee while the other ship lives
-        if (isDestroyed() || (!validateResources(Actions.FLEE, "flee") &&
+        if (isDestroyed() || (!validateResources(Action.FLEE, "flee") &&
                 !ship.isDestroyed()))
         {
             if (isLeader() && ship.isInFaction(faction))
@@ -266,11 +277,11 @@ public class Battle
             else
             {
                 if (ship.isPassive(this))
-                    ship.changeReputation(ship.faction, Reputations.KILL_ALLY);
+                    ship.changeReputation(ship.faction, Reputation.KILL_ALLY);
                 else
-                    ship.changeReputation(ship.faction, Reputations.KILL_ENEMY);
+                    ship.changeReputation(ship.faction, Reputation.KILL_ENEMY);
                 
-                ship.changeReputation(faction, Reputations.KILL_ALLY);
+                ship.changeReputation(faction, Reputation.KILL_ALLY);
                 
                 if (isLeader())
                 {
@@ -295,11 +306,11 @@ public class Battle
             else
             {
                 if (isPassive(ship))
-                    changeReputation(faction, Reputations.KILL_ALLY);
+                    changeReputation(faction, Reputation.KILL_ALLY);
                 else
-                    changeReputation(faction, Reputations.KILL_ENEMY);
+                    changeReputation(faction, Reputation.KILL_ENEMY);
                 
-                changeReputation(ship.faction, Reputations.KILL_ALLY);
+                changeReputation(ship.faction, Reputation.KILL_ALLY);
                 
                 if (ship.isLeader())
                 {

@@ -4,7 +4,7 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.eversector.faction.Relationship.RelationshipType;
 
 /**
- * 
+ *
  */
 public class RelationshipChange
 {
@@ -13,10 +13,9 @@ public class RelationshipChange
     private String question;
     private ColorString message;
     private boolean negateAnswer;
-    
-    public RelationshipChange(Faction otherFaction,
-            RelationshipType relationship, String question, ColorString message,
-            boolean negateAnswer)
+
+    public RelationshipChange(Faction otherFaction, RelationshipType relationship, String question, ColorString message,
+                              boolean negateAnswer)
     {
         this.otherFaction = otherFaction;
         this.relationship = relationship;
@@ -24,19 +23,19 @@ public class RelationshipChange
         this.message = message;
         this.negateAnswer = negateAnswer;
     }
-    
+
     public Faction getOtherFaction()
-        {return otherFaction;}
-    
+    {return otherFaction;}
+
     public RelationshipType getRelationship()
-        {return relationship;}
-    
+    {return relationship;}
+
     public String getQuestion()
-        {return question;}
-    
+    {return question;}
+
     public ColorString getMessage()
-        {return message;}
-    
+    {return message;}
+
     public boolean negateAnswer()
-        {return negateAnswer;}
+    {return negateAnswer;}
 }

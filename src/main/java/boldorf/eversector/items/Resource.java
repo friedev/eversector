@@ -2,394 +2,433 @@ package boldorf.eversector.items;
 
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorString;
+
 import java.awt.Color;
 
 /**
- * A resource with all the properties of an item, in addition to amounts and
- * capacities for use on ships.
+ * A resource with all the properties of an item, in addition to amounts and capacities for use on ships.
  */
 public class Resource extends BaseResource
 {
-    /** The default capacity of resources. */
-    public static final int CAPACITY = 15;
-    
+    public static final String FUEL = "Fuel";
+    public static final String ENERGY = "Energy";
+    public static final String ORE = "Ore";
+    public static final String HULL = "Hull";
+
+    public static final String FUEL_EXPANDER = "Fuel Tank";
+    public static final String ENERGY_EXPANDER = "Energy Cell";
+    public static final String ORE_EXPANDER = "Cargo Bay";
+    public static final String HULL_EXPANDER = "Hull Frame";
+
     /**
-     * The ratio of amount to capacity at which there is considered to be a high
-     * amount of the resource. This is inclusive, and extends upwards to 1.
+     * The default capacity of resources.
+     */
+    public static final int CAPACITY = 15;
+
+    /**
+     * The ratio of amount to capacity at which there is considered to be a high amount of the resource. This is
+     * inclusive, and extends upwards to 1.
      */
     public static final double RATIO_HIGH = 0.75;
-    
+
     /**
-     * The ratio of amount to capacity at which there is considered to be a low
-     * amount of the resource. This is exclusive, and extends downwards to 0.
+     * The ratio of amount to capacity at which there is considered to be a low amount of the resource. This is
+     * exclusive, and extends downwards to 0.
      */
     public static final double RATIO_LOW = 0.25;
-    
+
     /**
      * The Color to color a fraction's amount when it is in the "high" range.
      */
     public static final Color COLOR_HIGH = AsciiPanel.brightGreen;
-    
+
     /**
-     * The Color to color a fraction's amount when it is between the "high" and
-     * "low" ranges.
+     * The Color to color a fraction's amount when it is between the "high" and "low" ranges.
      */
     public static final Color COLOR_MEDIUM = AsciiPanel.brightYellow;
-    
-    /** The Color to color a fraction's amount when it is in the "low" range. */
+
+    /**
+     * The Color to color a fraction's amount when it is in the "low" range.
+     */
     public static final Color COLOR_LOW = AsciiPanel.brightRed;
-    
-    /** The Color of a fraction's denominator. */
+
+    /**
+     * The Color of a fraction's denominator.
+     */
     public static final Color COLOR_CAP = AsciiPanel.brightWhite;
-    
+
     private int amount;
     private int baseCapacity;
     private int capacity;
-    
+
     /**
-     * Creates a resource from a name, description, value, capacity, amount,
-     * expander, and sellable flag.
-     * @param name the name of the resource
+     * Creates a resource from a name, description, value, capacity, amount, expander, and sellable flag.
+     *
+     * @param name        the name of the resource
      * @param description the description of the resource
-     * @param value the value of one unit of the resource
-     * @param capacity the capacity of the resource
-     * @param amount the amount of the resource
-     * @param sellable true if the resource can be sold
-     * @param expander the resource's expander
+     * @param value       the value of one unit of the resource
+     * @param capacity    the capacity of the resource
+     * @param amount      the amount of the resource
+     * @param sellable    true if the resource can be sold
+     * @param expander    the resource's expander
      */
-    public Resource(String name, String description, int value, int capacity,
-            int amount, boolean sellable, Expander expander)
+    public Resource(String name, String description, int value, int capacity, int amount, boolean sellable,
+                    Expander expander)
     {
         super(name, description, value, sellable, expander);
         this.baseCapacity = Math.abs(capacity);
-        this.capacity     = baseCapacity;
-        this.amount       = Math.min(Math.abs(amount), capacity);
+        this.capacity = baseCapacity;
+        this.amount = Math.min(Math.abs(amount), capacity);
         setCanSell(sellable);
     }
-    
+
     /**
-     * Creates a resource from a BaseResource, a capacity, and an amount, using
-     * the fields of the former.
-     * @param base the BaseResource that the name, description, value, and expander
-     * will be gathered from
+     * Creates a resource from a BaseResource, a capacity, and an amount, using the fields of the former.
+     *
+     * @param base     the BaseResource that the name, description, value, and expander will be gathered from
      * @param capacity the capacity of the resource
-     * @param amount the amount of the resource
+     * @param amount   the amount of the resource
      */
     public Resource(BaseResource base, int capacity, int amount)
     {
-        this(base.getName(), base.getDescription(), base.getValue(), capacity,
-                amount, base.canSell(), base.getExpander());
+        this(base.getName(), base.getDescription(), base.getValue(), capacity, amount, base.canSell(),
+                base.getExpander());
     }
-    
+
     /**
-     * Creates a resource from a BaseResource and a capacity, using the fields
-     * of the former.
-     * @param base the BaseResource that the name, description, value, and expander
-     * will be gathered from
+     * Creates a resource from a BaseResource and a capacity, using the fields of the former.
+     *
+     * @param base     the BaseResource that the name, description, value, and expander will be gathered from
      * @param capacity the capacity of the resource
      */
     public Resource(BaseResource base, int capacity)
     {
-        this(base.getName(), base.getDescription(), base.getValue(), capacity,
-                capacity, base.canSell(), base.getExpander());
+        this(base.getName(), base.getDescription(), base.getValue(), capacity, capacity, base.canSell(),
+                base.getExpander());
     }
-    
+
     /**
-     * Creates a resource from a BaseResource, using its fields as well as the
-     * default capacity and amount.
-     * @param base the BaseResource that the name, description, value, and
-     * expander
-     * will be gathered from
+     * Creates a resource from a BaseResource, using its fields as well as the default capacity and amount.
+     *
+     * @param base the BaseResource that the name, description, value, and expander will be gathered from
      */
     public Resource(BaseResource base)
     {
-        this(base.getName(), base.getDescription(), base.getValue(), CAPACITY,
-                CAPACITY, base.canSell(), base.getExpander());
+        this(base.getName(), base.getDescription(), base.getValue(), CAPACITY, CAPACITY, base.canSell(),
+                base.getExpander());
     }
-    
+
     /**
-     * Creates a resource with a name, description, value, capacity, and
-     * expander, setting the amount to full.
-     * @param name the name of the resource
+     * Creates a resource with a name, description, value, capacity, and expander, setting the amount to full.
+     *
+     * @param name        the name of the resource
      * @param description the description of the resource
-     * @param value the value of one unit of the resource
-     * @param capacity the capacity of the resource
-     * @param expander the resource's expander
+     * @param value       the value of one unit of the resource
+     * @param capacity    the capacity of the resource
+     * @param expander    the resource's expander
      */
-    public Resource(String name, String description, int value, int capacity,
-            Expander expander)
-        {this(name, description, value, capacity, capacity, expander);}
-    
+    public Resource(String name, String description, int value, int capacity, Expander expander)
+    {this(name, description, value, capacity, capacity, expander);}
+
     /**
-     * Creates a resource from a name, description, value, capacity, amount, and
-     * expander.
-     * @param name the name of the resource
+     * Creates a resource from a name, description, value, capacity, amount, and expander.
+     *
+     * @param name        the name of the resource
      * @param description the description of the resource
-     * @param value the value of one unit of the resource
-     * @param capacity the capacity of the resource
-     * @param amount the amount of the resource
-     * @param expander the resource's expander
+     * @param value       the value of one unit of the resource
+     * @param capacity    the capacity of the resource
+     * @param amount      the amount of the resource
+     * @param expander    the resource's expander
      */
-    public Resource(String name, String description, int value, int capacity,
-            int amount, Expander expander)
-        {this(name, description, value, capacity, amount, true, expander);}
-    
+    public Resource(String name, String description, int value, int capacity, int amount, Expander expander)
+    {this(name, description, value, capacity, amount, true, expander);}
+
     /**
-     * Creates a resource with a name, description, value, and expander, setting
-     * capacity to default and amount to full.
-     * @param name the name of the resource
+     * Creates a resource with a name, description, value, and expander, setting capacity to default and amount to
+     * full.
+     *
+     * @param name        the name of the resource
      * @param description the description of the resource
-     * @param value the value of one unit of the resource
-     * @param expander the resource's expander
+     * @param value       the value of one unit of the resource
+     * @param expander    the resource's expander
      */
-    public Resource(String name, String description, int value,
-            Expander expander)
-        {this(name, description, value, CAPACITY, CAPACITY, expander);}
-    
+    public Resource(String name, String description, int value, Expander expander)
+    {this(name, description, value, CAPACITY, CAPACITY, expander);}
+
     public int getAmount()
-        {return amount;}
-    
+    {return amount;}
+
     public int getBaseCapacity()
-        {return baseCapacity;}
-    
+    {return baseCapacity;}
+
     public int getCapacity()
-        {return capacity;}
-    
+    {return capacity;}
+
     public double getRatio()
-        {return (double) amount / (double) capacity;}
-    
+    {return (double) amount / (double) capacity;}
+
     /**
      * Returns the resource as a String in the format Amount/Capacity.
+     *
      * @return a String as described above
      */
     public String getAmountAsFraction()
-        {return amount + "/" + capacity;}
-    
+    {return amount + "/" + capacity;}
+
     public ColorString getAmountAsColoredFraction()
     {
         double ratio = getRatio();
         Color color;
         if (ratio >= RATIO_HIGH)
+        {
             color = COLOR_HIGH;
+        }
         else if (ratio < RATIO_LOW)
+        {
             color = COLOR_LOW;
+        }
         else
+        {
             color = COLOR_MEDIUM;
-        
-        return new ColorString(Integer.toString(amount), color)
-                .add("/")
-                .add(new ColorString(Integer.toString(capacity), COLOR_CAP));
+        }
+
+        return new ColorString(Integer.toString(amount), color).add("/").add(
+                new ColorString(Integer.toString(capacity), COLOR_CAP));
     }
-    
+
     /**
      * Returns the difference between the capacity and amount of the resource.
+     *
      * @return an integer as described above, should be non-negative
      */
     public int getRemainingSpace()
-        {return capacity - amount;}
-    
+    {return capacity - amount;}
+
     /**
      * Returns the value of the resource multiplied by its quantity.
+     *
      * @return the resource's base value times its amount
      */
     public int getTotalValue()
-        {return getValueForAmount(amount);}
-    
+    {return getValueForAmount(amount);}
+
     /**
      * Returns the price of resource multiplied by its quantity.
+     *
      * @return the resource's price times its amount
      */
     public int getTotalPrice()
-        {return getPriceForAmount(amount);}
-    
+    {return getPriceForAmount(amount);}
+
     /**
      * Returns the value of the resource for a specified amount.
+     *
      * @param a the amount of the resource to calculate the value of
      * @return the resource's value times the specified amount
      */
     public int getValueForAmount(int a)
-        {return getValue() * a;}
-    
+    {return getValue() * a;}
+
     /**
      * Returns the price of the resource for a specified amount.
+     *
      * @param a the amount of the resource to calculate the price of
      * @return the resource's price times the specified amount
      */
     public int getPriceForAmount(int a)
-        {return getPrice() * a;}
-    
+    {return getPrice() * a;}
+
     /**
      * Changes the amount of the resource by a specified amount.
+     *
      * @param change the amount to change the resource's amount by
      * @return true if the amount was changed
      */
     public boolean changeAmount(int change)
-        {return setAmount(amount + change);}
-    
+    {return setAmount(amount + change);}
+
     /**
      * Sets the amount of the resource to a new amount.
+     *
      * @param amount the amount to set set the resource's amount to
      * @return true if the amount was set
      */
     public boolean setAmount(int amount)
     {
         if (!isValidAmount(amount))
+        {
             return false;
-        
+        }
+
         this.amount = amount;
         return true;
     }
-    
+
     /**
-     * Changes the amount of the resource up to its maximum capacity, returning
-     * the amount discarded.
+     * Changes the amount of the resource up to its maximum capacity, returning the amount discarded.
+     *
      * @param increase the amount to add, must be positive
      * @return the amount discarded, -1 if could not change the amount
      */
     public int changeAmountWithDiscard(int increase)
     {
         if (increase <= 0)
+        {
             return -1;
-        
+        }
+
         if (isFull())
+        {
             return -1;
-        
+        }
+
         int discard = Math.max(amount + increase - capacity, 0);
         amount = Math.min(amount + increase, capacity);
         return discard;
     }
-    
+
     /**
      * Increases the capacity by the expansion amount of its expander.
+     *
      * @return true if the capacity was changed
      */
     public boolean expand()
-        {return changeCapacity(getExpander().getExpansion());}
-    
+    {return changeCapacity(getExpander().getExpansion());}
+
     /**
-     * Increases the capacity by the expansion amount of its expander a
-     * specified number of times.
+     * Increases the capacity by the expansion amount of its expander a specified number of times.
+     *
      * @param times the amount of times to expand the resource's capacity
      * @return true if the capacity was changed
      */
     public boolean expand(int times)
-        {return changeCapacity(getExpander().getExpansion() * times);}
-    
+    {return changeCapacity(getExpander().getExpansion() * times);}
+
     /**
      * Changes the capacity of the resource by a specified amount.
+     *
      * @param change the amount to change the capacity by
      * @return true if the capacity was changed
      */
     public boolean changeCapacity(int change)
-        {return setCapacity(capacity + change);}
-    
+    {return setCapacity(capacity + change);}
+
     /**
      * Sets the capacity of the resource to a specified amount.
+     *
      * @param capacity the amount to set the capacity to
      * @return true if the capacity was changed
      */
     public boolean setCapacity(int capacity)
     {
         if (!isValidCapacity(capacity))
+        {
             return false;
-        
+        }
+
         this.capacity = capacity;
         amount = Math.min(amount, capacity);
         return true;
     }
-    
+
     /**
-     * Sets the least possible capacity to a specified amount, as well as
-     * updating the capacity itself.
+     * Sets the least possible capacity to a specified amount, as well as updating the capacity itself.
+     *
      * @param capacity the amount to set the base capacity to
      * @return true if the base capacity was modified
      */
     public boolean setBaseCapacity(int capacity)
     {
         if (capacity <= 0)
+        {
             return false;
-        
+        }
+
         baseCapacity = capacity;
         this.capacity = baseCapacity;
-        
+
         return true;
     }
-    
+
     /**
      * Returns true if the amount specified is a valid capacity.
+     *
      * @param capacity the amount to validate
-     * @return true if the amount specified is greater than or equal to the base
-     * capacity
+     * @return true if the amount specified is greater than or equal to the base capacity
      */
     public boolean isValidCapacity(int capacity)
-        {return capacity >= baseCapacity;}
-    
+    {return capacity >= baseCapacity;}
+
     /**
-     * Returns true if the capacity would be valid after a specified number of
-     * expansions (intended for use in removing expanders).
+     * Returns true if the capacity would be valid after a specified number of expansions (intended for use in removing
+     * expanders).
+     *
      * @param times the amount of expansions to check
-     * @return true if the capacity would be valid after expanding the
-     * resource's capacity
+     * @return true if the capacity would be valid after expanding the resource's capacity
      */
     public boolean canExpand(int times)
     {
         return isValidCapacity(capacity + getExpander().getExpansion() * times);
     }
-    
+
     /**
-     * Returns true if the specified amount would be a valid amount of the
-     * resource.
+     * Returns true if the specified amount would be a valid amount of the resource.
+     *
      * @param amount the amount to validate
-     * @return true if the amount is less than or equal to the capacity of the
-     * resource, yet greater than or equal to zero
+     * @return true if the amount is less than or equal to the capacity of the resource, yet greater than or equal to
+     * zero
      */
     public boolean isValidAmount(int amount)
-        {return amount <= capacity && amount >= 0;}
-    
+    {return amount <= capacity && amount >= 0;}
+
     /**
-     * Returns true if a specified amount of change in the resource's amount
-     * would be valid.
+     * Returns true if a specified amount of change in the resource's amount would be valid.
+     *
      * @param amount the amount to change the resource by for validation
-     * @return true if the addition of the specified amount leaves the total
-     * amount still valid
+     * @return true if the addition of the specified amount leaves the total amount still valid
      */
     public boolean canHold(int amount)
-        {return isValidAmount(this.amount + amount);}
-    
+    {return isValidAmount(this.amount + amount);}
+
     /**
      * Returns true if the resource's amount is equal to its capacity.
+     *
      * @return true if the amount of the resource equals its capacity
      */
     public boolean isFull()
-        {return amount == capacity;}
-    
+    {return amount == capacity;}
+
     /**
      * Returns true if the resource's amount is equal to zero.
+     *
      * @return true if the amount of the resource equals zero
      */
     public boolean isEmpty()
-        {return amount == 0;}
-    
+    {return amount == 0;}
+
     /**
      * Sets the resource's amount to its maximum capacity.
+     *
      * @return the amount added to the resource to fill it
      */
-    public int fill() 
+    public int fill()
     {
         int increase = capacity - amount;
         amount = capacity;
         return increase;
     }
-    
-    /** Sets the resource's amount to zero. */
+
+    /**
+     * Sets the resource's amount to zero.
+     */
     public void empty()
-        {amount = 0;}
-    
+    {amount = 0;}
+
     /**
      * Returns the amount of expanders that have been purchased.
-     * @return the number of expanders, calculated by the change in capacity;
-     * will be non-negative
+     *
+     * @return the number of expanders, calculated by the change in capacity; will be non-negative
      */
     public int getNExpanders()
-        {return (capacity - baseCapacity) / getExpander().getExpansion();}
+    {return (capacity - baseCapacity) / getExpander().getExpansion();}
 }

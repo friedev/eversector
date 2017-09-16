@@ -7,19 +7,19 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.items.Action;
+
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
-import boldorf.eversector.storage.Actions;
-import static boldorf.eversector.storage.Paths.START;
+import static boldorf.eversector.Paths.START;
 
 /**
- * 
+ *
  */
-public class IntergalacticScreen extends ConfirmationScreen
-        implements WindowScreen<PopupWindow>
+public class IntergalacticScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
     private PopupWindow window;
-    
+
     public IntergalacticScreen(Display display)
     {
         super(display);
@@ -29,16 +29,16 @@ public class IntergalacticScreen extends ConfirmationScreen
 
     @Override
     public void displayOutput()
-        {window.display();}
+    {window.display();}
 
     @Override
     public PopupWindow getWindow()
-        {return window;}
-    
+    {return window;}
+
     @Override
     public Screen onConfirm()
     {
-        player.changeResourceBy(Actions.BURN);
+        player.changeResourceBy(Action.BURN);
         playSoundEffect(START);
         Main.changeGalaxy();
         return null;

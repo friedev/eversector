@@ -1,4 +1,4 @@
 /**
- * Various independent entities capable of movement or placement.
+ * Ships and abstract concepts surrounding them.
  */
 package boldorf.eversector.ships;

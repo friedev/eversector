@@ -1,17 +1,17 @@
-package boldorf.eversector.storage;
+package boldorf.eversector;
 
 import asciiPanel.AsciiFont;
 import boldorf.util.FileManager;
 
 /**
- * 
+ *
  */
 public enum Tileset
 {
     QBICFEET("qbicfeet", 10),
     ALLOY("Alloy", 12),
     COOZ("Cooz", 16);
-    
+
     private String name;
     private int size;
 
@@ -20,18 +20,16 @@ public enum Tileset
         this.name = name;
         this.size = size;
     }
-    
+
     public String getName()
-        {return name;}
-    
+    {return name;}
+
     public int getSize()
-        {return size;}
-    
+    {return size;}
+
     public AsciiFont toFont(boolean tiles)
     {
-        String fileName = name.toLowerCase() + "_" + (tiles ? "tiles" : "ascii")
-                + ".png";
-        return new AsciiFont(FileManager.getPath() + Paths.FONTS
-                + fileName, size, size);
+        String fileName = name.toLowerCase() + "_" + (tiles ? "tiles" : "ascii") + ".png";
+        return new AsciiFont(FileManager.getPath() + Paths.FONTS + fileName, size, size);
     }
 }

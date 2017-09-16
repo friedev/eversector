@@ -1,40 +1,39 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.screens.KeyScreen;
-import boldorf.apwt.screens.Keybinding;
-import boldorf.util.Utility;
 import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
+import boldorf.apwt.screens.KeyScreen;
+import boldorf.apwt.screens.Keybinding;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
-import static boldorf.eversector.Main.playSoundEffect;
-import static boldorf.eversector.Main.player;
-import boldorf.eversector.storage.Actions;
-import static boldorf.eversector.storage.Paths.ENGINE;
-import static boldorf.eversector.storage.Paths.WARP;
+import boldorf.eversector.items.Action;
+import boldorf.util.Utility;
+import squidpony.squidgrid.Direction;
+import squidpony.squidmath.Coord;
+
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import squidpony.squidgrid.Direction;
-import squidpony.squidmath.Coord;
-import static boldorf.eversector.Main.galaxy;
+
+import static boldorf.eversector.Main.*;
+import static boldorf.eversector.Paths.ENGINE;
+import static boldorf.eversector.Paths.WARP;
 
 /**
- * 
+ *
  */
-public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
-        PopupMaster, KeyScreen
+public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
     private AlignedWindow window;
     private Screen popup;
     private Coord cursor;
     private boolean warping;
-    
+
     public MapScreen(Display display)
     {
         super(display);
@@ -49,9 +48,8 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
     {
         setUpWindow();
         window.display();
-        
-        if (popup != null)
-            popup.displayOutput();
+
+        if (popup != null) { popup.displayOutput(); }
     }
 
     @Override
@@ -62,18 +60,17 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
             popup = popup.processInput(key);
             return this;
         }
-        
+
         boolean nextTurn = false;
         Screen nextScreen = this;
         Direction direction = Utility.keyToDirectionRestricted(key);
-        
+
         if (direction != null)
         {
             if (isLooking())
             {
                 Coord targetLocation = cursor.translate(direction);
-                if (player.getFOV().contains(targetLocation))
-                    cursor = targetLocation;
+                if (player.getFOV().contains(targetLocation)) { cursor = targetLocation; }
                 return this;
             }
             else if (player.burn(direction))
@@ -83,8 +80,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
             }
             else if (player.getLocation().move(direction) == null)
             {
-                if (player.getResource(Actions.BURN.getResource())
-                        .getAmount() >= Actions.BURN.getCost())
+                if (player.getResource(Action.BURN.getResource()).getAmount() >= Action.BURN.getCost())
                 {
                     popup = new IntergalacticScreen(getDisplay());
                     return this;
@@ -96,8 +92,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_L:
-                    if (warping)
-                        break;
+                    if (warping) { break; }
                 case KeyEvent.VK_ESCAPE:
                     warping = false;
                 case KeyEvent.VK_ENTER:
@@ -126,7 +121,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                 cursor = null;
                 return this;
             }
-            
+
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_ENTER:
@@ -137,8 +132,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                     }
                     break;
                 case KeyEvent.VK_W:
-                    if (!player.hasModule(Actions.WARP))
-                        break;
+                    if (!player.hasModule(Action.WARP)) { break; }
                     warping = true;
                 case KeyEvent.VK_L:
                     cursor = player.getLocation().getCoord();
@@ -148,69 +142,64 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>,
                     break;
             }
         }
-        
-        if (nextTurn)
-            galaxy.nextTurn();
+
+        if (nextTurn) { galaxy.nextTurn(); }
         return nextScreen;
     }
-    
+
     @Override
     public List<Keybinding> getKeybindings()
     {
         List<Keybinding> keybindings = new ArrayList<>();
-        keybindings.add(new Keybinding("burn to neighboring sectors",
-                ExtChars.ARROW1_U, ExtChars.ARROW1_D, ExtChars.ARROW1_L,
-                ExtChars.ARROW1_R));
+        keybindings.add(
+                new Keybinding("burn to neighboring sectors", ExtChars.ARROW1_U, ExtChars.ARROW1_D, ExtChars.ARROW1_L,
+                        ExtChars.ARROW1_R));
         keybindings.add(new Keybinding("enter a sector", "enter"));
         keybindings.add(new Keybinding("look", "l"));
         keybindings.add(new Keybinding("toggle star view", "v"));
-        if (player.hasModule(Actions.WARP))
-            keybindings.add(new Keybinding("warp to any sector", "w"));
+        if (player.hasModule(Action.WARP)) { keybindings.add(new Keybinding("warp to any sector", "w")); }
         return keybindings;
     }
-    
+
     @Override
     public AlignedWindow getWindow()
-        {return window;}
-    
+    {return window;}
+
     @Override
     public Screen getPopup()
-        {return popup;}
+    {return popup;}
 
     @Override
     public boolean hasPopup()
-        {return popup != null;}
-    
+    {return popup != null;}
+
     private boolean isLooking()
-        {return cursor != null;}
-    
+    {return cursor != null;}
+
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();
         contents.clear();
         window.getSeparators().clear();
-        
+
         contents.addAll(galaxy.toColorStrings(player, Main.showStars, cursor));
         window.addSeparator(new Line(true, 2, 1));
         Coord location = isLooking() ? cursor : player.getLocation().getCoord();
         contents.add(new ColorString(galaxy.sectorAt(location).toString()));
-        
+
         if (!galaxy.sectorAt(location).isEmpty())
         {
-            contents.add(new ColorString("Star: ")
-                    .add(galaxy.sectorAt(location).getStar()));
+            contents.add(new ColorString("Star: ").add(galaxy.sectorAt(location).getStar()));
         }
-        
+
         if (galaxy.sectorAt(location).hasNebula())
         {
-            contents.add(new ColorString("Nebula: ")
-                    .add(galaxy.sectorAt(location).getNebula()));
+            contents.add(new ColorString("Nebula: ").add(galaxy.sectorAt(location).getNebula()));
         }
-        
+
         if (galaxy.sectorAt(location).isClaimed())
         {
-            contents.add(new ColorString("Faction: ")
-                    .add(galaxy.sectorAt(location).getFaction()));
+            contents.add(new ColorString("Faction: ").add(galaxy.sectorAt(location).getFaction()));
         }
     }
 }

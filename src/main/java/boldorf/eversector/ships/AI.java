@@ -1,101 +1,114 @@
 package boldorf.eversector.ships;
 
-import static boldorf.eversector.Main.rng;
-import boldorf.eversector.map.Station;
-import boldorf.eversector.map.Planet;
-import boldorf.eversector.map.Region;
-import boldorf.eversector.locations.BattleLocation;
-import boldorf.eversector.locations.Location;
-import boldorf.eversector.locations.PlanetLocation;
-import boldorf.eversector.locations.SectorLocation;
-import boldorf.eversector.locations.StationLocation;
+import boldorf.eversector.Paths;
+import boldorf.eversector.items.Action;
 import boldorf.eversector.items.Module;
-import boldorf.eversector.map.Galaxy;
-import boldorf.eversector.map.Sector;
-import boldorf.eversector.storage.Actions;
-import boldorf.eversector.storage.Paths;
-import boldorf.eversector.storage.Reputations;
-import boldorf.eversector.storage.Resources;
+import boldorf.eversector.items.Resource;
+import boldorf.eversector.locations.*;
+import boldorf.eversector.map.*;
 import boldorf.util.Utility;
-import java.util.List;
 import squidpony.squidmath.Coord;
 
+import java.util.List;
+
+import static boldorf.eversector.Main.rng;
+
 /**
- * 
+ *
  */
 public class AI
 {
     private Ship ship;
     private Location destination;
-    
+
     public AI(Ship ship)
-        {this.ship = ship;}
-    
+    {this.ship = ship;}
+
     public Ship getShip()
-        {return ship;}
-    
+    {return ship;}
+
     public void act()
     {
         if (ship.isInBattle())
+        {
             return;
-        
+        }
+
         if (ship.isShielded())
-            ship.toggleActivation(Actions.SHIELD);
-        
+        {
+            ship.toggleActivation(Action.SHIELD);
+        }
+
         if (ship.isCloaked())
-            ship.toggleActivation(Actions.CLOAK);
-        
+        {
+            ship.toggleActivation(Action.CLOAK);
+        }
+
         if (attack())
+        {
             return;
-        
+        }
+
         if (destination != null && ship.getLocation().equals(destination))
         {
             if (ship.isDocked())
             {
                 if (performStationAction())
+                {
                     return;
+                }
             }
             else if (ship.isLanded())
             {
                 if (performPlanetAction())
+                {
                     return;
+                }
             }
             else if (ship.isInSector())
             {
                 if (performSectorAction())
+                {
                     return;
-                
+                }
+
                 if (ship.getSectorLocation().isPlanet() &&
-                        ship.getSectorLocation().getPlanet().getType()
-                                .canMineFromOrbit() && ship.mine())
+                    ship.getSectorLocation().getPlanet().getType().canMineFromOrbit() && ship.mine())
+                {
                     return;
+                }
             }
         }
-        
+
         if (!destinationIsValid())
+        {
             updateDestination();
-        
+        }
+
         if (!seekDestination())
+        {
             performEmergencyAction();
+        }
     }
-    
+
     private boolean performSectorAction()
     {
         Planet planet = ship.getSectorLocation().getPlanet();
-        return planet != null && planet.getType().canMineFromOrbit() &&
-                ship.mine();
+        return planet != null && planet.getType().canMineFromOrbit() && ship.mine();
     }
-    
+
     private boolean performPlanetAction()
-        {return ship.claim(false) || ship.mine();}
-    
+    {return ship.claim(false) || ship.mine();}
+
     private boolean performStationAction()
     {
         sellDuplicates();
         buyResources();
         if (ship.claim(false))
+        {
             return true;
-        
+        }
+
         if (rng.nextBoolean())
         {
             buyItems(); // TODO replace with a loop
@@ -103,14 +116,14 @@ public class AI
         }
         return false;
     }
-    
+
     private void sellDuplicates()
     {
         boolean selling = true;
         while (selling && !ship.getCargo().isEmpty())
         {
             selling = false;
-            for (Module module: ship.getCargo())
+            for (Module module : ship.getCargo())
             {
                 // Must never update selling without checking sellModule()
                 // If a station will not accept a module, this loops forever
@@ -122,82 +135,100 @@ public class AI
             }
         }
     }
-    
+
     private void buyResources()
     {
-        ship.buyResource(Resources.ORE, -ship.getMaxSellAmount(Resources.ORE));
-        ship.buyResource(Resources.FUEL, ship.getMaxBuyAmount(Resources.FUEL));
-        ship.buyResource(Resources.HULL, ship.getMaxBuyAmount(Resources.HULL));
-        ship.buyResource(Resources.ENERGY,
-                ship.getMaxBuyAmount(Resources.ENERGY));
+        ship.buyResource(Resource.ORE, -ship.getMaxSellAmount(Resource.ORE));
+        ship.buyResource(Resource.FUEL, ship.getMaxBuyAmount(Resource.FUEL));
+        ship.buyResource(Resource.HULL, ship.getMaxBuyAmount(Resource.HULL));
+        ship.buyResource(Resource.ENERGY, ship.getMaxBuyAmount(Resource.ENERGY));
     }
-    
+
     private void buyItems()
     {
-        if (!ship.hasModule(Actions.PULSE))
-            ship.buyModule(Actions.PULSE);
-        
-        if (!ship.hasModule(Actions.TORPEDO))
-            ship.buyModule(Actions.TORPEDO);
-        
-        if (!ship.hasModule(Actions.LASER))
-            ship.buyModule(Actions.LASER);
-        
-        if (!ship.hasModule(Actions.SHIELD))
-            ship.buyModule(Actions.SHIELD);
-        
-        if (!ship.hasModule(Actions.WARP))
-            ship.buyModule(Actions.WARP);
-        
-        if (!ship.hasModule(Actions.REFINE))
-            ship.buyModule(Actions.REFINE);
-        
-        if (!ship.hasModule(Actions.SOLAR))
-            ship.buyModule(Actions.SOLAR);
-        
-        if (!ship.hasModule(Actions.SCAN))
-            ship.buyModule(Actions.SCAN);
+        if (!ship.hasModule(Action.PULSE))
+        {
+            ship.buyModule(Action.PULSE);
+        }
+
+        if (!ship.hasModule(Action.TORPEDO))
+        {
+            ship.buyModule(Action.TORPEDO);
+        }
+
+        if (!ship.hasModule(Action.LASER))
+        {
+            ship.buyModule(Action.LASER);
+        }
+
+        if (!ship.hasModule(Action.SHIELD))
+        {
+            ship.buyModule(Action.SHIELD);
+        }
+
+        if (!ship.hasModule(Action.WARP))
+        {
+            ship.buyModule(Action.WARP);
+        }
+
+        if (!ship.hasModule(Action.REFINE))
+        {
+            ship.buyModule(Action.REFINE);
+        }
+
+        if (!ship.hasModule(Action.SOLAR))
+        {
+            ship.buyModule(Action.SOLAR);
+        }
+
+        if (!ship.hasModule(Action.SCAN))
+        {
+            ship.buyModule(Action.SCAN);
+        }
     }
-    
+
     private void buyExpanders()
     {
-        int tanks  = ship.getResource(Resources.FUEL  ).getNExpanders();
-        int bays   = ship.getResource(Resources.ORE   ).getNExpanders();
-        int cells  = ship.getResource(Resources.ENERGY).getNExpanders();
-        int plates = ship.getResource(Resources.HULL  ).getNExpanders();
-        
+        int tanks = ship.getResource(Resource.FUEL).getNExpanders();
+        int bays = ship.getResource(Resource.ORE).getNExpanders();
+        int cells = ship.getResource(Resource.ENERGY).getNExpanders();
+        int plates = ship.getResource(Resource.HULL).getNExpanders();
+
         // If there are the least fuel tanks, buy more
-        int maxTanks = ship.getMaxBuyAmount(ship.getExpander(
-                Resources.FUEL_EXPANDER));
+        int maxTanks = ship.getMaxBuyAmount(ship.getExpander(Resource.FUEL_EXPANDER));
         if (maxTanks > 0 && tanks < bays && tanks < cells && tanks < plates)
-            ship.buyResource(Resources.FUEL_EXPANDER, maxTanks);
-        
+        {
+            ship.buyResource(Resource.FUEL_EXPANDER, maxTanks);
+        }
+
         // If there are fewer cargo bays than cells and plates, buy more
-        int maxBays = ship.getMaxBuyAmount(ship.getExpander(
-                Resources.ORE_EXPANDER));
+        int maxBays = ship.getMaxBuyAmount(ship.getExpander(Resource.ORE_EXPANDER));
         if (maxBays > 0 && bays < cells && bays < plates)
-            ship.buyResource(Resources.ORE_EXPANDER, maxBays);
-        
+        {
+            ship.buyResource(Resource.ORE_EXPANDER, maxBays);
+        }
+
         // If there are the fewer energy cells than hull plates, buy more
-        int maxCells = ship.getMaxBuyAmount(ship.getExpander(
-                Resources.ENERGY_EXPANDER));
+        int maxCells = ship.getMaxBuyAmount(ship.getExpander(Resource.ENERGY_EXPANDER));
         if (maxCells > 0 && cells < plates)
-            ship.buyResource(Resources.ENERGY_EXPANDER, maxCells);
-        
+        {
+            ship.buyResource(Resource.ENERGY_EXPANDER, maxCells);
+        }
+
         // Buy hull frames by default
-        ship.buyResource(Resources.HULL_EXPANDER, ship.getMaxBuyAmount(
-                ship.getExpander(Resources.HULL_EXPANDER)));
+        ship.buyResource(Resource.HULL_EXPANDER, ship.getMaxBuyAmount(ship.getExpander(Resource.HULL_EXPANDER)));
     }
-    
+
     private boolean attack()
     {
         if (!ship.hasWeapons() || !ship.isOrbital())
+        {
             return false;
-        
+        }
+
         Ship player = ship.getLocation().getGalaxy().getPlayer();
-        if (player.getLocation().equals(ship.getLocation()) &&
-                ship.isHostile(player.getFaction()) &&
-                ship.startBattle(player) != null)
+        if (player.getLocation().equals(ship.getLocation()) && ship.isHostile(player.getFaction()) && ship.startBattle(
+                player) != null)
         {
             return true;
         }
@@ -205,15 +236,18 @@ public class AI
         List<Ship> others = ship.getSectorLocation().getShips();
         if (!others.isEmpty())
         {
-            for (Ship other: others)
-                if (ship.isHostile(other.getFaction()) &&
-                        ship.startBattle(other) != null)
+            for (Ship other : others)
+            {
+                if (ship.isHostile(other.getFaction()) && ship.startBattle(other) != null)
+                {
                     return true;
+                }
+            }
         }
-        
+
         return false;
     }
-    
+
     private void updateDestination()
     {
         Location invasionDestination = findInvasionDestination();
@@ -222,51 +256,53 @@ public class AI
             destination = invasionDestination;
             return;
         }
-        
+
         Location claimingDestination = findClosestUnclaimedTerritory();
         if (claimingDestination != null)
         {
             destination = claimingDestination;
             return;
         }
-        
-        if (ship.getResource(Resources.ORE).isFull() ||
-                !ship.validateResources(Actions.MINE, "mine"))
+
+        if (ship.getResource(Resource.ORE).isFull() || !ship.validateResources(Action.MINE, "mine"))
         {
             destination = findClosestStation();
             return;
         }
-        
+
         destination = findClosestMiningDestination();
     }
-    
+
     private SectorLocation findClosestMiningDestination()
     {
         if (ship.isInSector())
         {
             // TODO check for regions without ore
             if (ship.isLanded())
+            {
                 return ship.getPlanetLocation();
-            
-            SectorLocation current = getPlanetMiningDestination(
-                    ship.getSectorLocation().getPlanet());
+            }
+
+            SectorLocation current = getPlanetMiningDestination(ship.getSectorLocation().getPlanet());
             if (current != null)
+            {
                 return current;
-            
+            }
+
             Sector sector = ship.getLocation().getSector();
             int orbit = ship.getSectorLocation().getOrbit();
             for (int offset = 1; offset < sector.getOrbits(); offset++)
             {
-                SectorLocation minusOffset = getPlanetMiningDestination(
-                        sector.getPlanetAt(orbit - offset));
-                SectorLocation plusOffset = getPlanetMiningDestination(
-                        sector.getPlanetAt(orbit + offset));
-                
+                SectorLocation minusOffset = getPlanetMiningDestination(sector.getPlanetAt(orbit - offset));
+                SectorLocation plusOffset = getPlanetMiningDestination(sector.getPlanetAt(orbit + offset));
+
                 if (minusOffset != null)
                 {
                     if (plusOffset == null)
+                    {
                         return minusOffset;
-                    
+                    }
+
                     return rng.nextBoolean() ? minusOffset : plusOffset;
                 }
                 else if (plusOffset != null)
@@ -275,74 +311,86 @@ public class AI
                 }
             }
         }
-        
+
         List<Coord> fov = ship.getFOV();
-        fov.sort(Utility.createDistanceComparator(
-                ship.getLocation().getCoord()));
+        fov.sort(Utility.createDistanceComparator(ship.getLocation().getCoord()));
         Galaxy galaxy = ship.getLocation().getGalaxy();
-        for (Coord coord: fov)
+        for (Coord coord : fov)
         {
             if (!galaxy.contains(coord))
+            {
                 continue;
-            
+            }
+
             Sector sector = galaxy.sectorAt(coord);
             if (sector.isEmpty())
+            {
                 continue;
-            
+            }
+
             for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
             {
-                SectorLocation planetLocation = getPlanetMiningDestination(
-                        sector.getPlanetAt(orbit));
+                SectorLocation planetLocation = getPlanetMiningDestination(sector.getPlanetAt(orbit));
                 if (planetLocation != null)
+                {
                     return planetLocation;
+                }
             }
         }
-        
+
         return null;
     }
-    
+
     private SectorLocation getPlanetMiningDestination(Planet planet)
     {
         if (planet == null)
+        {
             return null;
-        
+        }
+
         if (planet.getType().canMineFromOrbit())
+        {
             return planet.getLocation();
+        }
 
         if (planet.getType().canMine() && planet.getType().canLandOn())
         {
             Region oreRegion = planet.getRandomOreRegion();
             return oreRegion == null ? null : oreRegion.getLocation();
         }
-        
+
         return null;
     }
-    
+
     private StationLocation findClosestStation()
     {
         if (ship.isInSector())
         {
             if (ship.isDocked())
+            {
                 return ship.getStationLocation();
-            
+            }
+
             if (ship.getSectorLocation().isStation())
+            {
                 return ship.getSectorLocation().dock();
-            
+            }
+
             Sector sector = ship.getLocation().getSector();
             if (sector.hasStations())
             {
                 int orbit = ship.getSectorLocation().getOrbit();
                 for (int offset = 1; offset < sector.getOrbits(); offset++)
                 {
-                    StationLocation minusOffset = getStationDestination(
-                            sector.getStationAt(orbit - offset));
-                    StationLocation plusOffset = getStationDestination(
-                            sector.getStationAt(orbit + offset));
-                
+                    StationLocation minusOffset = getStationDestination(sector.getStationAt(orbit - offset));
+                    StationLocation plusOffset = getStationDestination(sector.getStationAt(orbit + offset));
+
                     if (minusOffset != null)
                     {
                         if (plusOffset == null)
+                        {
                             return minusOffset;
+                        }
 
                         return rng.nextBoolean() ? minusOffset : plusOffset;
                     }
@@ -353,64 +401,71 @@ public class AI
                 }
             }
         }
-        
+
         List<Coord> fov = ship.getFOV();
-        fov.sort(Utility.createDistanceComparator(
-                ship.getLocation().getCoord()));
+        fov.sort(Utility.createDistanceComparator(ship.getLocation().getCoord()));
         Galaxy galaxy = ship.getLocation().getGalaxy();
-        for (Coord coord: fov)
+        for (Coord coord : fov)
         {
             if (!galaxy.contains(coord))
+            {
                 continue;
-            
+            }
+
             Sector sector = galaxy.sectorAt(coord);
             if (!sector.hasStations())
+            {
                 continue;
-            
+            }
+
             for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
             {
-                StationLocation stationLocation = getStationDestination(
-                        sector.getStationAt(orbit));
+                StationLocation stationLocation = getStationDestination(sector.getStationAt(orbit));
                 if (stationLocation != null)
+                {
                     return stationLocation;
+                }
             }
         }
-        
+
         return null;
     }
-    
+
     private StationLocation getStationDestination(Station station)
     {
         if (station == null)
+        {
             return null;
-        
-        if (!ship.isHostile(station.getFaction()) ||
-                ship.getCredits() >= Station.CLAIM_COST)
+        }
+
+        if (!ship.isHostile(station.getFaction()) || ship.getCredits() >= Station.CLAIM_COST)
+        {
             return station.getLocation().dock();
+        }
         return null;
     }
-    
+
     private Location findClosestUnclaimedTerritory()
     {
         if (!ship.isInSector())
+        {
             return null;
-        
+        }
+
         Sector sector = ship.getLocation().getSector();
         int orbit = ship.getSectorLocation().getOrbit();
         for (int offset = 1; offset < sector.getOrbits(); offset++)
         {
-            SectorLocation minusOffset = getPlanetClaimingDestination(
-                    sector.getPlanetAt(orbit - offset));
-            SectorLocation plusOffset = getPlanetClaimingDestination(
-                    sector.getPlanetAt(orbit + offset));
+            SectorLocation minusOffset = getPlanetClaimingDestination(sector.getPlanetAt(orbit - offset));
+            SectorLocation plusOffset = getPlanetClaimingDestination(sector.getPlanetAt(orbit + offset));
 
-            if (minusOffset != null &&
-                    ship.getCredits() >= minusOffset.getPlanet().getClaimCost())
+            if (minusOffset != null && ship.getCredits() >= minusOffset.getPlanet().getClaimCost())
             {
-                if (plusOffset != null && ship.getCredits() >=
-                        plusOffset.getPlanet().getClaimCost())
+                if (plusOffset != null && ship.getCredits() >= plusOffset.getPlanet().getClaimCost())
+                {
                     return rng.nextBoolean() ? minusOffset : plusOffset;
-                
+                }
+
                 return minusOffset;
             }
             else if (plusOffset != null)
@@ -418,51 +473,55 @@ public class AI
                 return plusOffset;
             }
         }
-        
+
         return null;
     }
-    
+
     private PlanetLocation getPlanetClaimingDestination(Planet planet)
     {
         if (planet == null || !planet.getType().canLandOn())
+        {
             return null;
-        
-        Region unclaimedRegion = planet.getRandomRegion(ship.getFaction()); 
+        }
+
+        Region unclaimedRegion = planet.getRandomRegion(ship.getFaction());
         return unclaimedRegion == null ? null : unclaimedRegion.getLocation();
     }
-    
+
     private StationLocation findInvasionDestination()
     {
-        if (ship.getCredits() < Station.CLAIM_COST || !ship.hasWeapons() ||
-                !ship.getResource(Resources.FUEL).isFull())
+        if (ship.getCredits() < Station.CLAIM_COST || !ship.hasWeapons() || !ship.getResource(Resource.FUEL).isFull())
+        {
             return null;
-        
+        }
+
         if (ship.isInSector())
         {
             if (ship.getSectorLocation().isStation())
             {
-                StationLocation invasionDestination =
-                        getStationInvasionDestination(
+                StationLocation invasionDestination = getStationInvasionDestination(
                         ship.getSectorLocation().getStation());
                 if (invasionDestination != null)
+                {
                     return invasionDestination;
+                }
             }
-            
+
             Sector sector = ship.getLocation().getSector();
             if (sector.hasStations())
             {
                 int orbit = ship.getSectorLocation().getOrbit();
                 for (int offset = 1; offset < sector.getOrbits(); offset++)
                 {
-                    StationLocation minusOffset = getStationInvasionDestination(
-                            sector.getStationAt(orbit - offset));
-                    StationLocation plusOffset = getStationInvasionDestination(
-                            sector.getStationAt(orbit + offset));
-                
+                    StationLocation minusOffset = getStationInvasionDestination(sector.getStationAt(orbit - offset));
+                    StationLocation plusOffset = getStationInvasionDestination(sector.getStationAt(orbit + offset));
+
                     if (minusOffset != null)
                     {
                         if (plusOffset == null)
+                        {
                             return minusOffset;
+                        }
 
                         return rng.nextBoolean() ? minusOffset : plusOffset;
                     }
@@ -473,65 +532,74 @@ public class AI
                 }
             }
         }
-        
+
         List<Coord> fov = ship.getFOV();
-        fov.sort(Utility.createDistanceComparator(
-                ship.getLocation().getCoord()));
+        fov.sort(Utility.createDistanceComparator(ship.getLocation().getCoord()));
         Galaxy galaxy = ship.getLocation().getGalaxy();
-        for (Coord coord: fov)
+        for (Coord coord : fov)
         {
             if (!galaxy.contains(coord))
+            {
                 continue;
-            
+            }
+
             Sector sector = galaxy.sectorAt(coord);
             if (!sector.hasStations())
+            {
                 continue;
-            
+            }
+
             for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
             {
-                StationLocation stationLocation = getStationInvasionDestination(
-                        sector.getStationAt(orbit));
+                StationLocation stationLocation = getStationInvasionDestination(sector.getStationAt(orbit));
                 if (stationLocation != null)
+                {
                     return stationLocation;
+                }
             }
         }
-        
+
         return null;
     }
-    
+
     private StationLocation getStationInvasionDestination(Station station)
     {
         if (station == null)
+        {
             return null;
-        
+        }
+
         if (ship.isHostile(station.getFaction()))
+        {
             return station.getLocation().dock();
+        }
         return null;
     }
-    
+
     private boolean destinationIsValid()
     {
-        return !(destination == null ||
-                ship.getLocation().equals(destination) ||
-                destination instanceof BattleLocation);
+        return !(destination == null || ship.getLocation().equals(destination) ||
+                 destination instanceof BattleLocation);
     }
-    
+
     private boolean seekDestination()
     {
         if (!destinationIsValid())
+        {
             return false;
+        }
 
         if (ship.isDocked())
+        {
             return ship.undock();
+        }
 
         if (ship.isLanded())
         {
             if (destination instanceof PlanetLocation &&
-                    ship.getSectorLocation().getPlanet() ==
-                            ((SectorLocation) destination).getPlanet())
+                ship.getSectorLocation().getPlanet() == ((SectorLocation) destination).getPlanet())
             {
-                return ship.relocate(Utility.toGoToCardinal(
-                        ship.getPlanetLocation().getRegionCoord(),
+                return ship.relocate(Utility.toGoToCardinal(ship.getPlanetLocation().getRegionCoord(),
                         ((PlanetLocation) destination).getRegionCoord()));
             }
 
@@ -540,65 +608,81 @@ public class AI
 
         if (ship.isInSector())
         {
-            if (destination instanceof SectorLocation &&
-                    ship.getLocation().getSector() == destination.getSector())
+            if (destination instanceof SectorLocation && ship.getLocation().getSector() == destination.getSector())
             {
-                if (ship.getSectorLocation().getOrbit() ==
-                        ((SectorLocation) destination).getOrbit())
+                if (ship.getSectorLocation().getOrbit() == ((SectorLocation) destination).getOrbit())
                 {
                     if (destination instanceof StationLocation)
+                    {
                         return ship.dock();
+                    }
 
                     if (destination instanceof PlanetLocation)
                     {
-                        return ship.land(((PlanetLocation) destination)
-                                .getRegionCoord());
+                        return ship.land(((PlanetLocation) destination).getRegionCoord());
                     }
                 }
 
-                return ship.orbit(ship.getSectorLocation().getOrbit() <
-                        ((SectorLocation) destination).getOrbit());
+                return ship.orbit(ship.getSectorLocation().getOrbit() < ((SectorLocation) destination).getOrbit());
             }
 
             return ship.orbit(true);
         }
 
         if (ship.getLocation().getCoord().equals(destination.getCoord()))
+        {
             return ship.enter();
+        }
 
-        return (!destination.getCoord().isAdjacent(ship.getLocation().getCoord()) &&
-                ship.warpTo(destination.getCoord())) ||
-                ship.burn(Utility.toGoToCardinal(ship.getLocation().getCoord(), destination.getCoord()));
+        return (!destination.getCoord().isAdjacent(ship.getLocation().getCoord()) && ship.warpTo(
+                destination.getCoord())) || ship.burn(
+                Utility.toGoToCardinal(ship.getLocation().getCoord(), destination.getCoord()));
     }
 
     private void performEmergencyAction()
     {
         if (ship.refine())
+        {
             return;
+        }
         else if (ship.canDistress())
+        {
             ship.distress();
+        }
         else
+        {
             ship.destroy(false);
+        }
     }
 
     public boolean joinBattle(Battle battle)
     {
         if (!willAttack() || !ship.isOrbital())
+        {
             return false;
+        }
 
         int attackerFriendliness = 0;
         int defenderFriendliness = 0;
 
-        for (Ship attacker: battle.getAttackers())
+        for (Ship attacker : battle.getAttackers())
+        {
             attackerFriendliness += getFriendliness(attacker);
+        }
 
-        for (Ship defender: battle.getDefenders())
+        for (Ship defender : battle.getDefenders())
+        {
             defenderFriendliness += getFriendliness(defender);
+        }
 
         if (attackerFriendliness > defenderFriendliness)
+        {
             battle.getAttackers().add(ship);
+        }
         else
+        {
             battle.getDefenders().add(ship);
+        }
 
         ship.setLocation(ship.getSectorLocation().joinBattle(battle));
         return true;
@@ -607,182 +691,182 @@ public class AI
     private int getFriendliness(Ship other)
     {
         if (!other.isAligned() || !ship.isAligned())
+        {
             return 0;
+        }
 
         if (ship.getFaction() == other.getFaction())
+        {
             return 4;
+        }
 
         switch (other.getFaction().getRelationship(ship.getFaction()))
         {
-            case ALLIANCE: return 3;
-            case PEACE: return 1;
+            case ALLIANCE:
+                return 3;
+            case PEACE:
+                return 1;
         }
-        
+
         return 0;
     }
-    
+
     /**
      * Performs an action in battle.
+     *
      * @return true if the ship attacked, false if not
      */
     public boolean performBattleAction()
     {
         if (!ship.isInBattle())
+        {
             return false;
-        
+        }
+
         Battle battle = ship.getBattleLocation().getBattle();
         List<Ship> enemies = battle.getEnemies(ship);
         Ship target = null;
-        for (Ship enemy: enemies)
+        for (Ship enemy : enemies)
         {
-            if (!battle.getFleeing().contains(enemy) && (target == null ||
-                    target.getAmountOf(Resources.HULL) <
-                    enemy.getAmountOf(Resources.HULL)))
+            if (!battle.getFleeing().contains(enemy) && (target == null || target.getAmountOf(Resource.HULL) <
+                                                                           enemy.getAmountOf(Resource.HULL)))
             {
                 target = enemy;
             }
         }
-        
+
         if (target == null)
+        {
             return false;
-        
+        }
+
         boolean playerInBattle =
-                ship.getLocation().getGalaxy().getPlayer() != null &&
-                ship.getBattleLocation().getShips().contains(
+                ship.getLocation().getGalaxy().getPlayer() != null && ship.getBattleLocation().getShips().contains(
                         ship.getLocation().getGalaxy().getPlayer());
-        
+
         if (!willAttack())
         {
-            if (ship.validateResources(Actions.FLEE, "flee"))
+            if (ship.validateResources(Action.FLEE, "flee"))
             {
-                ship.changeResourceBy(Actions.FLEE);
+                ship.changeResourceBy(Action.FLEE);
                 battle.getFleeing().add(ship);
-                target.addPlayerColorMessage(ship.toColorString()
-                        .add(" attempts to flee."));
+                target.addPlayerColorMessage(ship.toColorString().add(" attempts to flee."));
                 return false;
             }
-            
+
             ship.destroy(playerInBattle);
             return false;
         }
-        
-        if (!ship.isShielded() && ship.toggleActivation(Actions.SHIELD))
+
+        if (!ship.isShielded() && ship.toggleActivation(Action.SHIELD))
         {
-            target.addPlayerColorMessage(ship.toColorString()
-                    .add(" activates a shield."));
+            target.addPlayerColorMessage(ship.toColorString().add(" activates a shield."));
             // No return since shielding is a free action
         }
-        
-        if (ship.canFire(Actions.PULSE, target))
+
+        if (ship.canFire(Action.PULSE, target))
         {
-            target.addPlayerColorMessage(ship.toColorString()
-                    .add(" fires a pulse beam."));
+            target.addPlayerColorMessage(ship.toColorString().add(" fires a pulse beam."));
             target.playPlayerSound(Paths.PULSE);
-            ship.fire(Actions.PULSE, target);
+            ship.fire(Action.PULSE, target);
         }
-        else if (ship.canFire(ship.getWeapon(Actions.TORPEDO.getName()), target))
+        else if (ship.canFire(ship.getWeapon(Action.TORPEDO.getName()), target))
         {
-            target.addPlayerColorMessage(ship.toColorString()
-                    .add(" fires a torpedo."));
+            target.addPlayerColorMessage(ship.toColorString().add(" fires a torpedo."));
             target.playPlayerSound(Paths.TORPEDO);
-            ship.fire(Actions.TORPEDO, target);
+            ship.fire(Action.TORPEDO, target);
         }
-        else if (ship.canFire(Actions.LASER, target))
+        else if (ship.canFire(Action.LASER, target))
         {
-            target.addPlayerColorMessage(ship.toColorString()
-                    .add(" fires a laser."));
+            target.addPlayerColorMessage(ship.toColorString().add(" fires a laser."));
             target.playPlayerSound(Paths.LASER);
-            ship.fire(Actions.LASER, target);
+            ship.fire(Action.LASER, target);
         }
         else
         {
             // The code above under !willAttack() is borrowed from here
-            if (ship.validateResources(Actions.FLEE, "flee"))
+            if (ship.validateResources(Action.FLEE, "flee"))
             {
-                if (!ship.isCloaked() && ship.toggleActivation(Actions.CLOAK))
+                if (!ship.isCloaked() && ship.toggleActivation(Action.CLOAK))
                 {
-                    target.addPlayerColorMessage(ship.toColorString()
-                            .add(" activates a cloaking device."));
+                    target.addPlayerColorMessage(ship.toColorString().add(" activates a cloaking device."));
                     // No return since cloaking is a free action
                 }
 
-                target.addPlayerColorMessage(ship.toColorString()
-                        .add(" attempts to flee."));
+                target.addPlayerColorMessage(ship.toColorString().add(" attempts to flee."));
                 return false;
             }
-            
+
             ship.destroy(playerInBattle);
             return false;
         }
-        
+
         if (target.isDestroyed())
         {
             if (ship.isPassive(target))
             {
-                ship.changeReputation(ship.getFaction(), Reputations.KILL_ALLY);
+                ship.changeReputation(ship.getFaction(), Reputation.KILL_ALLY);
             }
             else
             {
-                ship.changeReputation(ship.getFaction(),
-                        Reputations.KILL_ENEMY);
+                ship.changeReputation(ship.getFaction(), Reputation.KILL_ENEMY);
             }
-            
-            ship.changeReputation(target.getFaction(), Reputations.KILL_ALLY);
+
+            ship.changeReputation(target.getFaction(), Reputation.KILL_ALLY);
         }
-        
+
         return true;
     }
-    
+
     public boolean pursue()
     {
         Battle battle = ship.getBattleLocation().getBattle();
-        return willAttack() && battle.getEnemies(ship).size() -
-                battle.getFleeing().size() < 1 &&
-                ship.changeResourceBy(Actions.PURSUE);
+        return willAttack() && battle.getEnemies(ship).size() - battle.getFleeing().size() < 1 && ship.changeResourceBy(
+                Action.PURSUE);
     }
-    
+
     /**
      * Returns true if the NPC is willing to enter a fight.
-     * @return true if this ship will engage in any fights, based on its hull
-     * strength and weaponry
+     *
+     * @return true if this ship will engage in any fights, based on its hull strength and weaponry
      */
     public boolean willAttack()
     {
-        return ship.hasWeapons() && ship.getAmountOf(Resources.HULL) >=
-                ship.getCapOf(Resources.HULL) / 2;
+        return ship.hasWeapons() && ship.getAmountOf(Resource.HULL) >= ship.getCapOf(Resource.HULL) / 2;
     }
-    
+
     public Ship vote(List<Ship> candidates)
     {
         int[] preferences = new int[candidates.size()];
-        
+
         for (int i = 0; i < candidates.size(); i++)
         {
             Ship candidate = candidates.get(i);
             preferences[i] = 0;
-            
-            if (ship.getHigherLevel() != null &&
-                    ship.getHigherLevel().equals(candidate.getHigherLevel()))
+
+            if (ship.getHigherLevel() != null && ship.getHigherLevel().equals(candidate.getHigherLevel()))
+            {
                 preferences[i] += 2;
-            
-            if (ship.getLocation().getCoord().equals(
-                    candidate.getLocation().getCoord()))
+            }
+
+            if (ship.getLocation().getCoord().equals(candidate.getLocation().getCoord()))
             {
                 preferences[i] += 3;
             }
-            else if (ship.getLocation().getCoord()
-                    .isAdjacent(candidate.getLocation().getCoord()))
+            else if (ship.getLocation().getCoord().isAdjacent(candidate.getLocation().getCoord()))
             {
                 preferences[i]++;
             }
-            
+
             if (candidate.calculateShipValue() > ship.calculateShipValue())
+            {
                 preferences[i]++;
+            }
         }
-        
+
         int highestPreference = 0;
         int index = 0;
-        
+
         for (int i = 0; i < preferences.length; i++)
         {
             // Using > instead of >= biases the ship's vote towards the
@@ -793,7 +877,7 @@ public class AI
                 index = i;
             }
         }
-        
+
         return candidates.get(index);
     }
 }

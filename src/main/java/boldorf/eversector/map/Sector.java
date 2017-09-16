@@ -1,61 +1,69 @@
 package boldorf.eversector.map;
 
 import asciiPanel.AsciiPanel;
-import boldorf.eversector.ships.Ship;
-import boldorf.eversector.ships.Levels;
-import boldorf.eversector.Main;
-import boldorf.eversector.faction.Faction;
-import static boldorf.eversector.Main.rng;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
-import static boldorf.eversector.Main.COLOR_FIELD;
+import boldorf.eversector.Main;
+import boldorf.eversector.faction.Faction;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
-import boldorf.eversector.storage.Symbol;
+import boldorf.eversector.ships.Levels;
+import boldorf.eversector.ships.Ship;
+import boldorf.eversector.Symbol;
 import boldorf.util.Utility;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/** A location on the map, possibly containing a star or station. */
+import static boldorf.eversector.Main.COLOR_FIELD;
+import static boldorf.eversector.Main.rng;
+
+/**
+ * A location on the map, possibly containing a star or station.
+ */
 public class Sector
 {
-    /** The maximum number of planets that will be generated. */
-    public static final int MAX_PLANETS = 10;
-    
-    /** The maximum number of stations that will be generated. */
-    public static final int MAX_STATIONS = 3;
-    
     /**
-     * The minimum number of ships that will be allowed to exist in station
-     * systems.
+     * The maximum number of planets that will be generated.
+     */
+    public static final int MAX_PLANETS = 10;
+
+    /**
+     * The maximum number of stations that will be generated.
+     */
+    public static final int MAX_STATIONS = 3;
+
+    /**
+     * The minimum number of ships that will be allowed to exist in station systems.
      */
     public static final int MIN_SHIPS = 4;
-    
-    private String        name;
-    private String        nickname;
-    private Location      location;
-    private Star          star;
-    private Nebula        nebula;
-    private Faction       faction;
-    private Planet[]      planets;
-    private Station[]     stations;
-    private List<Ship>    ships;
+
+    private String name;
+    private String nickname;
+    private Location location;
+    private Star star;
+    private Nebula nebula;
+    private Faction faction;
+    private Planet[] planets;
+    private Station[] stations;
+    private List<Ship> ships;
     private List<Integer> usedLetters;
-    
+
     /**
      * Creates a sector from a location.
-     * @param nebula the nebula in this sector
+     *
+     * @param nebula   the nebula in this sector
      * @param location the sector's location
      */
     public Sector(Location location, Nebula nebula)
     {
         this.location = location;
-        this.nebula   = nebula;
-        ships         = new LinkedList<>();
-        usedLetters   = new LinkedList<>();
-        
+        this.nebula = nebula;
+        ships = new LinkedList<>();
+        usedLetters = new LinkedList<>();
+
         // Generate a name that isn't used
         do
         {
@@ -63,19 +71,19 @@ public class Sector
         } while (location.getGalaxy().isUsed(name));
         location.getGalaxy().addDesignation(name);
     }
-    
+
     public void init()
     {
         double chance = 0.2 + Math.min(0.7, 1.0 / location.getCoord().distance(location.getGalaxy().getCenter()));
-        
+
         if (Utility.getChance(rng, chance))
         {
-            star     = Star.generate(nebula);
-            planets  = new Planet[star.getMass()];
+            star = Star.generate(nebula);
+            planets = new Planet[star.getMass()];
             stations = new Station[star.getMass()];
-            
+
             generatePlanets();
-            
+
             if (rng.nextBoolean())
             {
                 generateStations();
@@ -85,7 +93,7 @@ public class Sector
             {
                 generateShips(rng.nextInt(MIN_SHIPS + 1));
             }
-            
+
             nickname = Main.nameGenerator.generateName(2);
             updateFaction();
         }
@@ -95,79 +103,107 @@ public class Sector
             stations = new Station[0];
         }
     }
-    
+
     @Override
     public String toString()
     {
-        return hasNickname() ?
-                "Sector " + name + " \"" + nickname + "\"" : "Sector " + name;
-        
+        return hasNickname() ? "Sector " + name + " \"" + nickname + "\"" : "Sector " + name;
+
     }
-    
-    public String   getName()     {return name;            }
-    public String   getNickname() {return nickname;        }
-    public Location getLocation() {return location;        }
-    public Faction  getFaction()  {return faction;         }
-    public Star     getStar()     {return star;            }
-    public Nebula   getNebula()   {return nebula;          }
-    public boolean  hasNickname() {return nickname != null;}
-    public boolean  isClaimed()   {return faction  != null;}
-    public boolean  hasNebula()   {return nebula   != null;}
-    
+
+    public String getName() {return name; }
+
+    public String getNickname() {return nickname; }
+
+    public Location getLocation() {return location; }
+
+    public Faction getFaction() {return faction; }
+
+    public Star getStar() {return star; }
+
+    public Nebula getNebula() {return nebula; }
+
+    public boolean hasNickname() {return nickname != null;}
+
+    public boolean isClaimed() {return faction != null;}
+
+    public boolean hasNebula() {return nebula != null;}
+
     public int getOrbits()
-        {return star == null ? 0 : star.getMass();}
-    
+    {return star == null ? 0 : star.getMass();}
+
     public boolean isEmpty()
-        {return star == null;} 
-    
+    {return star == null;}
+
     public boolean hasPlanets()
     {
         if (isEmpty())
+        {
             return false;
-        
-        for (Planet planet: planets)
+        }
+
+        for (Planet planet : planets)
+        {
             if (planet != null)
+            {
                 return true;
-        
+            }
+        }
+
         return false;
     }
-    
+
     public boolean hasStations()
     {
         if (isEmpty())
+        {
             return false;
-        
-        for (Station station: stations)
+        }
+
+        for (Station station : stations)
+        {
             if (station != null)
+            {
                 return true;
-        
+            }
+        }
+
         return false;
     }
-    
+
     /**
-     * Calculates the dominant faction in the sector, based on their control of
-     * claimable bodies.
+     * Calculates the dominant faction in the sector, based on their control of claimable bodies.
      */
     public final void updateFaction()
     {
         if (isEmpty())
+        {
             return;
-        
+        }
+
         Galaxy galaxy = location.getGalaxy();
         int[] control = new int[galaxy.getFactions().length];
-        
+
         // Increase the respective counter for each claimed body
-        for (Planet planet: planets)
+        for (Planet planet : planets)
+        {
             if (planet != null && planet.isClaimed())
+            {
                 control[galaxy.getIndex(planet.getFaction())]++;
-        
-        for (Station station: stations)
+            }
+        }
+
+        for (Station station : stations)
+        {
             if (station != null && station.isClaimed())
+            {
                 control[galaxy.getIndex(station.getFaction())]++;
-        
+            }
+        }
+
         int index = -1;
         int maxBodies = 0; // The most owned bodies in a faction
-        
+
         for (int i = 0; i < control.length; i++)
         {
             if (control[i] > maxBodies)
@@ -182,224 +218,297 @@ public class Sector
                 index = -1;
             }
         }
-        
+
         // There was a tie in control, so no faction rules this sector
         if (index == -1)
         {
             faction = null;
             return;
         }
-        
+
         faction = galaxy.getFaction(index);
     }
-    
+
     public int getPlanetsControlledBy(Faction f)
     {
         int planetsClaimed = 0;
-        
-        for (Planet planet: planets)
+
+        for (Planet planet : planets)
+        {
             if (planet != null && planet.getFaction() == f)
+            {
                 planetsClaimed++;
-        
+            }
+        }
+
         return planetsClaimed;
     }
-    
+
     public int getStationsControlledBy(Faction f)
     {
         int stationsClaimed = 0;
-        
-        for (Station station: stations)
+
+        for (Station station : stations)
+        {
             if (station != null && station.getFaction() == f)
+            {
                 stationsClaimed++;
-        
+            }
+        }
+
         return stationsClaimed;
     }
-    
+
     public int getStationTypesControlledBy(Faction f, String type)
     {
         int stationsClaimed = 0;
-        
-        for (Station station: stations)
-            if (station != null && station.getFaction() == f &&
-                    station.getType().equals(type))
+
+        for (Station station : stations)
+        {
+            if (station != null && station.getFaction() == f && station.getType().equals(type))
+            {
                 stationsClaimed++;
-        
+            }
+        }
+
         return stationsClaimed;
     }
-    
+
     /**
      * Returns corresponding symbol that represents the sector's type.
+     *
      * @return the char from Symbol that represents the sector type
      */
     public ColorChar getTypeSymbol()
     {
         if (isEmpty())
+        {
             return Symbol.empty();
-        
+        }
+
         if (hasStations())
         {
-            for (Station station: stations)
+            for (Station station : stations)
+            {
                 if (station != null && Station.BATTLE.equals(station.getType()))
+                {
                     return new ColorChar(Symbol.BATTLE_STATION.get());
-            
+                }
+            }
+
             return new ColorChar(Symbol.TRADE_STATION.get());
         }
-        
+
         if (hasPlanets())
+        {
             return new ColorChar(star.getSymbol());
-        
+        }
+
         return new ColorChar(Symbol.UNDISCOVERED.get());
     }
-    
+
     /**
      * Gets the sector's symbol, based on the player's presence or its contents.
+     *
      * @return the sector's symbol as a character
      */
     public ColorChar getSymbol()
     {
-        boolean playerHere =
-                location.getGalaxy().getPlayer().getLocation().getSector() == this;
-        
+        boolean playerHere = location.getGalaxy().getPlayer().getLocation().getSector() == this;
+
         char symbol;
         if (playerHere)
+        {
             symbol = Symbol.player().getChar();
+        }
         else
+        {
             symbol = getTypeSymbol().getChar();
-        
+        }
+
         Color foreground;
         if (playerHere)
+        {
             foreground = Symbol.player().getForeground();
+        }
         else if (isClaimed())
+        {
             foreground = faction.getColor();
+        }
         else if (isEmpty())
+        {
             foreground = Symbol.empty().getForeground();
+        }
         else
+        {
             foreground = null;
-        
+        }
+
         Color background;
         if (hasNebula())
+        {
             background = nebula.getColor();
+        }
         else
+        {
             background = null;
-        
+        }
+
         return new ColorChar(symbol, foreground, background);
     }
-    
+
     public ColorChar getStarSymbol()
     {
         ColorChar symbol;
-        
+
         if (location.getGalaxy().getPlayer().getLocation().getSector() == this)
+        {
             symbol = Symbol.player();
+        }
         else if (star == null)
+        {
             symbol = Symbol.empty();
+        }
         else
+        {
             symbol = star.getSymbol();
-        
+        }
+
         ColorChar copy = new ColorChar(symbol);
         copy.setBackground(hasNebula() ? nebula.getColor() : null);
         return copy;
     }
-    
+
     /**
-     * Returns the number of ships in the sector, including those on its planets
-     * and in its stations.
+     * Returns the number of ships in the sector, including those on its planets and in its stations.
+     *
      * @return the total number of ships in the sector, will be non-negative
      */
-    public int getNShips() 
+    public int getNShips()
     {
         int nShips = ships.size();
-        
-        for (Planet planet: planets)
+
+        for (Planet planet : planets)
+        {
             if (planet != null)
+            {
                 nShips += planet.getNShips();
-        
-        for (Station station: stations)
+            }
+        }
+
+        for (Station station : stations)
+        {
             if (station != null)
+            {
                 nShips += station.getShips().size();
-        
+            }
+        }
+
         return nShips;
     }
-    
+
     /**
-     * Returns the number of ships in the sector that belong to a specified
-     * faction.
+     * Returns the number of ships in the sector that belong to a specified faction.
+     *
      * @param faction the faction that ships will be counted in
-     * @return the total number of ships in the sector that belong to the
-     * specified faction, will be non-negative
+     * @return the total number of ships in the sector that belong to the specified faction, will be non-negative
      */
     public int getNShips(Faction faction)
     {
         int nShips = 0;
-        
-        for (Ship ship: ships)
+
+        for (Ship ship : ships)
+        {
             if (ship.getFaction() == faction)
+            {
                 nShips++;
-        
-        for (Planet planet: planets)
+            }
+        }
+
+        for (Planet planet : planets)
+        {
             if (planet != null)
+            {
                 nShips += planet.getNShips(faction);
-        
-        for (Station station: stations)
+            }
+        }
+
+        for (Station station : stations)
+        {
             if (station != null)
+            {
                 nShips += station.getNShips(faction);
-        
+            }
+        }
+
         return nShips;
     }
-    
+
     public List<Planet> getPlanets()
     {
         List<Planet> planetList = new ArrayList<>();
-        for (Planet planet: planets)
+        for (Planet planet : planets)
+        {
             if (planet != null)
+            {
                 planetList.add(planet);
+            }
+        }
         return planetList;
     }
-    
+
     public List<Station> getStations()
     {
         List<Station> stationList = new ArrayList<>();
-        for (Station station: stations)
+        for (Station station : stations)
+        {
             if (station != null)
+            {
                 stationList.add(station);
+            }
+        }
         return stationList;
     }
-    
+
     /**
      * Returns the planet at the specified orbit.
-     * @param orbit the orbit of the planet, must be a valid orbit (between 1
-     * and 10)
+     *
+     * @param orbit the orbit of the planet, must be a valid orbit (between 1 and 10)
      * @return the planet at the specified orbit, null if invalid orbit
      */
     public Planet getPlanetAt(int orbit)
-        {return isValidOrbit(orbit) ? planets[orbit - 1] : null;}
-    
+    {return isValidOrbit(orbit) ? planets[orbit - 1] : null;}
+
     /**
      * Returns the station at the specified orbit.
-     * @param orbit the orbit of the station, must be a valid orbit (between 1
-     * and 10)
-     * @return the planet at the specified orbit, null if invalid orbit 
+     *
+     * @param orbit the orbit of the station, must be a valid orbit (between 1 and 10)
+     * @return the planet at the specified orbit, null if invalid orbit
      */
     public Station getStationAt(int orbit)
-        {return isValidOrbit(orbit) ? stations[orbit - 1] : null;}
-    
+    {return isValidOrbit(orbit) ? stations[orbit - 1] : null;}
+
     /**
      * Returns true if there is a planet at the specified orbit.
+     *
      * @param orbit the orbit to check for planets
      * @return true if a search for a planet in the orbit does not return null
      */
     public boolean isPlanetAt(int orbit)
-        {return getPlanetAt(orbit) != null;}
-    
+    {return getPlanetAt(orbit) != null;}
+
     /**
      * Returns true if there is a station at the specified orbit.
+     *
      * @param orbit the orbit to check for stations
      * @return true if a search for a station in the orbit does not return null
      */
     public boolean isStationAt(int orbit)
-        {return getStationAt(orbit) != null;}
-    
-    /** Randomly generates the planets and their number. */
+    {return getStationAt(orbit) != null;}
+
+    /**
+     * Randomly generates the planets and their number.
+     */
     private void generatePlanets()
     {
         if (isEmpty())
@@ -407,27 +516,27 @@ public class Sector
             planets = new Planet[0];
             return;
         }
-        
+
         // The (... - 1) + 2 is to ensure at least one planet
-        for (int i = 0; i < rng.nextInt(Math.min(MAX_PLANETS,
-                star.getMass()) - 1) + 2; i++)
+        for (int i = 0; i < rng.nextInt(Math.min(MAX_PLANETS, star.getMass()) - 1) + 2; i++)
         {
             int j;
             do
             {
                 j = rng.nextInt(star.getMass());
             } while (planets[j] != null);
-            
+
             // Make a new planet with the sector's name and i's corresponding
             // letter, this sector, and j adjusted from a whole number to a
             // natural number
-            planets[j] = new Planet(generateNameFor(i),
-                    new SectorLocation(getLocation(), j + 1));
+            planets[j] = new Planet(generateNameFor(i), new SectorLocation(getLocation(), j + 1));
             planets[j].init();
         }
     }
-    
-    /** Randomly generates the stations and their number. */
+
+    /**
+     * Randomly generates the stations and their number.
+     */
     private void generateStations()
     {
         if (isEmpty())
@@ -435,68 +544,70 @@ public class Sector
             stations = new Station[0];
             return;
         }
-        
+
         // The (...) + 1  is to ensure at least 1 station
         // Power is divided by 2 to avoid overpopulating small sectors
-        for (int i = 0; i < rng.nextInt(Math.min(MAX_STATIONS,
-                star.getMass() / 2)) + 1; i++)
+        for (int i = 0; i < rng.nextInt(Math.min(MAX_STATIONS, star.getMass() / 2)) + 1; i++)
         {
             int j;
             do
             {
                 j = rng.nextInt(star.getMass());
             } while (stations[j] != null);
-            
+
             // There is no need to do a check for if this is a station system,
             // because stations would not otherwise be generated
-            
+
             // Make a new station with the sector's name and i's corresponding
             // letter, this sector, and j adjusted from a whole number to a 
             // natural number
-            stations[j] = new Station(generateNameFor(i),
-                    new SectorLocation(getLocation(), j + 1),
+            stations[j] = new Station(generateNameFor(i), new SectorLocation(getLocation(), j + 1),
                     location.getGalaxy().getRandomFaction());
         }
     }
-    
-    /** Randomly generates any ships and their number. */
+
+    /**
+     * Randomly generates any ships and their number.
+     */
     private void generateShips(int nShips)
     {
         ships = new LinkedList<>();
-        
+
         for (int i = 0; i < nShips; i++)
         {
             // Make a new ship with the sector's name and i's corresponding
             // letter, the sector's location, and a random faction
-            Ship ship = new Ship(generateShipName(),
-                    new SectorLocation(location,
-                            rng.nextInt(star.getMass()) + 1),
+            Ship ship = new Ship(generateShipName(), new SectorLocation(location, rng.nextInt(star.getMass()) + 1),
                     location.getGalaxy().getRandomFaction());
             ships.add(ship);
             location.getGalaxy().addShip(ship);
         }
     }
-    
+
     /**
-     * Generates a name consisting of the sector's name and a letter, whose
-     * place is represented by the specified number.
+     * Generates a name consisting of the sector's name and a letter, whose place is represented by the specified
+     * number.
+     *
      * @param i the place of the letter in the alphabet to use
      * @return a String containing the sector's name and the character form of i
      */
     public String generateNameFor(int i)
-        {return name + (char) (i + 65);}
-    
+    {return name + (char) (i + 65);}
+
     /**
-     * Generates a name for a ship consisting of the sector's name and a random
-     * letter not already in use by another ship.
-     * @return a String containing the sector's name and a character that has
-     * not yet been used for ship names, if possible
+     * Generates a name for a ship consisting of the sector's name and a random letter not already in use by another
+     * ship.
+     *
+     * @return a String containing the sector's name and a character that has not yet been used for ship names, if
+     * possible
      */
     public String generateShipName()
     {
         if (usedLetters.size() >= 26)
+        {
             return generateNameFor(rng.nextInt(26));
-        
+        }
+
         int letterPlace;
         do
         {
@@ -505,134 +616,161 @@ public class Sector
         usedLetters.add(letterPlace);
         return generateNameFor(letterPlace);
     }
-    
+
     /**
      * Removes the given letter from the sector's list of used ship letters.
+     *
      * @param letter the letter to remove
      * @return true if the letter was removed
      */
     public boolean removeLetter(Integer letter)
-        {return usedLetters.remove(letter);}
-    
+    {return usedLetters.remove(letter);}
+
     /**
      * Returns the first ship found with the given name.
+     *
      * @param name the name of the ship to find
      * @return the first ship found with the given name, null if not found
      */
     public Ship getShip(String name)
     {
-        for (Ship ship: ships)
-            if (ship != null && (name.equalsIgnoreCase(ship.getName()) ||
-                    name.equalsIgnoreCase(ship.toString())))
+        for (Ship ship : ships)
+        {
+            if (ship != null && (name.equalsIgnoreCase(ship.getName()) || name.equalsIgnoreCase(ship.toString())))
+            {
                 return ship;
-        
+            }
+        }
+
         return null;
     }
-    
+
     /**
      * Returns the first ship found at a given orbit.
+     *
      * @param orbit the orbit to find a ship at
      * @return the first ship found at the orbit, null if none
      */
     public Ship getFirstShipAt(int orbit)
     {
-        for (Ship ship: ships)
+        for (Ship ship : ships)
+        {
             if (ship != null)
+            {
                 return ship;
-        
+            }
+        }
+
         return null;
     }
-    
+
     /**
-     * Returns the first ship found at a given orbit that is not the entered
-     * one.
+     * Returns the first ship found at a given orbit that is not the entered one.
+     *
      * @param ship the disallowed ship that will not be found at the orbit
-     * @return the first ship that is not the specified ship found at the orbit,
-     * null if no others found
+     * @return the first ship that is not the specified ship found at the orbit, null if no others found
      */
     public Ship getFirstOtherShip(Ship ship)
     {
         int orbit = ship.getSectorLocation().getOrbit();
-        for (Ship otherShip: ships)
-            if (otherShip != null && otherShip != ship &&
-                    otherShip.getSectorLocation().getOrbit() == orbit)
+        for (Ship otherShip : ships)
+        {
+            if (otherShip != null && otherShip != ship && otherShip.getSectorLocation().getOrbit() == orbit)
+            {
                 return otherShip;
-        
+            }
+        }
+
         return null;
     }
-    
+
     /**
-     * Returns the first ship found at a given orbit that is not aligned to the
-     * entered faction.
-     * @param orbit the orbit to find an unaligned ship at
+     * Returns the first ship found at a given orbit that is not aligned to the entered faction.
+     *
+     * @param orbit   the orbit to find an unaligned ship at
      * @param faction the faction that the ship must be at war with
-     * @return the first ship that is at the orbit and is part of a faction that
-     * is at war with the specified faction (or is not part of a faction), null
-     * if not found
+     * @return the first ship that is at the orbit and is part of a faction that is at war with the specified faction
+     * (or is not part of a faction), null if not found
      */
     public Ship getFirstHostileShip(int orbit, Faction faction)
     {
         // The if checks if the ship is at the same orbit, is of a different
         // faction, and is either unaligned or at war
-        for (Ship otherShip: ships)
-            if (((SectorLocation) otherShip.getLocation()).getOrbit() == orbit
-                    && otherShip.isHostile(faction))
+        for (Ship otherShip : ships)
+        {
+            if (((SectorLocation) otherShip.getLocation()).getOrbit() == orbit && otherShip.isHostile(faction))
+            {
                 return otherShip;
-        
+            }
+        }
+
         return null;
     }
-    
+
     /**
-     * Performs the same function as getFirstHostileShip, using a ship's orbit
-     * and faction.
+     * Performs the same function as getFirstHostileShip, using a ship's orbit and faction.
+     *
      * @param ship the ship that orbit and faction with be collected from
      * @return the first ship hostile to the entered ship in the same orbit
      */
     public Ship getFirstHostileShip(Ship ship)
     {
         if (!ship.isInSector())
+        {
             return null;
-        
-        return getFirstHostileShip(ship.getSectorLocation().getOrbit(),
-                ship.getFaction());
+        }
+
+        return getFirstHostileShip(ship.getSectorLocation().getOrbit(), ship.getFaction());
     }
-    
+
     public List<Ship> getShips()
-        {return ships;}
-    
+    {return ships;}
+
     /**
      * Returns an array of all ships at a given orbit.
+     *
      * @param orbit the orbit to find ships at
      * @return an array of ships that are at the orbit
      */
     public List<Ship> getShipsAt(int orbit)
     {
         List<Ship> shipsAtOrbit = new LinkedList<>();
-        
-        for (Ship ship: ships)
+
+        for (Ship ship : ships)
+        {
             if (ship != null && ship.getSectorLocation().getOrbit() == orbit)
+            {
                 shipsAtOrbit.add(ship);
-        
+            }
+        }
+
         return shipsAtOrbit;
     }
-    
+
     /**
      * Returns the orbit of a randomly-picked station.
+     *
      * @return the orbit of a random station, -1 if no stations were found
      */
     public int getRandomStationOrbit()
     {
         int nStations = 0;
-        
-        for (Station station: stations)
+
+        for (Station station : stations)
+        {
             if (station != null)
+            {
                 nStations++;
-        
+            }
+        }
+
         if (nStations == 0)
+        {
             return -1;
-        
+        }
+
         int[] stationOrbits = new int[nStations];
-        
+
         int nextSlot = 0;
         for (int i = 0; i < stations.length; i++)
         {
@@ -642,16 +780,16 @@ public class Sector
                 nextSlot++;
             }
         }
-        
+
         return stationOrbits[rng.nextInt(stationOrbits.length)];
     }
-    
+
     public ColorString getSymbolsForOrbit(int orbit)
     {
         ColorString symbols = new ColorString();
         int orbitIndex = orbit - 1;
         int nShips = getShipsAt(orbit).size();
-        
+
         boolean playerIsHere;
         Location playerLocation = location.getGalaxy().getPlayer().getLocation();
         if (playerLocation instanceof SectorLocation)
@@ -663,12 +801,16 @@ public class Sector
         {
             playerIsHere = false;
         }
-        
+
         if (stations[orbitIndex] != null)
+        {
             symbols.add(stations[orbitIndex].getSymbol());
+        }
         else
+        {
             symbols.add(Symbol.empty());
-        
+        }
+
         if (playerIsHere)
         {
             symbols.add(Symbol.player());
@@ -679,34 +821,45 @@ public class Sector
             int highestLevel = 0;
             boolean isCommonFaction = true;
             Faction commonFaction = null;
-            for (Ship ship: ships)
+            for (Ship ship : ships)
             {
-                if (ship.getSectorLocation().getOrbit() == orbit &&
-                        !ship.isPlayer())
+                if (ship.getSectorLocation().getOrbit() == orbit && !ship.isPlayer())
                 {
                     if (ship.getHighestLevel() > highestLevel)
+                    {
                         highestLevel = ship.getHighestLevel();
-                    
+                    }
+
                     if (commonFaction == null)
+                    {
                         commonFaction = ship.getFaction();
+                    }
                     else
+                    {
                         isCommonFaction = ship.getFaction() == commonFaction;
+                    }
                 }
             }
-            
+
             Symbol symbol;
             // Print the corresponding symbol to the highest level
             switch (highestLevel / Levels.LEVEL_AMOUNT)
             {
-                case 0: case 1: symbol = Symbol.WEAK_SHIP;   break;
-                case 2:         symbol = Symbol.MEDIUM_SHIP; break;
-                default:        symbol = Symbol.STRONG_SHIP; break;
+                case 0:
+                case 1:
+                    symbol = Symbol.WEAK_SHIP;
+                    break;
+                case 2:
+                    symbol = Symbol.MEDIUM_SHIP;
+                    break;
+                default:
+                    symbol = Symbol.STRONG_SHIP;
+                    break;
             }
-            
+
             if (isCommonFaction && commonFaction != null)
             {
-                symbols.add(new ColorChar(symbol.get(),
-                        commonFaction.getColor()));
+                symbols.add(new ColorChar(symbol.get(), commonFaction.getColor()));
             }
             else
             {
@@ -717,29 +870,36 @@ public class Sector
         {
             symbols.add(Symbol.empty());
         }
-        
+
         if (planets[orbitIndex] != null)
+        {
             symbols.add(planets[orbitIndex].getSymbol());
+        }
         else
+        {
             symbols.add(Symbol.empty());
-        
+        }
+
         return symbols;
     }
-    
+
     public List<ColorString> getOrbitContents(int orbit)
     {
         List<ColorString> contents = new LinkedList<>();
         if (planets[orbit - 1] != null)
-            contents.add(planets[orbit - 1].toColorString());
-        
-        if (stations[orbit - 1] != null)
-            contents.add(stations[orbit - 1].toColorString());
-        
-        int notShown = 0;
-        for (Ship ship: ships)
         {
-            if (ship != null && ship.getSectorLocation().getOrbit() == orbit &&
-                    !ship.isPlayer())
+            contents.add(planets[orbit - 1].toColorString());
+        }
+
+        if (stations[orbit - 1] != null)
+        {
+            contents.add(stations[orbit - 1].toColorString());
+        }
+
+        int notShown = 0;
+        for (Ship ship : ships)
+        {
+            if (ship != null && ship.getSectorLocation().getOrbit() == orbit && !ship.isPlayer())
             {
                 // 12 is the max number of orbits in a sector
                 // TODO reference Star.StarMass
@@ -748,78 +908,84 @@ public class Sector
                     notShown++;
                     break;
                 }
-                
+
                 ColorString shipString = ship.toColorString();
                 if (ship.isLeader())
+                {
                     shipString.add(new ColorString(" (Leader)", COLOR_FIELD));
+                }
                 contents.add(shipString);
             }
         }
-        
+
         if (notShown > 0)
         {
             // (notShown + 1) accounts for the replaced line
-            contents.set(11, new ColorString("(" + (notShown + 1) + " more)",
-                    AsciiPanel.brightBlack));
+            contents.set(11, new ColorString("(" + (notShown + 1) + " more)", AsciiPanel.brightBlack));
         }
-        
+
         return contents;
     }
-    
+
     /**
-     * Returns true if a specified orbit is valid, meaning it ranges between 1
-     * and the constant number of orbits.
+     * Returns true if a specified orbit is valid, meaning it ranges between 1 and the constant number of orbits.
+     *
      * @param orbit the orbit to validate
      * @return true if the orbit is between 1 and the constant number of orbits
      */
     public boolean isValidOrbit(int orbit)
-        {return !isEmpty() && orbit >= 1 && orbit <= star.getMass();}
-    
+    {return !isEmpty() && orbit >= 1 && orbit <= star.getMass();}
+
     /**
-     * Returns true if there are any planets or stations in this sector that can
-     * be claimed.
+     * Returns true if there are any planets or stations in this sector that can be claimed.
+     *
      * @return true if there are any landable planets or stations in the sector
      */
     public boolean hasClaimableTerritory()
     {
         if (hasStations())
+        {
             return true;
-        
-        for (Planet planet: planets)
+        }
+
+        for (Planet planet : planets)
+        {
             if (planet != null && planet.getType().canLandOn())
+            {
                 return true;
-        
+            }
+        }
+
         return false;
     }
-    
+
     /**
-     * Generates a random name to be used in sectors, and it must be final so
-     * that it cannot modify sector's constructor. This allows for 67,600
-     * possible designations, enough for a grid of 260x260 sectors.
+     * Generates a random name to be used in sectors, and it must be final so that it cannot modify sector's
+     * constructor. This allows for 67,600 possible designations, enough for a grid of 260x260 sectors.
+     *
      * @return a String consisting of two characters, a hyphen, and two numbers
      */
     public static String generateName()
     {
         char c = (char) (rng.nextInt(25) + 65);
         char d = (char) (rng.nextInt(25) + 65);
-        int i  = rng.nextInt(10);
-        int j  = rng.nextInt(10);
+        int i = rng.nextInt(10);
+        int j = rng.nextInt(10);
         return c + "" + d + "-" + i + "" + j;
     }
-    
+
     /**
-     * Scans through the list of ships, removing ones that are on planets and
-     * stations.
+     * Scans through the list of ships, removing ones that are on planets and stations.
      */
     public void resetDuplicateShips()
     {
         boolean shipReset;
-        
+
         do
         {
             shipReset = false;
-            
-            for (Ship ship: ships)
+
+            for (Ship ship : ships)
             {
                 if (ship.isLanded() || ship.isDocked())
                 {

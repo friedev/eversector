@@ -2,362 +2,416 @@ package boldorf.eversector.map;
 
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorChar;
-import boldorf.eversector.Main;
-import static boldorf.eversector.Main.rng;
-import boldorf.util.NameGenerator;
 import boldorf.apwt.glyphs.ColorString;
-import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
-import boldorf.eversector.ships.Ship;
-import boldorf.eversector.locations.Location;
-import boldorf.eversector.locations.SectorLocation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import boldorf.eversector.Main;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
-import static boldorf.eversector.storage.Names.ORE;
-import boldorf.eversector.storage.Symbol;
-import java.awt.Color;
+import boldorf.eversector.locations.Location;
+import boldorf.eversector.locations.SectorLocation;
+import boldorf.eversector.ships.Ship;
+import boldorf.eversector.Symbol;
+import boldorf.util.NameGenerator;
 import squidpony.squidgrid.Splash;
 import squidpony.squidmath.Coord;
 
-/** A 2D array of sectors representing a galaxy. */
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
+import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
+import static boldorf.eversector.Main.rng;
+import static boldorf.eversector.Names.ORE;
+
+/**
+ * A 2D array of sectors representing a galaxy.
+ */
 public class Galaxy
 {
-    /** The default number of sectors on each side of the central sector. */
-    public static final int MIN_RADIUS = 25;
-    
-    public static final int RADIUS_RANGE = 25;
-    
-    /** The minimum number of faction that will be present in the game. */
-    public static final int MIN_FACTIONS = 2;
-    
     /**
-     * The maximum increase in factions over the minimum (adjusted by 1 to 
-     * include 0).
+     * The default number of sectors on each side of the central sector.
+     */
+    public static final int MIN_RADIUS = 25;
+
+    public static final int RADIUS_RANGE = 25;
+
+    /**
+     * The minimum number of faction that will be present in the game.
+     */
+    public static final int MIN_FACTIONS = 2;
+
+    /**
+     * The maximum increase in factions over the minimum (adjusted by 1 to include 0).
      */
     public static final int FACTION_RANGE = 4;
-    
-    /** The number of turns that are simulated before the galaxy is used. */
-    public static final int SIMULATED_TURNS = 50;
-    
+
     /**
-     * The frequency at which to update a relationship between factions, to be
-     * divided by the number of factions.
+     * The number of turns that are simulated before the galaxy is used.
+     */
+    public static final int SIMULATED_TURNS = 50;
+
+    /**
+     * The frequency at which to update a relationship between factions, to be divided by the number of factions.
      */
     public static final int RELATION_UPDATE_FREQ = 120;
-    
+
     /**
-     * The amount of tries that can be made to update a relationship before the
-     * update is skipped.
+     * The amount of tries that can be made to update a relationship before the update is skipped.
      */
     public static final int MAX_RELATIONSHIP_UPDATE_TRIES = 5;
-    
-    /** The frequency at which to elect for new faction leaders, in turns. */
+
+    /**
+     * The frequency at which to elect for new faction leaders, in turns.
+     */
     public static final int ELECTION_FREQ = 150;
-    
-    /** The fewest types of ore that can exist. */
+
+    /**
+     * The fewest types of ore that can exist.
+     */
     public static final int MIN_ORE = 4;
-    
-    /** The range of possible amounts of ore types over the minimum. */
+
+    /**
+     * The range of possible amounts of ore types over the minimum.
+     */
     public static final int ORE_RANGE = 3;
-    
-    private Sector[][]   sectors;
-    private Ship         player;
-    private List<Ship>   ships;
-    private Faction[]    factions;
+
+    private Sector[][] sectors;
+    private Ship player;
+    private List<Ship> ships;
+    private Faction[] factions;
     private List<String> designations;
-    private Ore[]        oreTypes;   
-    private int          turn;
-    
-    /** Generates a galaxy with the default size. */
+    private Ore[] oreTypes;
+    private int turn;
+
+    /**
+     * Generates a galaxy with the default size.
+     */
     public Galaxy()
-        {this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));}
-    
+    {this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));}
+
     /**
      * Generates a galaxy of a specified size.
+     *
      * @param size the side length of the galaxy in sectors
      */
     public Galaxy(int size)
     {
-        sectors      = new Sector[size * 2 + 1][size * 2 + 1];
-        ships        = new LinkedList<>();
-        factions     = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
+        sectors = new Sector[size * 2 + 1][size * 2 + 1];
+        ships = new LinkedList<>();
+        factions = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
         designations = new LinkedList<>();
-        oreTypes     = generateOreTypes();
-        turn         = -SIMULATED_TURNS;
-        
+        oreTypes = generateOreTypes();
+        turn = -SIMULATED_TURNS;
+
         // Factions must be created first so they can be assigned to ships
         createFactions();
         init();
     }
-    
+
     public Sector[][] toArray()
-        {return sectors;}
-    
+    {return sectors;}
+
     public List<Ship> getShips()
-        {return ships;}
-    
+    {return ships;}
+
     public Ship getPlayer()
-        {return player;}
-    
+    {return player;}
+
     public int getTurn()
-        {return turn;}
-    
+    {return turn;}
+
     public int getWidth()
-        {return sectors[0].length;}
-    
+    {return sectors[0].length;}
+
     public int getHeight()
-        {return sectors.length;}
-    
+    {return sectors.length;}
+
     public Coord getCenter()
-        {return Coord.get(getWidth() / 2, getHeight() / 2);}
-    
+    {return Coord.get(getWidth() / 2, getHeight() / 2);}
+
     public Sector sectorAt(int x, int y)
-        {return sectors[y][x];}
-    
+    {return sectors[y][x];}
+
     public Sector sectorAt(Coord p)
-        {return p == null ? null : sectorAt(p.x, p.y);}
-    
+    {return p == null ? null : sectorAt(p.x, p.y);}
+
     /**
      * Returns true if the specified coordinates are on the map.
+     *
      * @param x the x coordinate of the Coord to check
      * @param y the y coordinate of the Coord to check
      * @return true if the coordinates correspond with a Coord on the map
      */
     public boolean contains(int x, int y)
-        {return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();}
-    
+    {return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();}
+
     /**
-     * Performs the same function as contains(int, int), except that it uses a
-     * predefined Coord's coordinates.
+     * Performs the same function as contains(int, int), except that it uses a predefined Coord's coordinates.
+     *
      * @param p the Coord to use coordinates from
      * @return true if the Coord is on the map
      */
     public boolean contains(Coord p)
-        {return contains(p.x, p.y);}
-    
+    {return contains(p.x, p.y);}
+
     public double[][] getResistanceMap()
     {
         double[][] resistance = new double[sectors.length][sectors[0].length];
         for (int y = 0; y < sectors.length; y++)
+        {
             for (int x = 0; x < sectors[y].length; x++)
+            {
                 resistance[x][y] = sectors[y][x].hasNebula() ? 1.0 : 0.0;
-        
+            }
+        }
+
         return resistance;
     }
-    
+
     public Sector getRandomStationSystem()
     {
         List<Sector> stationSystems = new LinkedList<>();
-        for (Sector[] row: sectors)
-            for (Sector sector: row)
+        for (Sector[] row : sectors)
+        {
+            for (Sector sector : row)
+            {
                 if (sector.hasStations())
+                {
                     stationSystems.add(sector);
-        
+                }
+            }
+        }
+
         return rng.getRandomElement(stationSystems);
     }
-    
+
     public Sector getRandomEdgeSector()
     {
         int edgeCoord = rng.nextInt(sectors.length);
         if (rng.nextBoolean())
         {
-            return rng.nextBoolean() ? sectors[0][edgeCoord] :
-                    sectors[sectors.length - 1][edgeCoord];
+            return rng.nextBoolean() ? sectors[0][edgeCoord] : sectors[sectors.length - 1][edgeCoord];
         }
-        
-        return rng.nextBoolean() ?
-                sectors[edgeCoord][0] : sectors[edgeCoord][sectors.length - 1];
+
+        return rng.nextBoolean() ? sectors[edgeCoord][0] : sectors[edgeCoord][sectors.length - 1];
     }
-    
+
     /**
      * Sets the player to a designated ship.
+     *
      * @param player the ship to become the player
      */
     public void setPlayer(Ship player)
-        {this.player = player;}
-    
-    /** Creates the player, the starting sector, and the player's faction. */
+    {this.player = player;}
+
+    /**
+     * Creates the player, the starting sector, and the player's faction.
+     */
     public void createNewPlayer()
     {
-        SectorLocation location = new Location(this, getRandomStationSystem()
-                .getLocation().getCoord()).enterSector();
-        location = location.setOrbit(location.getSector()
-                .getRandomStationOrbit());
-        
+        SectorLocation location = new Location(this, getRandomStationSystem().getLocation().getCoord()).enterSector();
+        location = location.setOrbit(location.getSector().getRandomStationOrbit());
+
         Faction faction = location.getStation().getFaction();
         player = new Ship("Player", location, faction);
         player.setAI(null);
     }
-    
-    /** Processes the next turn. */
+
+    /**
+     * Processes the next turn.
+     */
     public void nextTurn()
     {
         if (player != null)
+        {
             player.updateContinuousEffects();
-        
-        for (Ship ship: ships)
+        }
+
+        for (Ship ship : ships)
+        {
             ship.getAI().act();
-        
-        for (Iterator<Ship> it = ships.iterator(); it.hasNext();)
+        }
+
+        for (Iterator<Ship> it = ships.iterator(); it.hasNext(); )
+        {
             if (it.next().isDestroyed())
+            {
                 it.remove();
-        
-        for (Ship ship: ships)
+            }
+        }
+
+        for (Ship ship : ships)
         {
             ship.updateContinuousEffects();
             ship.fadeReputations();
         }
-        
+
         if (player != null)
+        {
             player.fadeReputations();
-        
+        }
+
         // Respawns ships if there are fewer than the minimum ships in a sector
         for (Sector[] row : sectors)
         {
-            for (Sector sector: row)
+            for (Sector sector : row)
             {
-                if (sector.getNShips() < Sector.MIN_SHIPS &&
-                        sector.hasStations())
+                if (sector.getNShips() < Sector.MIN_SHIPS && sector.hasStations())
                 {
-                    Station station =
-                            sector.getStationAt(sector.getRandomStationOrbit());
+                    Station station = sector.getStationAt(sector.getRandomStationOrbit());
 
-//                    if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
-//                    {
-                    Ship newShip = new Ship(
-                            sector.generateNameFor(rng.nextInt(26)),
-                            new SectorLocation(
-                                    sector.getLocation(),
-                                    station.getLocation().getOrbit()),
+                    //                    if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
+                    //                    {
+                    Ship newShip = new Ship(sector.generateNameFor(rng.nextInt(26)),
+                            new SectorLocation(sector.getLocation(), station.getLocation().getOrbit()),
                             station.getFaction());
                     newShip.dock();
                     ships.add(newShip);
-//                    }
+                    //                    }
                 }
 
                 // Only known way to fix duplicate ship bug
                 sector.resetDuplicateShips();
             }
         }
-        
+
         // Update relationships if there are more than two factions
-        if (turn >= (RELATION_UPDATE_FREQ / factions.length) &&
-                factions.length > 2 &&
-                turn % (RELATION_UPDATE_FREQ / factions.length) == 0)
+        if (turn >= (RELATION_UPDATE_FREQ / factions.length) && factions.length > 2 &&
+            turn % (RELATION_UPDATE_FREQ / factions.length) == 0)
         {
             int tries = 0;
             do
             {
                 tries++;
                 if (tries > MAX_RELATIONSHIP_UPDATE_TRIES)
+                {
                     break;
-            }
-            while (!getRandomRelationship().updateRelationship());
+                }
+            } while (!getRandomRelationship().updateRelationship());
         }
-        
+
         // Update faction leaders periodically, or immediately if destroyed
         // Also update faction leaders immediately before gameplay starts
         if (turn > 0)
+        {
             updateFactionLeaders();
+        }
         else if (turn == -1)
+        {
             updateFactionLeaders();
-        
+        }
+
         turn++;
     }
-    
-    /** Updates the leader of each faction. */
+
+    /**
+     * Updates the leader of each faction.
+     */
     public void updateFactionLeaders()
     {
-        for (Faction faction: factions)
+        for (Faction faction : factions)
+        {
             if (turn - faction.getLastElection() == ELECTION_FREQ)
+            {
                 faction.holdElection();
-        
+            }
+        }
+
         updateDestroyedFactionLeaders();
     }
-    
+
     public void updateDestroyedFactionLeaders()
     {
-        for (Faction faction: factions)
+        for (Faction faction : factions)
         {
-            if (faction.getLeader() == null ||
-                    faction.getLeader().isDestroyed())
+            if (faction.getLeader() == null || faction.getLeader().isDestroyed())
             {
                 faction.holdElection();
             }
         }
     }
-    
+
     /**
      * Adds the given ship to the ships list.
+     *
      * @param ship the ship to add to the ships list
      * @return true if the addition was successful
      */
     public boolean addShip(Ship ship)
-        {return ships.add(ship);}
-    
+    {return ships.add(ship);}
+
     /**
      * Removes the given ship from the ships list.
+     *
      * @param ship the ship to remove from the ships list
      * @return true if the removal was successful
      */
     public boolean removeShip(Ship ship)
-        {return ships.remove(ship);}
-    
+    {return ships.remove(ship);}
+
     /**
      * Finds the first ship with the given name.
+     *
      * @param name the name of the ship to find
      * @return the first ship found with the given name
      */
     public Ship findShip(String name)
     {
-        for (Ship ship: ships)
+        for (Ship ship : ships)
+        {
             if (name.equalsIgnoreCase(ship.getName()))
+            {
                 return ship;
-        
+            }
+        }
+
         return null;
     }
-    
+
     /**
-     * Returns the faction at the given index. 
+     * Returns the faction at the given index.
+     *
      * @param index the index of the faction to find
      * @return the faction with the given position in the faction array
      */
     public Faction getFaction(int index)
-        {return factions[index];}
-    
+    {return factions[index];}
+
     public Faction getFaction(String name)
     {
-        for (Faction faction: factions)
+        for (Faction faction : factions)
+        {
             if (faction.getName().equals(name))
+            {
                 return faction;
+            }
+        }
         return null;
     }
-    
+
     /**
-     * Returns the index of the given faction. This method is public so as to 
-     * ease iteration over factions.
+     * Returns the index of the given faction. This method is public so as to ease iteration over factions.
+     *
      * @param faction the faction to find the index of
      * @return the index of the given faction in the faction array
      */
     public int getIndex(Faction faction)
     {
         for (int i = 0; i < factions.length; i++)
+        {
             if (factions[i] == faction)
+            {
                 return i;
-        
+            }
+        }
+
         return -1;
     }
-    
+
     /**
      * Converts the galaxy into a List of ColorStrings for displaying.
-     * @param showStars if true, will show the star Symbol of sectors rather
-     * than their type Symbol
-     * @param cursor the sector to show as selected
+     *
+     * @param showStars if true, will show the star Symbol of sectors rather than their type Symbol
+     * @param cursor    the sector to show as selected
      * @return the galaxy as a List of ColorStrings
      */
     public List<ColorString> toColorStrings(boolean showStars, Coord cursor)
@@ -370,187 +424,211 @@ public class Galaxy
 
             for (Sector sector : row)
             {
-                ColorChar symbol = new ColorChar(showStars ?
-                        sector.getStarSymbol() : sector.getSymbol());
+                ColorChar symbol = new ColorChar(showStars ? sector.getStarSymbol() : sector.getSymbol());
                 if (sector.getLocation().getCoord().equals(cursor))
+                {
                     symbol.setBackground(COLOR_SELECTION_BACKGROUND);
+                }
                 line.add(symbol);
             }
 
             output.add(line);
         }
-        
+
         return output;
     }
-    
+
     /**
      * Converts the FOV of a Ship into a List of ColorStrings for displaying.
-     * @param ship the ship whose FOV will be used as the rendering range
-     * @param showStars if true, will show the star Symbol of sectors rather
-     * than their type Symbol
-     * @param cursor the sector to show as selected
+     *
+     * @param ship      the ship whose FOV will be used as the rendering range
+     * @param showStars if true, will show the star Symbol of sectors rather than their type Symbol
+     * @param cursor    the sector to show as selected
      * @return the galaxy as a List of ColorStrings
      */
-    public List<ColorString> toColorStrings(Ship ship, boolean showStars,
-            Coord cursor)
+    public List<ColorString> toColorStrings(Ship ship, boolean showStars, Coord cursor)
     {
         int fovRadius = (int) Math.floor(ship.getFOVRadius());
         LinkedList<ColorString> output = new LinkedList<>();
-        
+
         for (int y = 0; y < fovRadius * 2 - 1; y++)
         {
             output.add(new ColorString());
             for (int x = 0; x < fovRadius * 2 - 1; x++)
+            {
                 output.getLast().add(Symbol.UNDISCOVERED.get());
+            }
         }
-        
+
         List<Coord> fov = ship.getFOV();
-        
-        for (Coord coord: fov)
+
+        for (Coord coord : fov)
         {
-            ColorChar symbol = showStars ?
-                    sectorAt(coord).getStarSymbol() :
-                    sectorAt(coord).getSymbol();
-            
+            ColorChar symbol = showStars ? sectorAt(coord).getStarSymbol() : sectorAt(coord).getSymbol();
+
             if (sectorAt(coord).getLocation().getCoord().equals(cursor))
             {
                 symbol = new ColorChar(symbol);
                 symbol.setBackground(COLOR_SELECTION_BACKGROUND);
             }
-            
+
             int x = coord.x - ship.getLocation().getCoord().x + fovRadius - 1;
             int y = coord.y - ship.getLocation().getCoord().y + fovRadius - 1;
             output.get(y).getCharacters().set(x, symbol);
         }
-        
+
         return output;
     }
-    
+
     /**
      * Returns the rank of the given faction by sectors controlled.
+     *
      * @param faction the faction of which to return the rank of
-     * @return the faction's rank among other factions based on the number of
-     * sectors controlled by each
+     * @return the faction's rank among other factions based on the number of sectors controlled by each
      */
     public int getRank(Faction faction)
     {
         int rank = 1;
-        
-        for (Faction otherFaction: factions)
-            if (otherFaction != faction && getSectorsControlledBy(otherFaction)
-                    >= getSectorsControlledBy(faction))
+
+        for (Faction otherFaction : factions)
+        {
+            if (otherFaction != faction && getSectorsControlledBy(otherFaction) >= getSectorsControlledBy(faction))
+            {
                 rank++;
-        
+            }
+        }
+
         return rank;
     }
-    
+
     /**
      * Returns the number of sectors controlled by the given faction.
+     *
      * @param faction the faction to count claimed sectors of
-     * @return the number of sectors in which the given faction is the dominant
-     * one
+     * @return the number of sectors in which the given faction is the dominant one
      */
     public int getSectorsControlledBy(Faction faction)
     {
         int sectorsClaimed = 0;
 
         for (Sector[] row : sectors)
+        {
             for (Sector sector : row)
+            {
                 if (sector.getFaction() == faction)
+                {
                     sectorsClaimed++;
-        
+                }
+            }
+        }
+
         return sectorsClaimed;
     }
-    
+
     public int getPlanetsControlledBy(Faction faction)
     {
         int planetsClaimed = 0;
 
         for (Sector[] row : sectors)
+        {
             for (Sector sector : row)
+            {
                 planetsClaimed += sector.getPlanetsControlledBy(faction);
-        
+            }
+        }
+
         return planetsClaimed;
     }
-    
+
     public int getNStationsControlledBy(Faction faction)
     {
         int stationsClaimed = 0;
 
         for (Sector[] row : sectors)
+        {
             for (Sector sector : row)
+            {
                 stationsClaimed += sector.getStationsControlledBy(faction);
-        
+            }
+        }
+
         return stationsClaimed;
     }
-    
+
     public String getStationTypesControlledBy(Faction faction)
     {
-        int trade  = 0;
+        int trade = 0;
         int battle = 0;
 
         for (Sector[] row : sectors)
         {
             for (Sector sector : row)
             {
-                trade += sector.getStationTypesControlledBy(faction,
-                        Station.TRADE);
-                battle += sector.getStationTypesControlledBy(faction,
-                        Station.BATTLE);
+                trade += sector.getStationTypesControlledBy(faction, Station.TRADE);
+                battle += sector.getStationTypesControlledBy(faction, Station.BATTLE);
             }
         }
-        
+
         return (trade + battle) + " (" + trade + " Trade, " + battle + " Battle)";
     }
-    
+
     public int getNShipsIn(Faction faction)
     {
         int nShips = 0;
-        
-        for (Ship ship: ships)
+
+        for (Ship ship : ships)
+        {
             if (ship.getFaction() == faction)
+            {
                 nShips++;
-        
+            }
+        }
+
         return nShips;
     }
-    
+
     public String getShipTypesIn(Faction faction)
     {
-        int total  = 0;
+        int total = 0;
         int mining = 0;
         int battle = 0;
-        
-        for (Ship ship: ships)
+
+        for (Ship ship : ships)
         {
             if (ship.getFaction() == faction)
             {
                 total++;
-                
+
                 if ("mining".equals(ship.getHigherLevel()))
+                {
                     mining++;
+                }
                 else if ("battle".equals(ship.getHigherLevel()))
+                {
                     battle++;
+                }
             }
         }
-        
+
         return total + " (" + mining + " Mining, " + battle + " Battle)";
     }
-    
+
     public Faction[] getFactions()
-        {return factions;}
-    
+    {return factions;}
+
     /**
      * Returns a random faction from the list of factions.
+     *
      * @return a randomly selected faction from the list of all factions
      */
     public final Faction getRandomFaction()
-        {return factions[rng.nextInt(factions.length)];}
-    
+    {return factions[rng.nextInt(factions.length)];}
+
     /**
      * Returns a random faction that is not the specified one.
+     *
      * @param f the faction to exclude from the list of selections
-     * @return a random faction from the list of all factions as long as it is
-     * not the one provided
+     * @return a random faction from the list of all factions as long as it is not the one provided
      */
     public final Faction getRandomFaction(Faction f)
     {
@@ -561,9 +639,10 @@ public class Galaxy
         } while (randomFaction == f);
         return randomFaction;
     }
-    
+
     /**
      * Returns a random relationship between two factions.
+     *
      * @return a random relationship between two randomly-chosen factions
      */
     public final Relationship getRandomRelationship()
@@ -572,14 +651,16 @@ public class Galaxy
         Faction faction2 = getRandomFaction(faction1);
         return faction1.getRelationshipObject(faction2);
     }
-    
+
     public Ore[] getOreTypes()
-        {return oreTypes;}
-    
+    {return oreTypes;}
+
     public Ore getRandomOre()
-        {return oreTypes[rng.nextInt(oreTypes.length)];}
-    
-    /** Initializes all the sectors in the galaxy. */
+    {return oreTypes[rng.nextInt(oreTypes.length)];}
+
+    /**
+     * Initializes all the sectors in the galaxy.
+     */
     private void init()
     {
         Splash nebulaGenerator = new Splash();
@@ -589,14 +670,15 @@ public class Galaxy
         char[][] level = new char[sectors.length][sectors[0].length];
         for (int i = 0; i < nNebulae; i++)
         {
-            nebulae.add(nebulaGenerator.spill(rng, level,
-                    rng.nextCoord(sectors[0].length, sectors.length), 100, 1));
+            nebulae.add(nebulaGenerator.spill(rng, level, rng.nextCoord(sectors[0].length, sectors.length), 100, 1));
         }
-        
+
         Nebula[] nebulaTypes = new Nebula[nNebulae];
         for (int i = 0; i < nNebulae; i++)
+        {
             nebulaTypes[i] = rng.getRandomElement(Nebula.values());
-        
+        }
+
         for (int y = 0; y < sectors.length; y++)
         {
             for (int x = 0; x < sectors[y].length; x++)
@@ -610,44 +692,45 @@ public class Galaxy
                         break;
                     }
                 }
-                
-                sectors[y][x] = new Sector(new Location(this, Coord.get(x, y)),
-                        nebula);
+
+                sectors[y][x] = new Sector(new Location(this, Coord.get(x, y)), nebula);
                 sectors[y][x].init();
             }
         }
     }
-    
+
     /**
      * Returns true if the given designation is in use.
+     *
      * @param designation the designation to check
      * @return true if there is already a sector using the given designation
      */
     public boolean isUsed(String designation)
-        {return designations.contains(designation);}
-    
+    {return designations.contains(designation);}
+
     /**
      * Adds the given designation to the list of designations.
+     *
      * @param designation the designation to add to the list
      */
     public void addDesignation(String designation)
-        {designations.add(designation);}
-    
+    {designations.add(designation);}
+
     /**
      * Removes the given designation from the list of designations.
+     *
      * @param designation the designation to remove from the list
      */
     public void removeDesignation(String designation)
-        {designations.remove(designation);}
-    
+    {designations.remove(designation);}
+
     /**
-     * Creates the factions using constant names, and then generates the
-     * relationships among them.
+     * Creates the factions using constant names, and then generates the relationships among them.
      */
     private void createFactions()
     {
         List<String> usedTypes = new LinkedList<>();
-        
+
         for (int i = 0; i < factions.length; i++)
         {
             String name = Main.nameGenerator.generateName(2);
@@ -655,80 +738,106 @@ public class Galaxy
             // Ensure no factions are of the same type
             String type = rng.getRandomElement(Faction.TYPES);
             while (usedTypes.contains(type))
+            {
                 type = rng.getRandomElement(Faction.TYPES);
+            }
 
             usedTypes.add(type);
             Color color;
             switch (i)
             {
-                case 0:  color = AsciiPanel.brightRed;     break;
-                case 1:  color = AsciiPanel.brightCyan;    break;
-                case 2:  color = AsciiPanel.brightGreen;   break;
-                case 3:  color = AsciiPanel.brightYellow;  break;
-                case 4:  color = AsciiPanel.brightMagenta; break;
-                default: color = AsciiPanel.brightWhite;   break;
+                case 0:
+                    color = AsciiPanel.brightRed;
+                    break;
+                case 1:
+                    color = AsciiPanel.brightCyan;
+                    break;
+                case 2:
+                    color = AsciiPanel.brightGreen;
+                    break;
+                case 3:
+                    color = AsciiPanel.brightYellow;
+                    break;
+                case 4:
+                    color = AsciiPanel.brightMagenta;
+                    break;
+                default:
+                    color = AsciiPanel.brightWhite;
+                    break;
             }
             factions[i] = new Faction(name, type, this, color);
         }
-        
+
         // If there are only two factions, they will always be at war
         if (factions.length == 2)
         {
-            new Relationship(factions[0], factions[1],
-                    Relationship.RelationshipType.WAR).addToFactions();
+            new Relationship(factions[0], factions[1], Relationship.RelationshipType.WAR).addToFactions();
             return;
         }
-        
+
         // Will pair up all factions with no duplicates
         for (int i = 0; i < factions.length; i++)
+        {
             for (int j = i + 1; j < factions.length; j++)
+            {
                 new Relationship(factions[i], factions[j]).addToFactions();
+            }
+        }
     }
-    
+
     private Ore[] generateOreTypes()
     {
-        Ore[] ores = new Ore[Math.min(
-                MIN_ORE + rng.nextInt(ORE_RANGE), Ore.DENSITY)];
-        
+        Ore[] ores = new Ore[Math.min(MIN_ORE + rng.nextInt(ORE_RANGE), Ore.DENSITY)];
+
         NameGenerator oreNames = new NameGenerator(ORE, rng);
-        
+
         for (int i = 0; i < ores.length; i++)
         {
             String name;
             do
             {
                 name = oreNames.generateName(2);
-                
+
                 // Ensure unique names
-                for (Ore ore: ores)
-                    if (name == null ||
-                            (ore != null && name.equals(ore.getName())))
+                for (Ore ore : ores)
+                {
+                    if (name == null || (ore != null && name.equals(ore.getName())))
+                    {
                         name = null;
+                    }
+                }
             } while (name == null);
-            
+
             int density;
             do
             {
                 density = rng.nextInt(Ore.DENSITY) + 1;
-                
+
                 // Ensure unique densities
-                for (Ore ore: ores)
+                for (Ore ore : ores)
+                {
                     if (ore != null && density == ore.getDensity())
+                    {
                         density = 0;
+                    }
+                }
             } while (density == 0);
             ores[i] = new Ore(name, density);
         }
-        
+
         int totalDensity = 0;
-        for (Ore ore: ores)
+        for (Ore ore : ores)
+        {
             totalDensity += ore.getDensity();
-        
+        }
+
         // If there are not enough ores with high enough density, set one higher
         // to compensate
         if (totalDensity < Ore.DENSITY)
-            ores[0].setDensity(ores[0].getDensity() +
-                    (Ore.DENSITY - totalDensity));
-        
+        {
+            ores[0].setDensity(ores[0].getDensity() + (Ore.DENSITY - totalDensity));
+        }
+
         Arrays.sort(ores, Collections.reverseOrder());
         return ores;
     }
