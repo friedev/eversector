@@ -1,34 +1,34 @@
 package boldorf.eversector.map;
 
-import static boldorf.eversector.Main.rng;
-
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.eversector.map.Region.RegionType;
-
-import static boldorf.eversector.map.Region.RegionType.*;
-
+import boldorf.eversector.Symbol;
+import boldorf.eversector.faction.Faction;
 import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.locations.SectorLocation;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import boldorf.eversector.faction.Faction;
-import boldorf.eversector.Symbol;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-
+import boldorf.eversector.map.Region.RegionType;
 import squidpony.squidmath.Coord;
 import squidpony.squidmath.MerlinNoise;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+import static boldorf.eversector.Main.rng;
+import static boldorf.eversector.map.Region.RegionType.*;
+
 /**
  * A planet in a sector that can be interacted with in different ways.
+ *
+ * @author Boldorf Smokebane
  */
 public class Planet implements ColorStringObject
 {
+    /**
+     * The enum Planet type.
+     */
     public enum PlanetType
     {
         /*
@@ -40,37 +40,104 @@ public class Planet implements ColorStringObject
         GLACIAL  [XXX----------]
         */
 
-        VOLCANIC("Volcanic", 6, 12, false, MAGMA, ROCK, MOUNTAIN),
-        OCEANIC("Ocean", 3, 7, true, OCEAN, COAST, DESERT),
-        TERRAN("Terran", 4, 6, true, OCEAN, PLAIN, FOREST, MOUNTAIN),
-        ARID("Arid", 2, 8, true, DESERT, DUNES, MOUNTAIN),
+        /**
+         * A planet with extreme volcanic activity.
+         */
+        VOLCANIC("Volcanic", 6, 12, false, MAGMA, MAGMA, ROCK, MOUNTAIN, MOUNTAIN),
+
+        /**
+         * A planet primarily covered in oceans.
+         */
+        OCEANIC("Ocean", 3, 7, true, OCEAN, OCEAN, COAST, DESERT),
+
+        /**
+         * A planet shrouded in dense forests.
+         */
+        JUNGLE("Jungle", 5, 7, true, OCEAN, COAST, FOREST, FOREST, MOUNTAIN),
+
+        /**
+         * An Earth-like planet with water and vegetation.
+         */
+        TERRAN("Terran", 4, 6, true, OCEAN, OCEAN, PLAIN, FOREST, MOUNTAIN),
+
+        /**
+         * A dry, Mars-like planet.
+         */
+        ARID("Arid", 2, 8, true, DESERT, DESERT, DUNES, MOUNTAIN, MOUNTAIN),
+
+        /**
+         * A barren, rocky planet with no atmosphere.
+         */
         BARREN("Barren", 0, 10, false, ROCK, MOUNTAIN),
+
+        /**
+         * A cold planet covered in ice.
+         */
         GLACIAL("Glacial", 0, 2, false, FLATS, GLACIER),
 
-        GAS_GIANT("Gas Giant", Symbol.GAS_GIANT.get(), false, false, false),
-        ASTEROID_BELT("Asteroid Belt", Symbol.ASTEROID_BELT.get(), false, true, false);
+        /**
+         * A massive planet consisting mostly of gas.
+         */
+        GAS_GIANT("Gas Giant", Symbol.GAS_GIANT.get(), false, false),
 
-        private String type;
-        private char symbol;
-        private boolean canLandOn;
-        private boolean canMine;
-        private int minTemp;
-        private int maxTemp;
-        private boolean atmosphere;
-        private RegionType[] regions;
+        /**
+         * A belt of asteroids.
+         */
+        ASTEROID_BELT("Asteroid Belt", Symbol.ASTEROID_BELT.get(), true, false);
 
-        PlanetType(String type, char symbol, boolean canLandOn, boolean canMine, boolean atmosphere)
-        {
-            this.type = type;
-            this.symbol = symbol;
-            this.canLandOn = canLandOn;
-            this.canMine = canMine;
-            this.minTemp = 0;
-            this.maxTemp = Integer.MAX_VALUE;
-            this.atmosphere = atmosphere;
-            this.regions = null;
-        }
+        /**
+         * The name of the planet type.
+         */
+        private final String type;
 
+        /**
+         * The character representing the planet type.
+         */
+        private final char symbol;
+
+        /**
+         * True if the planet can be landed on.
+         */
+        private final boolean canLandOn;
+
+        /**
+         * True if the planet can be mined.
+         */
+        private final boolean canMine;
+
+        /**
+         * The lowest temperature at which the planet can generate.
+         *
+         * @see Star#getPowerAt(int)
+         */
+        private final int minTemp;
+
+        /**
+         * The highest temperature at which the planet can generate.
+         *
+         * @see Star#getPowerAt(int)
+         */
+        private final int maxTemp;
+
+        /**
+         * True if the planet has an atmosphere. Influences generation around high-radiation stars.
+         */
+        private final boolean atmosphere;
+
+        /**
+         * The types of regions that can be generated on the planet, in ascending order of altitude.
+         */
+        private final RegionType[] regions;
+
+        /**
+         * Creates a rocky planet.
+         *
+         * @param type       the name of the planet type
+         * @param minTemp    the lowest temperature the planet can generate at
+         * @param maxTemp    the highest temperature the planet can generate at
+         * @param atmosphere true if the planet has an atmosphere
+         * @param regions    the types of regions that can generate on the planet, in ascending order of altitude
+         */
         PlanetType(String type, int minTemp, int maxTemp, boolean atmosphere, RegionType... regions)
         {
             this.type = type + " Planet";
@@ -83,40 +150,140 @@ public class Planet implements ColorStringObject
             this.regions = regions;
         }
 
+        /**
+         * Creates a planet that cannot be landed on.
+         *
+         * @param type       the name of the planet type
+         * @param symbol     the symbol representing the planet type
+         * @param canMine    true if the planet can be mined
+         * @param atmosphere true if the planet has an atmosphere
+         */
+        PlanetType(String type, char symbol, boolean canMine, boolean atmosphere)
+        {
+            this.type = type;
+            this.symbol = symbol;
+            this.canLandOn = false;
+            this.canMine = canMine;
+            this.minTemp = 0;
+            this.maxTemp = Integer.MAX_VALUE;
+            this.atmosphere = atmosphere;
+            this.regions = null;
+        }
+
         @Override
         public String toString()
-        {return type;}
+        {
+            return type;
+        }
 
+        /**
+         * Gets the name of the planet type.
+         *
+         * @return the name of the planet type
+         */
         public String getType()
-        {return type;}
+        {
+            return type;
+        }
 
+        /**
+         * Gets the symbol representing the planet type.
+         *
+         * @return the symbol representing the planet type
+         */
         public char getSymbol()
-        {return symbol;}
+        {
+            return symbol;
+        }
 
+        /**
+         * Returns true if the planet can be landed on.
+         *
+         * @return true if the planet can be landed on
+         */
         public boolean canLandOn()
-        {return canLandOn;}
+        {
+            return canLandOn;
+        }
 
+        /**
+         * Return true if the planet can be mined.
+         *
+         * @return true if the planet can be mined
+         */
         public boolean canMine()
-        {return canMine;}
+        {
+            return canMine;
+        }
 
+        /**
+         * Returns true if the planet is rocky, meaning it can be landed on and mined.
+         *
+         * @return true if the planet is rocky
+         */
         public boolean isRocky()
-        {return canLandOn && canMine;}
+        {
+            return canLandOn && canMine;
+        }
 
+        /**
+         * Returns true if the planet cannot be landed on, but can be mined for orbit.
+         *
+         * @return true if the planet can be mined from orbit
+         */
         public boolean canMineFromOrbit()
-        {return !canLandOn && canMine;}
+        {
+            return !canLandOn && canMine;
+        }
 
+        /**
+         * Gets the minimum temperature of the planet.
+         *
+         * @return the mininum temperature of the planet
+         */
         public int getMinTemp()
-        {return minTemp;}
+        {
+            return minTemp;
+        }
 
+        /**
+         * Gets the maximum temperature of the planet.
+         *
+         * @return the maximum temperature of the planet
+         */
         public int getMaxTemp()
-        {return maxTemp;}
+        {
+            return maxTemp;
+        }
 
+        /**
+         * Returns true if the given temperature is in the planet's accepted range.
+         *
+         * @param temp the temperature to check
+         * @return true if the given temperature is in the planet's accepted range
+         * @see Star#getPowerAt(int)
+         */
         public boolean isInTempRange(int temp)
-        {return minTemp <= temp && maxTemp >= temp;}
+        {
+            return minTemp <= temp && maxTemp >= temp;
+        }
 
+        /**
+         * Returns true if the planet has an atmosphere.
+         *
+         * @return true if the planet has an atmosphere
+         */
         public boolean hasAtmosphere()
-        {return atmosphere;}
+        {
+            return atmosphere;
+        }
 
+        /**
+         * Gets the region type that would generate at the given elevation.
+         *
+         * @param elevation the elevation to find a region for
+         * @return the region type that would generate at the given elevation
+         */
         public RegionType getRegionAtElevation(double elevation)
         {
             if (regions == null || regions.length == 0)
@@ -130,30 +297,67 @@ public class Planet implements ColorStringObject
         }
     }
 
-    public static final int MIN_REGION_MULTIPLIER = 2;
-
-    public static final int REGION_MULTIPLIER_RANGE = 4;
-
-    /**
-     * The minimum number of ore types on a planet.
-     */
-    public static final int MIN_ORES = 1;
-
-    /**
-     * The maximum increase in ores over the minimum (increased by 1 to include 0).
-     */
-    public static final int ORE_RANGE = 3;
-
     /**
      * The amount of hull damage done to ships when mining from asteroid belts.
      */
     public static final int ASTEROID_DAMAGE = 1;
 
+    /**
+     * The minimum region multiplier.
+     *
+     * @see #generateRegions() for an explanation of the multiplier formula
+     */
+    private static final int MIN_REGION_MULTIPLIER = 2;
+
+    /**
+     * The range of region multipliers.
+     *
+     * @see #generateRegions() for an explanation of the multiplier formula
+     */
+    private static final int REGION_MULTIPLIER_RANGE = 4;
+
+    /**
+     * The minimum number of ore types on a planet.
+     *
+     * @see #generateOre()
+     */
+    private static final int MIN_ORES = 1;
+
+    /**
+     * The maximum increase in ores over the minimum.
+     *
+     * @see #generateOre()
+     */
+    private static final int ORE_RANGE = 3;
+
+    /**
+     * The name of the planet.
+     */
     private String name;
+
+    /**
+     * The type of planet.
+     */
     private PlanetType type;
+
+    /**
+     * The location of the planet in its sector.
+     */
     private final SectorLocation location;
+
+    /**
+     * The dominant faction on the planet.
+     */
     private Faction faction;
+
+    /**
+     * The possible ores on the planet.
+     */
     private List<Ore> ores;
+
+    /**
+     * The regions on the planet.
+     */
     private Region[][] regions;
 
     /**
@@ -178,6 +382,9 @@ public class Planet implements ColorStringObject
         }
     }
 
+    /**
+     * Initializes regions if applicable.
+     */
     public void init()
     {
         // Only set the planet's faction if it is a rocky planet
@@ -194,7 +401,9 @@ public class Planet implements ColorStringObject
 
     @Override
     public String toString()
-    {return type + " " + name;}
+    {
+        return type + " " + name;
+    }
 
     @Override
     public ColorString toColorString()
@@ -202,25 +411,60 @@ public class Planet implements ColorStringObject
         return new ColorString(toString(), isClaimed() ? getFaction().getColor() : null);
     }
 
+    /**
+     * Gets the name of the planet.
+     *
+     * @return the name of the planet
+     */
     public String getName()
-    {return name;}
-
-    public PlanetType getType()
-    {return type;}
-
-    public SectorLocation getLocation()
-    {return location;}
-
-    public Faction getFaction()
-    {return faction;}
-
-    public boolean isClaimed()
-    {return faction != null;}
+    {
+        return name;
+    }
 
     /**
-     * Claims the celestial body for the specified faction.
+     * Gets the type of planet.
      *
-     * @param faction the faction that will claim the celestial body
+     * @return the type of planet
+     */
+    public PlanetType getType()
+    {
+        return type;
+    }
+
+    /**
+     * Gets the location of the planet.
+     *
+     * @return the location of the planet
+     */
+    public SectorLocation getLocation()
+    {
+        return location;
+    }
+
+    /**
+     * Gets the dominant faction on the planet.
+     *
+     * @return the dominant faction on the planet
+     */
+    public Faction getFaction()
+    {
+        return faction;
+    }
+
+    /**
+     * Returns true if the planet has a dominant faction.
+     *
+     * @return true if the planet has a dominant faction
+     */
+    public boolean isClaimed()
+    {
+        return faction != null;
+    }
+
+    /**
+     * Claims the planet for the specified faction.
+     *
+     * @param faction the faction that will claim the planet
      */
     private void claim(Faction faction)
     {
@@ -237,23 +481,67 @@ public class Planet implements ColorStringObject
      * Removes claimed status without updating sector factions.
      */
     private void unclaim()
-    {faction = null;}
+    {
+        faction = null;
+    }
 
+    /**
+     * Gets the regions on the planet.
+     *
+     * @return the regions on the planet
+     */
     public Region[][] getRegions()
-    {return regions;}
+    {
+        return regions;
+    }
 
+    /**
+     * Gets the number of regions on the planet.
+     *
+     * @return the number of regions on the planet
+     */
     public int getNRegions()
-    {return getNRows() * getNColumns();}
+    {
+        return getNRows() * getNColumns();
+    }
 
+    /**
+     * Gets the number of region rows on the planet.
+     *
+     * @return the number of region rows on the planet
+     */
     public int getNRows()
-    {return regions.length;}
+    {
+        return regions.length;
+    }
 
+    /**
+     * Gets the number of region columns on the planet.
+     *
+     * @return the number of region columns on the planet
+     */
     public int getNColumns()
-    {return regions[0].length;}
+    {
+        return regions[0].length;
+    }
 
+    /**
+     * Gets the region at the given coordinates.
+     *
+     * @param location the coordinates to get a region from
+     * @return the region at the given coordinates
+     */
     public Region regionAt(Coord location)
-    {return regions[location.y][location.x];}
+    {
+        return regions[location.y][location.x];
+    }
 
+    /**
+     * Gets the index of the given region.
+     *
+     * @param region the region to find an index for
+     * @return the index of the given region as a Coord
+     */
     public Coord indexOf(Region region)
     {
         for (int y = 0; y < regions.length; y++)
@@ -266,21 +554,59 @@ public class Planet implements ColorStringObject
                 }
             }
         }
+
         return null;
     }
 
+    /**
+     * Return true if the planet contains a region at the given coordinates.
+     *
+     * @param location the location to check
+     * @return true if the planet contains a region at the given coordinates
+     */
     public boolean contains(Coord location)
-    {return containsX(location.x) && containsY(location.y);}
+    {
+        return containsX(location.x) && containsY(location.y);
+    }
 
+    /**
+     * Returns true if the given x value is contained in the region array.
+     *
+     * @param x the x value to check
+     * @return true if the given x value is contained in the region array
+     */
     public boolean containsX(int x)
-    {return x >= 0 && getNColumns() >= x + 1;}
+    {
+        return x >= 0 && getNColumns() >= x + 1;
+    }
 
+    /**
+     * Returns true if the given y value is contained in the region array.
+     *
+     * @param y the y value to check
+     * @return true if the given y value is contained in the region array
+     */
     public boolean containsY(int y)
-    {return y >= 0 && getNRows() >= y + 1;}
+    {
+        return y >= 0 && getNRows() >= y + 1;
+    }
 
+    /**
+     * Gets the central region of the planet.
+     *
+     * @return the central region of the planet
+     */
     public Coord getCenter()
-    {return Coord.get(getNColumns() / 2, getNRows() / 2);}
+    {
+        return Coord.get(getNColumns() / 2, getNRows() / 2);
+    }
 
+    /**
+     * Gets the x value on the opposite side of the planet. Used when ships travel over the planet's poles.
+     *
+     * @param x the initial x value
+     * @return the x value on the opposite side of the planet
+     */
     public int getOppositeSide(int x)
     {
         return containsX(x + getNColumns() / 2) ? x + getNColumns() / 2 : x - getNColumns() / 2;
@@ -334,7 +660,7 @@ public class Planet implements ColorStringObject
             }
         }
 
-        claim(index == -1 ? null : getLocation().getGalaxy().getFaction(index));
+        claim(index == -1 ? null : getLocation().getGalaxy().getFactions()[index]);
     }
 
     /**
@@ -352,8 +678,15 @@ public class Planet implements ColorStringObject
         return getRandomRegion(regionList);
     }
 
+    /**
+     * Gets random coordinates on the planet.
+     *
+     * @return random coordinates on the planet
+     */
     public Coord getRandomCoord()
-    {return rng.nextCoord(getNColumns(), getNRows());}
+    {
+        return rng.nextCoord(getNColumns(), getNRows());
+    }
 
     /**
      * Returns a random region on the planet that is not already controlled by the specified faction.
@@ -379,6 +712,11 @@ public class Planet implements ColorStringObject
         return getRandomRegion(unclaimedRegions);
     }
 
+    /**
+     * Gets a random region on the planet with ore.
+     *
+     * @return a random region on the planet with ore
+     */
     public Region getRandomOreRegion()
     {
         List<Region> oreRegions = new ArrayList<>();
@@ -397,6 +735,11 @@ public class Planet implements ColorStringObject
         return getRandomRegion(oreRegions);
     }
 
+    /**
+     * Gets the coordinates of a random region on the planet with ore.
+     *
+     * @return the coordinates of a random region on the planet with ore
+     */
     public Coord getRandomOreCoord()
     {
         Region oreRegion = getRandomOreRegion();
@@ -424,7 +767,9 @@ public class Planet implements ColorStringObject
      * @return the cost of claiming a region on the planet, should be positive
      */
     public int getClaimCost()
-    {return Station.CLAIM_COST / getNRegions();}
+    {
+        return Station.CLAIM_COST / getNRegions();
+    }
 
     /**
      * Returns a symbol for the planet's type.
@@ -442,8 +787,15 @@ public class Planet implements ColorStringObject
      * @return the planet's ore type or a randomly generated one
      */
     public Ore getRandomOre()
-    {return ores.isEmpty() ? null : ores.get(rng.nextInt(ores.size()));}
+    {
+        return ores.isEmpty() ? null : ores.get(rng.nextInt(ores.size()));
+    }
 
+    /**
+     * Gets the number of ships on the planet.
+     *
+     * @return the number of ships on the planet
+     */
     public int getNShips()
     {
         if (!type.canLandOn())
@@ -464,6 +816,12 @@ public class Planet implements ColorStringObject
         return nShips;
     }
 
+    /**
+     * Gets the number of ships on the planet that belong to the given faction.
+     *
+     * @param faction the faction that ships must be in
+     * @return the number of ships on the planet that belong to the given faction
+     */
     public int getNShips(Faction faction)
     {
         if (!type.canLandOn())
@@ -484,6 +842,12 @@ public class Planet implements ColorStringObject
         return nShips;
     }
 
+    /**
+     * Returns the planet represented as a list of ColorStrings. Each symbol represents a region on the planet.
+     *
+     * @param showFactions if true, will show faction colors instead of region colors
+     * @return the list of ColorStrings representing the planet
+     */
     public List<ColorString> toColorStrings(boolean showFactions)
     {
         List<ColorString> list = new ArrayList<>(getNRows());
@@ -531,6 +895,9 @@ public class Planet implements ColorStringObject
         type = rng.getRandomElement(types);
     }
 
+    /**
+     * Chooses ore for each region on the planet.
+     */
     private void generateOre()
     {
         ores = new ArrayList<>();

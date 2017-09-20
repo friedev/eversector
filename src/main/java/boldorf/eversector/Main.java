@@ -28,12 +28,29 @@ import static boldorf.eversector.Names.GENERAL;
 
 /**
  * The main class for EverSector, which primarily manages player input.
+ *
+ * @author Boldorf Smokebane
  */
 public class Main
 {
+    /**
+     * The color used on variable fields on the display, as well as certain highlights.
+     */
     public static final Color COLOR_FIELD = AsciiPanel.brightWhite;
+
+    /**
+     * The color of error messages.
+     */
     public static final Color COLOR_ERROR = AsciiPanel.brightRed;
+
+    /**
+     * The color applied to the foreground of selections.
+     */
     public static final Color COLOR_SELECTION_FOREGROUND = null;
+
+    /**
+     * The color applied to the background of selections.
+     */
     public static final Color COLOR_SELECTION_BACKGROUND = new Color(0, 0, 192);
 
     /**
@@ -97,11 +114,6 @@ public class Main
     public static boolean showFactions;
 
     /**
-     * True if the current run's final score is disqualified from the leaderboard.
-     */
-    public static boolean disqualified;
-
-    /**
      * The number of ships destroyed by the player.
      */
     public static int kills;
@@ -110,7 +122,7 @@ public class Main
      * Set up the game and prompt the player for actions.
      *
      * @param args the command line arguments
-     * @throws java.lang.Exception any uncaught exceptions will be thrown
+     * @throws Exception if any are encountered
      */
     public static void main(String[] args) throws Exception
     {
@@ -128,7 +140,9 @@ public class Main
                 stackTraceStrings[0] = "The game has crashed! Please send the contents of this file to the " +
                                        "developer to help fix the problem.";
                 for (int i = 0; i < stackTrace.length; i++)
-                { stackTraceStrings[i + 1] = stackTrace[i].toString(); }
+                {
+                    stackTraceStrings[i + 1] = stackTrace[i].toString();
+                }
 
                 FileManager.writeToFile(Paths.CRASH, stackTraceStrings);
             }
@@ -147,8 +161,14 @@ public class Main
             FileManager.addToPath("bundle/");
         }
 
-        if (FileManager.checkExistence(Paths.OPTIONS)) { Option.options = FileManager.load(Paths.OPTIONS); }
-        else { Option.options = new Properties(); }
+        if (FileManager.checkExistence(Paths.OPTIONS))
+        {
+            Option.options = FileManager.load(Paths.OPTIONS);
+        }
+        else
+        {
+            Option.options = new Properties();
+        }
 
         Action.initItems();
 
@@ -174,9 +194,15 @@ public class Main
         }
     }
 
+    /**
+     * Starts a game.
+     *
+     * @return a list of start messages for StartScreen
+     * @throws Exception if any are encountered
+     * @see StartScreen#StartScreen(Display, List)
+     */
     public static List<ColorString> startGame() throws Exception
     {
-        disqualified = false;
         pendingElection = null;
         pendingRelationships = new LinkedList<>();
         pendingBattle = null;
@@ -196,7 +222,6 @@ public class Main
         if (savedGame)
         {
             Properties save = FileManager.load(Paths.SAVE);
-            disqualified = Option.DISQUALIFIED.toBoolean();
             player = new Ship(galaxy, save);
             galaxy.setPlayer(player);
         }
@@ -238,11 +263,16 @@ public class Main
         return startMessages;
     }
 
+    /**
+     * Moves the player to a new galaxy.
+     */
     public static void changeGalaxy()
     {
         galaxy = new Galaxy();
         for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++)
-        { galaxy.nextTurn(); }
+        {
+            galaxy.nextTurn();
+        }
 
         galaxy.setPlayer(player);
         player.setLocation(galaxy.getRandomEdgeSector().getLocation());
@@ -250,18 +280,45 @@ public class Main
         player.createReputations();
     }
 
+    /**
+     * Adds a colored message to the message log.
+     *
+     * @param message the message to add
+     */
     public static void addColorMessage(ColorString message)
     {
         Screen currentScreen = display.getScreen();
-        if (currentScreen instanceof GameScreen) { ((GameScreen) currentScreen).addMessage(message); }
+        if (currentScreen instanceof GameScreen)
+        {
+            ((GameScreen) currentScreen).addMessage(message);
+        }
     }
 
+    /**
+     * Adds an error to the message log.
+     *
+     * @param error the error to add
+     */
     public static void addError(String error)
-    {addColorMessage(new ColorString(error, COLOR_ERROR));}
+    {
+        addColorMessage(new ColorString(error, COLOR_ERROR));
+    }
 
+    /**
+     * Adds a message of the default color to the message log.
+     *
+     * @param message the message to add
+     */
     public static void addMessage(String message)
-    {addColorMessage(new ColorString(message));}
+    {
+        addColorMessage(new ColorString(message));
+    }
 
+    /**
+     * Plays the sound effect at the given path.
+     *
+     * @param path the path of the sound effect to play
+     */
     public static void playSoundEffect(String path)
     {
         try

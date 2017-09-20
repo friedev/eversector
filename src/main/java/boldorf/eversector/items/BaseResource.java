@@ -3,19 +3,21 @@ package boldorf.eversector.items;
 import java.util.Properties;
 
 /**
- * A resource to be sold in an undefined quantity by a station.
+ * A resource to be sold in an undefined quantity by a station. <b>To be removed in v0.7.2.</b>
+ *
+ * @author Boldorf Smokebane
  */
 public class BaseResource extends Item
 {
     /**
-     * True if the resource can be sold at stations.
+     * True if the resource can be sold to stations.
      */
-    private boolean canSell;
+    private final boolean canSell;
 
     /**
      * The expander used to increase storage capacity of any Resource.
      */
-    private Expander expander;
+    private final Expander expander;
 
     /**
      * Creates a new BaseResource with a name, description, value, and expander.
@@ -56,8 +58,8 @@ public class BaseResource extends Item
         super(properties);
         expander = new Expander(expanderProperties);
 
-        // False is checked because sellable should default to true
-        canSell = !"false".equals(properties.getProperty("sellable"));
+        // False is checked because canSell should default to true
+        canSell = !"false".equals(properties.getProperty("canSell"));
     }
 
     /**
@@ -66,21 +68,17 @@ public class BaseResource extends Item
      * @return the BaseResource's expander
      */
     public Expander getExpander()
-    {return expander;}
+    {
+        return expander;
+    }
 
     /**
      * Returns true if the resource can be sold.
      *
-     * @return true if the resource's sellable flag is enabled
+     * @return true if the resource can be sold
      */
     public boolean canSell()
-    {return canSell;}
-
-    /**
-     * Changes the resource's sellable status.
-     *
-     * @param canSell the new value to be assigned to the sellable flag
-     */
-    public void setCanSell(boolean canSell)
-    {this.canSell = canSell;}
+    {
+        return canSell;
+    }
 }

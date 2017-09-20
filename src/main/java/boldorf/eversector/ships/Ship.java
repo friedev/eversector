@@ -25,19 +25,50 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.ALLIANCE;
 import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 
 /**
- * A starship which can travel through and interact with the map.
+ * A spaceship which can travel through and interact with the map.
+ *
+ * @author Boldorf Smokebane
  */
 public class Ship implements ColorStringObject, Comparable<Ship>
 {
-    // Starting resource amounts
+    /**
+     * The amount of fuel all ships start with.
+     */
     public static final int FUEL = 15;
+
+    /**
+     * The amount of energy all ships start with.
+     */
     public static final int ENERGY = 15;
+
+    /**
+     * The amount of ore all ships start with.
+     */
     public static final int ORE = 25;
+
+    /**
+     * The amount of hull all ships start with.
+     */
     public static final int HULL = 5;
+
+    /**
+     * The amount of fuel all ships start with.
+     */
     public static final int CREDITS = 100;
 
+    /**
+     * The name of the destroyed flag.
+     */
     public static final String DESTROYED = "destroyed";
+
+    /**
+     * The name of the shielded flag.
+     */
     public static final String SHIELDED = "shielded";
+
+    /**
+     * The name of the cloaked flag.
+     */
     public static final String CLOAKED = "cloaked";
 
     /**
@@ -71,50 +102,54 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public static final int LOOT_MODIFIER = 2;
 
     /**
-     * The number of characters used when printing status.
-     */
-    public static final int SPACING = 12;
-
-    /**
      * The ship's identification.
      */
     private String name;
+
     /**
      * The ship's AI.
      */
     private AI ai;
+
     /**
      * The ship's location.
      */
     private Location location;
+
     /**
-     * Various booleans represented by Strings, their existence means true.
+     * All flags, as strings, possessed by the ship.
      */
     private List<String> flags;
+
     /**
      * The faction that the ship belongs to, null if unaligned.
      */
     private Faction faction;
+
     /**
      * The amount of credits possessed by the ship.
      */
     private int credits;
+
     /**
      * How the ship is perceived by factions based on their deeds.
      */
     private Reputation[] reputations;
+
     /**
      * The list of modules equipped on the ship.
      */
     private List<Module> modules;
+
     /**
      * All modules not installed on the ship.
      */
     private List<Module> cargo;
+
     /**
      * The resources on board the ship.
      */
-    private Resource[] resources;
+    private final Resource[] resources;
 
     /**
      * Creates a ship from a name, location, and faction.
@@ -212,11 +247,15 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @param location the Location of the ship
      */
     public Ship(String name, Location location)
-    {this(name, location, null);}
+    {
+        this(name, location, null);
+    }
 
     @Override
     public String toString()
-    {return isPlayer() ? name : getClassification() + " " + name;}
+    {
+        return isPlayer() ? name : getClassification() + " " + name;
+    }
 
     @Override
     public ColorString toColorString()
@@ -224,28 +263,122 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return isAligned() ? new ColorString(toString(), faction.getColor()) : new ColorString(toString());
     }
 
-    public String getName() {return name; }
+    /**
+     * Gets the name of the ship.
+     *
+     * @return the name of the ship
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-    public AI getAI() {return ai; }
+    /**
+     * Gets the AI controlling the ship.
+     *
+     * @return the Ai controlling the ship
+     */
+    public AI getAI()
+    {
+        return ai;
+    }
 
-    public Faction getFaction() {return faction; }
+    /**
+     * Gets the faction that the ship belongs to.
+     *
+     * @return the faction that the ship belongs to
+     */
+    public Faction getFaction()
+    {
+        return faction;
+    }
 
-    public int getCredits() {return credits; }
+    /**
+     * Gets the number of credits possessed by the ship.
+     *
+     * @return the number of credits possessed by the ship
+     */
+    public int getCredits()
+    {
+        return credits;
+    }
 
-    public Resource[] getResources() {return resources;}
+    /**
+     * Gets the resources on the ship.
+     *
+     * @return the resources on the ship
+     */
+    public Resource[] getResources()
+    {
+        return resources;
+    }
 
-    public List<Module> getModules() {return modules; }
+    /**
+     * Gets the modules installed on the ship.
+     *
+     * @return the modules installed on the ship
+     */
+    public List<Module> getModules()
+    {
+        return modules;
+    }
 
-    public List<Module> getCargo() {return cargo; }
+    /**
+     * Gets the modules stored as cargo in the ship.
+     *
+     * @return the modules stored as cargo in the ship
+     */
+    public List<Module> getCargo()
+    {
+        return cargo;
+    }
 
-    public boolean isInSector() {return location instanceof SectorLocation; }
+    /**
+     * Returns true if the ship is in a sector.
+     *
+     * @return true if the ship is in a sector
+     */
+    public boolean isInSector()
+    {
+        return location instanceof SectorLocation;
+    }
 
-    public boolean isLanded() {return location instanceof PlanetLocation; }
+    /**
+     * Returns true if the ship is landed on a planet.
+     *
+     * @return true if the ship is landed on a planet
+     */
+    public boolean isLanded()
+    {
+        return location instanceof PlanetLocation;
+    }
 
-    public boolean isDocked() {return location instanceof StationLocation;}
+    /**
+     * Returns true if the ship is docked with a station.
+     *
+     * @return true if the ship is docked with a station
+     */
+    public boolean isDocked()
+    {
+        return location instanceof StationLocation;
+    }
 
-    public boolean isInBattle() {return location instanceof BattleLocation; }
+    /**
+     * Returns true if the ship is in a battle.
+     *
+     * @return true if the ship is in a battle
+     */
+    public boolean isInBattle()
+    {
+        return location instanceof BattleLocation;
+    }
 
+    /**
+     * Returns true if the ship is orbital in a sector. This means that it is in a sector, but not on a planet, at a
+     * station, or in a battle.
+     *
+     * @return true if the ship is orbital in a sector
+     */
     public boolean isOrbital()
     {
         return location instanceof SectorLocation &&
@@ -253,51 +386,120 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                  location instanceof BattleLocation);
     }
 
-    public boolean isDestroyed() {return hasFlag(DESTROYED);}
+    /**
+     * Returns true if the ship is destroyed.
+     *
+     * @return true if the ship is destroyed
+     */
+    public boolean isDestroyed()
+    {
+        return hasFlag(DESTROYED);
+    }
 
-    public boolean isShielded() {return hasFlag(SHIELDED); }
+    /**
+     * Returns true if the ship is shielded.
+     *
+     * @return true if the ship is shielded
+     */
+    public boolean isShielded()
+    {
+        return hasFlag(SHIELDED);
+    }
 
-    public boolean isCloaked() {return hasFlag(CLOAKED); }
+    /**
+     * Returns true if the ship is cloaked.
+     *
+     * @return true if the ship is cloaked
+     */
+    public boolean isCloaked()
+    {
+        return hasFlag(CLOAKED);
+    }
 
+    /**
+     * Gets the location of the ship.
+     *
+     * @return the location of the ship
+     */
     public Location getLocation()
-    {return location;}
+    {
+        return location;
+    }
 
+    /**
+     * Gets the location of the ship, converted to a SectorLocation. Should only been used when the ship's location is
+     * known.
+     *
+     * @return the location of the ship as a SectorLocation
+     */
     public SectorLocation getSectorLocation()
-    {return (SectorLocation) location;}
+    {
+        return (SectorLocation) location;
+    }
 
+    /**
+     * Gets the location of the ship, converted to a PlanetLocation. Should only been used when the ship's location is
+     * known.
+     *
+     * @return the location of the ship as a PlanetLocation
+     */
     public PlanetLocation getPlanetLocation()
-    {return (PlanetLocation) location;}
+    {
+        return (PlanetLocation) location;
+    }
 
+    /**
+     * Gets the location of the ship, converted to a StationLocation. Should only been used when the ship's location is
+     * known.
+     *
+     * @return the location of the ship as a StationLocation
+     */
     public StationLocation getStationLocation()
-    {return (StationLocation) location;}
+    {
+        return (StationLocation) location;
+    }
 
+    /**
+     * Gets the location of the ship, converted to a BattleLocation. Should only been used when the ship's location is
+     * known.
+     *
+     * @return the location of the ship as a BattleLocation
+     */
     public BattleLocation getBattleLocation()
-    {return (BattleLocation) location;}
+    {
+        return (BattleLocation) location;
+    }
 
     /**
      * Returns true if there is a flag in the flags list with the given name.
      *
-     * @param flag the String to find in the flags list
+     * @param flag the string to find in the flags list
      * @return true if the flags list contains a String that matches the one provided
      */
     public boolean hasFlag(String flag)
-    {return flags.contains(flag);}
+    {
+        return flags.contains(flag);
+    }
 
     /**
      * Returns true if this ship is the player.
      *
-     * @return true if this is equal to the map's specified player
+     * @return true if this is equal to its galaxy's specified player
      */
     public boolean isPlayer()
-    {return location.getGalaxy().getPlayer() == this;}
+    {
+        return location.getGalaxy().getPlayer() == this;
+    }
 
     /**
      * Returns true if this ship belongs to a faction.
      *
-     * @return true if this ship's faction is not null
+     * @return true if this ship belongs to a faction
      */
     public boolean isAligned()
-    {return faction != null;}
+    {
+        return faction != null;
+    }
 
     /**
      * Returns true if the ship is unaligned and their reputation is too low for any faction to accept them.
@@ -314,7 +516,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         boolean isPirate = true;
         for (Reputation rep : reputations)
         {
-            if (rep.get() >= Reputation.REQ_REJECTION)
+            if (rep.get() >= Reputation.REJECTION)
             {
                 isPirate = false;
             }
@@ -329,7 +531,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the leader of the ship's faction is itself
      */
     public boolean isLeader()
-    {return isAligned() && faction.isLeader(this);}
+    {
+        return isAligned() && faction.getLeader() == this;
+    }
 
     /**
      * Returns true if the specified ship is considered non-hostile (including if this ship is a pirate).
@@ -355,8 +559,15 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return this.faction != faction && (!isAligned() || this.faction.isRelationship(WAR, faction));
     }
 
+    /**
+     * Sets the name of the ship to the given string.
+     *
+     * @param name the string to become the ship's name
+     */
     public void setName(String name)
-    {this.name = name;}
+    {
+        this.name = name;
+    }
 
     /**
      * Sets the ship's AI to the given AI.
@@ -364,7 +575,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @param ai the AI to assign to this ship
      */
     public void setAI(AI ai)
-    {this.ai = ai;}
+    {
+        this.ai = ai;
+    }
 
     /**
      * Sets the ship's faction without modifying reputation.
@@ -372,7 +585,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @param faction the faction to assign to this ship
      */
     public void setFaction(Faction faction)
-    {this.faction = faction;}
+    {
+        this.faction = faction;
+    }
 
     /**
      * Sets the ship's location to the specified location.
@@ -429,9 +644,21 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         location = destination;
     }
 
+    /**
+     * Gets the radius of the ship's field of view, in sectors.
+     *
+     * @return the radius of the ship's FOV, in sectors
+     */
     public double getFOVRadius()
-    {return hasModule(Action.SCAN) ? FOV_RADIUS * 2.0 : FOV_RADIUS;}
+    {
+        return hasModule(Action.SCAN) ? FOV_RADIUS * 2.0 : FOV_RADIUS;
+    }
 
+    /**
+     * Gets a list of all points in the ship's field of view.
+     *
+     * @return a list of all points in the ship's FOV
+     */
     public List<Coord> getFOV()
     {
         double[][] light = new FOV().calculateFOV(getLocation().getGalaxy().getResistanceMap(),
@@ -488,6 +715,14 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return properties;
     }
 
+    /**
+     * Changes the number of credits possessed by the ship, taking or giving the inverse to the specified faction's
+     * economy.
+     *
+     * @param faction the faction who will receive the inverse of the change
+     * @param change  the change in credits
+     * @return true if the ship had enough credits to make the change
+     */
     public boolean changeCredits(Faction faction, int change)
     {
         if (changeCredits(change))
@@ -543,7 +778,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Slowly adjusts reputation towards zero, if not already zero.
+     * Slowly adjusts reputation towards zero.
      */
     public void fadeReputations()
     {
@@ -551,7 +786,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         {
             if (rep.get() != 0)
             {
-                int change = Math.max(1, Math.abs(rep.get()) / Reputation.FADE_MODIFIER);
+                int change = Math.max(1, Math.abs(rep.get()) / rep.getFaction().getAverageReputation());
 
                 if (rep.get() > 0)
                 {
@@ -582,7 +817,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
         rep.change(change);
 
-        if (rep.get() < Reputation.REQ_REJECTION && rep.getFaction() == faction)
+        if (rep.get() < Reputation.REJECTION && rep.getFaction() == faction)
         {
             // Print before faction is left so that null is not printed
             addPlayerColorMessage(new ColorString("The ").add(faction)
@@ -641,7 +876,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the addition was successful
      */
     public final boolean addFlag(String flag)
-    {return !flags.contains(flag) && flags.add(flag);}
+    {
+        return !flags.contains(flag) && flags.add(flag);
+    }
 
     /**
      * Removes the given String from the flag list.
@@ -650,7 +887,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the removal was successful
      */
     public final boolean removeFlag(String flag)
-    {return flags.remove(flag);}
+    {
+        return flags.remove(flag);
+    }
 
     /**
      * Returns the constant default amount of a resource.
@@ -684,12 +923,14 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return the constant amount for the resource of the given name
      */
     public static int getDefaultAmount(Resource resource)
-    {return getDefaultAmount(resource.getName());}
+    {
+        return getDefaultAmount(resource.getName());
+    }
 
     /**
      * Calculates the value of the ship.
      *
-     * @return the value of everything on the ship, will be non-negative
+     * @return the value of everything on the ship
      */
     public int calculateShipValue()
     {
@@ -809,7 +1050,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return whether a module of the same name exists on the ship
      */
     public boolean hasModule(Module module)
-    {return hasModule(module.getName());}
+    {
+        return hasModule(module.getName());
+    }
 
     /**
      * Scans through the ship's modules and returns the first module with the specified name.
@@ -837,7 +1080,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return the first module encountered with the same name as the specified module, null if not found
      */
     public Module getModule(Module module)
-    {return getModule(module.getName());}
+    {
+        return getModule(module.getName());
+    }
 
     /**
      * Scans through the ship's cargo and returns the first module with the specified name.
@@ -862,7 +1107,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * Returns the amount of modules with the specified name on board the ship.
      *
      * @param name the name of the modules to find
-     * @return the number of modules with the specified name, will be non-negative
+     * @return the number of modules with the specified name
      */
     public int getModuleAmount(String name)
     {
@@ -891,10 +1136,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * Performs the same function as getModuleAmount(String), using the module's name instead.
      *
      * @param module the module to find the amount of, must be non-null
-     * @return the number of modules with the same name, will be non-negative
+     * @return the number of modules with the same name
      */
     public int getModuleAmount(Module module)
-    {return module == null ? 0 : getModuleAmount(module.getName());}
+    {
+        return module == null ? 0 : getModuleAmount(module.getName());
+    }
 
     /**
      * Performs the same function as getModule(), but will only return the module if it is a weapon.
@@ -914,25 +1161,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Returns the number of modules installed in the ship.
-     *
-     * @return the number of modules in the ship's array, will be non-negative
-     */
-    public int getModulesUsed()
-    {return modules.size();}
-
-    /**
-     * Returns the number of modules in cargo.
-     *
-     * @return the number of modules in cargo, will be non-negative
-     */
-    public int getCargoModules()
-    {return cargo.size();}
-
-    /**
      * Returns the number of weapons installed in the ship.
      *
-     * @return the number of modules that are weapons in the ship's array, will be non-negative
+     * @return the number of modules that are weapons in the ship's array
      */
     public int getWeaponsUsed()
     {
@@ -1017,7 +1248,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the module was removed
      */
     public boolean removeModule(Module module)
-    {return removeModule(module.getName());}
+    {
+        return removeModule(module.getName());
+    }
 
     /**
      * Finds a resource on the ship with the name provided and returns it.
@@ -1084,7 +1317,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if a search for the resource does not return null
      */
     public boolean hasResource(String name)
-    {return getResource(name) != null;}
+    {
+        return getResource(name) != null;
+    }
 
     /**
      * Returns the amount of a resource on the ship with a specified name.
@@ -1378,7 +1613,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the purchase was successful
      */
     public boolean buyModule(Module module)
-    {return buyModule(module.getName());}
+    {
+        return buyModule(module.getName());
+    }
 
     /**
      * Sells a module with a specified name from the ship to the current station.
@@ -1521,7 +1758,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
 
         setLocation(targetLocation);
-        getResource(Action.WARP.getResource()).changeAmount(-Action.WARP.getCost());
+        getResource(Action.WARP.getAction().getResource()).changeAmount(-Action.WARP.getAction().getCost());
         return true;
     }
 
@@ -1591,6 +1828,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Relocates to the region in the given direction.
+     *
+     * @param direction the direction to relocate in
+     * @return true if the relocation was successful
+     */
     public boolean relocate(Direction direction)
     {
         if (!isLanded())
@@ -1623,6 +1866,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Returns true if the ship can escape from its sector.
+     *
+     * @return true if the ship can escape from its sector
+     */
     public boolean canEscape()
     {
         if (isLanded())
@@ -1693,7 +1941,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             return false;
         }
 
-        getResource(Action.SCAN.getResource()).changeAmount(-Action.SCAN.getCost());
+        getResource(Action.SCAN.getAction().getResource()).changeAmount(-Action.SCAN.getAction().getCost());
         return true;
     }
 
@@ -1854,13 +2102,25 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Returns true if the ship is in a position to make a powered landing on a planet.
+     *
+     * @return true if the ship is in a position to make a powered landing on a planet
+     */
     public boolean canLand()
     {
         return canCrashLand() && validateResources(Action.LAND, "land on " + getSectorLocation().getPlanet());
     }
 
+    /**
+     * Returns true if the ship is in a position to make a crash landing on a planet.
+     *
+     * @return true if the ship is in a position to make a crash landing on a planet
+     */
     public boolean canCrashLand()
-    {return canCrashLand(true);}
+    {
+        return canCrashLand(true);
+    }
 
     /**
      * Returns true if there is a planet that the ship can land on at its orbit.
@@ -2012,8 +2272,15 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Extracts ore from the planet currently landed on, if possible. Will not print any errors.
+     *
+     * @return the number of units of ore discarded, -1 if no mining occurred
+     */
     public boolean mine()
-    {return mine(false);}
+    {
+        return mine(false);
+    }
 
     /**
      * Returns true if the ship is capable of mining in its current state.
@@ -2071,8 +2338,16 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Returns true if the ship is capable of mining in its current state, not printing any errors.
+     *
+     * @return true if a mine would succeed
+     * @see #canMine(boolean)
+     */
     public boolean canMine()
-    {return canMine(false);}
+    {
+        return canMine(false);
+    }
 
     /**
      * Refines one unit of ore into one unit of fuel, if possible.
@@ -2112,7 +2387,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the module was activated or deactivated
      */
     public boolean toggleActivation(String name)
-    {return toggleActivation(getModule(name));}
+    {
+        return toggleActivation(getModule(name));
+    }
 
     /**
      * Toggles the flag of a module on the ship, if possible.
@@ -2189,7 +2466,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
 
         ship.damageWith(weapon, false);
-        getResource(weapon.getResource()).changeAmount(-weapon.getCost());
+        getResource(weapon.getAction().getResource()).changeAmount(-weapon.getAction().getCost());
         return true;
     }
 
@@ -2222,6 +2499,13 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return validateResources(weapon.getAction(), "fire");
     }
 
+    /**
+     * Starts a battle with the given ship. Prompts other ships to join the battle. Processes the battle if the player
+     * does not participate in it.
+     *
+     * @param opponent the ship to start the battle with
+     * @return the resulting battle
+     */
     public Battle startBattle(Ship opponent)
     {
         if (!location.equals(opponent.location))
@@ -2315,7 +2599,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship at least one undamaged module equipped
      */
     public boolean validateModule(String module, String action)
-    {return validateModule(getModule(module), action);}
+    {
+        return validateModule(getModule(module), action);
+    }
 
     /**
      * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a message
@@ -2325,7 +2611,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship at least one undamaged module equipped
      */
     public boolean validateModule(Module module)
-    {return validateModule(module, null);}
+    {
+        return validateModule(module, null);
+    }
 
     /**
      * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a message
@@ -2335,7 +2623,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship at least one undamaged module equipped
      */
     public boolean validateModule(String module)
-    {return validateModule(getModule(module), null);}
+    {
+        return validateModule(getModule(module), null);
+    }
 
     /**
      * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
@@ -2366,7 +2656,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship has enough resources for the cost
      */
     public boolean validateResources(String resource, int cost, String actionString)
-    {return validateResources(getResource(resource), cost, actionString);}
+    {
+        return validateResources(getResource(resource), cost, actionString);
+    }
 
     /**
      * Checks if the ship has the required resources to perform an action, and optionally prints a message if not.
@@ -2388,7 +2680,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @param print  if true, will print if the ship was destroyed
      */
     public void damageWith(Weapon weapon, boolean print)
-    {damage(getDamageFrom(weapon), print);}
+    {
+        damage(getDamageFrom(weapon), print);
+    }
 
     /**
      * Decreases hull strength by a given amount, destroys the ship if the damage is too great, and has the possibility
@@ -2568,7 +2862,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship can be converted
      */
     public boolean canConvert(Ship ship)
-    {return isAligned() && faction != ship.faction && !ship.isPlayer();}
+    {
+        return isAligned() && faction != ship.faction && !ship.isPlayer();
+    }
 
     /**
      * Claims a celestial body for the ship's faction.
@@ -2630,12 +2926,24 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Returns true if the ship can claim territory in its current position.
+     *
+     * @param print if true, will print any errors
+     * @return true if the ship can claim territory in its current position
+     */
     public boolean canClaim(boolean print)
     {
         return (isLanded() && canClaim(getPlanetLocation().getPlanet(), print)) || (isDocked() && canClaim(
                 getSectorLocation().getStation(), print));
     }
 
+    /**
+     * Returns true if the ship could claim territory on the given planet.
+     *
+     * @param print if true, will print any errors
+     * @return true if the ship could claim territory on the given planet
+     */
     public boolean canClaim(Planet planet, boolean print)
     {
         if (!isAligned())
@@ -2681,6 +2989,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Returns true if the ship could claim the given station.
+     *
+     * @param print if true, will print any errors
+     * @return true if the ship could claim the given station
+     */
     public boolean canClaim(Station station, boolean print)
     {
         if (!isAligned())
@@ -2725,6 +3039,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         return true;
     }
 
+    /**
+     * Gets the faction who would respond to a distress signal from this ship.
+     *
+     * @return the faction who would respond to a distress signal from this ship
+     */
     public Faction getDistressResponder()
     {
         if (isPirate())
@@ -2774,7 +3093,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * Sends a distress signal and receives help from a faction if possible.
      */
     public void distress()
-    {distress(getDistressResponder());}
+    {
+        distress(getDistressResponder());
+    }
 
     /**
      * Sends a distress signal and receives help from a faction if possible.
@@ -2807,7 +3128,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @return true if the ship's reputation is high enough to distress
      */
     public boolean canDistress()
-    {return isAligned() && getReputation(faction).get() >= Math.abs(Reputation.DISTRESS);}
+    {
+        return isAligned() && getReputation(faction).get() >= Math.abs(Reputation.DISTRESS);
+    }
 
     /**
      * Removes the ship from all collections and marks it as destroyed.
@@ -2816,7 +3139,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public void destroy(boolean print)
     {
-        location.getSector().removeLetter((int) name.charAt(name.length() - 1));
+        location.getSector().getUsedLetters().remove((Character) name.charAt(name.length() - 1));
         location.getSector().getShips().remove(this);
 
         if (isDocked())
@@ -2874,6 +3197,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
     }
 
+    /**
+     * Gets a list of ColorStrings describing the status of this ship.
+     *
+     * @return a list of ColorStrings describing the status of this ship
+     */
     public List<ColorString> getStatusList()
     {
         List<ColorString> contents = new LinkedList<>();
@@ -2885,7 +3213,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             contents.add(resource.getAmountAsColoredFraction().add(" " + resource.getName()));
         }
 
-        if (getModulesUsed() > 0)
+        if (!modules.isEmpty())
         {
             contents.add(null);
             for (Module module : modules)
@@ -2920,42 +3248,47 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     /**
      * Adds the given ColorString as a message, only if this ship is the player. Intended for player-specific messages.
      *
-     * @param s the ColorString to add as a message if this ship is the player
+     * @param message the ColorString to add as a message if this ship is the player
      */
-    public void addPlayerColorMessage(ColorString s)
+    public void addPlayerColorMessage(ColorString message)
     {
         if (isPlayer())
         {
-            addColorMessage(s);
+            addColorMessage(message);
         }
     }
 
     /**
      * Adds the given String as a message, only if this ship is the player. Intended for player-specific messages.
      *
-     * @param s the String to add as a message if this ship is the player
+     * @param message the String to add as a message if this ship is the player
      */
-    public void addPlayerMessage(String s)
+    public void addPlayerMessage(String message)
     {
         if (isPlayer())
         {
-            addMessage(s);
+            addMessage(message);
         }
     }
 
     /**
      * Adds the given String as an error, only if this ship is the player. Intended for player-specific errors.
      *
-     * @param s the String to add as an error if this ship is the player
+     * @param error the String to add as an error if this ship is the player
      */
-    public void addPlayerError(String s)
+    public void addPlayerError(String error)
     {
         if (isPlayer())
         {
-            addError(s);
+            addError(error);
         }
     }
 
+    /**
+     * Plays the sound at the given path, only if this ship is the player.
+     *
+     * @param path the path of the sound to play if this ship is the player
+     */
     public void playPlayerSound(String path)
     {
         if (isPlayer())
@@ -3017,31 +3350,37 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     /**
      * Returns the absolute battle level or mining level, whichever is greater.
      *
-     * @return the greater of: absolute battle level or absolute mining level, will be non-negative
+     * @return the greater of: absolute battle level or absolute mining level
      */
     public int getHighestLevel()
-    {return Math.max(getAbsoluteBattleLevel(), getAbsoluteMiningLevel());}
+    {
+        return Math.max(getAbsoluteBattleLevel(), getAbsoluteMiningLevel());
+    }
 
     /**
      * Returns the sum of the absolute battle and mining levels.
      *
-     * @return the sum of the absolute battle level and the absolute mining level, will be non-negative
+     * @return the sum of the absolute battle level and the absolute mining level
      */
     public int getTotalLevel()
-    {return getAbsoluteBattleLevel() + getAbsoluteMiningLevel();}
+    {
+        return getAbsoluteBattleLevel() + getAbsoluteMiningLevel();
+    }
 
     /**
      * Returns the ship's "level" of power in battle, to be used in determining a classification.
      *
-     * @return an integer based on the ship's amount of weaponry and hull capacity, will be non-negative
+     * @return an integer based on the ship's amount of weaponry and hull capacity
      */
     private int getBattleLevel()
-    {return getAbsoluteBattleLevel() / Levels.LEVEL_AMOUNT;}
+    {
+        return getAbsoluteBattleLevel() / Levels.LEVEL_AMOUNT;
+    }
 
     /**
      * Returns the ship's absolute "level" of power in battle, to be used in determining a classification.
      *
-     * @return an integer based on the ship's amount of weaponry and hull capacity, will be non-negative
+     * @return an integer based on the ship's amount of weaponry and hull capacity
      */
     public int getAbsoluteBattleLevel()
     {
@@ -3059,20 +3398,22 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     /**
      * Returns the ship's "level" of mining ability, to be used in determining a classification.
      *
-     * @return an integer based on the ship's amount of non-combat modules and ore capacity, will be non-negative
+     * @return an integer based on the ship's amount of non-combat modules and ore capacity
      */
     private int getMiningLevel()
-    {return getAbsoluteMiningLevel() / Levels.LEVEL_AMOUNT;}
+    {
+        return getAbsoluteMiningLevel() / Levels.LEVEL_AMOUNT;
+    }
 
     /**
      * Returns the ship's absolute "level" of mining ability, to be used in determining a classification.
      *
-     * @return an integer based on the ship's amount of non-combat modules and ore capacity, will be non-negative
+     * @return an integer based on the ship's amount of non-combat modules and ore capacity
      */
     public int getAbsoluteMiningLevel()
     {
         int level = 0;
-        level += (getModulesUsed() - getWeaponsUsed()) * Levels.LEVEL_AMOUNT;
+        level += (modules.size() - getWeaponsUsed()) * Levels.LEVEL_AMOUNT;
         level += getResource(Resource.ORE).getNExpanders() * 2;
         return level;
     }
@@ -3116,12 +3457,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     {
         if (hasModule(Action.SOLAR) && isInSector() && !isLanded())
         {
-            getResource(Action.SOLAR.getResource()).changeAmountWithDiscard(Action.SOLAR.getCost() *
-                                                                            location.getSector()
-                                                                                    .getStar()
-                                                                                    .getSolarPowerAt(
-                                                                                            getSectorLocation()
-                                                                                                    .getOrbit()));
+            getResource(Action.SOLAR.getAction().getResource()).changeAmountWithDiscard(
+                    Action.SOLAR.getAction().getCost() *
+                    location.getSector().getStar().getSolarPowerAt(getSectorLocation().getOrbit()));
         }
 
         if (isShielded() && !changeResourceBy(Action.SHIELD.getAction()))

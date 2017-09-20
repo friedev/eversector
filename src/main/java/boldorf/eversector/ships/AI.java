@@ -14,19 +14,47 @@ import java.util.List;
 import static boldorf.eversector.Main.rng;
 
 /**
+ * The "artificial intelligence" in charge of making decisions for a ship.
  *
+ * @author Boldorf Smokebane
  */
 public class AI
 {
-    private Ship ship;
+    /**
+     * The ship the AI is controlling.
+     */
+    private final Ship ship;
+
+    /**
+     * The ship's current destination.
+     */
     private Location destination;
 
+    /**
+     * Creates a new AI for the given ship.
+     *
+     * @param ship the ship
+     */
     public AI(Ship ship)
-    {this.ship = ship;}
+    {
+        this.ship = ship;
+    }
 
+    /**
+     * Gets the ship controlled by the AI.
+     *
+     * @return the ship controlled by the AI
+     */
     public Ship getShip()
-    {return ship;}
+    {
+        return ship;
+    }
 
+    /**
+     * Makes the ship perform an action. Has no effect if the ship is in a battle.
+     *
+     * @see #performBattleAction()
+     */
     public void act()
     {
         if (ship.isInBattle())
@@ -91,15 +119,32 @@ public class AI
         }
     }
 
+    /**
+     * Performs an action for when the ship is orbital in the sector.
+     *
+     * @return true if an action was performed
+     */
     private boolean performSectorAction()
     {
         Planet planet = ship.getSectorLocation().getPlanet();
         return planet != null && planet.getType().canMineFromOrbit() && ship.mine();
     }
 
+    /**
+     * Performs an action for when the ship is landed on a planet.
+     *
+     * @return true if an action was performed
+     */
     private boolean performPlanetAction()
-    {return ship.claim(false) || ship.mine();}
+    {
+        return ship.claim(false) || ship.mine();
+    }
 
+    /**
+     * Performs an action for when the ship is docked at a station.
+     *
+     * @return true if an action was performed
+     */
     private boolean performStationAction()
     {
         sellDuplicates();
@@ -117,6 +162,9 @@ public class AI
         return false;
     }
 
+    /**
+     * Sells items in cargo when at a station.
+     */
     private void sellDuplicates()
     {
         boolean selling = true;
@@ -136,6 +184,9 @@ public class AI
         }
     }
 
+    /**
+     * Restocks resources when docked at a station.
+     */
     private void buyResources()
     {
         ship.buyResource(Resource.ORE, -ship.getMaxSellAmount(Resource.ORE));
@@ -144,6 +195,9 @@ public class AI
         ship.buyResource(Resource.ENERGY, ship.getMaxBuyAmount(Resource.ENERGY));
     }
 
+    /**
+     * Buys items when docked at a station.
+     */
     private void buyItems()
     {
         if (!ship.hasModule(Action.PULSE))
@@ -187,6 +241,9 @@ public class AI
         }
     }
 
+    /**
+     * Buys expanders when docked at a station.
+     */
     private void buyExpanders()
     {
         int tanks = ship.getResource(Resource.FUEL).getNExpanders();
@@ -219,6 +276,11 @@ public class AI
         ship.buyResource(Resource.HULL_EXPANDER, ship.getMaxBuyAmount(ship.getExpander(Resource.HULL_EXPANDER)));
     }
 
+    /**
+     * Decides on whether to attack another ship when orbital in a sector.
+     *
+     * @return true if the ship attacked
+     */
     private boolean attack()
     {
         if (!ship.hasWeapons() || !ship.isOrbital())
@@ -248,6 +310,9 @@ public class AI
         return false;
     }
 
+    /**
+     * Chooses a new destination based on the ship's current situation.
+     */
     private void updateDestination()
     {
         Location invasionDestination = findInvasionDestination();
@@ -273,6 +338,11 @@ public class AI
         destination = findClosestMiningDestination();
     }
 
+    /**
+     * Finds the closest location where the ship can mine.
+     *
+     * @return the closest location where the ship can mine
+     */
     private SectorLocation findClosestMiningDestination()
     {
         if (ship.isInSector())
@@ -341,6 +411,12 @@ public class AI
         return null;
     }
 
+    /**
+     * Generates a mining location for the given planet.
+     *
+     * @param planet the planet to get a location for
+     * @return a mining location for the given planet
+     */
     private SectorLocation getPlanetMiningDestination(Planet planet)
     {
         if (planet == null)
@@ -362,6 +438,11 @@ public class AI
         return null;
     }
 
+    /**
+     * Finds the closest passive station.
+     *
+     * @return the closest passive station
+     */
     private StationLocation findClosestStation()
     {
         if (ship.isInSector())
@@ -431,6 +512,12 @@ public class AI
         return null;
     }
 
+    /**
+     * Generates a location for the given passive station.
+     *
+     * @param station the station to get a location for
+     * @return a location for the given passive station
+     */
     private StationLocation getStationDestination(Station station)
     {
         if (station == null)
@@ -445,6 +532,11 @@ public class AI
         return null;
     }
 
+    /**
+     * Finds the closest unclaimed territory on a planet.
+     *
+     * @return the closest unclaimed territory on a planet
+     */
     private Location findClosestUnclaimedTerritory()
     {
         if (!ship.isInSector())
@@ -477,6 +569,12 @@ public class AI
         return null;
     }
 
+    /**
+     * Generates a location with unclaimed territory for the given planet.
+     *
+     * @param planet the planet to get a location for
+     * @return a location with unclaimed territory for the given planet
+     */
     private PlanetLocation getPlanetClaimingDestination(Planet planet)
     {
         if (planet == null || !planet.getType().canLandOn())
@@ -488,6 +586,11 @@ public class AI
         return unclaimedRegion == null ? null : unclaimedRegion.getLocation();
     }
 
+    /**
+     * Finds the closest hostile station to invade.
+     *
+     * @return the closest hostile station to invade
+     */
     private StationLocation findInvasionDestination()
     {
         if (ship.getCredits() < Station.CLAIM_COST || !ship.hasWeapons() || !ship.getResource(Resource.FUEL).isFull())
@@ -562,6 +665,12 @@ public class AI
         return null;
     }
 
+    /**
+     * Generates a location for the given hostile station.
+     *
+     * @param station the station to get a location for
+     * @return a location for the given hostile station
+     */
     private StationLocation getStationInvasionDestination(Station station)
     {
         if (station == null)
@@ -576,12 +685,22 @@ public class AI
         return null;
     }
 
+    /**
+     * Returns true if the stored destination exists, can be traveled to, and is not the ship's current location.
+     *
+     * @return true if the stored destination is valid
+     */
     private boolean destinationIsValid()
     {
         return !(destination == null || ship.getLocation().equals(destination) ||
                  destination instanceof BattleLocation);
     }
 
+    /**
+     * Attempts to move toward the stored destination.
+     *
+     * @return true if the ship moved
+     */
     private boolean seekDestination()
     {
         if (!destinationIsValid())
@@ -639,6 +758,9 @@ public class AI
                 Utility.toGoToCardinal(ship.getLocation().getCoord(), destination.getCoord()));
     }
 
+    /**
+     * Performs an action when no others are possible. Will destroy the ship if no emergency actions can be performed.
+     */
     private void performEmergencyAction()
     {
         if (ship.refine())
@@ -655,6 +777,12 @@ public class AI
         }
     }
 
+    /**
+     * Decides on whether to join the given battle.
+     *
+     * @param battle the battle to join
+     * @return true if the ship joined the battle
+     */
     public boolean joinBattle(Battle battle)
     {
         if (!willAttack() || !ship.isOrbital())
@@ -688,6 +816,12 @@ public class AI
         return true;
     }
 
+    /**
+     * Gets the "friendliness" of the given ship. Used when deciding which side of a battle to join.
+     *
+     * @param other the ship to get the friendliness of
+     * @return the friendliness of the given ship
+     */
     private int getFriendliness(Ship other)
     {
         if (!other.isAligned() || !ship.isAligned())
@@ -718,7 +852,7 @@ public class AI
      */
     public boolean performBattleAction()
     {
-        if (!ship.isInBattle())
+        if (!ship.isInBattle() || ship.isDestroyed())
         {
             return false;
         }
@@ -818,6 +952,11 @@ public class AI
         return true;
     }
 
+    /**
+     * Decides on whether to pursue any enemy.
+     *
+     * @return true if the ship pursued
+     */
     public boolean pursue()
     {
         Battle battle = ship.getBattleLocation().getBattle();
@@ -826,15 +965,21 @@ public class AI
     }
 
     /**
-     * Returns true if the NPC is willing to enter a fight.
+     * Returns true if the ship is willing to enter a fight.
      *
-     * @return true if this ship will engage in any fights, based on its hull strength and weaponry
+     * @return true if the ship is willing to enter a fight
      */
     public boolean willAttack()
     {
         return ship.hasWeapons() && ship.getAmountOf(Resource.HULL) >= ship.getCapOf(Resource.HULL) / 2;
     }
 
+    /**
+     * Votes on a candidate for faction leader, from the given list of candidates.
+     *
+     * @param candidates the candidates for faction leader that the ship can choose from
+     * @return the ship that this ship is voting for
+     */
     public Ship vote(List<Ship> candidates)
     {
         int[] preferences = new int[candidates.size()];

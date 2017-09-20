@@ -9,13 +9,15 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 
 /**
  * A module that also holds the amount of damage it deals.
+ *
+ * @author Boldorf Smokebane
  */
 public class Weapon extends Module
 {
     /**
      * The hull damage the weapon can inflict on an undefended ship.
      */
-    int damage;
+    private final int damage;
 
     /**
      * Copying constructor that creates a new weapon identical to the one provided.
@@ -24,7 +26,7 @@ public class Weapon extends Module
      */
     public Weapon(Weapon copying)
     {
-        this(copying.getName(), copying.getDescription(), copying.getValue(), copying.damage, copying.action);
+        this(copying.getName(), copying.getDescription(), copying.getValue(), copying.damage, copying.getAction());
     }
 
     /**
@@ -59,7 +61,9 @@ public class Weapon extends Module
      * @return the damage of the weapon
      */
     public int getDamage()
-    {return damage;}
+    {
+        return damage;
+    }
 
     /**
      * Returns true if the weapon uses energy.
@@ -67,7 +71,9 @@ public class Weapon extends Module
      * @return true if energy is the resource depleted by the weapon's action
      */
     public boolean isEnergy()
-    {return Resource.ENERGY.equals(action.getResource());}
+    {
+        return Resource.ENERGY.equals(getAction().getResource());
+    }
 
     @Override
     public List<ColorString> define()

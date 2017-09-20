@@ -1,7 +1,6 @@
 .*/
 EverSector.iml
 build/
-out/
 bundle/assets/audio/
 bundle/local/
 bundle/jre/

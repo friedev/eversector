@@ -6,6 +6,11 @@ import boldorf.apwt.glyphs.ColorChar;
 
 import java.util.HashMap;
 
+/**
+ * All symbols in the game, with separate versions for tiles and ASCII.
+ *
+ * @author Boldorf Smokebane
+ */
 public enum Symbol
 {
     COPYRIGHT,
@@ -44,7 +49,7 @@ public enum Symbol
         tiles.put(COPYRIGHT, (char) 0);
         tiles.put(UNDISCOVERED, ' ');
         tiles.put(EMPTY, ExtChars.DOT);
-        tiles.put(CREDITS, (char) '$');
+        tiles.put(CREDITS, '$');
         tiles.put(PLAYER, (char) 1);
         tiles.put(WEAK_SHIP, (char) 2);
         tiles.put(MEDIUM_SHIP, (char) 3);

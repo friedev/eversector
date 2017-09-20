@@ -9,15 +9,38 @@ import java.util.List;
 import static boldorf.eversector.Main.rng;
 
 /**
+ * A class for managing battles between ships.
  *
+ * @author Boldorf Smokebane
  */
 public class Battle
 {
+    /**
+     * The attacking ship and all that joined it.
+     */
     private List<Ship> attackers;
+
+    /**
+     * The defending ship and all that joined it.
+     */
     private List<Ship> defenders;
+
+    /**
+     * The ships attempting to flee on the next turn.
+     */
     private List<Ship> fleeing;
+
+    /**
+     * All ships that have been destroyed in the battle.
+     */
     private List<Ship> destroyed;
 
+    /**
+     * Creates a battle between the given attackers and defenders.
+     *
+     * @param attackers the ships attacking the defenders
+     * @param defenders the victims of the attack
+     */
     public Battle(List<Ship> attackers, List<Ship> defenders)
     {
         this.attackers = attackers;
@@ -26,6 +49,12 @@ public class Battle
         this.destroyed = new LinkedList<>();
     }
 
+    /**
+     * Creates a battle between two ships.
+     *
+     * @param attacker the ship attacking the defender
+     * @param defender the victim of the attack
+     */
     public Battle(Ship attacker, Ship defender)
     {
         attackers = new LinkedList<>();
@@ -36,18 +65,51 @@ public class Battle
         destroyed = new LinkedList<>();
     }
 
+    /**
+     * Gets the attacking ships.
+     *
+     * @return the attacking ships
+     */
     public List<Ship> getAttackers()
-    {return attackers;}
+    {
+        return attackers;
+    }
 
+    /**
+     * Gets the defending ships.
+     *
+     * @return the defending ships
+     */
     public List<Ship> getDefenders()
-    {return defenders;}
+    {
+        return defenders;
+    }
 
+    /**
+     * Gets the ships attempting to flee on the next turn.
+     *
+     * @return the ships attempting to flee on the next turn
+     */
     public List<Ship> getFleeing()
-    {return fleeing;}
+    {
+        return fleeing;
+    }
 
+    /**
+     * Gets the ships that have been destroyed in the battle.
+     *
+     * @return the ships that have been destroyed in the battle
+     */
     public List<Ship> getDestroyed()
-    {return destroyed;}
+    {
+        return destroyed;
+    }
 
+    /**
+     * Gets all attacking and defending ships.
+     *
+     * @return all attacking and defending ships
+     */
     public List<Ship> getShips()
     {
         List<Ship> ships = new ArrayList<>(attackers.size() + defenders.size());
@@ -56,6 +118,12 @@ public class Battle
         return ships;
     }
 
+    /**
+     * Gets all the ships fighting on the same side as the given ship. This list will not include the given ship.
+     *
+     * @param ship the ship to get allies of
+     * @return all the ships fighting on the same side as the given ship, excluding the given ship itself
+     */
     public List<Ship> getAllies(Ship ship)
     {
         List<Ship> allies = new LinkedList<>();
@@ -64,24 +132,46 @@ public class Battle
         return allies;
     }
 
+    /**
+     * Gets all the ships fighting on the opposite side of the given ship.
+     *
+     * @param ship the ship to get enemies of
+     * @return all the ships fighting on the opposite side of the given ship
+     */
     public List<Ship> getEnemies(Ship ship)
-    {return attackers.contains(ship) ? defenders : attackers;}
+    {
+        return attackers.contains(ship) ? defenders : attackers;
+    }
 
+    /**
+     * Returns true if the battle is continuing. This is the case when there is at least one attacker and at least one
+     * defender.
+     *
+     * @return true if the battle is continuing
+     */
     public boolean continues()
-    {return !attackers.isEmpty() && !defenders.isEmpty();}
+    {
+        return !attackers.isEmpty() && !defenders.isEmpty();
+    }
 
+    /**
+     * Gives all ships an opportunity to attack others, alternating between sides. Ships that are destroyed will be
+     * moved into the destroyed list.
+     *
+     * @return true if at least one ship attacked another
+     */
     public boolean processAttacks()
     {
         boolean attackMade = false;
         int size = Math.max(attackers.size(), defenders.size());
         for (int i = 0; i < size; i++)
         {
-            if (attackers.size() >= i + 1 && attackers.get(i).getAI() != null)
+            if (attackers.size() >= i + 1 && !attackers.get(i).isDestroyed() && attackers.get(i).getAI() != null)
             {
                 attackMade = attackMade || attackers.get(i).getAI().performBattleAction();
             }
 
-            if (defenders.size() >= i + 1 && defenders.get(i).getAI() != null)
+            if (defenders.size() >= i + 1 && !defenders.get(i).isDestroyed() && defenders.get(i).getAI() != null)
             {
                 attackMade = attackMade || defenders.get(i).getAI().performBattleAction();
             }
@@ -102,6 +192,12 @@ public class Battle
         return attackMade;
     }
 
+    /**
+     * Gathers a list of ships that will pursue the given ship if they flee.
+     *
+     * @param ship the fleeing ship
+     * @return a list of ships that will pursue the given ship if they flee
+     */
     public List<Ship> getPursuers(Ship ship)
     {
         List<Ship> pursuing = new LinkedList<>();
@@ -117,6 +213,13 @@ public class Battle
         return pursuing;
     }
 
+    /**
+     * Processes the given ship's escape and the pursuits of all given pursuing ships. Creates a new battle between the
+     * fleeing ship and its pursuers.
+     *
+     * @param ship     the fleeing ship, must be listed as fleeing in the battle
+     * @param pursuing the list of ships pursuing the fleeing ship
+     */
     public void processEscape(Ship ship, List<Ship> pursuing)
     {
         if (!fleeing.contains(ship))
@@ -170,9 +273,23 @@ public class Battle
         defenders.remove(ship);
     }
 
+    /**
+     * Processes the escape of the given ship, gathering all ships that will pursuer it.
+     *
+     * @param ship the fleeing ship
+     * @see #processEscape(Ship, List)
+     * @see #getPursuers(Ship)
+     */
     public void processEscape(Ship ship)
-    {processEscape(ship, getPursuers(ship));}
+    {
+        processEscape(ship, getPursuers(ship));
+    }
 
+    /**
+     * Processes the escapes of all ships.
+     *
+     * @see #processEscape(Ship)
+     */
     public void processEscapes()
     {
         for (Ship ship : new ArrayList<>(fleeing))
@@ -181,6 +298,9 @@ public class Battle
         }
     }
 
+    /**
+     * Distributes the loot of the destroyed ships among the victorious ships.
+     */
     public void distributeLoot()
     {
         List<Ship> winners = getShips();
@@ -196,6 +316,9 @@ public class Battle
         }
     }
 
+    /**
+     * Ends the battle, moving all ships in the battle back to the sector.
+     */
     public void endBattle()
     {
         for (Ship ship : getShips())
@@ -212,6 +335,9 @@ public class Battle
         destroyed.clear();
     }
 
+    /**
+     * Processes the entire battle. Only to be used when the player is not participating in the battle.
+     */
     public void processBattle()
     {
         while (continues())

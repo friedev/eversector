@@ -4,40 +4,115 @@ import boldorf.eversector.map.Station;
 
 /**
  * A wrapper for certain amount of a resource.
+ *
+ * @author Boldorf Smokebane
  */
 public class Action
 {
+    /**
+     * Moving one sector on the galactic map.
+     */
     public static final Action BURN = new Action(Resource.FUEL, 4);
+
+    /**
+     * Moving one orbit in a sector.
+     */
     public static final Action ORBIT = new Action(Resource.FUEL, 1);
+
+    /**
+     * Moving one region on a planet
+     */
     public static final Action RELOCATE = new Action(Resource.FUEL, 1);
+
+    /**
+     * Entering a sector from the galactic map.
+     */
     public static final Action ENTER = new Action(Resource.FUEL, 1);
+
+    /**
+     * Escaping a sector.
+     */
     public static final Action ESCAPE = new Action(Resource.FUEL, 1);
+
+    /**
+     * Landing on a planet.
+     */
     public static final Action LAND = new Action(Resource.FUEL, 2);
+
+    /**
+     * Taking off from a planet.
+     */
     public static final Action TAKEOFF = new Action(Resource.FUEL, 2);
+
+    /**
+     * Mining ore from a planet or asteroid belt.
+     */
     public static final Action MINE = new Action(Resource.ENERGY, 3);
+
+    /**
+     * Fleeing from a battle.
+     */
     public static final Action FLEE = new Action(Resource.FUEL, 1);
+
+    /**
+     * Pursuing a fleeing ship.
+     */
     public static final Action PURSUE = new Action(Resource.FUEL, 1);
 
+    /**
+     * Scanning a ship in battle.
+     */
     public static Module SCAN;
+
+    /**
+     * Refining one unit of ore into one unit of fuel.
+     */
     public static Module REFINE;
+
+    /**
+     * Regenerating energy with a solar array.
+     */
     public static Module SOLAR;
+
+    /**
+     * Warping from one sector to another.
+     */
     public static Module WARP;
+
+    /**
+     * Blocking an energy attack in battle
+     */
     public static Module SHIELD;
+
+    /**
+     * Cloaking the ship to avoid detection.
+     */
     public static Module CLOAK;
 
+    /**
+     * Firing a laser.
+     */
     public static Weapon LASER;
+
+    /**
+     * Firing a torpedo.
+     */
     public static Weapon TORPEDO;
+
+    /**
+     * Firing a pulse beam.
+     */
     public static Weapon PULSE;
 
     /**
      * The name of the resource used in the action.
      */
-    String resource;
+    private final String resource;
 
     /**
      * The amount of the resource needed to perform the action.
      */
-    int cost;
+    private final int cost;
 
     /**
      * Creates an action with the name of the resource and the cost.
@@ -58,20 +133,33 @@ public class Action
      */
     @Override
     public String toString()
-    {return cost + " " + resource.toLowerCase();}
+    {
+        return cost + " " + resource.toLowerCase();
+    }
 
+    /**
+     * Gets the resource used in the action.
+     *
+     * @return the resource used in the action
+     */
     public String getResource()
-    {return resource;}
+    {
+        return resource;
+    }
 
+    /**
+     * Gets the cost of the action.
+     *
+     * @return the cost of the action
+     */
     public int getCost()
-    {return cost;}
+    {
+        return cost;
+    }
 
-    public void setResource(String resource)
-    {this.resource = resource;}
-
-    public void setCost(int cost)
-    {this.cost = cost;}
-
+    /**
+     * Initializes all items.
+     */
     public static void initItems()
     {
         SCAN = Station.getBaseModule("Scanner");

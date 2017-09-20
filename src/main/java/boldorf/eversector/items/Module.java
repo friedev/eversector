@@ -4,13 +4,25 @@ import java.util.Properties;
 
 /**
  * A version of an item designed to perform an action.
+ *
+ * @author Boldorf Smokebane
  */
 public class Module extends Item
 {
     /**
      * The action that the module can perform.
      */
-    Action action;
+    private final Action action;
+
+    /**
+     * True if the module is sold at a battle station.
+     */
+    private final boolean battle;
+
+    /**
+     * The effect the module applies when activated.
+     */
+    private final String effect;
 
     /**
      * True if the module has been damaged.
@@ -18,15 +30,15 @@ public class Module extends Item
     private boolean isDamaged;
 
     /**
-     * True if the module is sold at a battle station.
+     * Creates a new module with a name, description, value, and action.
+     *
+     * @param name        the name of the module
+     * @param description the description of the module
+     * @param value       the value of the module
+     * @param battle      if the module is sold at battle stations
+     * @param effect      the effect the module applies when activated
+     * @param action      the action that the module can perform
      */
-    private boolean battle;
-
-    /**
-     * The effect the module applies when activated.
-     */
-    private String effect;
-
     public Module(String name, String description, int value, boolean battle, String effect, Action action)
     {
         super(name, description, value);
@@ -46,20 +58,9 @@ public class Module extends Item
      * @param action      the action that the module can perform
      */
     public Module(String name, String description, int value, boolean battle, Action action)
-    {this(name, description, value, battle, null, action);}
-
-    /**
-     * Creates a new module with a name, description, value, and a new action with a resource and cost.
-     *
-     * @param name        the name of the module
-     * @param description the description of the module
-     * @param value       the value of the module
-     * @param resource    the resource used in the action the module can perform
-     * @param battle      if the module is sold at battle stations
-     * @param cost        the cost of the action the module can perform
-     */
-    public Module(String name, String description, int value, String resource, boolean battle, int cost)
-    {this(name, description, value, battle, new Action(resource, cost));}
+    {
+        this(name, description, value, battle, null, action);
+    }
 
     /**
      * Copying constructor that creates a new module identical to the one provided.
@@ -100,39 +101,9 @@ public class Module extends Item
      * @return the action the module can perform
      */
     public Action getAction()
-    {return action;}
-
-    /**
-     * Returns the resource used by the action the module can perform.
-     *
-     * @return the resource used by the action the module can perform
-     */
-    public String getResource()
-    {return action.resource;}
-
-    /**
-     * Returns the cost of the action the module can perform.
-     *
-     * @return the cost of the action the module can perform
-     */
-    public int getCost()
-    {return action.cost;}
-
-    /**
-     * Sets the resource used in the action the module can perform.
-     *
-     * @param r the new resource to be used in the action the module can perform
-     */
-    public void setResource(String r)
-    {action.resource = r;}
-
-    /**
-     * Sets the cost of the action the module can perform.
-     *
-     * @param c the new cost of the action the module can perform
-     */
-    public void setCost(int c)
-    {action.cost = c;}
+    {
+        return action;
+    }
 
     /**
      * Returns the effect that the module applies when activated.
@@ -140,7 +111,9 @@ public class Module extends Item
      * @return the effect that the module applies when activated
      */
     public String getEffect()
-    {return effect;}
+    {
+        return effect;
+    }
 
     /**
      * Returns true if the module applies an effect when activated.
@@ -148,16 +121,20 @@ public class Module extends Item
      * @return true if the module applies an effect when activated
      */
     public boolean hasEffect()
-    {return effect != null;}
+    {
+        return effect != null;
+    }
 
     /**
      * Returns true if the module applies the specified effect.
      *
-     * @param e the effect to check
+     * @param effect the effect to check
      * @return true if the module applies the specified effect
      */
-    public boolean isEffect(String e)
-    {return effect != null && effect.equals(e);}
+    public boolean isEffect(String effect)
+    {
+        return this.effect != null && this.effect.equals(effect);
+    }
 
     /**
      * Returns true if the module is sold at a battle station.
@@ -165,16 +142,9 @@ public class Module extends Item
      * @return true if the module is sold at a battle station
      */
     public boolean isBattle()
-    {return battle;}
-
-    /**
-     * Change if this module is sold through battle or trade stations.
-     *
-     * @param b if true, will make this module sold through battle stations, if not, it will be sold through trade
-     *          stations
-     */
-    public void setBattle(boolean b)
-    {battle = b;}
+    {
+        return battle;
+    }
 
     /**
      * Returns true if the module is damaged.
@@ -182,7 +152,9 @@ public class Module extends Item
      * @return true if the module is damaged
      */
     public boolean isDamaged()
-    {return isDamaged;}
+    {
+        return isDamaged;
+    }
 
     /**
      * Damages the module, returning true if it was possible to damage
@@ -190,7 +162,9 @@ public class Module extends Item
      * @return true if the module was damaged, false if it was already damaged
      */
     public boolean damage()
-    {return setDamage(true);}
+    {
+        return setDamage(true);
+    }
 
     /**
      * Repairs the module, returning true if it was possible to repair.
@@ -198,7 +172,9 @@ public class Module extends Item
      * @return true if the module was repaired, false if it was already repaired
      */
     public boolean repair()
-    {return setDamage(false);}
+    {
+        return setDamage(false);
+    }
 
     /**
      * Sets the damage to either true or false, returning true if the damaged status was changed.
@@ -208,12 +184,8 @@ public class Module extends Item
      */
     private boolean setDamage(boolean newDamage)
     {
-        if (isDamaged == newDamage)
-        {
-            return false;
-        }
-
+        boolean damageChanged = isDamaged == newDamage;
         isDamaged = newDamage;
-        return true;
+        return damageChanged;
     }
 }

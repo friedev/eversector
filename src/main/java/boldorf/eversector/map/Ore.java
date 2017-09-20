@@ -2,6 +2,7 @@ package boldorf.eversector.map;
 
 /**
  * A type of ore with a name and density.
+ * @author Boldorf Smokebane
  */
 public class Ore implements Comparable<Ore>
 {
@@ -10,9 +11,22 @@ public class Ore implements Comparable<Ore>
      */
     public static final int DENSITY = 10;
 
-    private String name;
-    private int density;
+    /**
+     * The name of the ore.
+     */
+    private final String name;
 
+    /**
+     * The amount of ore units received each time the ore is mined.
+     */
+    private final int density;
+
+    /**
+     * Creates an ore type with a name and density.
+     *
+     * @param name    the name of the ore
+     * @param density the density of the ore
+     */
     public Ore(String name, int density)
     {
         this.name = name;
@@ -21,18 +35,33 @@ public class Ore implements Comparable<Ore>
 
     @Override
     public String toString()
-    {return name;}
+    {
+        return name;
+    }
 
+    /**
+     * Gets the name of the ore.
+     *
+     * @return the name of the ore
+     */
     public String getName()
-    {return name;}
+    {
+        return name;
+    }
 
+    /**
+     * Gets the density of the ore.
+     *
+     * @return the density of the ore
+     */
     public int getDensity()
-    {return density;}
-
-    public void setDensity(int density)
-    {this.density = density;}
+    {
+        return density;
+    }
 
     @Override
     public int compareTo(Ore other)
-    {return Integer.compare(density, other.density);}
+    {
+        return Integer.compare(density, other.density);
+    }
 }

@@ -2,6 +2,8 @@ package boldorf.eversector;
 
 /**
  * A wrapper class for all names generated through the name generator.
+ *
+ * @author Boldorf Smokebane
  */
 public abstract class Names
 {

@@ -52,7 +52,6 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         if (saved)
         {
             Properties save = player.toProperties();
-            save.setProperty(Option.DISQUALIFIED.getKey(), Boolean.toString(disqualified));
             Option.SEED.setProperty(Long.toString(Main.seed));
             Option.KEEP_SEED.setProperty(true);
 
@@ -166,21 +165,15 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
     {
         List<ColorString> contents = window.getContents();
 
-        if (disqualified)
+        if (galaxy.getTurn() <= MIN_TURNS)
         {
             window.getContents().addAll(LeaderboardScore.buildLeaderboard());
-            contents.add(
-                    new ColorString("Your score has been disqualified due " + "to debug command usage.", COLOR_SCORE));
-        }
-        else if (galaxy.getTurn() <= MIN_TURNS)
-        {
-            window.getContents().addAll(LeaderboardScore.buildLeaderboard());
-            contents.add(new ColorString("This game has been too short to log " + "a score.", COLOR_SCORE));
+            contents.add(new ColorString("This game has been too short to log a score.", COLOR_SCORE));
         }
         else if (player.calculateShipValue() <= Ship.BASE_VALUE)
         {
             window.getContents().addAll(LeaderboardScore.buildLeaderboard());
-            contents.add(new ColorString("You have not scored enough for a " + "leaderboard entry.", COLOR_SCORE));
+            contents.add(new ColorString("You have not scored enough for a leaderboard entry.", COLOR_SCORE));
         }
         else
         {

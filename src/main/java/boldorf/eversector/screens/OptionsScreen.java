@@ -39,25 +39,24 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                 int lowerBound;
                 int upperBound;
 
-                if (option == Option.FONT)
+                switch (option)
                 {
-                    lowerBound = 0;
-                    upperBound = Tileset.values().length - 1;
-                }
-                else if (option == Option.WIDTH)
-                {
-                    lowerBound = Utility.parseInt(option.getDefault());
-                    upperBound = Integer.MAX_VALUE;
-                }
-                else if (option == Option.HEIGHT)
-                {
-                    lowerBound = Utility.parseInt(option.getDefault());
-                    upperBound = Integer.MAX_VALUE;
-                }
-                else
-                {
-                    lowerBound = 0;
-                    upperBound = FileManager.MAX_VOLUME;
+                    case FONT:
+                        lowerBound = 0;
+                        upperBound = Tileset.values().length - 1;
+                        break;
+                    case WIDTH:
+                        lowerBound = Utility.parseInt(option.getDefault());
+                        upperBound = Integer.MAX_VALUE;
+                        break;
+                    case HEIGHT:
+                        lowerBound = Utility.parseInt(option.getDefault());
+                        upperBound = Integer.MAX_VALUE;
+                        break;
+                    default:
+                        lowerBound = 0;
+                        upperBound = FileManager.MAX_VOLUME;
+                        break;
                 }
 
                 if (key.getKeyCode() == KeyEvent.VK_LEFT) { value = Math.max(lowerBound, value - 1); }
@@ -121,6 +120,6 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
             currentRestriction++;
         }
 
-        contents.add(new ColorString("Display and font changes require a " + "restart to take effect."));
+        contents.add(new ColorString("Display and font changes require a restart to take effect."));
     }
 }

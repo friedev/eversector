@@ -13,18 +13,49 @@ import static boldorf.eversector.Main.rng;
 
 /**
  * A relationship between factions, containing the two factions and the terms between them.
+ *
+ * @author Boldorf Smokebane
  */
 public class Relationship
 {
+    /**
+     * All types of relationships factions can be in.
+     *
+     * @author Boldorf Smokebane
+     */
     public enum RelationshipType implements ColorStringObject
     {
+        /**
+         * Factions are at war.
+         */
         WAR("War", AsciiPanel.brightRed),
+
+        /**
+         * Factions are at peace.
+         */
         PEACE("Peace", null),
+
+        /**
+         * Factions are allied.
+         */
         ALLIANCE("Allied", AsciiPanel.brightGreen);
 
-        private String description;
-        private Color color;
+        /**
+         * A String describing the relationship type.
+         */
+        private final String description;
 
+        /**
+         * The color to display the relationship type with.
+         */
+        private final Color color;
+
+        /**
+         * Creates a RelationshipType with a description and color.
+         *
+         * @param description the RelationshipType's description
+         * @param color       the RelationshipType's color
+         */
         RelationshipType(String description, Color color)
         {
             this.description = description;
@@ -33,20 +64,49 @@ public class Relationship
 
         @Override
         public String toString()
-        {return description;}
+        {
+            return description;
+        }
 
+        /**
+         * Gets the color of the relationship type.
+         *
+         * @return the color of the relationship type
+         */
         public Color getColor()
-        {return color;}
+        {
+            return color;
+        }
 
         @Override
         public ColorString toColorString()
-        {return new ColorString(description, color);}
+        {
+            return new ColorString(description, color);
+        }
     }
 
-    private Faction faction1;
-    private Faction faction2;
+    /**
+     * The first faction in the relationship.
+     */
+    private final Faction faction1;
+
+    /**
+     * The second faction in the relationship.
+     */
+    private final Faction faction2;
+
+    /**
+     * The type of relationship.
+     */
     private RelationshipType type;
 
+    /**
+     * Creates a new relationship between two factions.
+     *
+     * @param faction1 the first faction
+     * @param faction2 the second faction
+     * @param type     the relationship type
+     */
     public Relationship(Faction faction1, Faction faction2, RelationshipType type)
     {
         this.faction1 = faction1;
@@ -54,11 +114,26 @@ public class Relationship
         this.type = type == null ? generateRelationship() : type;
     }
 
+    /**
+     * Creates a new relationship between two factions, randomly choosing a relationship type.
+     *
+     * @param faction1 the first faction
+     * @param faction2 the second faction
+     */
     public Relationship(Faction faction1, Faction faction2)
-    {this(faction1, faction2, null);}
+    {
+        this(faction1, faction2, null);
+    }
 
+    /**
+     * Gets the type of relationship.
+     *
+     * @return the relationship type
+     */
     public RelationshipType getType()
-    {return type;}
+    {
+        return type;
+    }
 
     /**
      * Returns the faction in the relationship that is not the one specified.
@@ -88,10 +163,19 @@ public class Relationship
      * @return true if the faction is one of the two involved in this relationship
      */
     public boolean hasFaction(Faction faction)
-    {return faction1 == faction || faction2 == faction;}
+    {
+        return faction1 == faction || faction2 == faction;
+    }
 
-    public void setRelationship(RelationshipType s)
-    {type = s;}
+    /**
+     * Sets the relationship type.
+     *
+     * @param type the relationship type
+     */
+    public void setRelationship(RelationshipType type)
+    {
+        this.type = type;
+    }
 
     /**
      * Adds this relationship to both of the factions which it involves.

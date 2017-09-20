@@ -11,20 +11,43 @@ import java.util.List;
 import static boldorf.eversector.Main.player;
 
 /**
+ * A class to handle leader elections for factions.
  *
+ * @author Boldorf Smokebane
  */
 public class Election
 {
     /**
      * The number of candidates that are selected for an election.
      */
-    public static final int CANDIDATES = 4;
+    private static final int CANDIDATES = 4;
 
-    private Faction faction;
+    /**
+     * The faction that the election takes place for.
+     */
+    private final Faction faction;
+
+    /**
+     * The list of Ships that have been nominated as candidates.
+     */
     private List<Ship> candidates;
-    private List<Integer> votes;
-    private boolean emergency;
 
+    /**
+     * The votes gathered for each candidate. Indices in this list correlate directly to the candidates list.
+     */
+    private List<Integer> votes;
+
+    /**
+     * True if the election is taking place after the destruction of the former.
+     */
+    private final boolean emergency;
+
+    /**
+     * Creates an election for the given faction.
+     *
+     * @param faction   the election's faction
+     * @param emergency true if the election is an emergency
+     */
     public Election(Faction faction, boolean emergency)
     {
         this.faction = faction;
@@ -33,18 +56,51 @@ public class Election
         this.emergency = emergency;
     }
 
+    /**
+     * Gets the faction that the election is for.
+     *
+     * @return the election's faction
+     */
     public Faction getFaction()
-    {return faction;}
+    {
+        return faction;
+    }
 
+    /**
+     * Gets the candidates in this election.
+     *
+     * @return the candidates in the election
+     */
     public List<Ship> getCandidates()
-    {return candidates;}
+    {
+        return candidates;
+    }
 
+    /**
+     * Gets the votes for each candidate in the election.
+     *
+     * @return the votes in the election
+     */
     public List<Integer> getVotes()
-    {return votes;}
+    {
+        return votes;
+    }
 
+    /**
+     * Returns true if the election is an emergency.
+     *
+     * @return true if the election is an emergency
+     */
     public boolean isEmergency()
-    {return emergency;}
+    {
+        return emergency;
+    }
 
+    /**
+     * Gets the lowest reputation of any candidate in the election.
+     *
+     * @return the lowest reputation in the election
+     */
     public int getMinimumReputation()
     {
         int minRep = candidates.get(0).getReputation(faction).get();
@@ -55,22 +111,30 @@ public class Election
         return minRep;
     }
 
+    /**
+     * Generates a description of the election.
+     *
+     * @return a description of the election
+     */
     public ColorString getDescription()
     {
-        if (emergency)
-        {
-            return new ColorString("The ").add(faction).add(" is holding an emergency election for leader.");
-        }
-
-        return new ColorString("The scheduled leader election for the ").add(faction).add(" has arrived.");
+        return emergency ? new ColorString("The ").add(faction).add(" is holding an emergency election for leader.") :
+                new ColorString("The scheduled leader election for the ").add(faction).add(" has arrived.");
     }
 
+    /**
+     * Finds candidates, gathers votes, and chooses the winner of election.
+     *
+     * @return the winner of the election who will become the faction's leader
+     * @see #findCandidates()
+     * @see #gatherVotes()
+     * @see #getWinner()
+     */
     public Ship electLeader()
     {
         findCandidates();
 
-        // This gives higher-reputation candidates a slight bias among
-        // voters
+        // This biases votes toward higher-reputation candidates
         candidates.sort(Comparator.reverseOrder());
         gatherVotes();
         Ship winner = getWinner();
@@ -78,6 +142,9 @@ public class Election
         return winner;
     }
 
+    /**
+     * Finds ships in the factions to be candidates in the election.
+     */
     public void findCandidates()
     {
         int minRep = 0;
@@ -112,8 +179,19 @@ public class Election
         candidates.sort(Comparator.reverseOrder());
     }
 
+    /**
+     * Gathers votes for the candidates by polling each ship in the faction.
+     *
+     * @throws IllegalStateException if called before findCandidates()
+     * @see #findCandidates()
+     */
     public void gatherVotes()
     {
+        if (candidates.isEmpty())
+        {
+            throw new IllegalStateException("gatherVotes() called before findCandidates()");
+        }
+
         // Fill the vote list with 0s as a starting point
         for (Ship candidate : candidates)
         {
@@ -131,8 +209,21 @@ public class Election
         }
     }
 
+    /**
+     * Gets the winner of the election based on the votes for each candidate. In the event of a tie, will return the
+     * candidate earlier in the list.
+     *
+     * @return the winner of the election
+     * @throws IllegalStateException if called before findCandidates()
+     * @see #findCandidates()
+     */
     public Ship getWinner()
     {
+        if (candidates.isEmpty())
+        {
+            throw new IllegalStateException("getWinner() called before findCandidates()");
+        }
+
         int winnerIndex = 0;
         int highestVotes = 0;
 
@@ -148,9 +239,23 @@ public class Election
         return candidates.get(winnerIndex);
     }
 
+    /**
+     * Returns true if, were the given ship to win the election, they would win.
+     *
+     * @param winner the ship to check as the winner
+     * @return true if the given ship would be reelected
+     */
     public boolean isReelected(Ship winner)
-    {return faction.isLeader(winner);}
+    {
+        return faction.getLeader() == winner;
+    }
 
+    /**
+     * Lowers the reputation of the winner if they are reelected.
+     *
+     * @param winner the winner of the election
+     * @see #isReelected(Ship)
+     */
     public void lowerWinnerReputation(Ship winner)
     {
         if (isReelected(winner))
@@ -159,6 +264,9 @@ public class Election
         }
     }
 
+    /**
+     * Adds the player as a candidate in the election, replacing the candidate with the lowest reputation.
+     */
     public void addPlayer()
     {
         candidates.sort(Comparator.naturalOrder());
@@ -167,8 +275,20 @@ public class Election
         candidates.sort(Comparator.reverseOrder());
     }
 
+    /**
+     * Adds a vote for the given candidate.
+     *
+     * @param candidate the candidate to add a vote for
+     * @throws IllegalStateException if called before findCandidates()
+     * @see #findCandidates()
+     */
     public void addVote(String candidate)
     {
+        if (candidates.isEmpty())
+        {
+            throw new IllegalStateException("addVote() called before findCandidates()");
+        }
+
         for (int i = 0; i < candidates.size(); i++)
         {
             if (candidates.get(i).toString().equals(candidate))

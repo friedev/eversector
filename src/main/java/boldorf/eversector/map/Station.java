@@ -17,6 +17,8 @@ import static boldorf.eversector.Main.rng;
 
 /**
  * A station at which ships can refuel and purchase upgrades.
+ *
+ * @author Boldorf Smokebane
  */
 public class Station implements ColorStringObject
 {
@@ -25,13 +27,20 @@ public class Station implements ColorStringObject
      */
     public static final int CLAIM_COST = 250;
 
+    /**
+     * The name of a trade station. <b>To be removed in v0.8.</b>
+     */
     public static final String TRADE = "Trade";
+
+    /**
+     * The name of a battle station. <b>To be removed in v0.8.</b>
+     */
     public static final String BATTLE = "Battle";
 
     /**
-     * The base modules that all stations sell, at their base prices.
+     * The base modules that all stations sell, at their base prices. <b>To be removed in v0.8.</b>
      */
-    public static Module[] MODULES = new Module[]{
+    public static final Module[] MODULES = new Module[]{
             new Module("Scanner", "Reveals locations from a distance.", 150, false, new Action(Resource.ENERGY, 3)),
             new Module("Refinery", "Can convert ore into fuel at a 1:1 ratio.", 250, false,
                     new Action(Resource.ENERGY, 1)),
@@ -52,28 +61,30 @@ public class Station implements ColorStringObject
     };
 
     /**
-     * The base resources that all stations sell, at the base prices for themselves and their expanders.
+     * The base resources that all stations sell, at the base prices for themselves and their expanders. <b>To be
+     * removed in v0.8.</b>
      */
-    public static BaseResource[] RESOURCES = new BaseResource[]{
+    public static final BaseResource[] RESOURCES = new BaseResource[]{
             new BaseResource(Resource.FUEL, "A reactive mixture able to create highly efficient thrust.", 10, true,
                     new Expander(Resource.FUEL_EXPANDER, "A compact container able to withstand extreme pressures.",
-                            70)),
-            new BaseResource(Resource.ENERGY, "Highly concentrated electrical charge.", 5, false,
-                    new Expander(Resource.ENERGY_EXPANDER,
-                            "A supercapacitor capable of retaining charge for long durations.", 85)),
-            new BaseResource(Resource.ORE, "A versatile compound that can be refined into fuel.", 10, true,
-                    new Expander(Resource.ORE_EXPANDER,
-                            "An interior hold designed for containing large quantities of ore.", 85)),
-            new BaseResource(Resource.HULL, "Layered alloys and ceramics that protect the ship.", 15, false,
-                    new Expander(Resource.HULL_EXPANDER, "A frame to allow the mounting of additional plating.", 85, 2))
+                            70)), new BaseResource(Resource.ENERGY, "Highly concentrated electrical charge.", 5, false,
+            new Expander(Resource.ENERGY_EXPANDER, "A supercapacitor capable of retaining charge for long durations.",
+                    85)), new BaseResource(Resource.ORE, "A versatile compound that can be refined into fuel.", 10,
+            true,
+            new Expander(Resource.ORE_EXPANDER, "An interior hold designed for containing large quantities of ore.",
+                    85)), new BaseResource(Resource.HULL, "Layered alloys and ceramics that protect the ship.", 15,
+            false, new Expander(Resource.HULL_EXPANDER, "A frame to allow the mounting of additional plating.", 85, 2))
     };
 
-    private String name;
+    /**
+     * The name of the station.
+     */
+    private final String name;
 
     /**
      * The type of station.
      */
-    private String type;
+    private final String type;
 
     /**
      * The location of this station.
@@ -121,7 +132,9 @@ public class Station implements ColorStringObject
 
     @Override
     public String toString()
-    {return type + " Station " + name;}
+    {
+        return type + " Station " + name;
+    }
 
     @Override
     public ColorString toColorString()
@@ -129,20 +142,55 @@ public class Station implements ColorStringObject
         return new ColorString(toString(), isClaimed() ? getFaction().getColor() : null);
     }
 
+    /**
+     * Gets the name of the station.
+     *
+     * @return the name of the station
+     */
     public String getName()
-    {return name;}
+    {
+        return name;
+    }
 
+    /**
+     * Gets the type of station.
+     *
+     * @return the type of station
+     */
     public String getType()
-    {return type;}
+    {
+        return type;
+    }
 
+    /**
+     * Gets the location of the station.
+     *
+     * @return the location of the station
+     */
     public SectorLocation getLocation()
-    {return location;}
+    {
+        return location;
+    }
 
+    /**
+     * Gets the faction that owns the station.
+     *
+     * @return the faction that owns the station
+     */
     public Faction getFaction()
-    {return faction;}
+    {
+        return faction;
+    }
 
+    /**
+     * Returns true if the station is claimed by a faction.
+     *
+     * @return true if the station is claimed by a faction
+     */
     public boolean isClaimed()
-    {return faction != null;}
+    {
+        return faction != null;
+    }
 
     /**
      * Claims the celestial body for the specified faction.
@@ -192,11 +240,25 @@ public class Station implements ColorStringObject
         return TRADE.equals(type);
     }
 
+    /**
+     * Gets all resources sold by the station.
+     *
+     * @return all resources sold by the station
+     */
     public BaseResource[] getResources()
-    {return resources;}
+    {
+        return resources;
+    }
 
+    /**
+     * Gets all modules sold by the station
+     *
+     * @return all modules sold by the station
+     */
     public Module[] getModules()
-    {return modules;}
+    {
+        return modules;
+    }
 
     /**
      * Returns true if the station has any item with the specified name.
@@ -205,7 +267,9 @@ public class Station implements ColorStringObject
      * @return true if a search for any type of item of this name does not return null
      */
     public boolean isItem(String name)
-    {return hasModule(name) || hasResource(name) || hasExpander(name);}
+    {
+        return hasModule(name) || hasResource(name) || hasExpander(name);
+    }
 
     /**
      * Returns a module on the station with the specified name.
@@ -233,7 +297,9 @@ public class Station implements ColorStringObject
      * @return true if a search for the module does not return null
      */
     public boolean hasModule(String name)
-    {return getModule(name) != null;}
+    {
+        return getModule(name) != null;
+    }
 
     /**
      * Returns the default module with the specified name.
@@ -261,7 +327,9 @@ public class Station implements ColorStringObject
      * @return true if a search for the module does not return null
      */
     public static boolean hasBaseModule(String name)
-    {return getBaseModule(name) != null;}
+    {
+        return getBaseModule(name) != null;
+    }
 
     /**
      * Returns the default weapon with the specified name.
@@ -301,6 +369,12 @@ public class Station implements ColorStringObject
         return false;
     }
 
+    /**
+     * Gets the first item with the given name.
+     *
+     * @param name the name to look for
+     * @return the first item found with the given name, null if not found
+     */
     public Item getItem(String name)
     {
         if (hasResource(name))
@@ -343,7 +417,9 @@ public class Station implements ColorStringObject
      * @return true if a search for the module does not return null
      */
     public boolean hasResource(String name)
-    {return getResource(name) != null;}
+    {
+        return getResource(name) != null;
+    }
 
     /**
      * Returns the expander with the specified name.
@@ -371,7 +447,9 @@ public class Station implements ColorStringObject
      * @return true if a search for the expander does not return null
      */
     public boolean hasExpander(String name)
-    {return getExpander(name) != null;}
+    {
+        return getExpander(name) != null;
+    }
 
     /**
      * Returns the default module with the specified name.
@@ -399,7 +477,9 @@ public class Station implements ColorStringObject
      * @return true if a search for the module does not return null
      */
     public static boolean hasBaseResource(String name)
-    {return getBaseResource(name) != null;}
+    {
+        return getBaseResource(name) != null;
+    }
 
     /**
      * Finds an object with the specified name and calls its define method.
@@ -437,14 +517,21 @@ public class Station implements ColorStringObject
         return false;
     }
 
+    /**
+     * Gets the ships docked with the station.
+     *
+     * @return the ships
+     */
     public List<Ship> getShips()
-    {return ships;}
+    {
+        return ships;
+    }
 
     /**
      * Returns the number of ships that belong to a specified faction.
      *
      * @param faction the faction to count ships in
-     * @return the number of ships docked with the station that belong to the faction, will be non-negative
+     * @return the number of ships docked with the station that belong to the faction
      */
     public int getNShips(Faction faction)
     {
@@ -484,7 +571,9 @@ public class Station implements ColorStringObject
      * @return the generated type, will be non-null
      */
     private String generateType()
-    {return rng.nextBoolean() ? TRADE : BATTLE;}
+    {
+        return rng.nextBoolean() ? TRADE : BATTLE;
+    }
 
     /**
      * Randomly generates the prices of each module and resource.

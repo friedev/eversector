@@ -10,18 +10,21 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 
 /**
  * An item designed to be included in resources that hold the information about increasing the resource's capacity.
+ * <b>To be removed in v0.7.2.</b>
+ *
+ * @author Boldorf Smokebane
  */
 public class Expander extends Item
 {
     /**
      * The default amount of expansion for new Expanders.
      */
-    public static final int EXPANSION = 5;
+    private static final int EXPANSION = 5;
 
     /**
      * The amount that the expander causes a resource's capacity to increase.
      */
-    private int expansion;
+    private final int expansion;
 
     /**
      * Creates a new Expander with a name, description, value, and the default expansion amount.
@@ -31,7 +34,9 @@ public class Expander extends Item
      * @param value       the value of the Expander
      */
     public Expander(String name, String description, int value)
-    {this(name, description, value, EXPANSION);}
+    {
+        this(name, description, value, EXPANSION);
+    }
 
     /**
      * Creates a new Expander with a name, description, value, and expansion amount.
@@ -74,7 +79,9 @@ public class Expander extends Item
      * @return the expansion amount of the resource
      */
     public int getExpansion()
-    {return expansion;}
+    {
+        return expansion;
+    }
 
     @Override
     public List<ColorString> define()

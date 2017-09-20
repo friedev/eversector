@@ -24,7 +24,7 @@ public class JoinScreen extends MenuScreen<PopupMenu>
     @Override
     public Screen onConfirm()
     {
-        player.joinFaction(galaxy.getFaction(getMenu().getSelectionIndex()));
+        player.joinFaction(galaxy.getFactions()[getMenu().getSelectionIndex()]);
         return null;
     }
 }

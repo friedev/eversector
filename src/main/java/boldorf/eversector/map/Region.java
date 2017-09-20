@@ -17,31 +17,99 @@ import static boldorf.eversector.Main.rng;
 
 /**
  * A planetary region with various characteristics.
+ *
+ * @author Boldorf Smokebane
  */
 public class Region implements ColorStringObject
 {
+    /**
+     * A type of region.
+     */
     public enum RegionType
     {
+        /**
+         * A region filled with a sea of magma.
+         */
         MAGMA("Magma", false, Symbol.LIQUID_REGION, AsciiPanel.brightRed),
+
+        /**
+         * A flat rocky region.
+         */
         ROCK("Rock", true, Symbol.FLAT_REGION, AsciiPanel.brightBlack),
 
+        /**
+         * A dry, sandy region.
+         */
         DESERT("Desert", true, Symbol.FLAT_REGION, AsciiPanel.yellow),
+
+        /**
+         * A region of elevated, sandy dunes.
+         */
         DUNES("Dunes", true, Symbol.HILL_REGION, AsciiPanel.yellow),
 
+        /**
+         * A deep ocean, probably of water.
+         */
         OCEAN("Ocean", false, Symbol.LIQUID_REGION, AsciiPanel.brightBlue),
+
+        /**
+         * A shallow section of ocean, probably of water.
+         */
         COAST("Coast", false, Symbol.LIQUID_REGION, AsciiPanel.brightCyan),
+
+        /**
+         * A grassy plain.
+         */
         PLAIN("Plains", true, Symbol.FLAT_REGION, AsciiPanel.brightGreen),
+
+        /**
+         * A forest of trees.
+         */
         FOREST("Forest", true, Symbol.FOREST_REGION, AsciiPanel.green),
+
+        /**
+         * A region of tall, rocky mountains.
+         */
         MOUNTAIN("Mountainous", true, Symbol.MOUNTAIN_REGION, AsciiPanel.brightBlack),
 
+        /**
+         * A flat ice sheet.
+         */
         FLATS("Flats", true, Symbol.FLAT_REGION, AsciiPanel.brightCyan),
+
+        /**
+         * A large mass of ice.
+         */
         GLACIER("Glacier", true, Symbol.HILL_REGION, AsciiPanel.brightCyan);
 
-        private String type;
-        private char symbol;
-        private Color foreground;
-        private boolean isLand;
+        /**
+         * The name of the region type.
+         */
+        private final String type;
 
+        /**
+         * The symbol representing the region type.
+         */
+        private final char symbol;
+
+        /**
+         * The color of the symbol's foreground.
+         */
+        private final Color foreground;
+
+        /**
+         * True if the region type is land, meaning it can contain ore and be claimed.
+         */
+        private final boolean isLand;
+
+        /**
+         * Creates a new region type with all fields defined.
+         *
+         * @param type       the name of the region type
+         * @param isLand     true if the region is land
+         * @param symbol     the symbol representing the region
+         * @param foreground the color of the symbol's foreground
+         */
         RegionType(String type, boolean isLand, char symbol, Color foreground)
         {
             this.type = type;
@@ -50,31 +118,95 @@ public class Region implements ColorStringObject
             this.foreground = foreground;
         }
 
-        RegionType(String type, boolean hasOre, Symbol symbol, Color foreground)
-        {this(type, hasOre, symbol.get(), foreground);}
+        /**
+         * Creates a new region type with all fields defined. Uses a Symbol rather than a char.
+         *
+         * @param type       the name of the region type
+         * @param isLand     true if the region is land
+         * @param symbol     the symbol representing the region
+         * @param foreground the color of the symbol's foreground
+         */
+        RegionType(String type, boolean isLand, Symbol symbol, Color foreground)
+        {
+            this(type, isLand, symbol.get(), foreground);
+        }
 
         @Override
         public String toString()
-        {return type;}
+        {
+            return type;
+        }
 
+        /**
+         * Gets the name of the region type.
+         *
+         * @return the name of the region type
+         */
         public String getType()
-        {return type;}
+        {
+            return type;
+        }
 
+        /**
+         * Gets the symbol representing the region type.
+         *
+         * @return the symbol representing the region type
+         */
         public ColorChar getSymbol()
-        {return new ColorChar(symbol, foreground);}
+        {
+            return new ColorChar(symbol, foreground);
+        }
 
+        /**
+         * Returns true if the region is land, meaning it can contain ore and be claimed.
+         *
+         * @return true if the region is land
+         */
         public boolean isLand()
-        {return isLand;}
+        {
+            return isLand;
+        }
     }
 
-    public static final int MIN_ORE = 50;
-    public static final int ORE_RANGE = 451;
+    /**
+     * The lowest amount of ore that can be generated in a region. This refers to the ore, not the units of the ore
+     * resource gained by mining it.
+     */
+    private static final int MIN_ORE = 50;
 
+    /**
+     * The range of ore above the minimum that can be generated in a region.
+     */
+    private static final int ORE_RANGE = 451;
+
+    /**
+     * The location of the region.
+     */
     private final PlanetLocation location;
+
+    /**
+     * The ships in the region.
+     */
     private List<Ship> ships;
+
+    /**
+     * The type of region.
+     */
     private RegionType type;
+
+    /**
+     * The faction that controls the region.
+     */
     private Faction faction;
+
+    /**
+     * The type of ore in the region, null if none.
+     */
     private Ore ore;
+
+    /**
+     * The amount of ore in the region.
+     */
     private int nOre;
 
     /**
@@ -104,7 +236,9 @@ public class Region implements ColorStringObject
 
     @Override
     public String toString()
-    {return type + " Region";}
+    {
+        return type + " Region";
+    }
 
     @Override
     public ColorString toColorString()
@@ -112,6 +246,12 @@ public class Region implements ColorStringObject
         return isClaimed() ? new ColorString(toString(), faction.getColor()) : new ColorString(toString());
     }
 
+    /**
+     * Returns a ColorChar representation of the region, overwritten by the player's sybmol if they're present in the
+     * region.
+     *
+     * @return a ColorChar representing the region
+     */
     public ColorChar toColorChar()
     {
         for (Ship ship : ships)
@@ -125,21 +265,85 @@ public class Region implements ColorStringObject
         return type.getSymbol();
     }
 
-    public PlanetLocation getLocation() {return location;}
+    /**
+     * Gets the location of the region.
+     *
+     * @return the location of the region
+     */
+    public PlanetLocation getLocation()
+    {
+        return location;
+    }
 
-    public RegionType getType() {return type; }
+    /**
+     * Gets the type of region.
+     *
+     * @return the type of region
+     */
+    public RegionType getType()
+    {
+        return type;
+    }
 
-    public Faction getFaction() {return faction; }
+    /**
+     * Gets the faction in control of the region.
+     *
+     * @return the faction in control of the region
+     */
+    public Faction getFaction()
+    {
+        return faction;
+    }
 
-    public Ore getOre() {return ore; }
+    /**
+     * Gets the type of ore in the region.
+     *
+     * @return the type of ore in the region
+     */
+    public Ore getOre()
+    {
+        return ore;
+    }
 
-    public int getNOre() {return nOre; }
+    /**
+     * Gets the amount of ore in the region.
+     *
+     * @return the amount of ore in the region
+     */
+    public int getNOre()
+    {
+        return nOre;
+    }
 
-    public boolean isClaimed() {return faction != null;}
+    /**
+     * Returns true if a faction has claimed the region.
+     *
+     * @return true if the region is claimed
+     */
+    public boolean isClaimed()
+    {
+        return faction != null;
+    }
 
-    public boolean hasOre() {return ore != null; }
+    /**
+     * Returns true if the region contains ore.
+     *
+     * @return true if the region contains ore
+     */
+    public boolean hasOre()
+    {
+        return ore != null;
+    }
 
-    public List<Ship> getShips() {return ships; }
+    /**
+     * Gets the ships in the region.
+     *
+     * @return the ships in the region
+     */
+    public List<Ship> getShips()
+    {
+        return ships;
+    }
 
     /**
      * Claims the region for a given faction and updates the faction of the planet it's on to match.
@@ -157,6 +361,12 @@ public class Region implements ColorStringObject
         location.getPlanet().updateFaction();
     }
 
+    /**
+     * Extracts ore from the region. <b>Currently not in use.</b>
+     *
+     * @param extracted the amount of ore to extract
+     * @return the amount of ore actually extracted
+     */
     public int extractOre(int extracted)
     {
         return extracted;
@@ -176,7 +386,7 @@ public class Region implements ColorStringObject
      * Returns the number of ships that belong to a specified faction.
      *
      * @param faction the faction to count ships in
-     * @return the number of ships docked with the station that belong to the faction, will be non-negative
+     * @return the number of ships in the region that belong to the faction
      */
     public int getNShips(Faction faction)
     {

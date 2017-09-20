@@ -24,69 +24,103 @@ import static boldorf.eversector.Names.ORE;
 
 /**
  * A 2D array of sectors representing a galaxy.
+ *
+ * @author Boldorf Smokebane
  */
 public class Galaxy
 {
-    /**
-     * The default number of sectors on each side of the central sector.
-     */
-    public static final int MIN_RADIUS = 25;
-
-    public static final int RADIUS_RANGE = 25;
-
-    /**
-     * The minimum number of faction that will be present in the game.
-     */
-    public static final int MIN_FACTIONS = 2;
-
-    /**
-     * The maximum increase in factions over the minimum (adjusted by 1 to include 0).
-     */
-    public static final int FACTION_RANGE = 4;
-
     /**
      * The number of turns that are simulated before the galaxy is used.
      */
     public static final int SIMULATED_TURNS = 50;
 
     /**
+     * The default number of sectors on each side of the central sector.
+     */
+    private static final int MIN_RADIUS = 25;
+
+    /**
+     * The possible range of sectors on each side of the central sector.
+     */
+    private static final int RADIUS_RANGE = 25;
+
+    /**
+     * The minimum number of faction that will be present in the game.
+     */
+    private static final int MIN_FACTIONS = 2;
+
+    /**
+     * The maximum increase in factions over the minimum (adjusted by 1 to include 0).
+     */
+    private static final int FACTION_RANGE = 4;
+
+    /**
      * The frequency at which to update a relationship between factions, to be divided by the number of factions.
      */
-    public static final int RELATION_UPDATE_FREQ = 120;
+    private static final int RELATION_UPDATE_FREQ = 120;
 
     /**
      * The amount of tries that can be made to update a relationship before the update is skipped.
      */
-    public static final int MAX_RELATIONSHIP_UPDATE_TRIES = 5;
+    private static final int MAX_RELATIONSHIP_UPDATE_TRIES = 5;
 
     /**
      * The frequency at which to elect for new faction leaders, in turns.
      */
-    public static final int ELECTION_FREQ = 150;
+    private static final int ELECTION_FREQ = 150;
 
     /**
      * The fewest types of ore that can exist.
      */
-    public static final int MIN_ORE = 4;
+    private static final int MIN_ORE = 4;
 
     /**
      * The range of possible amounts of ore types over the minimum.
      */
-    public static final int ORE_RANGE = 3;
+    private static final int ORE_RANGE = 3;
 
+    /**
+     * The sectors in the galaxy.
+     */
     private Sector[][] sectors;
+
+    /**
+     * The player.
+     */
     private Ship player;
+
+    /**
+     * All NPC ships in the galaxy.
+     */
     private List<Ship> ships;
+
+    /**
+     * The factions in the galaxy.
+     */
     private Faction[] factions;
-    private List<String> designations;
+
+    /**
+     * The types of ore in the galaxy.
+     */
     private Ore[] oreTypes;
+
+    /**
+     * The number of turns that have passed since the start of the game.
+     */
     private int turn;
+
+    /**
+     * All designations in use as sector names.
+     */
+    private List<String> designations;
 
     /**
      * Generates a galaxy with the default size.
      */
     public Galaxy()
-    {this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));}
+    {
+        this(MIN_RADIUS + rng.nextInt(RADIUS_RANGE));
+    }
 
     /**
      * Generates a galaxy of a specified size.
@@ -107,66 +141,255 @@ public class Galaxy
         init();
     }
 
-    public Sector[][] toArray()
-    {return sectors;}
-
-    public List<Ship> getShips()
-    {return ships;}
-
-    public Ship getPlayer()
-    {return player;}
-
-    public int getTurn()
-    {return turn;}
-
-    public int getWidth()
-    {return sectors[0].length;}
-
-    public int getHeight()
-    {return sectors.length;}
-
-    public Coord getCenter()
-    {return Coord.get(getWidth() / 2, getHeight() / 2);}
-
-    public Sector sectorAt(int x, int y)
-    {return sectors[y][x];}
-
-    public Sector sectorAt(Coord p)
-    {return p == null ? null : sectorAt(p.x, p.y);}
+    /**
+     * Returns the array of sectors in the galaxy.
+     *
+     * @return the array of sectors in the galaxy
+     */
+    public Sector[][] getSectors()
+    {
+        return sectors;
+    }
 
     /**
-     * Returns true if the specified coordinates are on the map.
+     * Gets the ships in the galaxy.
      *
-     * @param x the x coordinate of the Coord to check
-     * @param y the y coordinate of the Coord to check
-     * @return true if the coordinates correspond with a Coord on the map
+     * @return a list of all ships in the galaxy
+     */
+    public List<Ship> getShips()
+    {
+        return ships;
+    }
+
+    /**
+     * Gets the player.
+     *
+     * @return the player
+     */
+    public Ship getPlayer()
+    {
+        return player;
+    }
+
+    /**
+     * Gets the number of turns that have passed.
+     *
+     * @return the number of turns that have passed
+     */
+    public int getTurn()
+    {
+        return turn;
+    }
+
+    /**
+     * Gets the width of the galaxy in sectors.
+     *
+     * @return the width of the galaxy in sectors
+     */
+    public int getWidth()
+    {
+        return sectors[0].length;
+    }
+
+    /**
+     * Gets the height of the galaxy in sectors.
+     *
+     * @return the height of the galaxy in sectors
+     */
+    public int getHeight()
+    {
+        return sectors.length;
+    }
+
+    /**
+     * Gets the coordinates of the galactic center.
+     *
+     * @return the coordinates of the galactic center
+     */
+    public Coord getCenter()
+    {
+        return Coord.get(getWidth() / 2, getHeight() / 2);
+    }
+
+    /**
+     * Returns the sector at the given coordinates.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return the sector at the given coordinates
+     */
+    public Sector sectorAt(int x, int y)
+    {
+        return sectors[y][x];
+    }
+
+    /**
+     * Returns the sector at the given coordinates.
+     *
+     * @param p the coordinates
+     * @return the sector at the given coordinates
+     */
+    public Sector sectorAt(Coord p)
+    {
+        return p == null ? null : sectorAt(p.x, p.y);
+    }
+
+    /**
+     * Returns true if the specified coordinates are in the galaxy.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return true if the coordinates correspond with coordinates on the map
      */
     public boolean contains(int x, int y)
-    {return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();}
+    {
+        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+    }
 
     /**
-     * Performs the same function as contains(int, int), except that it uses a predefined Coord's coordinates.
+     * Returns true if the specified coordinates are in the galaxy.
      *
-     * @param p the Coord to use coordinates from
-     * @return true if the Coord is on the map
+     * @param p the coordinates
+     * @return true if the coordinates correspond with coordinates on the map
      */
     public boolean contains(Coord p)
-    {return contains(p.x, p.y);}
-
-    public double[][] getResistanceMap()
     {
-        double[][] resistance = new double[sectors.length][sectors[0].length];
-        for (int y = 0; y < sectors.length; y++)
+        return contains(p.x, p.y);
+    }
+
+    /**
+     * Gets the factions in the galaxy.
+     *
+     * @return the factions in the galaxy
+     */
+    public Faction[] getFactions()
+    {
+        return factions;
+    }
+
+    /**
+     * Gets the faction with the given name.
+     *
+     * @param name the name of the faction
+     * @return the faction with the given name
+     */
+    public Faction getFaction(String name)
+    {
+        for (Faction faction : factions)
         {
-            for (int x = 0; x < sectors[y].length; x++)
+            if (faction.getName().equals(name))
             {
-                resistance[x][y] = sectors[y][x].hasNebula() ? 1.0 : 0.0;
+                return faction;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the index of the given faction.
+     *
+     * @param faction the faction to find the index of
+     * @return the index of the given faction in the faction array
+     */
+    public int getIndex(Faction faction)
+    {
+        for (int i = 0; i < factions.length; i++)
+        {
+            if (factions[i] == faction)
+            {
+                return i;
             }
         }
 
-        return resistance;
+        return -1;
     }
 
+    /**
+     * Returns a random faction in the galaxy.
+     *
+     * @return a random faction in the galaxy
+     */
+    public final Faction getRandomFaction()
+    {
+        return factions[rng.nextInt(factions.length)];
+    }
+
+    /**
+     * Returns a random faction that is not the specified one.
+     *
+     * @param faction the faction to exclude from the list of selections
+     * @return a random faction from the list of all factions as long as it is not the one provided
+     */
+    public final Faction getRandomFaction(Faction faction)
+    {
+        Faction randomFaction;
+        do
+        {
+            randomFaction = getRandomFaction();
+        } while (randomFaction == faction);
+        return randomFaction;
+    }
+
+    /**
+     * Returns a random relationship between two factions.
+     *
+     * @return a random relationship between two randomly-chosen factions
+     */
+    public final Relationship getRandomRelationship()
+    {
+        Faction faction1 = getRandomFaction();
+        Faction faction2 = getRandomFaction(faction1);
+        return faction1.getRelationshipObject(faction2);
+    }
+
+    /**
+     * Gets the types of ore in the galaxy.
+     *
+     * @return the types of ore in the galaxy
+     */
+    public Ore[] getOreTypes()
+    {
+        return oreTypes;
+    }
+
+    /**
+     * Gets a random type of ore in the galaxy.
+     *
+     * @return a random type of ore in the galaxy
+     */
+    public Ore getRandomOre()
+    {
+        return oreTypes[rng.nextInt(oreTypes.length)];
+    }
+
+    /**
+     * Sets the player to a designated ship.
+     *
+     * @param player the ship to become the player
+     */
+    public void setPlayer(Ship player)
+    {
+        this.player = player;
+    }
+
+    /**
+     * Creates the player, the starting sector, and the player's faction.
+     */
+    public void createNewPlayer()
+    {
+        SectorLocation location = new Location(this, getRandomStationSystem().getLocation().getCoord()).enterSector();
+        location = location.setOrbit(location.getSector().getRandomStationOrbit());
+
+        Faction faction = location.getStation().getFaction();
+        player = new Ship("Player", location, faction);
+        player.setAI(null);
+    }
+
+    /**
+     * Gets a random station system.
+     *
+     * @return a random station system
+     */
     public Sector getRandomStationSystem()
     {
         List<Sector> stationSystems = new LinkedList<>();
@@ -184,6 +407,11 @@ public class Galaxy
         return rng.getRandomElement(stationSystems);
     }
 
+    /**
+     * Gets a random sector on the edge of the galaxy.
+     *
+     * @return a sector on the edge of the galaxy
+     */
     public Sector getRandomEdgeSector()
     {
         int edgeCoord = rng.nextInt(sectors.length);
@@ -196,215 +424,32 @@ public class Galaxy
     }
 
     /**
-     * Sets the player to a designated ship.
+     * Gets all sector designations.
      *
-     * @param player the ship to become the player
+     * @return all sector designations in use
      */
-    public void setPlayer(Ship player)
-    {this.player = player;}
-
-    /**
-     * Creates the player, the starting sector, and the player's faction.
-     */
-    public void createNewPlayer()
+    public List<String> getDesignations()
     {
-        SectorLocation location = new Location(this, getRandomStationSystem().getLocation().getCoord()).enterSector();
-        location = location.setOrbit(location.getSector().getRandomStationOrbit());
-
-        Faction faction = location.getStation().getFaction();
-        player = new Ship("Player", location, faction);
-        player.setAI(null);
+        return designations;
     }
 
     /**
-     * Processes the next turn.
-     */
-    public void nextTurn()
-    {
-        if (player != null)
-        {
-            player.updateContinuousEffects();
-        }
-
-        for (Ship ship : ships)
-        {
-            ship.getAI().act();
-        }
-
-        for (Iterator<Ship> it = ships.iterator(); it.hasNext(); )
-        {
-            if (it.next().isDestroyed())
-            {
-                it.remove();
-            }
-        }
-
-        for (Ship ship : ships)
-        {
-            ship.updateContinuousEffects();
-            ship.fadeReputations();
-        }
-
-        if (player != null)
-        {
-            player.fadeReputations();
-        }
-
-        // Respawns ships if there are fewer than the minimum ships in a sector
-        for (Sector[] row : sectors)
-        {
-            for (Sector sector : row)
-            {
-                if (sector.getNShips() < Sector.MIN_SHIPS && sector.hasStations())
-                {
-                    Station station = sector.getStationAt(sector.getRandomStationOrbit());
-
-                    //                    if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
-                    //                    {
-                    Ship newShip = new Ship(sector.generateNameFor(rng.nextInt(26)),
-                            new SectorLocation(sector.getLocation(), station.getLocation().getOrbit()),
-                            station.getFaction());
-                    newShip.dock();
-                    ships.add(newShip);
-                    //                    }
-                }
-
-                // Only known way to fix duplicate ship bug
-                sector.resetDuplicateShips();
-            }
-        }
-
-        // Update relationships if there are more than two factions
-        if (turn >= (RELATION_UPDATE_FREQ / factions.length) && factions.length > 2 &&
-            turn % (RELATION_UPDATE_FREQ / factions.length) == 0)
-        {
-            int tries = 0;
-            do
-            {
-                tries++;
-                if (tries > MAX_RELATIONSHIP_UPDATE_TRIES)
-                {
-                    break;
-                }
-            } while (!getRandomRelationship().updateRelationship());
-        }
-
-        // Update faction leaders periodically, or immediately if destroyed
-        // Also update faction leaders immediately before gameplay starts
-        if (turn > 0)
-        {
-            updateFactionLeaders();
-        }
-        else if (turn == -1)
-        {
-            updateFactionLeaders();
-        }
-
-        turn++;
-    }
-
-    /**
-     * Updates the leader of each faction.
-     */
-    public void updateFactionLeaders()
-    {
-        for (Faction faction : factions)
-        {
-            if (turn - faction.getLastElection() == ELECTION_FREQ)
-            {
-                faction.holdElection();
-            }
-        }
-
-        updateDestroyedFactionLeaders();
-    }
-
-    public void updateDestroyedFactionLeaders()
-    {
-        for (Faction faction : factions)
-        {
-            if (faction.getLeader() == null || faction.getLeader().isDestroyed())
-            {
-                faction.holdElection();
-            }
-        }
-    }
-
-    /**
-     * Adds the given ship to the ships list.
+     * Gets the light resistance map for FOV calculations.
      *
-     * @param ship the ship to add to the ships list
-     * @return true if the addition was successful
+     * @return the resistance map
      */
-    public boolean addShip(Ship ship)
-    {return ships.add(ship);}
-
-    /**
-     * Removes the given ship from the ships list.
-     *
-     * @param ship the ship to remove from the ships list
-     * @return true if the removal was successful
-     */
-    public boolean removeShip(Ship ship)
-    {return ships.remove(ship);}
-
-    /**
-     * Finds the first ship with the given name.
-     *
-     * @param name the name of the ship to find
-     * @return the first ship found with the given name
-     */
-    public Ship findShip(String name)
+    public double[][] getResistanceMap()
     {
-        for (Ship ship : ships)
+        double[][] resistance = new double[sectors.length][sectors[0].length];
+        for (int y = 0; y < sectors.length; y++)
         {
-            if (name.equalsIgnoreCase(ship.getName()))
+            for (int x = 0; x < sectors[y].length; x++)
             {
-                return ship;
+                resistance[x][y] = sectors[y][x].hasNebula() ? 1.0 : 0.0;
             }
         }
 
-        return null;
-    }
-
-    /**
-     * Returns the faction at the given index.
-     *
-     * @param index the index of the faction to find
-     * @return the faction with the given position in the faction array
-     */
-    public Faction getFaction(int index)
-    {return factions[index];}
-
-    public Faction getFaction(String name)
-    {
-        for (Faction faction : factions)
-        {
-            if (faction.getName().equals(name))
-            {
-                return faction;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the index of the given faction. This method is public so as to ease iteration over factions.
-     *
-     * @param faction the faction to find the index of
-     * @return the index of the given faction in the faction array
-     */
-    public int getIndex(Faction faction)
-    {
-        for (int i = 0; i < factions.length; i++)
-        {
-            if (factions[i] == faction)
-            {
-                return i;
-            }
-        }
-
-        return -1;
+        return resistance;
     }
 
     /**
@@ -481,182 +526,123 @@ public class Galaxy
     }
 
     /**
-     * Returns the rank of the given faction by sectors controlled.
-     *
-     * @param faction the faction of which to return the rank of
-     * @return the faction's rank among other factions based on the number of sectors controlled by each
+     * Processes the next turn.
      */
-    public int getRank(Faction faction)
+    public void nextTurn()
     {
-        int rank = 1;
-
-        for (Faction otherFaction : factions)
+        if (player != null)
         {
-            if (otherFaction != faction && getSectorsControlledBy(otherFaction) >= getSectorsControlledBy(faction))
-            {
-                rank++;
-            }
+            player.updateContinuousEffects();
         }
-
-        return rank;
-    }
-
-    /**
-     * Returns the number of sectors controlled by the given faction.
-     *
-     * @param faction the faction to count claimed sectors of
-     * @return the number of sectors in which the given faction is the dominant one
-     */
-    public int getSectorsControlledBy(Faction faction)
-    {
-        int sectorsClaimed = 0;
-
-        for (Sector[] row : sectors)
-        {
-            for (Sector sector : row)
-            {
-                if (sector.getFaction() == faction)
-                {
-                    sectorsClaimed++;
-                }
-            }
-        }
-
-        return sectorsClaimed;
-    }
-
-    public int getPlanetsControlledBy(Faction faction)
-    {
-        int planetsClaimed = 0;
-
-        for (Sector[] row : sectors)
-        {
-            for (Sector sector : row)
-            {
-                planetsClaimed += sector.getPlanetsControlledBy(faction);
-            }
-        }
-
-        return planetsClaimed;
-    }
-
-    public int getNStationsControlledBy(Faction faction)
-    {
-        int stationsClaimed = 0;
-
-        for (Sector[] row : sectors)
-        {
-            for (Sector sector : row)
-            {
-                stationsClaimed += sector.getStationsControlledBy(faction);
-            }
-        }
-
-        return stationsClaimed;
-    }
-
-    public String getStationTypesControlledBy(Faction faction)
-    {
-        int trade = 0;
-        int battle = 0;
-
-        for (Sector[] row : sectors)
-        {
-            for (Sector sector : row)
-            {
-                trade += sector.getStationTypesControlledBy(faction, Station.TRADE);
-                battle += sector.getStationTypesControlledBy(faction, Station.BATTLE);
-            }
-        }
-
-        return (trade + battle) + " (" + trade + " Trade, " + battle + " Battle)";
-    }
-
-    public int getNShipsIn(Faction faction)
-    {
-        int nShips = 0;
 
         for (Ship ship : ships)
         {
-            if (ship.getFaction() == faction)
-            {
-                nShips++;
-            }
+            ship.getAI().act();
         }
 
-        return nShips;
-    }
+        ships.removeIf(Ship::isDestroyed);
 
-    public String getShipTypesIn(Faction faction)
-    {
-        int total = 0;
-        int mining = 0;
-        int battle = 0;
+        for (Faction faction : factions)
+        {
+            faction.cacheAverageReputation();
+        }
 
         for (Ship ship : ships)
         {
-            if (ship.getFaction() == faction)
-            {
-                total++;
+            ship.updateContinuousEffects();
+            ship.fadeReputations();
+        }
 
-                if ("mining".equals(ship.getHigherLevel()))
+        if (player != null)
+        {
+            player.fadeReputations();
+        }
+
+        // Respawns ships if there are fewer than the minimum ships in a sector
+        for (Sector[] row : sectors)
+        {
+            for (Sector sector : row)
+            {
+                if (sector.getNShips() < Sector.MIN_SHIPS && sector.hasStations())
                 {
-                    mining++;
+                    Station station = sector.getStationAt(sector.getRandomStationOrbit());
+
+                    // if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
+                    // {
+                    Ship newShip = new Ship(sector.generateNameFor(rng.nextInt(26)),
+                            new SectorLocation(sector.getLocation(), station.getLocation().getOrbit()),
+                            station.getFaction());
+                    newShip.dock();
+                    ships.add(newShip);
+                    // }
                 }
-                else if ("battle".equals(ship.getHigherLevel()))
-                {
-                    battle++;
-                }
+
+                // Only known way to fix duplicate ship bug
+                sector.resetDuplicateShips();
             }
         }
 
-        return total + " (" + mining + " Mining, " + battle + " Battle)";
-    }
-
-    public Faction[] getFactions()
-    {return factions;}
-
-    /**
-     * Returns a random faction from the list of factions.
-     *
-     * @return a randomly selected faction from the list of all factions
-     */
-    public final Faction getRandomFaction()
-    {return factions[rng.nextInt(factions.length)];}
-
-    /**
-     * Returns a random faction that is not the specified one.
-     *
-     * @param f the faction to exclude from the list of selections
-     * @return a random faction from the list of all factions as long as it is not the one provided
-     */
-    public final Faction getRandomFaction(Faction f)
-    {
-        Faction randomFaction;
-        do
+        // Update relationships if there are more than two factions
+        if (turn >= (RELATION_UPDATE_FREQ / factions.length) && factions.length > 2 &&
+            turn % (RELATION_UPDATE_FREQ / factions.length) == 0)
         {
-            randomFaction = getRandomFaction();
-        } while (randomFaction == f);
-        return randomFaction;
+            int tries = 0;
+            do
+            {
+                tries++;
+                if (tries > MAX_RELATIONSHIP_UPDATE_TRIES)
+                {
+                    break;
+                }
+            } while (!getRandomRelationship().updateRelationship());
+        }
+
+        // Update faction leaders periodically, or immediately if destroyed
+        // Also update faction leaders immediately before gameplay starts
+        if (turn > 0)
+        {
+            updateFactionLeaders();
+        }
+        else if (turn == -1)
+        {
+            updateFactionLeaders();
+        }
+
+        turn++;
     }
 
     /**
-     * Returns a random relationship between two factions.
+     * Holds scheduled elections for factions based on when their last election occurred, as well as for factions with
+     * destroyed leaders.
      *
-     * @return a random relationship between two randomly-chosen factions
+     * @see #updateDestroyedFactionLeaders() #updateDestroyedFactionLeaders()
      */
-    public final Relationship getRandomRelationship()
+    public void updateFactionLeaders()
     {
-        Faction faction1 = getRandomFaction();
-        Faction faction2 = getRandomFaction(faction1);
-        return faction1.getRelationshipObject(faction2);
+        for (Faction faction : factions)
+        {
+            if (turn - faction.getLastElection() == ELECTION_FREQ)
+            {
+                faction.holdElection();
+            }
+        }
+
+        updateDestroyedFactionLeaders();
     }
 
-    public Ore[] getOreTypes()
-    {return oreTypes;}
-
-    public Ore getRandomOre()
-    {return oreTypes[rng.nextInt(oreTypes.length)];}
+    /**
+     * Elects a new leader of each faction if their previous leader was destroyed.
+     */
+    public void updateDestroyedFactionLeaders()
+    {
+        for (Faction faction : factions)
+        {
+            if (faction.getLeader() == null || faction.getLeader().isDestroyed())
+            {
+                faction.holdElection();
+            }
+        }
+    }
 
     /**
      * Initializes all the sectors in the galaxy.
@@ -698,31 +684,6 @@ public class Galaxy
             }
         }
     }
-
-    /**
-     * Returns true if the given designation is in use.
-     *
-     * @param designation the designation to check
-     * @return true if there is already a sector using the given designation
-     */
-    public boolean isUsed(String designation)
-    {return designations.contains(designation);}
-
-    /**
-     * Adds the given designation to the list of designations.
-     *
-     * @param designation the designation to add to the list
-     */
-    public void addDesignation(String designation)
-    {designations.add(designation);}
-
-    /**
-     * Removes the given designation from the list of designations.
-     *
-     * @param designation the designation to remove from the list
-     */
-    public void removeDesignation(String designation)
-    {designations.remove(designation);}
 
     /**
      * Creates the factions using constant names, and then generates the relationships among them.
@@ -785,12 +746,18 @@ public class Galaxy
         }
     }
 
+    /**
+     * Generates the types of ore in the galaxy.
+     *
+     * @return the array of ore types
+     */
     private Ore[] generateOreTypes()
     {
         Ore[] ores = new Ore[Math.min(MIN_ORE + rng.nextInt(ORE_RANGE), Ore.DENSITY)];
 
         NameGenerator oreNames = new NameGenerator(ORE, rng);
 
+        int totalDensity = 0;
         for (int i = 0; i < ores.length; i++)
         {
             String name;
@@ -822,20 +789,12 @@ public class Galaxy
                     }
                 }
             } while (density == 0);
+            totalDensity += density;
+            if (i == ores.length - 1 && totalDensity < Ore.DENSITY)
+            {
+                density = Math.min(Ore.DENSITY, density + Ore.DENSITY - totalDensity);
+            }
             ores[i] = new Ore(name, density);
-        }
-
-        int totalDensity = 0;
-        for (Ore ore : ores)
-        {
-            totalDensity += ore.getDensity();
-        }
-
-        // If there are not enough ores with high enough density, set one higher
-        // to compensate
-        if (totalDensity < Ore.DENSITY)
-        {
-            ores[0].setDensity(ores[0].getDensity() + (Ore.DENSITY - totalDensity));
         }
 
         Arrays.sort(ores, Collections.reverseOrder());

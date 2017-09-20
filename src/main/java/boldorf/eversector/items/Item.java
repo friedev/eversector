@@ -12,12 +12,29 @@ import static boldorf.eversector.Main.rng;
 
 /**
  * An item with a name and price for both ships and stations.
+ *
+ * @author Boldorf Smokebane
  */
-public class Item
+public abstract class Item
 {
-    private String name;
-    private String description;
-    private int value;
+    /**
+     * The name of the item.
+     */
+    private final String name;
+
+    /**
+     * The description of the item.
+     */
+    private final String description;
+
+    /**
+     * The objective value of the item in credits.
+     */
+    private final int value;
+
+    /**
+     * The local price of the item in credits. To be updated on a per-station basis.
+     */
     private int price;
 
     /**
@@ -56,28 +73,67 @@ public class Item
 
     @Override
     public String toString()
-    {return name;}
+    {
+        return name;
+    }
 
+    /**
+     * Gets the name of the item.
+     *
+     * @return the item's name
+     */
     public String getName()
-    {return name;}
+    {
+        return name;
+    }
 
+    /**
+     * Gets the description of the item.
+     *
+     * @return the item's description
+     */
     public String getDescription()
-    {return description;}
+    {
+        return description;
+    }
 
+    /**
+     * Gets the value of the item in credits.
+     *
+     * @return the item's value in credits
+     */
     public int getValue()
-    {return value;}
+    {
+        return value;
+    }
 
+    /**
+     * Gets the local price of the item in credits.
+     *
+     * @return the item's local price
+     */
     public int getPrice()
-    {return price;}
+    {
+        return price;
+    }
 
+    /**
+     * Sets the local price of the item.
+     *
+     * @param price the new local price of the item
+     */
     public void setPrice(int price)
-    {this.price = price;}
+    {
+        this.price = price;
+    }
 
     /**
      * Resets the price back to the value of the item.
      */
     public void resetPrice()
-    {price = value;}
+    {
+        price = value;
+    }
 
     /**
      * Creates a definition for the item, including name, value, and description.
@@ -88,7 +144,8 @@ public class Item
     {
         List<ColorString> definition = new LinkedList<>();
         definition.add(new ColorString(name, COLOR_FIELD));
-        definition.add(new ColorString("Value: ").add(new ColorString(value + "" + Symbol.CREDITS, COLOR_FIELD)));
+        definition.add(
+                new ColorString("Value: ").add(new ColorString(Integer.toString(value) + Symbol.CREDITS, COLOR_FIELD)));
         definition.add(new ColorString("Description: ").add(new ColorString(description, COLOR_FIELD)));
         return definition;
     }

@@ -5,6 +5,8 @@ import boldorf.apwt.glyphs.ColorStringObject;
 import boldorf.eversector.Main;
 import boldorf.eversector.faction.Relationship.RelationshipType;
 import boldorf.eversector.map.Galaxy;
+import boldorf.eversector.map.Sector;
+import boldorf.eversector.map.Station;
 import boldorf.eversector.ships.Ship;
 
 import java.awt.*;
@@ -14,26 +16,85 @@ import static boldorf.eversector.Main.rng;
 import static boldorf.eversector.faction.Relationship.RelationshipType.*;
 
 /**
- * A group of ships with a name and relationships with other factions.
+ * A named group that owns ships and territory and has relationships with other factions.
+ *
+ * @author Boldorf Smokebane
  */
 public class Faction implements ColorStringObject
 {
     /**
      * All the possible "types" of factions that can be generated.
      */
-    public static String[] TYPES =
-            new String[]{"Alliance", "Assembly", "Association", "Coalition", "Collective", "Commonwealth",
-                         "Conglomerate", "Conspiracy", "Corporation", "Council", "Empire", "Federation", "Group",
-                         "Guild", "Hivemind", "League", "Network", "Order", "Organization", "Republic", "Union"};
+    public static final String[] TYPES = new String[]{
+            "Alliance",
+            "Assembly",
+            "Association",
+            "Coalition",
+            "Collective",
+            "Commonwealth",
+            "Conglomerate",
+            "Conspiracy",
+            "Corporation",
+            "Council",
+            "Empire",
+            "Federation",
+            "Group",
+            "Guild",
+            "Hivemind",
+            "League",
+            "Network",
+            "Order",
+            "Organization",
+            "Republic",
+            "Union"
+    };
 
-    private String name;
-    private Color color;
-    private String type;
-    private Galaxy galaxy;
-    private Relationship[] relationships;
+    /**
+     * The name of the faction.
+     */
+    private final String name;
+
+    /**
+     * The color that represents the faction.
+     */
+    private final Color color;
+
+    /**
+     * The type of the faction.
+     *
+     * @see #TYPES
+     */
+    private final String type;
+
+    /**
+     * The galaxy the faction is in.
+     */
+    private final Galaxy galaxy;
+
+    /**
+     * All relationships this faction has with others.
+     */
+    private final Relationship[] relationships;
+
+    /**
+     * The ship acting as the faction's leader.
+     */
     private Ship leader;
+
+    /**
+     * The number of credits in the faction's economy.
+     */
     private int economy;
+
+    /**
+     * The turn on which the last election occurred.
+     */
     private int lastElection;
+
+    /**
+     * The average reputation of all ships with the faction.
+     */
+    private int averageReputation;
 
     /**
      * Generates a faction of the given name, type, and on the given map.
@@ -63,52 +124,116 @@ public class Faction implements ColorStringObject
      * @param color  the faction's color
      */
     public Faction(String name, Galaxy galaxy, Color color)
-    {this(name, rng.getRandomElement(TYPES), galaxy, color);}
+    {
+        this(name, rng.getRandomElement(TYPES), galaxy, color);
+    }
 
     @Override
     public String toString()
-    {return name + " " + type;}
+    {
+        return name + " " + type;
+    }
 
     @Override
     public ColorString toColorString()
-    {return new ColorString(toString(), color);}
+    {
+        return new ColorString(toString(), color);
+    }
 
-    public String getName() {return name; }
+    /**
+     * Gets the name of the faction.
+     *
+     * @return the faction's name
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-    public Color getColor() {return color; }
+    /**
+     * Gets the color of the faction.
+     *
+     * @return the faction's color
+     */
+    public Color getColor()
+    {
+        return color;
+    }
 
-    public String getType() {return type; }
+    /**
+     * Gets the type of the faction.
+     *
+     * @return the faction's type
+     */
+    public String getType()
+    {
+        return type;
+    }
 
-    public Galaxy getGalaxy() {return galaxy; }
+    /**
+     * Gets the galaxy the faction is in.
+     *
+     * @return the faction's galaxy
+     */
+    public Galaxy getGalaxy()
+    {
+        return galaxy;
+    }
 
-    public Ship getLeader() {return leader; }
+    /**
+     * Gets the leader of the faction.
+     *
+     * @return the faction's leader
+     */
+    public Ship getLeader()
+    {
+        return leader;
+    }
 
-    public int getEconomyCredits() {return economy; }
+    /**
+     * Gets the number of credits in the faction's economy.
+     *
+     * @return the faction's economy credits
+     */
+    public int getEconomyCredits()
+    {
+        return economy;
+    }
 
-    public boolean isLeader(Ship ship) {return leader == ship;}
+    /**
+     * Gets the turn on which the last election took place.
+     *
+     * @return the turn of the faction's last election
+     */
+    public int getLastElection()
+    {
+        return lastElection;
+    }
 
-    public int getLastElection() {return lastElection; }
-
+    /**
+     * Sets the leader of the faction.
+     *
+     * @param leader the new leader of the faction
+     */
     public void setLeader(Ship leader)
     {
         lastElection = galaxy.getTurn();
-        
-        /*
-        if (this.leader == leader)
-            addNews(leader + " has been reelected.");
-        else if (this.leader == null)
-            addNews(leader + " has been elected as leader.");
-        else
-            addNews(leader + " has been elected as leader, succeeding "
-                    + this.leader + ".");
-        */
-
         this.leader = leader;
     }
 
+    /**
+     * Holds an election for the leader of the faction.
+     */
     public void holdElection()
-    {holdElection(leader != null && leader.isDestroyed());}
+    {
+        holdElection(leader != null && leader.isDestroyed());
+    }
 
+    /**
+     * Holds an election for the leader of the faction.
+     *
+     * @param emergency true if the election is an emergency
+     */
     public void holdElection(boolean emergency)
     {
         Election election = new Election(this, emergency);
@@ -120,6 +245,12 @@ public class Faction implements ColorStringObject
         setLeader(election.electLeader());
     }
 
+    /**
+     * Changes the number of credits in the faction's economy.
+     *
+     * @param credits the number of credits to add to the economy
+     * @return true if the credit change occurs
+     */
     public boolean changeEconomy(int credits)
     {
         if (economy + credits >= 0)
@@ -131,56 +262,220 @@ public class Faction implements ColorStringObject
         return false;
     }
 
-    public int getSectorsControlled()
-    {return galaxy.getSectorsControlledBy(this);}
-
-    public int getPlanetsControlled()
-    {return galaxy.getPlanetsControlledBy(this);}
-
-    public int getNStationsControlled()
-    {return galaxy.getNStationsControlledBy(this);}
-
-    public String getStationTypes()
-    {return galaxy.getStationTypesControlledBy(this);}
-
-    public int getNShips()
-    {return galaxy.getNShipsIn(this);}
-
-    public String getShipTypes()
-    {return galaxy.getShipTypesIn(this);}
-
     /**
-     * Returns the rank of this faction among any others.
+     * Returns the rank of the faction by sectors controlled.
      *
-     * @return the amount returned by galaxy.getRank()
+     * @return the faction's rank among other factions based on the number of sectors controlled by each
      */
     public int getRank()
-    {return galaxy.getRank(this);}
+    {
+        int rank = 1;
 
+        for (Faction otherFaction : galaxy.getFactions())
+        {
+            if (otherFaction != this && getSectorsControlled() < otherFaction.getSectorsControlled())
+            {
+                rank++;
+            }
+        }
+
+        return rank;
+    }
+
+    /**
+     * Returns the number of sectors controlled by the faction.
+     *
+     * @return the number of sectors in which the given faction is the dominant one
+     */
+    public int getSectorsControlled()
+    {
+        int sectorsClaimed = 0;
+
+        for (Sector[] row : galaxy.getSectors())
+        {
+            for (Sector sector : row)
+            {
+                if (sector.getFaction() == this)
+                {
+                    sectorsClaimed++;
+                }
+            }
+        }
+
+        return sectorsClaimed;
+    }
+
+    /**
+     * Gets the number of planets controlled by the faction.
+     *
+     * @return the number of planets controlled by the faction
+     */
+    public int getPlanetsControlled()
+    {
+        int planetsClaimed = 0;
+
+        for (Sector[] row : galaxy.getSectors())
+        {
+            for (Sector sector : row)
+            {
+                planetsClaimed += sector.getPlanetsControlledBy(this);
+            }
+        }
+
+        return planetsClaimed;
+    }
+
+    /**
+     * Gets the number of stations controlled by the faction.
+     *
+     * @return the number of stations controlled by the faction
+     */
+    public int getStationsControlled()
+    {
+        int stationsClaimed = 0;
+
+        for (Sector[] row : galaxy.getSectors())
+        {
+            for (Sector sector : row)
+            {
+                stationsClaimed += sector.getStationsControlledBy(this);
+            }
+        }
+
+        return stationsClaimed;
+    }
+
+    /**
+     * Gets a String representation of the types of stations controlled by the faction.
+     *
+     * @return the station types of the faction as a String
+     */
+    public String getStationTypes()
+    {
+        int trade = 0;
+        int battle = 0;
+
+        for (Sector[] row : galaxy.getSectors())
+        {
+            for (Sector sector : row)
+            {
+                trade += sector.getStationTypesControlledBy(this, Station.TRADE);
+                battle += sector.getStationTypesControlledBy(this, Station.BATTLE);
+            }
+        }
+
+        return (trade + battle) + " (" + trade + " Trade, " + battle + " Battle)";
+    }
+
+    /**
+     * Gets the number of ships in the faction.
+     *
+     * @return the number of ships in the faction
+     */
+    public int getShips()
+    {
+        int nShips = 0;
+
+        for (Ship ship : galaxy.getShips())
+        {
+            if (ship.getFaction() == this)
+            {
+                nShips++;
+            }
+        }
+
+        return nShips;
+    }
+
+    /**
+     * Gets a String representation of the types of ships controlled by the faction.
+     *
+     * @return the ship types of the faction as a String
+     */
+    public String getShipTypes()
+    {
+        int total = 0;
+        int mining = 0;
+        int battle = 0;
+
+        for (Ship ship : galaxy.getShips())
+        {
+            if (ship.getFaction() == this)
+            {
+                total++;
+
+                if ("mining".equals(ship.getHigherLevel()))
+                {
+                    mining++;
+                }
+                else if ("battle".equals(ship.getHigherLevel()))
+                {
+                    battle++;
+                }
+            }
+        }
+
+        return total + " (" + mining + " Mining, " + battle + " Battle)";
+    }
+
+    /**
+     * Gets the highest reputation with the faction of any ship.
+     *
+     * @return the highest reputation with the faction of any ship
+     */
     public int getMaxReputation()
     {
         int maxReputation = Integer.MIN_VALUE;
         for (Ship ship : galaxy.getShips())
         {
-            if (ship.getFaction() == this)
-            {
-                maxReputation = Math.max(maxReputation, ship.getReputation(this).get());
-            }
+            maxReputation = Math.max(maxReputation, ship.getReputation(this).get());
         }
         return maxReputation;
     }
 
+    /**
+     * Gets the lowest reputation with the faction of any ship.
+     *
+     * @return the lowest reputation with the faction of any ship
+     */
     public int getMinReputation()
     {
         int minReputation = Integer.MAX_VALUE;
         for (Ship ship : galaxy.getShips())
         {
-            if (ship.getFaction() == this)
-            {
-                minReputation = Math.min(minReputation, ship.getReputation(this).get());
-            }
+            minReputation = Math.min(minReputation, ship.getReputation(this).get());
         }
         return minReputation;
+    }
+
+    /**
+     * Returns the cached average reputation of all ships with the faction.
+     *
+     * @return the average reputation of all ships with the faction
+     * @see #cacheAverageReputation()
+     */
+    public int getAverageReputation()
+    {
+        return averageReputation;
+    }
+
+    /**
+     * Caches the average reputation of all ships with the faction.
+     */
+    public void cacheAverageReputation()
+    {
+        int totalReputation = 0;
+        int shipsWithReputation = 0;
+        for (Ship ship : galaxy.getShips())
+        {
+            int reputation = ship.getReputation(this).get();
+            if (reputation != 0)
+            {
+                totalReputation += reputation;
+                shipsWithReputation++;
+            }
+        }
+        averageReputation = totalReputation / Math.max(1, shipsWithReputation);
     }
 
     /**
@@ -221,7 +516,9 @@ public class Faction implements ColorStringObject
      * @return all of this faction's relationships
      */
     public Relationship[] getRelationships()
-    {return relationships;}
+    {
+        return relationships;
+    }
 
     /**
      * Returns true if the relationship with the specified faction is equal to the specified String.
@@ -231,7 +528,9 @@ public class Faction implements ColorStringObject
      * @return true if the supposed relationship and the actual relationship match
      */
     public boolean isRelationship(RelationshipType relationship, Faction faction)
-    {return getRelationship(faction) == relationship;}
+    {
+        return getRelationship(faction) == relationship;
+    }
 
     /**
      * Adds a relationship to the list of relationships, and thus a faction.
@@ -353,9 +652,21 @@ public class Faction implements ColorStringObject
         }
     }
 
+    /**
+     * Adds a String to the display as news.
+     *
+     * @param news the news to add
+     */
     public void addNews(String news)
-    {addNews(new ColorString(news));}
+    {
+        addNews(new ColorString(news));
+    }
 
+    /**
+     * Adds a ColorString to the display as news.
+     *
+     * @param news the news to add
+     */
     public void addNews(ColorString news)
     {
         if (galaxy.getPlayer() != null && galaxy.getPlayer().getFaction() == this)
