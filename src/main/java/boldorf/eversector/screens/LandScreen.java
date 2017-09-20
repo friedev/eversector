@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
@@ -23,18 +22,30 @@ import static boldorf.eversector.Main.*;
 import static boldorf.eversector.Paths.ENGINE;
 
 /**
+ * The screen for selecting a landing destination.
  *
+ * @author Boldorf Smokebane
  */
 public class LandScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
+
+    /**
+     * The currently selected region.
+     */
     private PlanetLocation selection;
 
-    public LandScreen(Display display)
+    /**
+     * Instantiates a new LandScreen.
+     */
+    public LandScreen()
     {
-        super(display);
+        super(Main.display);
         Planet planet = player.getSectorLocation().getPlanet();
-        window = new PopupWindow(display, new Border(1), new Line(true, 1, 1));
+        window = new PopupWindow(Main.display, new Border(1), new Line(true, 1, 1));
         window.getContents().addAll(planet.toColorStrings(Main.showFactions));
         selection = new PlanetLocation(player.getSectorLocation(), Coord.get(0, 0));
     }
@@ -56,14 +67,19 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
             return this;
         }
 
-        if (key.getKeyCode() == KeyEvent.VK_V) { Main.showFactions = !Main.showFactions; }
+        if (key.getKeyCode() == KeyEvent.VK_V)
+        {
+            Main.showFactions = !Main.showFactions;
+        }
 
         return super.processInput(key);
     }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     @Override
     public Screen onConfirm()
@@ -72,12 +88,15 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
         {
             playSoundEffect(ENGINE);
             player.getLocation().getGalaxy().nextTurn();
-            return new PlanetScreen(getDisplay());
+            return new PlanetScreen();
         }
 
         return null;
     }
 
+    /**
+     * Sets up the window and its contents.
+     */
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();
@@ -92,6 +111,9 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
         window.addSeparator();
         Region region = selection.getRegion();
         contents.add(new ColorString(region.toString()));
-        if (region.isClaimed()) { contents.add(new ColorString("Ruler: ").add(region.getFaction())); }
+        if (region.isClaimed())
+        {
+            contents.add(new ColorString("Ruler: ").add(region.getFaction()));
+        }
     }
 }

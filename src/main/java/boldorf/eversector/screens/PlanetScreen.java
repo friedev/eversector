@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.KeyScreen;
@@ -27,17 +26,29 @@ import static boldorf.eversector.Main.*;
 import static boldorf.eversector.Paths.*;
 
 /**
+ * The screen for interacting with planets and navigating their regions.
  *
+ * @author Boldorf Smokebane
  */
 public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>, KeyScreen
 {
+    /**
+     * The window.
+     */
     private AlignedWindow window;
+
+    /**
+     * The region currently selected. Null if not looking.
+     */
     private PlanetLocation cursor;
 
-    public PlanetScreen(Display display)
+    /**
+     * Instantiates a new PlanetScreen.
+     */
+    public PlanetScreen()
     {
-        super(display);
-        window = new AlignedWindow(display, Coord.get(1, 1), new Border(2));
+        super(Main.display);
+        window = new AlignedWindow(Main.display, Coord.get(1, 1), new Border(2));
     }
 
     @Override
@@ -82,7 +93,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
                     if (player.takeoff())
                     {
                         nextTurn = true;
-                        nextScreen = new SectorScreen(getDisplay());
+                        nextScreen = new SectorScreen();
                         playSoundEffect(ENGINE);
                     }
                     break;
@@ -109,7 +120,10 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
             }
         }
 
-        if (nextTurn) { galaxy.nextTurn(); }
+        if (nextTurn)
+        {
+            galaxy.nextTurn();
+        }
         return nextScreen;
     }
 
@@ -129,11 +143,23 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
 
     @Override
     public AlignedWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
+    /**
+     * Returns true if the player is using the cursor to look around.
+     *
+     * @return true if the player is using the cursor to look around
+     */
     private boolean isLooking()
-    {return cursor != null;}
+    {
+        return cursor != null;
+    }
 
+    /**
+     * Sets up the window and its contents.
+     */
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();
@@ -166,9 +192,15 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
 
         window.addSeparator(new Line(false, 1, 2, 1));
         contents.add(new ColorString(region.toString()));
-        if (region.isClaimed()) { contents.add(new ColorString("Ruler: ").add(region.getFaction())); }
+        if (region.isClaimed())
+        {
+            contents.add(new ColorString("Ruler: ").add(region.getFaction()));
+        }
 
-        if (isLooking() && !cursor.equals(player.getLocation())) { return; }
+        if (isLooking() && !cursor.equals(player.getLocation()))
+        {
+            return;
+        }
 
         if (region.hasOre())
         {
@@ -178,6 +210,11 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
         }
 
         for (Ship ship : region.getShips())
-        { if (ship != player) { contents.add(ship.toColorString()); } }
+        {
+            if (ship != player)
+            {
+                contents.add(ship.toColorString());
+            }
+        }
     }
 }

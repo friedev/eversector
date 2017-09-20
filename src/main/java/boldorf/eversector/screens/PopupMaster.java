@@ -3,11 +3,23 @@ package boldorf.eversector.screens;
 import boldorf.apwt.screens.Screen;
 
 /**
+ * A screen that manages popup screens.
  *
+ * @author Boldorf Smokebane
  */
 public interface PopupMaster
 {
-    public Screen getPopup();
+    /**
+     * Gets the popup screen.
+     *
+     * @return the popup screen
+     */
+    Screen getPopup();
 
-    public boolean hasPopup();
+    /**
+     * Returns true if the screen is currently displaying a popup scren.
+     *
+     * @return true if the screen is currently displaying a popup scren
+     */
+    boolean hasPopup();
 }

@@ -1,10 +1,10 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 
 import java.util.List;
 
@@ -12,22 +12,30 @@ import static boldorf.eversector.Main.pendingElection;
 import static boldorf.eversector.Main.player;
 
 /**
+ * The screen presented to the player when they have been nominated for leader.
  *
+ * @author Boldorf Smokebane
  */
 public class PlayerCandidateScreen extends ConfirmationScreen
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public PlayerCandidateScreen(Display display)
+    /**
+     * Instantiates a new PlayerCandidateScreen.
+     */
+    public PlayerCandidateScreen()
     {
-        super(display);
-        window = new PopupWindow(display);
+        super(Main.display);
+        window = new PopupWindow(Main.display);
 
         List<ColorString> contents = window.getContents();
         contents.add(pendingElection.getDescription());
         if (pendingElection.isReelected(player))
         {
-            contents.add(new ColorString("You have performed well as leader " + "and have been nominated again."));
+            contents.add(new ColorString("You have performed well as leader and have been nominated again."));
             contents.add(new ColorString("Run for reelection?"));
         }
         else
@@ -39,17 +47,21 @@ public class PlayerCandidateScreen extends ConfirmationScreen
 
     @Override
     public void displayOutput()
-    {window.display();}
+    {
+        window.display();
+    }
 
     @Override
     public Screen onConfirm()
     {
         pendingElection.addPlayer();
         pendingElection.gatherVotes();
-        return new ElectionResultsScreen(getDisplay());
+        return new ElectionResultsScreen();
     }
 
     @Override
     public Screen onCancel()
-    {return new VotingScreen(getDisplay());}
+    {
+        return new VotingScreen();
+    }
 }

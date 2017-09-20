@@ -1,11 +1,11 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.MenuScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import boldorf.eversector.Option;
 import boldorf.eversector.Tileset;
 import boldorf.util.FileManager;
@@ -17,13 +17,18 @@ import java.util.List;
 import static boldorf.eversector.Main.*;
 
 /**
+ * The screen for viewing and changing game options.
  *
+ * @author Boldorf Smokebane
  */
 public class OptionsScreen extends MenuScreen<PopupMenu>
 {
-    public OptionsScreen(Display display)
+    /**
+     * Instantiates a new OptionsScreen.
+     */
+    public OptionsScreen()
     {
-        super(new PopupMenu(new PopupWindow(display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+        super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         updateWindow();
     }
 
@@ -59,13 +64,22 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                         break;
                 }
 
-                if (key.getKeyCode() == KeyEvent.VK_LEFT) { value = Math.max(lowerBound, value - 1); }
-                else { value = Math.min(upperBound, value + 1); }
+                if (key.getKeyCode() == KeyEvent.VK_LEFT)
+                {
+                    value = Math.max(lowerBound, value - 1);
+                }
+                else
+                {
+                    value = Math.min(upperBound, value + 1);
+                }
 
                 option.setProperty(value.toString());
                 updateWindow();
 
-                if (soundtrack != null && Option.MUSIC.equals(option)) { FileManager.setVolume(soundtrack, value); }
+                if (soundtrack != null && Option.MUSIC.equals(option))
+                {
+                    FileManager.setVolume(soundtrack, value);
+                }
 
                 return this;
             }
@@ -88,9 +102,19 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
         return this;
     }
 
+    /**
+     * Returns the currently selected option.
+     *
+     * @return the currently selected option
+     */
     private Option getSelectedOption()
-    {return Option.getOption(getMenu().getSelection().toString().split(":")[0]);}
+    {
+        return Option.getOption(getMenu().getSelection().toString().split(":")[0]);
+    }
 
+    /**
+     * Updates the window.
+     */
     private void updateWindow()
     {
         List<ColorString> contents = getMenu().getWindow().getContents();
@@ -102,7 +126,10 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
         {
             Option option = Option.values()[i];
 
-            if (!option.isVisible()) { continue; }
+            if (!option.isVisible())
+            {
+                continue;
+            }
 
             String property = option.getProperty();
             if (option == Option.FONT)

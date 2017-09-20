@@ -1,11 +1,11 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import boldorf.eversector.ships.Reputation;
 import boldorf.eversector.ships.Ship;
 
@@ -13,17 +13,32 @@ import static boldorf.eversector.Main.kills;
 import static boldorf.eversector.Main.player;
 
 /**
+ * The screen displayed after winning a battle. <b>Currently unused.</b>
  *
+ * @author Boldorf Smokebane
  */
 public class BattleWinScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
+
+    /**
+     * The ship to loot.
+     */
     private Ship looting;
 
-    public BattleWinScreen(Display display, Ship looting, ColorString message)
+    /**
+     * Instantiates a new BattleWinCcreen.
+     *
+     * @param looting the ship to loot
+     * @param message the message describing how the battle was won
+     */
+    public BattleWinScreen(Ship looting, ColorString message)
     {
-        super(display);
-        window = new PopupWindow(display);
+        super(Main.display);
+        window = new PopupWindow(Main.display);
         window.getContents().add(message);
         window.getContents().add(new ColorString("Loot them?"));
         this.looting = looting;
@@ -31,11 +46,15 @@ public class BattleWinScreen extends ConfirmationScreen implements WindowScreen<
 
     @Override
     public void displayOutput()
-    {window.display();}
+    {
+        window.display();
+    }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     @Override
     public Screen onConfirm()
@@ -51,13 +70,13 @@ public class BattleWinScreen extends ConfirmationScreen implements WindowScreen<
         {
             if (player.getFaction() == looting.getFaction())
             {
-                looting.getFaction().addNews(player + " has destroyed our " + "leader, " + looting.toString() + ".");
+                looting.getFaction().addNews(player + " has destroyed our leader, " + looting.toString() + ".");
             }
             else
             {
                 looting.getFaction().addNews(
-                        player + " of the " + player.getFaction() + " has destroyed our " + "leader, " +
-                        looting.toString() + ".");
+                        player + " of the " + player.getFaction() + " has destroyed our leader, " + looting.toString() +
+                        ".");
             }
         }
 
@@ -67,6 +86,6 @@ public class BattleWinScreen extends ConfirmationScreen implements WindowScreen<
 
         looting.destroy(false);
         kills++;
-        return new SectorScreen(getDisplay());
+        return new SectorScreen();
     }
 }

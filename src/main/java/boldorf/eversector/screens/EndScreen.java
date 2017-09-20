@@ -1,7 +1,6 @@
 package boldorf.eversector.screens;
 
 import asciiPanel.AsciiPanel;
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
@@ -9,10 +8,10 @@ import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import boldorf.eversector.ships.Reputation.ReputationRange;
-import boldorf.eversector.ships.Ship;
 import boldorf.eversector.Option;
 import boldorf.eversector.Paths;
+import boldorf.eversector.ships.Reputation.ReputationRange;
+import boldorf.eversector.ships.Ship;
 import boldorf.util.FileManager;
 import boldorf.util.Utility;
 
@@ -28,25 +27,47 @@ import static boldorf.eversector.screens.LeaderboardScore.DISPLAYED_SCORES;
 import static boldorf.eversector.screens.StartScreen.getTitleArt;
 
 /**
+ * The screen displayed at the end of the game.
  *
+ * @author Boldorf Smokebane
  */
 public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 {
     /**
      * The minimum number of turns that must pass before a score is logged.
      */
-    public static final int MIN_TURNS = 10;
+    private static final int MIN_TURNS = 10;
 
+    /**
+     * The color of the current score.
+     */
     public static final Color COLOR_SCORE = AsciiPanel.brightWhite;
+
+    /**
+     * The color of the leaderboard header.
+     */
     public static final Color COLOR_HEADER = AsciiPanel.brightYellow;
 
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public EndScreen(Display display, ColorString message, boolean leaderboard, boolean saved)
+    /**
+     * Instantiates a new EndScreen.
+     *
+     * @param message     the message to display as the reason for the game ending
+     * @param leaderboard if true, will show the leaderboard
+     * @param saved       true if the game was saved; will influence what files are saved
+     */
+    public EndScreen(ColorString message, boolean leaderboard, boolean saved)
     {
-        super(display);
-        window = new PopupWindow(display, new Border(2), new Line(true, 2, 1));
-        if (leaderboard && Option.LEADERBOARD.toBoolean()) { setUpLeaderboard(); }
+        super(Main.display);
+        window = new PopupWindow(Main.display, new Border(2), new Line(true, 2, 1));
+        if (leaderboard && Option.LEADERBOARD.toBoolean())
+        {
+            setUpLeaderboard();
+        }
         setUpWindow(message);
 
         if (saved)
@@ -59,7 +80,9 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             {
                 FileManager.save(save, Paths.SAVE);
             }
-            catch (IOException io) {}
+            catch (IOException io)
+            {
+            }
         }
         else
         {
@@ -68,8 +91,16 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         }
     }
 
-    public EndScreen(Display display, boolean leaderboard, boolean saved)
-    {this(display, null, leaderboard, saved);}
+    /**
+     * Instantiates a new EndScreen with no message.
+     *
+     * @param leaderboard if true, will show the leaderboard
+     * @param saved       true if the game was saved; will influence what files are saved
+     */
+    public EndScreen(boolean leaderboard, boolean saved)
+    {
+        this(null, leaderboard, saved);
+    }
 
     @Override
     public void displayOutput()
@@ -87,7 +118,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
         {
             try
             {
-                return new StartScreen(getDisplay(), startGame());
+                return new StartScreen(startGame());
             }
             catch (Exception e)
             {
@@ -98,20 +129,28 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             return null;
         }
 
-        if (key.getKeyCode() == KeyEvent.VK_Q && key.isShiftDown()) { System.exit(0); }
+        if (key.getKeyCode() == KeyEvent.VK_Q && key.isShiftDown())
+        {
+            System.exit(0);
+        }
 
         return this;
     }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     private void setUpWindow(ColorString message)
     {
         List<ColorString> contents = window.getContents();
 
-        if (message != null) { contents.add(message); }
+        if (message != null)
+        {
+            contents.add(message);
+        }
 
         int shipValue = player.calculateShipValue();
 
@@ -212,7 +251,9 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             {
                 FileManager.save(playerScore.toProperties(), Paths.LEADERBOARD + "score_" + nScores + ".properties");
             }
-            catch (IOException e) {}
+            catch (IOException e)
+            {
+            }
         }
 
         window.addSeparator();

@@ -179,7 +179,7 @@ public class Main
 
         display.setIconImage(FileManager.loadImage(Paths.ICON));
         display.setTitle("EverSector");
-        display.init(new StartScreen(display, startMessages));
+        display.init(new StartScreen(startMessages));
 
         try
         {

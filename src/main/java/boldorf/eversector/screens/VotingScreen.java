@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.MenuScreen;
 import boldorf.apwt.screens.Screen;
@@ -9,6 +8,7 @@ import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 
@@ -17,21 +17,28 @@ import java.util.List;
 import static boldorf.eversector.Main.*;
 
 /**
+ * The screen used to vote on faction leaders.
  *
+ * @author Boldorf Smokebane
  */
 public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
 {
-    public VotingScreen(Display display)
+    /**
+     * Instantiates a new VotingScreen.
+     */
+    public VotingScreen()
     {
-        super(new PopupMenu(new PopupWindow(display, new Border(1), new Line(true, 1, 1)), COLOR_SELECTION_FOREGROUND,
-                COLOR_SELECTION_BACKGROUND));
+        super(new PopupMenu(new PopupWindow(Main.display, new Border(1), new Line(true, 1, 1)),
+                COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         pendingElection.gatherVotes();
         setUpMenu();
     }
 
     @Override
     public PopupWindow getWindow()
-    {return (PopupWindow) getMenu().getWindow();}
+    {
+        return (PopupWindow) getMenu().getWindow();
+    }
 
     @Override
     public Screen onConfirm()
@@ -43,7 +50,9 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
 
     @Override
     public Screen onCancel()
-    {return new ElectionResultsScreen(getDisplay());}
+    {
+        return new ElectionResultsScreen();
+    }
 
     private void setUpMenu()
     {

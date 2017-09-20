@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
@@ -9,6 +8,7 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
 import boldorf.eversector.faction.Relationship.RelationshipType;
@@ -19,16 +19,28 @@ import java.util.List;
 import static boldorf.eversector.Main.*;
 
 /**
+ * The menu for requesting relationships with other factions as a leader.
  *
+ * @author Boldorf Smokebane
  */
 public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
 {
+    /**
+     * The factions the player can request a relationship with.
+     */
     private List<Faction> factions;
+
+    /**
+     * The relationship changes the player can request.
+     */
     private List<RelationshipType> changes;
 
-    public RelationshipRequestScreen(Display display)
+    /**
+     * Instantiates a new RelationshipRequestScreen.
+     */
+    public RelationshipRequestScreen()
     {
-        super(new PopupMenu(new PopupWindow(display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+        super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         factions = new ArrayList<>();
         changes = new ArrayList<>();
         setUpMenu();
@@ -36,7 +48,9 @@ public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements 
 
     @Override
     public PopupWindow getWindow()
-    {return (PopupWindow) getMenu().getWindow();}
+    {
+        return (PopupWindow) getMenu().getWindow();
+    }
 
     @Override
     public Screen onConfirm()
@@ -46,6 +60,9 @@ public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements 
         return null;
     }
 
+    /**
+     * Sets up the menu and its contents.
+     */
     private void setUpMenu()
     {
         List<ColorString> contents = getWindow().getContents();

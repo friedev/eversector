@@ -1,33 +1,48 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
- * A popup Screen used for temporarily displaying ore values.
+ * A screen used for temporarily displaying the leaderboard.
+ *
+ * @author Boldorf Smokebane
  */
 public class LeaderboardScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public LeaderboardScreen(Display display, List<ColorString> leaderboard)
+    /**
+     * Instantiates a new LeaderboardScreen.
+     *
+     * @param leaderboard the leaderboard
+     * @see LeaderboardScore#buildLeaderboard()
+     */
+    public LeaderboardScreen(List<ColorString> leaderboard)
     {
-        super(display);
+        super(Main.display);
         getConfirmCodes().add(KeyEvent.VK_B);
-        window = new PopupWindow(display, leaderboard);
+        window = new PopupWindow(Main.display, leaderboard);
     }
 
     @Override
     public void displayOutput()
-    {window.display();}
+    {
+        window.display();
+    }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 }

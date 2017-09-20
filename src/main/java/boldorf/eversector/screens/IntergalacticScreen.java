@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
@@ -14,26 +13,38 @@ import static boldorf.eversector.Main.player;
 import static boldorf.eversector.Paths.START;
 
 /**
+ * The prompt to travel to a new galaxy.
  *
+ * @author Boldorf Smokebane
  */
 public class IntergalacticScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public IntergalacticScreen(Display display)
+    /**
+     * Instantiates a new IntergalacticScreen.
+     */
+    public IntergalacticScreen()
     {
-        super(display);
-        window = new PopupWindow(display);
+        super(Main.display);
+        window = new PopupWindow(Main.display);
         window.getContents().add(new ColorString("Travel to another galaxy?"));
     }
 
     @Override
     public void displayOutput()
-    {window.display();}
+    {
+        window.display();
+    }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     @Override
     public Screen onConfirm()

@@ -362,7 +362,7 @@ public class Region implements ColorStringObject
     }
 
     /**
-     * Extracts ore from the region. <b>Currently not in use.</b>
+     * Extracts ore from the region. <b>Currently unused.</b>
      *
      * @param extracted the amount of ore to extract
      * @return the amount of ore actually extracted

@@ -3228,7 +3228,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
                     moduleString.add(new ColorString(" (Active)", AsciiPanel.brightGreen));
                 }
                 contents.add(moduleString);
-
             }
             for (Module module : cargo)
             {

@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.KeyScreen;
@@ -23,18 +22,34 @@ import static boldorf.eversector.Main.*;
 import static boldorf.eversector.Paths.*;
 
 /**
- * The Screen used for navigating Sectors.
+ * The screen used for navigating the orbits of sectors.
+ *
+ * @author Boldorf Smokebane
  */
 class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
+    /**
+     * The window.
+     */
     private AlignedWindow window;
+
+    /**
+     * The screen temporarily displayed over and overriding all others.
+     */
     private Screen popup;
+
+    /**
+     * The orbit that is being looked at. 0 if not looking.
+     */
     private int cursor;
 
-    public SectorScreen(Display display)
+    /**
+     * Instantiates a new SectorScreen.
+     */
+    public SectorScreen()
     {
-        super(display);
-        window = new AlignedWindow(display, Coord.get(0, 0), new Border(2));
+        super(Main.display);
+        window = new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2));
         cursor = 0;
     }
 
@@ -74,7 +89,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
         }
 
         // This is necessary both here and below to avoid interruptions
-        if (pendingBattle != null) { return new BattleScreen(getDisplay(), pendingBattle, false); }
+        if (pendingBattle != null)
+        {
+            return new BattleScreen(pendingBattle, false);
+        }
 
         boolean nextTurn = false;
         Screen nextScreen = this;
@@ -84,10 +102,16 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_UP:
-                    if (player.getLocation().getSector().isValidOrbit(cursor - 1)) { cursor--; }
+                    if (player.getLocation().getSector().isValidOrbit(cursor - 1))
+                    {
+                        cursor--;
+                    }
                     break;
                 case KeyEvent.VK_DOWN:
-                    if (player.getLocation().getSector().isValidOrbit(cursor + 1)) { cursor++; }
+                    if (player.getLocation().getSector().isValidOrbit(cursor + 1))
+                    {
+                        cursor++;
+                    }
                     break;
                 case KeyEvent.VK_L:
                 case KeyEvent.VK_ENTER:
@@ -113,19 +137,22 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                 {
                     nextTurn = true;
                     playSoundEffect(ENGINE);
-                    if (!player.isInSector()) { nextScreen = new MapScreen(getDisplay()); }
+                    if (!player.isInSector())
+                    {
+                        nextScreen = new MapScreen();
+                    }
                 }
                 break;
             case KeyEvent.VK_LEFT:
                 Station station = player.getSectorLocation().getStation();
                 if (station != null && player.isHostile(station.getFaction()) && player.canClaim(station, false))
                 {
-                    popup = new ClaimStationScreen(getDisplay());
+                    popup = new ClaimStationScreen();
                 }
                 else if (player.dock())
                 {
                     nextTurn = true;
-                    nextScreen = new StationScreen(getDisplay());
+                    nextScreen = new StationScreen();
                     playSoundEffect(DOCK);
                 }
                 break;
@@ -137,24 +164,41 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                     break;
                 }
 
-                if (player.canLand()) { popup = new LandScreen(getDisplay()); }
-                else if (player.canCrashLand(false)) { popup = new CrashLandScreen(getDisplay()); }
+                if (!player.getSectorLocation().getPlanet().getType().canLandOn())
+                {
+                    break;
+                }
+
+                if (player.canLand())
+                {
+                    popup = new LandScreen();
+                }
+                else if (player.canCrashLand(false))
+                {
+                    popup = new CrashLandScreen();
+                }
                 break;
             case KeyEvent.VK_A:
             {
-                if (!player.hasWeapons()) { break; }
+                if (!player.hasWeapons())
+                {
+                    break;
+                }
 
                 Sector sector = player.getLocation().getSector();
                 int orbit = player.getSectorLocation().getOrbit();
-                if (sector.getShipsAt(orbit).size() <= 1) { break; }
+                if (sector.getShipsAt(orbit).size() <= 1)
+                {
+                    break;
+                }
 
                 if (sector.getShipsAt(orbit).size() == 2)
                 {
-                    return new BattleScreen(getDisplay(), player.startBattle(sector.getFirstOtherShip(player)), true);
+                    return new BattleScreen(player.startBattle(sector.getFirstOtherShip(player)), true);
                 }
                 else
                 {
-                    popup = new AttackScreen(getDisplay());
+                    popup = new AttackScreen();
                 }
                 break;
             }
@@ -163,9 +207,15 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                 break;
         }
 
-        if (nextTurn) { galaxy.nextTurn(); }
+        if (nextTurn)
+        {
+            galaxy.nextTurn();
+        }
 
-        if (pendingBattle != null) { return new BattleScreen(getDisplay(), pendingBattle, false); }
+        if (pendingBattle != null)
+        {
+            return new BattleScreen(pendingBattle, false);
+        }
 
         return nextScreen;
     }
@@ -180,7 +230,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
             keybindings.add(new Keybinding("land", ExtChars.ARROW1_R));
             keybindings.add(new Keybinding("dock", ExtChars.ARROW1_L));
 
-            if (player.hasWeapons()) { keybindings.add(new Keybinding("attack", "a")); }
+            if (player.hasWeapons())
+            {
+                keybindings.add(new Keybinding("attack", "a"));
+            }
         }
         keybindings.add(new Keybinding("look", "l"));
         return keybindings;
@@ -188,19 +241,35 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 
     @Override
     public AlignedWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     @Override
     public Screen getPopup()
-    {return popup;}
+    {
+        return popup;
+    }
 
     @Override
     public boolean hasPopup()
-    {return popup != null;}
+    {
+        return popup != null;
+    }
 
+    /**
+     * Returns true if the player is looking with the cursor.
+     *
+     * @return true if the player is looking with the cursor
+     */
     private boolean isLooking()
-    {return cursor != 0;}
+    {
+        return cursor != 0;
+    }
 
+    /**
+     * Sets up the window and its contents.
+     */
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();
@@ -211,7 +280,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
         contents.add(new ColorString(sector.toString()));
         contents.add(new ColorString("Star: ").add(sector.getStar()));
 
-        if (sector.hasNebula()) { contents.add(new ColorString("Nebula: ").add(sector.getNebula())); }
+        if (sector.hasNebula())
+        {
+            contents.add(new ColorString("Nebula: ").add(sector.getNebula()));
+        }
 
         contents.add(new ColorString("Ruler: ").add(
                 sector.isClaimed() ? sector.getFaction().toColorString() : new ColorString("Disputed", COLOR_FIELD)));
@@ -220,7 +292,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
         for (int orbit = 1; orbit <= sector.getOrbits(); orbit++)
         {
             ColorString orbitSymbol = sector.getSymbolsForOrbit(orbit);
-            if (cursor == orbit) { orbitSymbol.setBackground(COLOR_SELECTION_BACKGROUND); }
+            if (cursor == orbit)
+            {
+                orbitSymbol.setBackground(COLOR_SELECTION_BACKGROUND);
+            }
             contents.add(orbitSymbol);
         }
 

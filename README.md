@@ -10,7 +10,7 @@ Keep in mind that these builds probably won't be as stable as the main releases 
 
 ### Contributing ###
 
-Though EverSector does not rely on contributions, I will gladly accept reasonable pull requests. If you are interested in contributing, I would recommend joining the [Discord server](https://discord.gg/TZTEQTz) to discuss changes. Notable contributors will be credited in the game's README and receive a Contributor role on Discord.
+Though EverSector does not rely on contributions, I will gladly accept reasonable pull requests. EverSector's issues and planned features are listed on the [Trello board](https://trello.com/b/nOsMSRe3), which can also be viewed from the Boards tab. If you are interested in contributing, I would recommend joining the [Discord server](https://discord.gg/TZTEQTz) to discuss changes. Notable contributors will be credited in the game's README and receive a Contributor role on Discord.
 
 Make sure all contributions are documented with JavaDoc comments where possible. If you have IntelliJ IDEA, please download the EverSector.xml code style from Downloads and apply it to files you change (default is Ctrl+Alt+L).
 

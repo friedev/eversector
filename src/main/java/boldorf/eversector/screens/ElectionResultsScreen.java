@@ -1,12 +1,12 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 
@@ -16,27 +16,42 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 import static boldorf.eversector.Main.pendingElection;
 
 /**
+ * The screen displaying the results of an election.
  *
+ * @author Boldorf Smokebane
  */
 public class ElectionResultsScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public ElectionResultsScreen(Display display)
+    /**
+     * Instantiates a new ElectionResultsScreen.
+     */
+    public ElectionResultsScreen()
     {
-        super(display);
-        window = new PopupWindow(display, new Border(1), new Line(true, 1, 1));
+        super(Main.display);
+        window = new PopupWindow(Main.display, new Border(1), new Line(true, 1, 1));
         setUpWindow();
     }
 
     @Override
     public void displayOutput()
-    {window.display();}
+    {
+        window.display();
+    }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
+    /**
+     * Sets up the window and its contents.
+     */
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();

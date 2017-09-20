@@ -1,7 +1,6 @@
 package boldorf.eversector.screens;
 
 import asciiPanel.AsciiPanel;
-import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.*;
@@ -9,6 +8,7 @@ import boldorf.apwt.windows.AlignedMenu;
 import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
+import boldorf.eversector.Main;
 import boldorf.eversector.Symbol;
 import boldorf.eversector.items.BaseResource;
 import boldorf.eversector.items.Item;
@@ -29,19 +29,39 @@ import static boldorf.eversector.Main.*;
 import static boldorf.eversector.Paths.*;
 
 /**
+ * The screen used to interact with stations, especially buying and selling items.
  *
+ * @author Boldorf Smokebane
  */
 class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, KeyScreen
 {
+    /**
+     * True if the player is buying items.
+     */
     private boolean buying;
+
+    /**
+     * The start of the list of items that can be bought.
+     */
     private int buyStart;
+
+    /**
+     * The start of the list of items that can be sold.
+     */
     private int sellStart;
+
+    /**
+     * The end of the list of items that can be sold.
+     */
     private int sellEnd;
 
-    public StationScreen(Display display)
+    /**
+     * Instantiates a new StationScreen.
+     */
+    public StationScreen()
     {
-        super(new AlignedMenu(new AlignedWindow(display, Coord.get(0, 0), new Border(2)), COLOR_SELECTION_FOREGROUND,
-                COLOR_SELECTION_BACKGROUND));
+        super(new AlignedMenu(new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2)),
+                COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         buying = true;
     }
 
@@ -61,13 +81,25 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
             int index = getMenu().getSelectionIndex();
             if (buying)
             {
-                if (index == sellStart) { getMenu().setSelectionIndex(buyStart); }
-                else if (index == sellEnd) { getMenu().setSelectionIndex(sellStart - 2); }
+                if (index == sellStart)
+                {
+                    getMenu().setSelectionIndex(buyStart);
+                }
+                else if (index == sellEnd)
+                {
+                    getMenu().setSelectionIndex(sellStart - 2);
+                }
             }
             else
             {
-                if (index == buyStart) { getMenu().setSelectionIndex(sellStart); }
-                else if (index < sellStart) { getMenu().setSelectionIndex(sellEnd); }
+                if (index == buyStart)
+                {
+                    getMenu().setSelectionIndex(sellStart);
+                }
+                else if (index < sellStart)
+                {
+                    getMenu().setSelectionIndex(sellEnd);
+                }
             }
             return this;
         }
@@ -83,16 +115,31 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
                 Item item = getSelectedItem();
                 if (buying)
                 {
-                    if (item instanceof Module) { success = player.buyModule(item.getName()); }
-                    else { success = player.buyResource(item.getName(), 1); }
+                    if (item instanceof Module)
+                    {
+                        success = player.buyModule(item.getName());
+                    }
+                    else
+                    {
+                        success = player.buyResource(item.getName(), 1);
+                    }
                 }
                 else
                 {
-                    if (item instanceof Module) { success = player.sellModule(item.getName()); }
-                    else { success = player.buyResource(item.getName(), -1); }
+                    if (item instanceof Module)
+                    {
+                        success = player.sellModule(item.getName());
+                    }
+                    else
+                    {
+                        success = player.buyResource(item.getName(), -1);
+                    }
                 }
 
-                if (success) { playSoundEffect(TRANSACTION); }
+                if (success)
+                {
+                    playSoundEffect(TRANSACTION);
+                }
                 break;
             }
             case KeyEvent.VK_LEFT:
@@ -107,7 +154,10 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
                 break;
             }
             case KeyEvent.VK_R:
-                if (restock()) { playSoundEffect(TRANSACTION); }
+                if (restock())
+                {
+                    playSoundEffect(TRANSACTION);
+                }
                 break;
             case KeyEvent.VK_C:
                 if (player.claim(true))
@@ -121,12 +171,15 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
                 player.undock();
                 nextTurn = true;
                 playSoundEffect(DOCK);
-                nextScreen = new SectorScreen(getDisplay());
+                nextScreen = new SectorScreen();
                 break;
             }
         }
 
-        if (nextTurn) { galaxy.nextTurn(); }
+        if (nextTurn)
+        {
+            galaxy.nextTurn();
+        }
         return nextScreen;
     }
 
@@ -149,7 +202,7 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
     }
 
     /**
-     * Maxes out all of the player's resources, selling ore.
+     * Fills all of the player's resources, selling ore.
      *
      * @return true if at least one resource was restocked
      */
@@ -177,15 +230,14 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
     private boolean restock(String name)
     {
         Resource resource = player.getResource(name);
-
-        if (resource == null) { return false; }
-
-        return !resource.isFull() && player.buyResource(name, player.getMaxBuyAmount(resource));
+        return resource != null && !resource.isFull() && player.buyResource(name, player.getMaxBuyAmount(resource));
     }
 
     @Override
     public AlignedWindow getWindow()
-    {return getMenu().getWindow();}
+    {
+        return getMenu().getWindow();
+    }
 
     private void setUpMenu()
     {
@@ -206,27 +258,43 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
         {
             getWindow().addSeparator(new Line(true, 2, 1));
             for (Ship ship : ships)
-            { if (ship != player) { contents.add(ship.toColorString()); } }
+            {
+                if (ship != player)
+                {
+                    contents.add(ship.toColorString());
+                }
+            }
         }
 
         getWindow().addSeparator(new Line(true, 2, 1));
         int index = contents.size();
         buyStart = index;
         for (BaseResource resource : station.getResources())
-        { index = addEntry(getItemString(resource, true), index); }
+        {
+            index = addEntry(getItemString(resource, true), index);
+        }
 
         for (BaseResource resource : station.getResources())
-        { index = addEntry(getItemString(resource.getExpander(), true), index); }
+        {
+            index = addEntry(getItemString(resource.getExpander(), true), index);
+        }
 
         for (Module module : station.getModules())
-        { if (station.sells(module)) { index = addEntry(getItemString(module, true), index); } }
+        {
+            if (station.sells(module))
+            {
+                index = addEntry(getItemString(module, true), index);
+            }
+        }
 
         getWindow().addSeparator(new Line(false, 1, 1));
         index++;
         sellStart = index;
 
         for (Resource resource : player.getResources())
-        { index = addEntry(getItemString(resource, false), index); }
+        {
+            index = addEntry(getItemString(resource, false), index);
+        }
 
         for (Resource resource : player.getResources())
         {
@@ -237,10 +305,17 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
         }
 
         for (Module module : player.getModules())
-        { index = addEntry(getItemString(module, false), index); }
+        {
+            index = addEntry(getItemString(module, false), index);
+        }
 
         for (Module module : player.getCargo())
-        { if (!player.getModules().contains(module)) { index = addEntry(getItemString(module, false), index); } }
+        {
+            if (!player.getModules().contains(module))
+            {
+                index = addEntry(getItemString(module, false), index);
+            }
+        }
 
         sellEnd = index - 1;
 
@@ -257,10 +332,17 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
         contents.addAll(getSelectedItem().define());
     }
 
+    /**
+     * Gets the currently selected item.
+     *
+     * @return the currently selected item
+     */
     private Item getSelectedItem()
     {
         if (getMenu().getSelectionIndex() >= getWindow().getContents().size() || getMenu().getSelection() == null)
-        { resetSelection(); }
+        {
+            resetSelection();
+        }
 
         String itemString = getMenu().getSelection().toString();
         if (!itemString.contains(" ("))
@@ -274,14 +356,28 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
         return item == null ? player.getModule(itemString) : item;
     }
 
+    /**
+     * Adds the given line to the contents and restrictions and increments the given index.
+     *
+     * @param line  the line to add
+     * @param index the index to increment and to add a restriction at
+     * @return the incremented index
+     */
     private int addEntry(ColorString line, int index)
     {
         getWindow().getContents().add(line);
         getMenu().getRestrictions().add(index);
-        index++;
-        return index;
+        return index + 1;
     }
 
+    /**
+     * Gets ColorString for the given item using ItemColors.
+     *
+     * @param item   the item being bought or sold
+     * @param buying true if the item is being bought
+     * @return the ColorString for the given item
+     * @see ItemColors
+     */
     private ColorString getItemString(Item item, boolean buying)
     {
         ItemColors colors = new ItemColors(item, buying);
@@ -289,68 +385,102 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
                 new ColorString(" (" + Integer.toString(item.getPrice()) + Symbol.CREDITS + ")", colors.credits));
     }
 
+    /**
+     * The colors of an item, based on whether the player can buy or sell it.
+     */
     private class ItemColors
     {
+        /**
+         * The default color of the item.
+         */
         private final Color ITEM = AsciiPanel.white;
+
+        /**
+         * The default color of the credits.
+         */
         private final Color CREDITS = AsciiPanel.brightWhite;
+
+        /**
+         * The color applied to invalid fields.
+         */
         private final Color INVALID = AsciiPanel.red;
+
+        /**
+         * The color applied to disabled fields.
+         */
         private final Color DISABLED = AsciiPanel.brightBlack;
 
-        Color item;
-        Color credits;
+        /**
+         * The item.
+         */
+        final Color item;
 
-        ItemColors(Item i, boolean buying)
+        /**
+         * The cost of the item in credits.
+         */
+        final Color credits;
+
+        /**
+         * Creates a new set of item colors.
+         *
+         * @param item   the item
+         * @param buying true if the item is being bought
+         */
+        ItemColors(Item item, boolean buying)
         {
             if (buying)
             {
-                if (i instanceof BaseResource && player.getResource(i.getName()).isFull())
+                if (item instanceof BaseResource && player.getResource(item.getName()).isFull())
                 {
-                    item = DISABLED;
+                    this.item = DISABLED;
                     credits = DISABLED;
                     return;
                 }
 
-                if (player.getCredits() < i.getPrice())
+                if (player.getCredits() < item.getPrice())
                 {
-                    item = DISABLED;
+                    this.item = DISABLED;
                     credits = INVALID;
                     return;
                 }
 
-                item = ITEM;
+                this.item = ITEM;
                 credits = CREDITS;
             }
             else
             {
-                if (i instanceof Module && !player.getSectorLocation().getStation().sells((Module) i))
+                if (item instanceof Module && !player.getSectorLocation().getStation().sells((Module) item))
                 {
-                    item = INVALID;
+                    this.item = INVALID;
                     credits = DISABLED;
                     return;
                 }
 
-                if (i instanceof Resource)
+                if (item instanceof Resource)
                 {
-                    if (((Resource) i).isEmpty())
+                    if (((Resource) item).isEmpty())
                     {
-                        item = DISABLED;
+                        this.item = DISABLED;
                         credits = DISABLED;
                         return;
                     }
 
-                    if (!((Resource) i).canSell())
+                    if (!((Resource) item).canSell())
                     {
-                        item = INVALID;
+                        this.item = INVALID;
                         credits = DISABLED;
                         return;
                     }
                 }
 
-                item = ITEM;
+                this.item = ITEM;
                 credits = CREDITS;
             }
         }
 
+        /**
+         * Creates a set of item colors using the default colors.
+         */
         ItemColors()
         {
             item = ITEM;

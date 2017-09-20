@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.KeyScreen;
@@ -34,29 +33,57 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 /**
  * The main screen on which gameplay will take place. This screen will process global commands and host more specific
  * screens based on the player's situation.
+ *
+ * @author Boldorf Smokebane
  */
 public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
-    public static final int MESSAGE_LINES = 10;
+    /**
+     * The number of lines in the message window.
+     */
+    private static final int MESSAGE_LINES = 10;
 
+    /**
+     * The window displaying the player's status.
+     */
     private AlignedWindow statusWindow;
+
+    /**
+     * The window displaying information about factions.
+     */
     private AlignedWindow factionWindow;
+
+    /**
+     * The messages in the message log.
+     */
     private List<Message> messages;
+
+    /**
+     * The screen displayed within this one.
+     */
     private Screen subscreen;
+
+    /**
+     * The screen temporarily displayed over and overriding all others.
+     */
     private Screen popup;
+
+    /**
+     * The offset of messages displayed when scrolling through message history. -1 if not viewing history.
+     */
     private int messageOffset;
 
-    public GameScreen(Display display)
+    /**
+     * Instantiates a new GameScreen.
+     */
+    public GameScreen()
     {
-        super(display);
-        statusWindow = new AlignedWindow(display, Coord.get(1, 1));
-        factionWindow = new AlignedWindow(display, Coord.get(1, 1));
+        super(Main.display);
+        statusWindow = new AlignedWindow(Main.display, Coord.get(1, 1));
+        factionWindow = new AlignedWindow(Main.display, Coord.get(1, 1));
         messages = new LinkedList<>();
-        subscreen = new SectorScreen(display);
+        subscreen = new SectorScreen();
         messageOffset = -1;
-
-        //        player.getResource("Fuel").setCapacity(1000000);
-        //        player.getResource("Fuel").fill();
     }
 
     @Override
@@ -83,7 +110,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
             subscreen.displayOutput();
         }
 
-        if (popup != null) { popup.displayOutput(); }
+        if (popup != null)
+        {
+            popup.displayOutput();
+        }
     }
 
     @Override
@@ -93,9 +123,15 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         {
             popup = popup.processInput(key);
 
-            if (popup instanceof StartScreen) { return popup; }
+            if (popup instanceof StartScreen)
+            {
+                return popup;
+            }
 
-            if (popup instanceof EndScreen) { subscreen = null; }
+            if (popup instanceof EndScreen)
+            {
+                subscreen = null;
+            }
 
             return this;
         }
@@ -111,10 +147,19 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
             Direction direction = Utility.keyToDirectionRestricted(key);
 
-            if (direction == null) { return this; }
+            if (direction == null)
+            {
+                return this;
+            }
 
-            if (direction.hasUp() && canScrollHistoryUp()) { messageOffset++; }
-            else if (direction.hasDown() && canScrollHistoryDown()) { messageOffset--; }
+            if (direction.hasUp() && canScrollHistoryUp())
+            {
+                messageOffset++;
+            }
+            else if (direction.hasDown() && canScrollHistoryDown())
+            {
+                messageOffset--;
+            }
 
             return this;
         }
@@ -122,7 +167,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         // This is necessary both here and below to avoid interruptions
         if (!pendingRelationships.isEmpty())
         {
-            popup = new RelationshipResponseScreen(getDisplay());
+            popup = new RelationshipResponseScreen();
             return this;
         }
 
@@ -134,7 +179,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
             // Stop even if popup was closed to prevent keypresses performing
             // multiple functions
-            if (subscreenHasPopup) { return this; }
+            if (subscreenHasPopup)
+            {
+                return this;
+            }
         }
 
         boolean nextTurn = false;
@@ -143,7 +191,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         {
             // To be implemented upon expansion of the ore system
             //            case KeyEvent.VK_G:
-            //                popup = new OreScreen(getDisplay());
+            //                popup = new OreScreen();
             //                break;
             case KeyEvent.VK_I:
                 if (player.refine())
@@ -153,14 +201,17 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
                 }
                 break;
             case KeyEvent.VK_J:
-                popup = player.isAligned() ? new LeaveScreen(getDisplay(), true) : new JoinScreen(getDisplay());
+                popup = player.isAligned() ? new LeaveScreen(true) : new JoinScreen();
                 break;
             case KeyEvent.VK_D:
                 nextTurn = true;
                 playSoundEffect(DISTRESS);
                 Faction distressResponder = player.getDistressResponder();
 
-                if (distressResponder == null) { break; }
+                if (distressResponder == null)
+                {
+                    break;
+                }
 
                 if (player.getFaction() == distressResponder)
                 {
@@ -168,53 +219,77 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
                     break;
                 }
 
-                popup = new DistressConvertScreen(getDisplay(), distressResponder);
+                popup = new DistressConvertScreen(distressResponder);
                 break;
             case KeyEvent.VK_N:
                 if (player.isLeader() && galaxy.getFactions().length > 2)
                 {
-                    popup = new RelationshipRequestScreen(getDisplay());
+                    popup = new RelationshipRequestScreen();
                 }
                 break;
             case KeyEvent.VK_M:
-                if (player.hasActivationModules()) { popup = new ToggleScreen(getDisplay()); }
-                else { addError("The ship has no modules that can be activated."); }
+                if (player.hasActivationModules())
+                {
+                    popup = new ToggleScreen();
+                }
+                else
+                {
+                    addError("The ship has no modules that can be activated.");
+                }
                 break;
             case KeyEvent.VK_PERIOD:
             case KeyEvent.VK_SPACE:
                 nextTurn = true;
                 break;
             case KeyEvent.VK_H:
-                if (messages.size() > MESSAGE_LINES) { messageOffset = 0; }
+                if (messages.size() > MESSAGE_LINES)
+                {
+                    messageOffset = 0;
+                }
                 break;
             case KeyEvent.VK_B:
-                if (!Option.LEADERBOARD.toBoolean()) { break; }
+                if (!Option.LEADERBOARD.toBoolean())
+                {
+                    break;
+                }
 
                 List<ColorString> leaderboard = LeaderboardScore.buildLeaderboard();
-                if (!leaderboard.isEmpty()) { popup = new LeaderboardScreen(getDisplay(), leaderboard); }
+                if (!leaderboard.isEmpty())
+                {
+                    popup = new LeaderboardScreen(leaderboard);
+                }
                 break;
             case KeyEvent.VK_O:
-                popup = new OptionsScreen(getDisplay());
+                popup = new OptionsScreen();
                 break;
             case KeyEvent.VK_SLASH:
-                if (key.isShiftDown()) { popup = new HelpScreen(getDisplay(), getKeybindings()); }
+                if (key.isShiftDown())
+                {
+                    popup = new HelpScreen(getKeybindings());
+                }
                 break;
             case KeyEvent.VK_Q:
-                if (key.isShiftDown()) { popup = new QuitScreen(getDisplay()); }
+                if (key.isShiftDown())
+                {
+                    popup = new QuitScreen();
+                }
                 break;
         }
 
         if (player.isDestroyed())
         {
             subscreen = null;
-            popup = new EndScreen(getDisplay(), new ColorString("You have been destroyed!"), true, false);
+            popup = new EndScreen(new ColorString("You have been destroyed!"), true, false);
         }
 
-        if (nextTurn) { galaxy.nextTurn(); }
+        if (nextTurn)
+        {
+            galaxy.nextTurn();
+        }
 
         if (!pendingRelationships.isEmpty())
         {
-            popup = new RelationshipResponseScreen(getDisplay());
+            popup = new RelationshipResponseScreen();
             return this;
         }
 
@@ -223,11 +298,11 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
             pendingElection.findCandidates();
             if (player.getReputation(player.getFaction()).get() >= pendingElection.getMinimumReputation())
             {
-                popup = new PlayerCandidateScreen(getDisplay());
+                popup = new PlayerCandidateScreen();
             }
             else
             {
-                popup = new VotingScreen(getDisplay());
+                popup = new VotingScreen();
             }
         }
 
@@ -249,10 +324,19 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         {
             keybindings.add(new Keybinding("negotiate relationship", "n"));
         }
-        if (player.hasActivationModules()) { keybindings.add(new Keybinding("toggle module activation", "m")); }
-        if (player.hasModule(Action.REFINE)) { keybindings.add(new Keybinding("refine ore into fuel", "i")); }
+        if (player.hasActivationModules())
+        {
+            keybindings.add(new Keybinding("toggle module activation", "m"));
+        }
+        if (player.hasModule(Action.REFINE))
+        {
+            keybindings.add(new Keybinding("refine ore into fuel", "i"));
+        }
         keybindings.add(new Keybinding("wait one turn", ".", "space"));
-        if (messages.size() > MESSAGE_LINES) { keybindings.add(new Keybinding("message history", "h")); }
+        if (messages.size() > MESSAGE_LINES)
+        {
+            keybindings.add(new Keybinding("message history", "h"));
+        }
         if (Option.LEADERBOARD.toBoolean() && !LeaderboardScore.buildLeaderboard().isEmpty())
         {
             keybindings.add(new Keybinding("leaderboard", "b"));
@@ -272,44 +356,82 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
     @Override
     public AlignedWindow getWindow()
-    {return statusWindow;}
+    {
+        return statusWindow;
+    }
 
     @Override
     public Screen getPopup()
-    {return popup;}
+    {
+        return popup;
+    }
 
     @Override
     public boolean hasPopup()
-    {return popup != null;}
+    {
+        return popup != null;
+    }
 
+    /**
+     * Returns true if the player is currently viewing message history.
+     *
+     * @return true if the player is currently viewing message history
+     */
     private boolean viewingHistory()
-    {return messageOffset != -1;}
+    {
+        return messageOffset != -1;
+    }
 
+    /**
+     * Returns true if the history can be scrolled up by one line.
+     *
+     * @return true if the history can be scrolled up by one line
+     */
     private boolean canScrollHistoryUp()
-    {return messageOffset + MESSAGE_LINES < messages.size();}
+    {
+        return messageOffset + MESSAGE_LINES < messages.size();
+    }
 
+    /**
+     * Returns true if the history can be scrolled down by one line.
+     *
+     * @return true if the history can be scrolled down by one line
+     */
     private boolean canScrollHistoryDown()
-    {return messageOffset > 0;}
+    {
+        return messageOffset > 0;
+    }
 
+    /**
+     * A message on the message list, storing the message itself and the number of times it has been received.
+     */
     private class Message
     {
-        ColorString message;
-        int counter;
+        public ColorString message;
+        public int counter;
 
-        Message(ColorString message)
+        public Message(ColorString message)
         {
             this.message = message;
             this.counter = 1;
         }
 
-        ColorString getOutput()
+        public ColorString getOutput()
         {
-            if (counter == 1) { return message; }
+            if (counter == 1)
+            {
+                return message;
+            }
 
             return new ColorString(message).add(new ColorString(" (x" + Integer.toString(counter) + ")", COLOR_FIELD));
         }
     }
 
+    /**
+     * Adds the given message to the message list.
+     *
+     * @param message the message to add
+     */
     public void addMessage(ColorString message)
     {
         if (messages.isEmpty())
@@ -319,10 +441,19 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         }
 
         Message previous = messages.get(messages.size() - 1);
-        if (message.toString().equals(previous.message.toString())) { previous.counter++; }
-        else { messages.add(new Message(message)); }
+        if (message.toString().equals(previous.message.toString()))
+        {
+            previous.counter++;
+        }
+        else
+        {
+            messages.add(new Message(message));
+        }
     }
 
+    /**
+     * Sets up the status window and its contents.
+     */
     private void setUpStatusWindow()
     {
         List<ColorString> contents = statusWindow.getContents();
@@ -332,8 +463,14 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         List<ColorString> statusList = player.getStatusList();
         for (ColorString line : statusList)
         {
-            if (line == null) { statusWindow.addSeparator(new Line(false, 1, 1)); }
-            else { statusWindow.getContents().add(line); }
+            if (line == null)
+            {
+                statusWindow.addSeparator(new Line(false, 1, 1));
+            }
+            else
+            {
+                statusWindow.getContents().add(line);
+            }
         }
 
         statusWindow.addSeparator(new Line(true, 1, 1));
@@ -341,6 +478,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
                 new ColorString("Turn ").add(new ColorString(Integer.toString(Main.galaxy.getTurn()), COLOR_FIELD)));
     }
 
+    /**
+     * Sets up the faction window and its contents.
+     */
     private void setUpFactionWindow()
     {
         List<ColorString> contents = factionWindow.getContents();
@@ -351,22 +491,35 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         Faction playerFaction = player.getFaction();
 
         for (Faction faction : galaxy.getFactions())
-        { contents.add(faction.toColorString()); }
+        {
+            contents.add(faction.toColorString());
+        }
 
         if (playerFaction != null)
         {
             factionWindow.addSeparator(new Line(false, 1, 1));
             for (Faction faction : galaxy.getFactions())
             {
-                if (playerFaction == faction) { contents.add(new ColorString("You", COLOR_FIELD)); }
-                else if (galaxy.getFactions().length == 2) { contents.add(new ColorString("Enemy", WAR.getColor())); }
-                else { contents.add(playerFaction.getRelationship(faction).toColorString()); }
+                if (playerFaction == faction)
+                {
+                    contents.add(new ColorString("You", COLOR_FIELD));
+                }
+                else if (galaxy.getFactions().length == 2)
+                {
+                    contents.add(new ColorString("Enemy", WAR.getColor()));
+                }
+                else
+                {
+                    contents.add(playerFaction.getRelationship(faction).toColorString());
+                }
             }
         }
 
         factionWindow.addSeparator(new Line(false, 1, 1));
         for (Faction faction : galaxy.getFactions())
-        { contents.add(new ColorString("Rank ").add(new ColorString("#" + faction.getRank(), COLOR_FIELD))); }
+        {
+            contents.add(new ColorString("Rank ").add(new ColorString("#" + faction.getRank(), COLOR_FIELD)));
+        }
 
         factionWindow.addSeparator(new Line(false, 1, 1));
         for (Faction faction : galaxy.getFactions())
@@ -375,7 +528,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
             contents.add(new ColorString(reputation.getVerb() + " You", reputation.getColor()));
         }
 
-        if (playerFaction == null) { return; }
+        if (playerFaction == null)
+        {
+            return;
+        }
 
         factionWindow.addSeparator(new Line(true, 1, 1));
         ColorString leaderString = new ColorString("Leader: ");
@@ -408,6 +564,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         }
     }
 
+    /**
+     * Draws the message window and its contents.
+     */
     private void drawMessageWindow()
     {
         getDisplay().drawBorder(Coord.get(0, getDisplay().getCharHeight() - (MESSAGE_LINES + 2)),
@@ -425,10 +584,19 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
             if (currentOutput.length() >= getDisplay().getCharWidth() - 2)
             {
                 int splitIndex = getDisplay().getCharWidth() - 3;
-                while (currentOutput.charAt(splitIndex) != ' ') { splitIndex--; }
+                while (currentOutput.charAt(splitIndex) != ' ')
+                {
+                    splitIndex--;
+                }
 
-                if (currentOutput.charAt(splitIndex) != ' ') { splitIndex = getDisplay().getCharWidth(); }
-                else { currentOutput.getCharacters().remove(splitIndex); }
+                if (currentOutput.charAt(splitIndex) != ' ')
+                {
+                    splitIndex = getDisplay().getCharWidth();
+                }
+                else
+                {
+                    currentOutput.getCharacters().remove(splitIndex);
+                }
 
                 messageOutput.add(currentOutput.subSequence(0, splitIndex));
                 messageOutput.add(currentOutput.subSequence(splitIndex, currentOutput.length()));

@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.ExtChars;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.KeyScreen;
@@ -25,19 +24,39 @@ import static boldorf.eversector.Paths.ENGINE;
 import static boldorf.eversector.Paths.WARP;
 
 /**
+ * The screen for viewing and navigating the galactic map.
  *
+ * @author Boldorf Smokebane
  */
 public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
+    /**
+     * The window.
+     */
     private AlignedWindow window;
+
+    /**
+     * The screen temporarily displayed over and overriding all others.
+     */
     private Screen popup;
+
+    /**
+     * The coordinates where the player is looking. Null if none.
+     */
     private Coord cursor;
+
+    /**
+     * True if the player is selecting a sector to warp to.
+     */
     private boolean warping;
 
-    public MapScreen(Display display)
+    /**
+     * Instantiates a new MapScreen.
+     */
+    public MapScreen()
     {
-        super(display);
-        window = new AlignedWindow(display, Coord.get(0, 0), new Border(2));
+        super(Main.display);
+        window = new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2));
         popup = null;
         cursor = null;
         warping = false;
@@ -49,7 +68,10 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
         setUpWindow();
         window.display();
 
-        if (popup != null) { popup.displayOutput(); }
+        if (popup != null)
+        {
+            popup.displayOutput();
+        }
     }
 
     @Override
@@ -70,7 +92,10 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
             if (isLooking())
             {
                 Coord targetLocation = cursor.translate(direction);
-                if (player.getFOV().contains(targetLocation)) { cursor = targetLocation; }
+                if (player.getFOV().contains(targetLocation))
+                {
+                    cursor = targetLocation;
+                }
                 return this;
             }
             else if (player.burn(direction))
@@ -82,7 +107,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
             {
                 if (player.getResource(Action.BURN.getResource()).getAmount() >= Action.BURN.getCost())
                 {
-                    popup = new IntergalacticScreen(getDisplay());
+                    popup = new IntergalacticScreen();
                     return this;
                 }
             }
@@ -92,7 +117,10 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_L:
-                    if (warping) { break; }
+                    if (warping)
+                    {
+                        break;
+                    }
                 case KeyEvent.VK_ESCAPE:
                     warping = false;
                 case KeyEvent.VK_ENTER:
@@ -128,11 +156,14 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
                     if (player.enter())
                     {
                         nextTurn = true;
-                        nextScreen = new SectorScreen(getDisplay());
+                        nextScreen = new SectorScreen();
                     }
                     break;
                 case KeyEvent.VK_W:
-                    if (!player.hasModule(Action.WARP)) { break; }
+                    if (!player.hasModule(Action.WARP))
+                    {
+                        break;
+                    }
                     warping = true;
                 case KeyEvent.VK_L:
                     cursor = player.getLocation().getCoord();
@@ -143,7 +174,10 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
             }
         }
 
-        if (nextTurn) { galaxy.nextTurn(); }
+        if (nextTurn)
+        {
+            galaxy.nextTurn();
+        }
         return nextScreen;
     }
 
@@ -157,25 +191,44 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
         keybindings.add(new Keybinding("enter a sector", "enter"));
         keybindings.add(new Keybinding("look", "l"));
         keybindings.add(new Keybinding("toggle star view", "v"));
-        if (player.hasModule(Action.WARP)) { keybindings.add(new Keybinding("warp to any sector", "w")); }
+        if (player.hasModule(Action.WARP))
+        {
+            keybindings.add(new Keybinding("warp to any sector", "w"));
+        }
         return keybindings;
     }
 
     @Override
     public AlignedWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     @Override
     public Screen getPopup()
-    {return popup;}
+    {
+        return popup;
+    }
 
     @Override
     public boolean hasPopup()
-    {return popup != null;}
+    {
+        return popup != null;
+    }
 
+    /**
+     * Returns true if the player is looking around the map.
+     *
+     * @return true if the player is looking around the map
+     */
     private boolean isLooking()
-    {return cursor != null;}
+    {
+        return cursor != null;
+    }
 
+    /**
+     * Sets up the window and its contents.
+     */
     private void setUpWindow()
     {
         List<ColorString> contents = window.getContents();

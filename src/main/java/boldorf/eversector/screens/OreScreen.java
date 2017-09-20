@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
@@ -13,15 +12,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A popup Screen used for temporarily displaying ore values.
+ * A popup Screen used for temporarily displaying ore values. <b>Currently unused.</b>
+ *
+ * @author Boldorf Smokebane
  */
 public class OreScreen extends ConfirmationScreen
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public OreScreen(Display display)
+    /**
+     * Instantiates a new OreScreen.
+     */
+    public OreScreen()
     {
-        super(display);
+        super(Main.display);
         List<ColorString> list = new LinkedList<>();
         for (Ore ore : Main.galaxy.getOreTypes())
         {
@@ -39,11 +46,16 @@ public class OreScreen extends ConfirmationScreen
     @Override
     public Screen processInput(KeyEvent key)
     {
-        if (key.getKeyCode() == KeyEvent.VK_G) { return null; }
+        if (key.getKeyCode() == KeyEvent.VK_G)
+        {
+            return null;
+        }
         return super.processInput(key);
     }
 
     @Override
     public Screen onConfirm()
-    {return onCancel();}
+    {
+        return onCancel();
+    }
 }

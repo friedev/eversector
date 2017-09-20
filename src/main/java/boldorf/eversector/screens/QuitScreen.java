@@ -1,44 +1,60 @@
 package boldorf.eversector.screens;
 
 import asciiPanel.AsciiPanel;
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.ConfirmationScreen;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
+import boldorf.eversector.Main;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * The screen presented to the player when they attempt to quit.
  *
+ * @author Boldorf Smokebane
  */
 public class QuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
+    /**
+     * The window.
+     */
     private PopupWindow window;
 
-    public QuitScreen(Display display)
+    /**
+     * Instantiates a new QuitScreen.
+     */
+    public QuitScreen()
     {
-        super(display);
+        super(Main.display);
         List<ColorString> contents = new LinkedList<>();
         contents.add(new ColorString("Save before quitting?", AsciiPanel.brightRed));
-        window = new PopupWindow(display, contents);
+        window = new PopupWindow(Main.display, contents);
     }
 
     @Override
     public void displayOutput()
-    {window.display();}
+    {
+        window.display();
+    }
 
     @Override
     public PopupWindow getWindow()
-    {return window;}
+    {
+        return window;
+    }
 
     @Override
     public Screen onConfirm()
-    {return new EndScreen(getDisplay(), false, true);}
+    {
+        return new EndScreen(false, true);
+    }
 
     @Override
     public Screen onDeny()
-    {return new EndScreen(getDisplay(), true, false);}
+    {
+        return new EndScreen(true, false);
+    }
 }

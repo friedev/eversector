@@ -1,17 +1,15 @@
 package boldorf.eversector.screens;
 
 import asciiPanel.AsciiPanel;
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
-import boldorf.apwt.screens.PopupTerminal;
 import boldorf.apwt.screens.Screen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.Option;
 import boldorf.eversector.Paths;
 import boldorf.eversector.Symbol;
+import boldorf.eversector.map.Galaxy;
 import boldorf.util.Utility;
 import squidpony.squidmath.Coord;
 
@@ -25,44 +23,65 @@ import static boldorf.eversector.Main.rng;
 
 /**
  * The menu screen that is displayed at the start of the game.
+ *
+ * @author Boldorf Smokebane
  */
 public class StartScreen extends Screen
 {
     /**
      * The version number of the game.
      */
-    public static final String VERSION = "v0.7";
+    private static final String VERSION = "v0.7";
 
     /**
      * The longest version that can be compensated for with spaces.
      */
-    public static final int MAX_VERSION_LENGTH = 22;
+    private static final int MAX_VERSION_LENGTH = 22;
 
     /**
      * The name of the game's developer.
      */
-    public static final String DEVELOPER = "Boldorf Smokebane";
+    private static final String DEVELOPER = "Boldorf Smokebane";
 
     /**
      * The year the game is copyrighted in.
      */
-    public static final int COPYRIGHT_YEAR = 2017;
+    private static final int COPYRIGHT_YEAR = 2017;
 
-    public static final double STARS_PER_TILE = 0.0125;
+    /**
+     * The average number of stars per tile.
+     */
+    private static final double STARS_PER_TILE = 0.0125;
 
     /**
      * The character printed for each star.
      */
-    public static final ColorChar STAR_CHARACTER = new ColorChar(Symbol.SUBDWARF.get(), AsciiPanel.brightWhite);
+    private static final ColorChar STAR_CHARACTER = new ColorChar(Symbol.SUBDWARF.get(), AsciiPanel.brightWhite);
 
+    /**
+     * The window.
+     */
     private PopupWindow window;
-    private PopupTerminal namePrompt;
+
+    /**
+     * The current name prompt.
+     */
+    private NamePromptScreen namePrompt;
+
+    /**
+     * The coordinates of stars in the background starfield.
+     */
     private List<Coord> starCoords;
 
-    public StartScreen(Display display, List<ColorString> startMessages)
+    /**
+     * Instantiates a new StartScreen.
+     *
+     * @param startMessages the messages displayed
+     */
+    public StartScreen(List<ColorString> startMessages)
     {
-        super(display);
-        window = new PopupWindow(display, startMessages);
+        super(Main.display);
+        window = new PopupWindow(Main.display, startMessages);
         generateStarfield();
     }
 
@@ -74,7 +93,10 @@ public class StartScreen extends Screen
         getDisplay().writeCenter(getDisplay().getCenterY() - titleArt.length / 2 - window.getContents().size() / 2 - 1,
                 titleArt);
         window.display();
-        if (namePrompt != null) { namePrompt.displayOutput(); }
+        if (namePrompt != null)
+        {
+            namePrompt.displayOutput();
+        }
     }
 
     @Override
@@ -82,23 +104,29 @@ public class StartScreen extends Screen
     {
         if (namePrompt != null)
         {
-            namePrompt = (PopupTerminal) namePrompt.processInput(key);
-            if (namePrompt != null) { return this; }
+            namePrompt = (NamePromptScreen) namePrompt.processInput(key);
+            if (namePrompt != null)
+            {
+                return this;
+            }
         }
 
-        if (!(key.getKeyCode() == KeyEvent.VK_ENTER || key.getKeyCode() == KeyEvent.VK_SPACE)) { return this; }
+        if (!(key.getKeyCode() == KeyEvent.VK_ENTER || key.getKeyCode() == KeyEvent.VK_SPACE))
+        {
+            return this;
+        }
 
         String name = Option.SHIP_NAME.getProperty();
         if (name.isEmpty())
         {
-            namePrompt = new NamePromptScreen(getDisplay(), "your ship", Option.SHIP_NAME);
+            namePrompt = new NamePromptScreen("your ship", Option.SHIP_NAME);
             return this;
         }
 
         name = Option.CAPTAIN_NAME.getProperty();
         if (name.isEmpty())
         {
-            namePrompt = new NamePromptScreen(getDisplay(), "your ship's captain", Option.CAPTAIN_NAME);
+            namePrompt = new NamePromptScreen("your ship's captain", Option.CAPTAIN_NAME);
             return this;
         }
 
@@ -106,11 +134,18 @@ public class StartScreen extends Screen
         Main.player.setName(Option.SHIP_NAME.getProperty());
 
         for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++)
-        { Main.galaxy.nextTurn(); }
+        {
+            Main.galaxy.nextTurn();
+        }
 
-        return new GameScreen(getDisplay());
+        return new GameScreen();
     }
 
+    /**
+     * Constructs the game's title ASCII art.
+     *
+     * @return the list of ColorStrings in the title's ASCII art
+     */
     public static ColorString[] getTitleArt()
     {
         // Art credit goes to patorjk.com/software/taag/
@@ -141,19 +176,33 @@ public class StartScreen extends Screen
         return titleArt.toArray(new ColorString[titleArt.size()]);
     }
 
+    /**
+     * Generates the coordinates of stars in the starfield.
+     */
     private void generateStarfield()
     {
         int nStars = (int) (STARS_PER_TILE * (getDisplay().getCharWidth() * getDisplay().getCharHeight()));
         starCoords = new ArrayList<>(nStars);
         for (int i = 0; i < nStars; i++)
         {
-            starCoords.add(rng.nextCoord(getDisplay().getCharWidth(), getDisplay().getCharHeight()));
+            Coord starCoord;
+            do
+            {
+                starCoord = rng.nextCoord(getDisplay().getCharWidth(), getDisplay().getCharHeight());
+            } while (starCoords.contains(starCoord));
+
+            starCoords.add(starCoord);
         }
     }
 
+    /**
+     * Draws the stars in the starfield to the display.
+     */
     private void drawStarfield()
     {
-        for (int i = 0; i < starCoords.size(); i++)
-        { getDisplay().write(starCoords.get(i), STAR_CHARACTER); }
+        for (Coord starCoord : starCoords)
+        {
+            getDisplay().write(starCoord, STAR_CHARACTER);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package boldorf.eversector.screens;
 
-import boldorf.apwt.Display;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.*;
 import boldorf.apwt.windows.AlignedMenu;
@@ -8,10 +7,10 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
+import boldorf.eversector.Paths;
 import boldorf.eversector.items.Action;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
-import boldorf.eversector.Paths;
 import squidpony.squidmath.Coord;
 
 import java.awt.event.KeyEvent;
@@ -24,23 +23,46 @@ import static boldorf.eversector.Paths.ENGINE;
 import static boldorf.eversector.Paths.SCAN;
 
 /**
+ * A screen for managing interactions in battle.
  *
+ * @author Boldorf Smokebane
  */
 public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
+    /**
+     * The screen temporarily displayed over and overriding all others.
+     */
     private Screen popup;
+
+    /**
+     * The battle the player is in.
+     */
     private Battle battle;
+
+    /**
+     * All ships currently being scanned.
+     */
     private List<Ship> scanning;
 
-    public BattleScreen(Display display, Battle battle, boolean nextTurn)
+
+    /**
+     * Instantiates a new BattleScreen.
+     *
+     * @param battle   the battle the player is in
+     * @param nextTurn if true, will advance to the next turn
+     */
+    public BattleScreen(Battle battle, boolean nextTurn)
     {
-        super(new AlignedMenu(new AlignedWindow(display, Coord.get(0, 0), new Border(2)), COLOR_SELECTION_FOREGROUND,
-                COLOR_SELECTION_BACKGROUND));
+        super(new AlignedMenu(new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2)),
+                COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         this.battle = battle;
         scanning = new LinkedList<>();
 
         // If possible, do this after the battle is over
-        if (nextTurn) { galaxy.nextTurn(); }
+        if (nextTurn)
+        {
+            galaxy.nextTurn();
+        }
     }
 
     @Override
@@ -49,7 +71,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         setUpWindow();
         super.displayOutput();
 
-        if (popup != null) { popup.displayOutput(); }
+        if (popup != null)
+        {
+            popup.displayOutput();
+        }
     }
 
     @Override
@@ -67,7 +92,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             return popup instanceof SectorScreen ? popup : this;
         }
 
-        if (getMenu().updateSelectionRestricted(key)) { return this; }
+        if (getMenu().updateSelectionRestricted(key))
+        {
+            return this;
+        }
 
         boolean nextAttack = false;
         Ship selected = getSelectedShip();
@@ -101,7 +129,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             {
                 Action flee = Action.FLEE;
 
-                if (!player.validateResources(flee, "flee")) { break; }
+                if (!player.validateResources(flee, "flee"))
+                {
+                    break;
+                }
 
                 player.changeResourceBy(flee);
                 playSoundEffect(ENGINE);
@@ -167,7 +198,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 if (opponent.willConvert() && opponent.convert(player))
                     return endBattle();
                 
-                return new EndScreen(getDisplay(), opponent.toColorString()
+                return new EndScreen(opponent.toColorString()
                     .add(" strips your ship of its components and departs."),
                         true);
             }
@@ -177,7 +208,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 nextAttack = true;
                 break;
             case KeyEvent.VK_Q:
-                popup = new QuitScreen(getDisplay());
+                popup = new QuitScreen();
                 break;
         }
 
@@ -187,7 +218,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
 
             if (player.isDestroyed())
             {
-                return new EndScreen(getDisplay(), new ColorString("You have been destroyed."), true, false);
+                return new EndScreen(new ColorString("You have been destroyed."), true, false);
             }
 
             if (!battle.getFleeing().contains(player) && player.validateResources(Action.PURSUE, "pursue"))
@@ -195,13 +226,19 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 List<Ship> enemiesEscaping = new LinkedList<>();
                 for (Ship escaping : battle.getFleeing())
                 {
-                    if (enemies.contains(escaping)) { enemiesEscaping.add(escaping); }
-                    else { battle.processEscape(escaping); }
+                    if (enemies.contains(escaping))
+                    {
+                        enemiesEscaping.add(escaping);
+                    }
+                    else
+                    {
+                        battle.processEscape(escaping);
+                    }
                 }
 
                 if (!enemiesEscaping.isEmpty())
                 {
-                    popup = new PursuitScreen(getDisplay(), battle, enemiesEscaping);
+                    popup = new PursuitScreen(battle, enemiesEscaping);
                     return this;
                 }
             }
@@ -210,8 +247,14 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 battle.processEscapes();
             }
 
-            if (player.isInBattle()) { updateBattle(); }
-            else { return endBattle(); }
+            if (player.isInBattle())
+            {
+                updateBattle();
+            }
+            else
+            {
+                return endBattle();
+            }
 
             if (!battle.continues())
             {
@@ -224,21 +267,41 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         return this;
     }
 
+    /**
+     * Gets the ship currently selected.
+     *
+     * @return the ship currently selected
+     */
     private Ship getSelectedShip()
     {
         String selectedText = getMenu().getSelection().toString();
         for (Ship ship : battle.getShips())
-        { if (selectedText.equals(ship.toString())) { return ship; } }
+        {
+            if (selectedText.equals(ship.toString()))
+            {
+                return ship;
+            }
+        }
         return null;
     }
 
+    /**
+     * Updates the battle to the one the player is in.
+     */
     private void updateBattle()
-    {battle = player.getBattleLocation().getBattle();}
+    {
+        battle = player.getBattleLocation().getBattle();
+    }
 
+    /**
+     * Ends the battle.
+     *
+     * @return a new SectorScreen
+     */
     private SectorScreen endBattle()
     {
         Main.pendingBattle = null;
-        return new SectorScreen(getDisplay());
+        return new SectorScreen();
     }
 
     @Override
@@ -248,27 +311,51 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         keybindings.add(new Keybinding("keybindings", "h", "?"));
         keybindings.add(new Keybinding("quit", "Q"));
         keybindings.add(null);
-        if (player.hasModule(Action.LASER)) { keybindings.add(new Keybinding("fire laser", "l")); }
-        if (player.hasModule(Action.TORPEDO)) { keybindings.add(new Keybinding("fire torpedo", "t")); }
-        if (player.hasModule(Action.PULSE)) { keybindings.add(new Keybinding("fire pulse beam", "p")); }
-        if (player.hasActivationModules()) { keybindings.add(new Keybinding("toggle module activation", "m")); }
-        if (player.hasModule(Action.SCAN)) { keybindings.add(new Keybinding("scan selected ship", "s")); }
+        if (player.hasModule(Action.LASER))
+        {
+            keybindings.add(new Keybinding("fire laser", "l"));
+        }
+        if (player.hasModule(Action.TORPEDO))
+        {
+            keybindings.add(new Keybinding("fire torpedo", "t"));
+        }
+        if (player.hasModule(Action.PULSE))
+        {
+            keybindings.add(new Keybinding("fire pulse beam", "p"));
+        }
+        if (player.hasActivationModules())
+        {
+            keybindings.add(new Keybinding("toggle module activation", "m"));
+        }
+        if (player.hasModule(Action.SCAN))
+        {
+            keybindings.add(new Keybinding("scan selected ship", "s"));
+        }
         keybindings.add(new Keybinding("flee", "f"));
         return keybindings;
     }
 
     @Override
     public AlignedWindow getWindow()
-    {return getMenu().getWindow();}
+    {
+        return getMenu().getWindow();
+    }
 
     @Override
     public Screen getPopup()
-    {return popup;}
+    {
+        return popup;
+    }
 
     @Override
     public boolean hasPopup()
-    {return popup != null;}
+    {
+        return popup != null;
+    }
 
+    /**
+     * Sets up the window and its contents.
+     */
     private void setUpWindow()
     {
         List<ColorString> contents = getWindow().getContents();
@@ -310,8 +397,14 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             List<ColorString> statusList = selected.getStatusList();
             for (ColorString line : statusList)
             {
-                if (line == null) { getWindow().addSeparator(new Line(false, 2, 1)); }
-                else { contents.add(line); }
+                if (line == null)
+                {
+                    getWindow().addSeparator(new Line(false, 2, 1));
+                }
+                else
+                {
+                    contents.add(line);
+                }
             }
         }
 
