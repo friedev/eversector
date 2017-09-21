@@ -164,7 +164,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                     break;
                 }
 
-                if (!player.getSectorLocation().getPlanet().getType().canLandOn())
+                if (player.getSectorLocation().getPlanet().getType().canMineFromOrbit())
                 {
                     break;
                 }

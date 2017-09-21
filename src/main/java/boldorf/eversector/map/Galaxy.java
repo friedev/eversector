@@ -30,11 +30,6 @@ import static boldorf.eversector.Names.ORE;
 public class Galaxy
 {
     /**
-     * The number of turns that are simulated before the galaxy is used.
-     */
-    public static final int SIMULATED_TURNS = 50;
-
-    /**
      * The default number of sectors on each side of the central sector.
      */
     private static final int MIN_RADIUS = 25;
@@ -50,9 +45,29 @@ public class Galaxy
     private static final int MIN_FACTIONS = 2;
 
     /**
-     * The maximum increase in factions over the minimum (adjusted by 1 to include 0).
+     * The maximum increase in factions over the minimum.
      */
     private static final int FACTION_RANGE = 4;
+
+    /**
+     * The fewest types of ore that can exist.
+     */
+    private static final int MIN_ORE = 4;
+
+    /**
+     * The range of possible amounts of ore types over the minimum.
+     */
+    private static final int ORE_RANGE = 3;
+
+    /**
+     * The size of each nebula generated, in sectors. Also the number of sectors  per nebula generated.
+     */
+    private static final int NEBULA_SIZE = 100;
+
+    /**
+     * The number of turns that are simulated before the galaxy is used.
+     */
+    public static final int SIMULATED_TURNS = 50;
 
     /**
      * The frequency at which to update a relationship between factions, to be divided by the number of factions.
@@ -70,14 +85,9 @@ public class Galaxy
     private static final int ELECTION_FREQ = 150;
 
     /**
-     * The fewest types of ore that can exist.
+     * The frequency at which to fade ship reputations toward zero, in turns.
      */
-    private static final int MIN_ORE = 4;
-
-    /**
-     * The range of possible amounts of ore types over the minimum.
-     */
-    private static final int ORE_RANGE = 3;
+    private static final int REPUTATION_FADE_FREQ = 2;
 
     /**
      * The sectors in the galaxy.
@@ -550,7 +560,10 @@ public class Galaxy
         for (Ship ship : ships)
         {
             ship.updateContinuousEffects();
-            ship.fadeReputations();
+            if (turn % REPUTATION_FADE_FREQ == 0)
+            {
+                ship.fadeReputations();
+            }
         }
 
         if (player != null)
@@ -650,13 +663,14 @@ public class Galaxy
     private void init()
     {
         Splash nebulaGenerator = new Splash();
-        int nNebulae = rng.nextInt(sectors.length * sectors[0].length / 100);
+        int nNebulae = sectors.length * sectors[0].length / NEBULA_SIZE;
         List<List<Coord>> nebulae = new ArrayList<>(nNebulae);
 
         char[][] level = new char[sectors.length][sectors[0].length];
         for (int i = 0; i < nNebulae; i++)
         {
-            nebulae.add(nebulaGenerator.spill(rng, level, rng.nextCoord(sectors[0].length, sectors.length), 100, 1));
+            nebulae.add(nebulaGenerator.spill(rng, level, rng.nextCoord(sectors[0].length, sectors.length),
+                    NEBULA_SIZE, 1));
         }
 
         Nebula[] nebulaTypes = new Nebula[nNebulae];

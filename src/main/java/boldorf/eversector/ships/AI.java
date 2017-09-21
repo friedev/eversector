@@ -289,8 +289,8 @@ public class AI
         }
 
         Ship player = ship.getLocation().getGalaxy().getPlayer();
-        if (player.getLocation().equals(ship.getLocation()) && ship.isHostile(player.getFaction()) && ship.startBattle(
-                player) != null)
+        if (player != null && player.getLocation().equals(ship.getLocation()) && ship.isHostile(player.getFaction()) &&
+            ship.startBattle(player) != null)
         {
             return true;
         }
