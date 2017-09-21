@@ -100,6 +100,21 @@ public enum Option
     public static final Color COLOR_FALSE = AsciiPanel.brightRed;
 
     /**
+     * The key for the font name in font properties files.
+     */
+    public static final String FONT_NAME = "name";
+
+    /**
+     * The key for width in font properties files.
+     */
+    public static final String FONT_WIDTH = "width";
+
+    /**
+     * The key for height in font properties files.
+     */
+    public static final String FONT_HEIGHT = "height";
+
+    /**
      * The options as properties.
      */
     public static Properties options;

@@ -15,10 +15,13 @@ import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import boldorf.util.FileManager;
 import boldorf.util.NameGenerator;
+import boldorf.util.Utility;
 import squidpony.squidmath.RNG;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -57,6 +60,11 @@ public class Main
      * The Display used to display the game.
      */
     public static Display display;
+
+    /**
+     * The list of all fonts.
+     */
+    public static File[] fonts;
 
     /**
      * The random generator used to create various random game elements.
@@ -161,6 +169,8 @@ public class Main
             FileManager.addToPath("bundle/");
         }
 
+        fonts = new File(FileManager.getPath() + Paths.FONTS).listFiles(File::isDirectory);
+
         if (FileManager.checkExistence(Paths.OPTIONS))
         {
             Option.options = FileManager.load(Paths.OPTIONS);
@@ -174,7 +184,12 @@ public class Main
 
         List<ColorString> startMessages = startGame();
 
-        AsciiFont font = Tileset.values()[Option.FONT.toInt()].toFont(Option.TILES.toBoolean());
+        Properties fontProperties = getFontProperties(Option.FONT.toInt());
+        AsciiFont font = new AsciiFont(
+                FileManager.getPath() + Paths.FONTS + fonts[Option.FONT.toInt()].getName() + "/" +
+                (Option.TILES.toBoolean() ? Paths.FONT_TILES : Paths.FONT_ASCII),
+                Utility.parseInt(fontProperties.getProperty(Option.FONT_WIDTH)),
+                Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT)));
         display = new Display(new AsciiPanel(Option.WIDTH.toInt(), Option.HEIGHT.toInt(), font));
 
         display.setIconImage(FileManager.loadImage(Paths.ICON));
@@ -199,7 +214,7 @@ public class Main
      *
      * @return a list of start messages for StartScreen
      * @throws Exception if any are encountered
-     * @see StartScreen#StartScreen(Display, List)
+     * @see StartScreen#StartScreen(List)
      */
     public static List<ColorString> startGame() throws Exception
     {
@@ -354,5 +369,10 @@ public class Main
 
         seed = newSeed == 0 ? new RNG().nextLong() : newSeed;
         rng = new RNG(seed);
+    }
+
+    public static Properties getFontProperties(int index) throws IOException
+    {
+        return FileManager.load(Paths.FONTS + fonts[index].getName() + "/" + Paths.FONT_PROPERTIES);
     }
 }

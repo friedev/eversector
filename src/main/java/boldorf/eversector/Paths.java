@@ -14,6 +14,9 @@ public abstract class Paths
     public static final String CRASH = "crash.txt";
     // Images
     public static final String FONTS = "assets/fonts/";
+    public static final String FONT_PROPERTIES = "font.properties";
+    public static final String FONT_TILES = "tiles.png";
+    public static final String FONT_ASCII = "ascii.png";
     public static final String ICON = "assets/icon.png";
     // Audio files
     public static final String SOUNDTRACK = "assets/audio/soundtrack.wav";

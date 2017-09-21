@@ -7,12 +7,13 @@ import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
 import boldorf.eversector.Option;
-import boldorf.eversector.Tileset;
 import boldorf.util.FileManager;
 import boldorf.util.Utility;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import static boldorf.eversector.Main.*;
 
@@ -48,7 +49,7 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
                 {
                     case FONT:
                         lowerBound = 0;
-                        upperBound = Tileset.values().length - 1;
+                        upperBound = Main.fonts.length - 1;
                         break;
                     case WIDTH:
                         lowerBound = Utility.parseInt(option.getDefault());
@@ -134,10 +135,18 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
             String property = option.getProperty();
             if (option == Option.FONT)
             {
-                Tileset tileset = Tileset.values()[Utility.parseInt(property)];
-                contents.add(new ColorString(option.getKey() + ": ").add(
-                        new ColorString(tileset.getName() + " (" + tileset.getSize() + "x" + tileset.getSize() + ")",
-                                COLOR_FIELD)));
+                try
+                {
+                    Properties fontProperties = Main.getFontProperties(option.toInt());
+                    contents.add(new ColorString(option.getKey() + ": ").add(new ColorString(
+                            fontProperties.getProperty(Option.FONT_NAME) + " (" +
+                            fontProperties.getProperty(Option.FONT_WIDTH) + "x" +
+                            fontProperties.getProperty(Option.FONT_HEIGHT) + ")", COLOR_FIELD)));
+                }
+                catch (IOException e)
+                {
+                    contents.add(new ColorString(option.getKey() + ": " + Main.fonts[option.toInt()].getName()));
+                }
             }
             else
             {
