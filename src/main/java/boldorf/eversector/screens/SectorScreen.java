@@ -10,6 +10,7 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
+import boldorf.eversector.map.Planet;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.Station;
 import squidpony.squidmath.Coord;
@@ -164,7 +165,14 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                     break;
                 }
 
-                if (player.getSectorLocation().getPlanet().getType().canMineFromOrbit())
+                Planet planet = player.getSectorLocation().getPlanet();
+                if (planet == null)
+                {
+                    player.addPlayerError("There is no planet at this orbit.");
+                    break;
+                }
+
+                if (planet.getType().canMineFromOrbit())
                 {
                     break;
                 }
