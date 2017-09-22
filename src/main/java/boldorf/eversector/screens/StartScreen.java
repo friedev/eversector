@@ -64,9 +64,9 @@ public class StartScreen extends Screen
     private PopupWindow window;
 
     /**
-     * The current name prompt.
+     * The screen temporarily displayed over and overriding all others.
      */
-    private NamePromptScreen namePrompt;
+    private Screen popup;
 
     /**
      * The coordinates of stars in the background starfield.
@@ -93,22 +93,27 @@ public class StartScreen extends Screen
         getDisplay().writeCenter(getDisplay().getCenterY() - titleArt.length / 2 - window.getContents().size() / 2 - 1,
                 titleArt);
         window.display();
-        if (namePrompt != null)
+        if (popup != null)
         {
-            namePrompt.displayOutput();
+            popup.displayOutput();
         }
     }
 
     @Override
     public Screen processInput(KeyEvent key)
     {
-        if (namePrompt != null)
+        if (popup != null)
         {
-            namePrompt = (NamePromptScreen) namePrompt.processInput(key);
-            if (namePrompt != null)
+            popup = popup.processInput(key);
+            if (popup != null)
             {
                 return this;
             }
+        }
+
+        if (key.getKeyCode() == KeyEvent.VK_O)
+        {
+            popup = new OptionsScreen();
         }
 
         if (!(key.getKeyCode() == KeyEvent.VK_ENTER || key.getKeyCode() == KeyEvent.VK_SPACE))
@@ -119,14 +124,14 @@ public class StartScreen extends Screen
         String name = Option.SHIP_NAME.getProperty();
         if (name.isEmpty())
         {
-            namePrompt = new NamePromptScreen("your ship", Option.SHIP_NAME);
+            popup = new NamePromptScreen("your ship", Option.SHIP_NAME);
             return this;
         }
 
         name = Option.CAPTAIN_NAME.getProperty();
         if (name.isEmpty())
         {
-            namePrompt = new NamePromptScreen("your ship's captain", Option.CAPTAIN_NAME);
+            popup = new NamePromptScreen("your ship's captain", Option.CAPTAIN_NAME);
             return this;
         }
 
