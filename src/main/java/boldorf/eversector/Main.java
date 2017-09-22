@@ -184,10 +184,16 @@ public class Main
 
         List<ColorString> startMessages = startGame();
 
-        Properties fontProperties = getFontProperties(Option.FONT.toInt());
-        AsciiFont font = new AsciiFont(
-                FileManager.getPath() + Paths.FONTS + fonts[Option.FONT.toInt()].getName() + "/" +
-                (Option.TILES.toBoolean() ? Paths.FONT_TILES : Paths.FONT_ASCII),
+        int fontIndex = Option.FONT.toInt();
+        if (fontIndex < 0 || fontIndex >= fonts.length)
+        {
+            fontIndex = 0;
+            Option.FONT.setProperty(0);
+        }
+
+        Properties fontProperties = getFontProperties(fontIndex);
+        AsciiFont font = new AsciiFont(FileManager.getPath() + Paths.FONTS + fonts[fontIndex].getName() + "/" +
+                                       (Option.TILES.toBoolean() ? Paths.FONT_TILES : Paths.FONT_ASCII),
                 Utility.parseInt(fontProperties.getProperty(Option.FONT_WIDTH)),
                 Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT)));
         display = new Display(new AsciiPanel(Option.WIDTH.toInt(), Option.HEIGHT.toInt(), font));
