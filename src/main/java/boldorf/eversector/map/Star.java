@@ -37,7 +37,7 @@ public class Star implements ColorStringObject
             "Ret",
             "Rig",
             "Sin",
-            "Sir",
+            "Sirr",
             "Sol",
             "Stell",
             "Taur",
@@ -57,7 +57,7 @@ public class Star implements ColorStringObject
      * The third part of a star's name.
      */
     private static final String[] NAME_SUFFIX = new String[]{
-            "a", "as", "ex", "i", "io", "is", "ias", "ius", "os", "us",
+            "a", "ae", "as", "ex", "i", "ii", "io", "is", "ias", "ius", "os", "us",
     };
 
     /**
