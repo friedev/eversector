@@ -2348,7 +2348,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
             return false;
         }
 
-        if (!validateResources(Action.MINE, "initiate mining operation"))
+        if (!validateResources(Action.MINE, "initiate mining operation", print))
         {
             return false;
         }
@@ -2662,18 +2662,34 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @param resource     the resource to validate
      * @param cost         the amount of the resource that the ship must possess
      * @param actionString the String to print as the need for resources
+     * @param print        true if we should print an message
      * @return true if the ship has enough resources for the cost
      */
-    public boolean validateResources(Resource resource, int cost, String actionString)
+    public boolean validateResources(Resource resource, int cost, String actionString, boolean print)
     {
         if (resource != null && resource.getAmount() < cost)
         {
-            addPlayerError("Insufficient " + resource.getName().toLowerCase() + " reserves to " + actionString + "; " +
-                           "have " + resource.getAmount() + ", need " + cost + ".");
+            if (print)
+            {
+                addPlayerError("Insufficient " + resource.getName().toLowerCase() + " reserves to " + actionString + "; " +
+                               "have " + resource.getAmount() + ", need " + cost + ".");
+            }
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Checks if the ship has enough of the specified resource; does not print a message.
+     *
+     * @param resource     the resource to validate
+     * @param cost         the amount of the resource that the ship must possess
+     * @param actionString the String to print as the need for resources
+     */
+    public boolean validateResources(Resource resource, int cost, String actionString)
+    {
+        return validateResources(resource, cost, actionString, false);
     }
 
     /**
@@ -2686,7 +2702,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public boolean validateResources(String resource, int cost, String actionString)
     {
-        return validateResources(getResource(resource), cost, actionString);
+        return validateResources(getResource(resource), cost, actionString, false);
     }
 
     /**
@@ -2694,11 +2710,24 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      *
      * @param action       the action from which to find the resource and cost
      * @param actionString the String to print as the need for resources
+     * @param print        true if we should print a message
+     * @return true if the ship has enough resources for the cost
+     */
+    public boolean validateResources(Action action, String actionString, boolean print)
+    {
+        return validateResources(getResource(action.getResource()), action.getCost(), actionString, print);
+    }
+
+    /**
+     * Checks if the ship has the required resources to perform an action; does not print a message.
+     *
+     * @param action       the action from which to find the resource and cost
+     * @param actionString the String to print as the need for resources
      * @return true if the ship has enough resources for the cost
      */
     public boolean validateResources(Action action, String actionString)
     {
-        return validateResources(getResource(action.getResource()), action.getCost(), actionString);
+        return validateResources(getResource(action.getResource()), action.getCost(), actionString, false);
     }
 
     /**
