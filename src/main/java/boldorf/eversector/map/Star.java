@@ -505,7 +505,7 @@ public class Star implements ColorStringObject
     /**
      * The name of the star.
      */
-    private final String name;
+    private String name;
 
     /**
      * The type of the star.
@@ -559,40 +559,8 @@ public class Star implements ColorStringObject
      */
     private Star(StarMass mass, StarTemperature temperature)
     {
-        this.name = generateName();
-        this.type = temperature.getName() + " " + mass.getName();
-        this.color = temperature.getColor();
-        this.symbol = mass.getSymbol();
-        this.mass = mass.getMass();
-        this.radiation = temperature.hasRadiation();
-    }
-
-    /**
-     * Copies a star.
-     *
-     * @param copying the star to copy
-     */
-    public Star(Star copying)
-    {
-        this(copying.type, copying.color, copying.symbol, copying.mass, copying.radiation);
-    }
-
-    /**
-     * Generates a star in the given nebula.
-     *
-     * @param nebula the nebula to generate a star in
-     */
-    public Star(Nebula nebula)
-    {
-        this(generate(nebula));
-    }
-
-    /**
-     * Generates a star.
-     */
-    public Star()
-    {
-        this(generate());
+        this(temperature.getName() + " " + mass.getName(), temperature.getColor(), mass.getSymbol(), mass.getMass(),
+                temperature.hasRadiation());
     }
 
     /**
@@ -721,5 +689,15 @@ public class Star implements ColorStringObject
     public int getSolarPowerAt(int orbit)
     {
         return getPowerAt(orbit) / (StarMass.SUBDWARF.getMass()) + 1;
+    }
+
+    /**
+     * Sets the star's name to the given string.
+     *
+     * @param name the string to become the star's new name
+     */
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

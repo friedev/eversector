@@ -113,6 +113,12 @@ public class Sector
         if (Utility.getChance(rng, chance))
         {
             star = Star.generate(nebula);
+
+            while (location.getGalaxy().getStarNames().contains(star.getName()))
+            {
+                star.setName(Star.generateName());
+            }
+
             planets = new Planet[star.getMass()];
             stations = new Station[star.getMass()];
 
@@ -644,6 +650,24 @@ public class Sector
     public boolean isStationAt(int orbit)
     {
         return getStationAt(orbit) != null;
+    }
+
+    /**
+     * Returns the station in the sector with the given name, null if not found.
+     *
+     * @param name the name to search for
+     * @return the station found in the sector with the given name, null if not found
+     */
+    public Station getStation(String name)
+    {
+        for (Station station : stations)
+        {
+            if (station != null && station.getName().equals(name))
+            {
+                return station;
+            }
+        }
+        return null;
     }
 
     /**

@@ -117,6 +117,16 @@ public class Galaxy
     private int turn;
 
     /**
+     * The names of all star system names in the galaxy, to avoid duplication.
+     */
+    private List<String> starNames;
+
+    /**
+     * The names of all ships in the galaxy, to avoid duplication.
+     */
+    private List<String> shipNames;
+
+    /**
      * Generates a galaxy with the default size.
      */
     public Galaxy()
@@ -136,6 +146,8 @@ public class Galaxy
         factions = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
         oreTypes = generateOreTypes();
         turn = -SIMULATED_TURNS;
+        starNames = new LinkedList<>();
+        shipNames = new LinkedList<>();
 
         // Factions must be created first so they can be assigned to ships
         createFactions();
@@ -361,6 +373,26 @@ public class Galaxy
     public Ore getRandomOre()
     {
         return oreTypes[rng.nextInt(oreTypes.length)];
+    }
+
+    /**
+     * Returns the names of all star systems.
+     *
+     * @return the names of all star systems
+     */
+    public List<String> getStarNames()
+    {
+        return starNames;
+    }
+
+    /**
+     * Returns the names of all ships.
+     *
+     * @return the names of all ships
+     */
+    public List<String> getShipNames()
+    {
+        return shipNames;
     }
 
     /**
@@ -650,8 +682,8 @@ public class Galaxy
         char[][] level = new char[sectors.length][sectors[0].length];
         for (int i = 0; i < nNebulae; i++)
         {
-            nebulae.add(nebulaGenerator.spill(rng, level, rng.nextCoord(sectors[0].length, sectors.length),
-                    NEBULA_SIZE, 1));
+            nebulae.add(nebulaGenerator.spill(rng, level, rng.nextCoord(sectors[0].length, sectors.length), NEBULA_SIZE,
+                    1));
         }
 
         Nebula[] nebulaTypes = new Nebula[nNebulae];

@@ -31,12 +31,18 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
  */
 public class Ship implements ColorStringObject, Comparable<Ship>
 {
-    public static final String[] NAME_PREFIX = new String[]{
-            "Death", "Doom", "Ever", "Hyper", "Infini", "Light", "Ultra"
+    /**
+     * The first part of a ship's name.
+     */
+    private static final String[] NAME_PREFIX = new String[]{
+            "Dark", "Death", "Ever", "Great", "Heavy", "Hyper", "Infini", "Light", "Ultra"
     };
 
-    public static final String[] NAME_SUFFIX = new String[]{
-            "blade", "hawk", "seeker", "ship", "star", "talon", "voyager", "wing"
+    /**
+     * The second part a ship's name.
+     */
+    private static final String[] NAME_SUFFIX = new String[]{
+            "blade", "hawk", "seeker", "ship", "spear", "star", "talon", "voyager", "wing"
     };
 
     /**
@@ -167,8 +173,14 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public Ship(Location location, Faction faction)
     {
-        this.name = rng.getRandomElement(NAME_PREFIX) + rng.getRandomElement(NAME_SUFFIX) + "-" + String.format("%02d",
-                rng.nextInt(100));
+        String testName;
+        do
+        {
+            testName = rng.getRandomElement(NAME_PREFIX) + rng.getRandomElement(NAME_SUFFIX) + "-" + String.format(
+                    "%02d", rng.nextInt(100));
+        } while (location.getGalaxy().getShipNames().contains(testName));
+
+        this.name = testName;
         this.ai = new AI(this);
         this.location = location;
         this.flags = new ArrayList<>();

@@ -26,22 +26,14 @@ public class Station implements ColorStringObject
      * The descriptors for trade stations.
      */
     private static final String[] NAME_TRADE = new String[]{
-            "Factory",
-            "Hub",
-            "Manufactory",
-            "Marketplace",
-            "Vendor"
+            "Factory", "Hub", "Manufactory", "Marketplace", "Vendor"
     };
 
     /**
      * The descriptors for battle stations.
      */
     private static final String[] NAME_BATTLE = new String[]{
-            "Armory",
-            "Arsenal",
-            "Bunker",
-            "Fortress",
-            "Outpost"
+            "Armory", "Arsenal", "Bunker", "Fortress", "Outpost"
     };
 
     /**
@@ -135,7 +127,15 @@ public class Station implements ColorStringObject
         this.faction = faction;
         ships = new LinkedList<>();
         battle = rng.nextBoolean();
-        name = location.getSector().getStar().getName() + " " + rng.getRandomElement(battle ? NAME_BATTLE : NAME_TRADE);
+
+        String testName;
+        do
+        {
+            testName = location.getSector().getStar().getName() + " " + rng.getRandomElement(
+                    battle ? NAME_BATTLE : NAME_TRADE);
+        } while (location.getSector().getStation(testName) != null);
+
+        name = testName;
 
         cloneItems();
         generatePrices();
