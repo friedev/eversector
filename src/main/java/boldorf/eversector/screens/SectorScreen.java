@@ -13,6 +13,7 @@ import boldorf.eversector.Main;
 import boldorf.eversector.map.Planet;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.Station;
+import boldorf.eversector.ships.Ship;
 import squidpony.squidmath.Coord;
 
 import java.awt.event.KeyEvent;
@@ -212,7 +213,10 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 
                 if (sector.getShipsAt(orbit).size() == 2)
                 {
-                    return new BattleScreen(player.startBattle(sector.getFirstOtherShip(player)), true);
+                    List<Ship> ships = player.getSectorLocation().getSector().getShipsAt(
+                            player.getSectorLocation().getOrbit());
+                    return new BattleScreen(player.startBattle(ships.get(0) == player ? ships.get(1) : ships.get(0)),
+                            true);
                 }
                 else
                 {
