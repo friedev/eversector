@@ -177,8 +177,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
             subscreen = subscreen.processInput(key);
 
-            // Stop even if popup was closed to prevent keypresses performing
-            // multiple functions
+            // Stop even if popup was closed to prevent keypresses performing multiple functions
             if (subscreenHasPopup)
             {
                 return this;

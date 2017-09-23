@@ -45,11 +45,20 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
     @Override
     public Screen onConfirm()
     {
-        if (Main.player.mine())
+        if (!Main.player.mine())
+            return null;
+
+        if (Main.player.isDestroyed())
+        {
+            playSoundEffect(DEATH);
+            return new EndScreen(new ColorString("You collide with the asteroid, which breaches your hull!"), true,
+                    false);
+        }
+        else
         {
             playSoundEffect(MINE);
-            Main.galaxy.nextTurn();
         }
+        Main.galaxy.nextTurn();
         return null;
     }
 
