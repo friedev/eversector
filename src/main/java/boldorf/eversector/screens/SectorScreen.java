@@ -159,7 +159,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (player.canMine(true) && player.isDangerousToMine())
+                if (player.canMine(false) && player.isDangerousToMine())
                 {
                     popup = new AsteroidMineConfirmScreen();
                     break;

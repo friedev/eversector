@@ -2662,7 +2662,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * @param resource     the resource to validate
      * @param cost         the amount of the resource that the ship must possess
      * @param actionString the String to print as the need for resources
-     * @param print        true if we should print an message
+     * @param print        true if print an message
      * @return true if the ship has enough resources for the cost
      */
     public boolean validateResources(Resource resource, int cost, String actionString, boolean print)
@@ -2689,7 +2689,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public boolean validateResources(Resource resource, int cost, String actionString)
     {
-        return validateResources(resource, cost, actionString, false);
+        return validateResources(resource, cost, actionString, true);
     }
 
     /**
@@ -2702,7 +2702,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public boolean validateResources(String resource, int cost, String actionString)
     {
-        return validateResources(getResource(resource), cost, actionString, false);
+        return validateResources(getResource(resource), cost, actionString, true);
     }
 
     /**
@@ -2727,7 +2727,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public boolean validateResources(Action action, String actionString)
     {
-        return validateResources(getResource(action.getResource()), action.getCost(), actionString, false);
+        return validateResources(getResource(action.getResource()), action.getCost(), actionString, true);
     }
 
     /**
