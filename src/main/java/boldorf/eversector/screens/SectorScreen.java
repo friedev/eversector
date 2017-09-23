@@ -46,11 +46,6 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
     private int cursor;
 
     /**
-     * Indicates if we should go to the next turn.
-     */
-    private boolean nextTurn;
-
-    /**
      * Instantiates a new SectorScreen.
      */
     public SectorScreen()
@@ -58,7 +53,6 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
         super(Main.display);
         window = new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2));
         cursor = 0;
-        nextTurn = false;
     }
 
     @Override
@@ -102,6 +96,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
             return new BattleScreen(pendingBattle, false);
         }
 
+        boolean nextTurn = false;
         Screen nextScreen = this;
 
         if (isLooking())
@@ -166,7 +161,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
             case KeyEvent.VK_RIGHT:
                 if (player.isDangerousToMine())
                 {
-                    popup = new AsteroidMineConfirmScreen(this);
+                    popup = new AsteroidMineConfirmScreen();
                     break;
                 }
                 else if (player.mine())
@@ -287,14 +282,6 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
     private boolean isLooking()
     {
         return cursor != 0;
-    }
-
-    /**
-     * Sets the nextTurn value.
-     */
-    public void setNextTurn(boolean value)
-    {
-        nextTurn = value;
     }
 
     /**

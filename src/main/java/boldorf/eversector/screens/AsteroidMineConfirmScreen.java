@@ -21,19 +21,13 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
     private PopupWindow window;
 
     /**
-     * Holds a reference to SectorScreen.
-     */
-    private SectorScreen sectorScreen;
-
-    /**
      * Instantiates a new AsteroidMineConfirmScreen.
      */
-    public AsteroidMineConfirmScreen(SectorScreen currentSectorScreen)
+    public AsteroidMineConfirmScreen()
     {
         super(Main.display);
         window = new PopupWindow(Main.display);
         window.getContents().add(new ColorString("Your hull is dangerously low; attempt to mine the asteroid?"));
-        sectorScreen = currentSectorScreen;
     }
 
     @Override
@@ -54,7 +48,7 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
         if (Main.player.mine())
         {
             playSoundEffect(MINE);
-            sectorScreen.setNextTurn(true);
+            Main.galaxy.nextTurn();
         }
         return null;
     }
@@ -62,7 +56,6 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
     @Override
     public Screen onCancel()
     {
-        sectorScreen.setNextTurn(false);
         return null;
     }
 }
