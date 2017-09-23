@@ -334,6 +334,16 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
+     * Returns true if the ship is in danger of being destroyed while mining an asteroid.
+     *
+     * @return true if the ship is in danger of being destroyed while mining an asteroid
+     */
+    public boolean isDangerousToMine()
+    {
+        return getAmountOf(Resource.HULL) <= Planet.ASTEROID_DAMAGE;
+    }
+
+    /**
      * Returns true if the ship is in a sector.
      *
      * @return true if the ship is in a sector
