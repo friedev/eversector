@@ -6,7 +6,6 @@ import boldorf.eversector.Main;
 import boldorf.eversector.faction.Relationship.RelationshipType;
 import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.map.Sector;
-import boldorf.eversector.map.Station;
 import boldorf.eversector.ships.Ship;
 
 import java.awt.*;
@@ -22,16 +21,101 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.*;
  */
 public class Faction implements ColorStringObject
 {
+    public static final String[] NAME_PREFIX = new String[]{
+            "Ari",
+            "Axo",
+            "Axi",
+            "Be",
+            "Ceta",
+            "Cira",
+            "Ciro",
+            "Eno",
+            "Equa",
+            "Equi",
+            "Exo",
+            "Fe",
+            "Gali",
+            "Galy",
+            "Gani",
+            "Hypo",
+            "Iglo",
+            "Ixa",
+            "Mu",
+            "Nano",
+            "Neo",
+            "Neu",
+            "Nexo",
+            "Nono",
+            "Oca",
+            "Oxi",
+            "Oxy",
+            "Psy",
+            "Quo",
+            "Tera",
+            "Thy",
+            "Undi",
+            "Uxo",
+            "Vea",
+            "Vi",
+            "Viro",
+            "Via",
+            "Xena",
+            "Xeno",
+            "Xeo",
+            "Xy",
+            "Zena",
+            "Zeta"
+    };
+
+    public static final String[] NAME_SUFFIX = new String[]{
+            "con",
+            "chon",
+            "chron",
+            "der",
+            "fax",
+            "fi",
+            "gon",
+            "lite",
+            "lyte",
+            "loi",
+            "lon",
+            "los",
+            "lyx",
+            "rax",
+            "rani",
+            "rano",
+            "rea",
+            "syn",
+            "syth",
+            "sino",
+            "the",
+            "to",
+            "tara",
+            "tera",
+            "tere",
+            "tra",
+            "tro",
+            "var",
+            "vax",
+            "vea",
+            "vyr",
+            "vyn",
+            "zer",
+            "zin",
+            "zon"
+    };
+
     /**
      * All the possible "types" of factions that can be generated.
      */
-    public static final String[] TYPES = new String[]{
+    public static final String[] NAME_TYPES = new String[]{
             "Alliance",
             "Assembly",
             "Association",
             "Coalition",
             "Collective",
             "Commonwealth",
+            "Confederacy",
             "Conglomerate",
             "Conspiracy",
             "Corporation",
@@ -40,12 +124,13 @@ public class Faction implements ColorStringObject
             "Federation",
             "Group",
             "Guild",
-            "Hivemind",
             "League",
+            "Nation",
             "Network",
             "Order",
             "Organization",
             "Republic",
+            "State",
             "Union"
     };
 
@@ -58,13 +143,6 @@ public class Faction implements ColorStringObject
      * The color that represents the faction.
      */
     private final Color color;
-
-    /**
-     * The type of the faction.
-     *
-     * @see #TYPES
-     */
-    private final String type;
 
     /**
      * The galaxy the faction is in.
@@ -97,18 +175,16 @@ public class Faction implements ColorStringObject
     private int averageReputation;
 
     /**
-     * Generates a faction of the given name, type, and on the given map.
+     * Generates a faction in the galaxy with the given color.
      *
-     * @param name   the name of the faction
-     * @param type   the type of the faction
      * @param galaxy the galaxy that the faction will be in
      * @param color  the faction's color
      */
-    public Faction(String name, String type, Galaxy galaxy, Color color)
+    public Faction(Galaxy galaxy, Color color)
     {
-        this.name = name;
+        this.name = rng.getRandomElement(NAME_PREFIX) + rng.getRandomElement(NAME_SUFFIX) + " " + rng.getRandomElement(
+                NAME_TYPES);
         this.color = color;
-        this.type = type;
         this.galaxy = galaxy;
         relationships = new Relationship[galaxy.getFactions().length - 1];
         leader = null;
@@ -116,22 +192,10 @@ public class Faction implements ColorStringObject
         lastElection = -Galaxy.SIMULATED_TURNS;
     }
 
-    /**
-     * Generates a faction of the given name, a random type, and on the given galaxy.
-     *
-     * @param name   the name of the faction
-     * @param galaxy the galaxy that the faction will be in
-     * @param color  the faction's color
-     */
-    public Faction(String name, Galaxy galaxy, Color color)
-    {
-        this(name, rng.getRandomElement(TYPES), galaxy, color);
-    }
-
     @Override
     public String toString()
     {
-        return name + " " + type;
+        return name;
     }
 
     @Override
@@ -158,16 +222,6 @@ public class Faction implements ColorStringObject
     public Color getColor()
     {
         return color;
-    }
-
-    /**
-     * Gets the type of the faction.
-     *
-     * @return the faction's type
-     */
-    public String getType()
-    {
-        return type;
     }
 
     /**
@@ -359,8 +413,8 @@ public class Faction implements ColorStringObject
         {
             for (Sector sector : row)
             {
-                trade += sector.getStationTypesControlledBy(this, Station.TRADE);
-                battle += sector.getStationTypesControlledBy(this, Station.BATTLE);
+                trade += sector.getStationTypesControlledBy(this, false);
+                battle += sector.getStationTypesControlledBy(this, true);
             }
         }
 

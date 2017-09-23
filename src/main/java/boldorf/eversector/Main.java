@@ -14,7 +14,6 @@ import boldorf.eversector.screens.StartScreen;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import boldorf.util.FileManager;
-import boldorf.util.NameGenerator;
 import boldorf.util.Utility;
 import squidpony.squidmath.RNG;
 
@@ -26,8 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
-
-import static boldorf.eversector.Names.GENERAL;
 
 /**
  * The main class for EverSector, which primarily manages player input.
@@ -75,11 +72,6 @@ public class Main
      * The seed of the random number generator.
      */
     public static long seed;
-
-    /**
-     * The name generator to be used in creation of all random names.
-     */
-    public static NameGenerator nameGenerator;
 
     /**
      * The game music that will loop in the background.
@@ -235,7 +227,6 @@ public class Main
 
         // Create the galaxy and update the player as needed
         setUpSeed();
-        nameGenerator = new NameGenerator(GENERAL, rng);
         Symbol.setMap(Option.TILES.toBoolean());
         galaxy = new Galaxy();
 
