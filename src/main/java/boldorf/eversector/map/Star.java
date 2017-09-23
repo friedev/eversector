@@ -3,14 +3,15 @@ package boldorf.eversector.map;
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
-import boldorf.util.Utility;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.eversector.Main;
 import boldorf.eversector.Symbol;
+import boldorf.util.Utility;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
+
+import static boldorf.eversector.Main.rng;
 
 /**
  * A star that possesses a type and a power level.
@@ -19,6 +20,70 @@ import java.util.List;
  */
 public class Star implements ColorStringObject
 {
+    /**
+     * The first part of a star's name.
+     */
+    private static final String[] NAME_PREFIX = new String[]{
+            "Aquar",
+            "Can",
+            "Del",
+            "Dom",
+            "Drac",
+            "Erid",
+            "Ign",
+            "Lyr",
+            "Mag",
+            "Or",
+            "Ret",
+            "Rig",
+            "Sin",
+            "Sir",
+            "Sol",
+            "Stell",
+            "Taur",
+            "Vel",
+            "Ven",
+            "Xen"
+    };
+
+    /**
+     * The second part of a star's name.
+     */
+    private static final String[] NAME_MIDDLE = new String[]{
+            "an", "ar", "at", "it", "itar", "in", "on", "un"
+    };
+
+    /**
+     * The third part of a star's name.
+     */
+    private static final String[] NAME_SUFFIX = new String[]{
+            "a", "as", "ex", "i", "io", "is", "ias", "ius", "os", "us",
+    };
+
+    /**
+     * The descriptor appended to the end of a star's name.
+     */
+    private static final String[] NAME_DESCRIPTOR = new String[]{
+            "Alpha",
+            "Beta",
+            "Gamma",
+            "Delta",
+            "Epsilon",
+            "Eta",
+            "Iota",
+            "Major",
+            "Majoris",
+            "Maximus",
+            "Malus",
+            "Minor",
+            "Minoris",
+            "Minimus",
+            "Omega",
+            "Prime",
+            "Sigma",
+            "Zeta",
+    };
+
     /**
      * The chance of a special star generating instead of a regular star.
      */
@@ -60,7 +125,7 @@ public class Star implements ColorStringObject
         HYPERGIANT("Hypergiant", Symbol.HYPERGIANT, 0.025, 12, false);
 
         /**
-         * The name of the star mass.
+         * The type of the star mass.
          */
         private final String name;
 
@@ -87,7 +152,7 @@ public class Star implements ColorStringObject
         /**
          * Creates a new star mass with all fields defined.
          *
-         * @param name        the name of the star mass
+         * @param name        the type of the star mass
          * @param symbol      the symbol representing stars of this mass
          * @param probability the probability of this star mass generating
          * @param mass        the mass of the star
@@ -105,7 +170,7 @@ public class Star implements ColorStringObject
         /**
          * Creates a new star mass with all fields defined. Uses a Symbol instead of a char.
          *
-         * @param name        the name of the star mass
+         * @param name        the type of the star mass
          * @param symbol      the symbol representing stars of this mass
          * @param probability the probability of this star mass generating
          * @param mass        the mass of the star
@@ -123,9 +188,9 @@ public class Star implements ColorStringObject
         }
 
         /**
-         * Gets the name of the star mass.
+         * Gets the type of the star mass.
          *
-         * @return the name of the star mass
+         * @return the type of the star mass
          */
         public String getName()
         {
@@ -184,7 +249,7 @@ public class Star implements ColorStringObject
             {
                 probabilities[i] = StarMass.values()[i].probability;
             }
-            return (StarMass) Utility.select(Main.rng, StarMass.values(), probabilities);
+            return (StarMass) Utility.select(rng, StarMass.values(), probabilities);
         }
 
         /**
@@ -219,7 +284,7 @@ public class Star implements ColorStringObject
 
             probabilities[0] += 1.0 - totalProbability;
 
-            return (StarMass) Utility.select(Main.rng, masses.toArray(), probabilities);
+            return (StarMass) Utility.select(rng, masses.toArray(), probabilities);
         }
     }
 
@@ -244,7 +309,7 @@ public class Star implements ColorStringObject
         BLUE("Blue", AsciiPanel.brightCyan, true, StarMass.GIANT.mass, StarMass.HYPERGIANT.mass);
 
         /**
-         * The name of the star temperature.
+         * The type of the star temperature.
          */
         private final String name;
 
@@ -271,7 +336,7 @@ public class Star implements ColorStringObject
         /**
          * Creates a new StarTemperature with all fields defined.
          *
-         * @param name      the name of the star temperature
+         * @param name      the type of the star temperature
          * @param color     the color of the star temperature
          * @param radiation if true, the star emits radiation
          * @param minMass   the lowest mass of star that can have this temperature
@@ -293,9 +358,9 @@ public class Star implements ColorStringObject
         }
 
         /**
-         * Gets the name of the star temperature.
+         * Gets the type of the star temperature.
          *
-         * @return the name of the star temperature
+         * @return the type of the star temperature
          */
         public String getName()
         {
@@ -360,7 +425,7 @@ public class Star implements ColorStringObject
          */
         public static StarTemperature select()
         {
-            return Main.rng.getRandomElement(StarTemperature.values());
+            return rng.getRandomElement(StarTemperature.values());
         }
 
         /**
@@ -380,7 +445,7 @@ public class Star implements ColorStringObject
                 }
             }
 
-            return Main.rng.getRandomElement(temperatures);
+            return rng.getRandomElement(temperatures);
         }
     }
 
@@ -440,7 +505,12 @@ public class Star implements ColorStringObject
     /**
      * The name of the star.
      */
-    private final String name;
+    private String name;
+
+    /**
+     * The type of the star.
+     */
+    private final String type;
 
     /**
      * The color of the star.
@@ -465,15 +535,16 @@ public class Star implements ColorStringObject
     /**
      * Creates a star with all fields defined.
      *
-     * @param name      the name of the star
+     * @param type      the type of the star
      * @param color     the color of the star
      * @param symbol    the symbol representing the star
      * @param mass      the mass of the star
      * @param radiation true if the star emits substantial radiation
      */
-    private Star(String name, Color color, char symbol, int mass, boolean radiation)
+    private Star(String type, Color color, char symbol, int mass, boolean radiation)
     {
-        this.name = name;
+        this.name = generateName();
+        this.type = type;
         this.color = color;
         this.symbol = symbol;
         this.mass = mass;
@@ -488,39 +559,8 @@ public class Star implements ColorStringObject
      */
     private Star(StarMass mass, StarTemperature temperature)
     {
-        this.name = temperature.getName() + " " + mass.getName();
-        this.color = temperature.getColor();
-        this.symbol = mass.getSymbol();
-        this.mass = mass.getMass();
-        this.radiation = temperature.hasRadiation();
-    }
-
-    /**
-     * Copies a star.
-     *
-     * @param copying the star to copy
-     */
-    public Star(Star copying)
-    {
-        this(copying.name, copying.color, copying.symbol, copying.mass, copying.radiation);
-    }
-
-    /**
-     * Generates a star in the given nebula.
-     *
-     * @param nebula the nebula to generate a star in
-     */
-    public Star(Nebula nebula)
-    {
-        this(generate(nebula));
-    }
-
-    /**
-     * Generates a star.
-     */
-    public Star()
-    {
-        this(generate());
+        this(temperature.getName() + " " + mass.getName(), temperature.getColor(), mass.getSymbol(), mass.getMass(),
+                temperature.hasRadiation());
     }
 
     /**
@@ -531,9 +571,9 @@ public class Star implements ColorStringObject
      */
     public static Star generate(Nebula nebula)
     {
-        if (nebula == null && Utility.getChance(Main.rng, SPECIAL_CHANCE))
+        if (nebula == null && Utility.getChance(rng, SPECIAL_CHANCE))
         {
-            return Main.rng.getRandomElement(SpecialStar.values()).star;
+            return rng.getRandomElement(SpecialStar.values()).star;
         }
 
         StarMass mass = StarMass.select(nebula);
@@ -551,16 +591,32 @@ public class Star implements ColorStringObject
         return generate(null);
     }
 
+    /**
+     * Generates a star name from the constant name arrays.
+     *
+     * @return a star name generated from the constant name arrays
+     * @see #NAME_PREFIX
+     * @see #NAME_MIDDLE
+     * @see #NAME_SUFFIX
+     * @see #NAME_DESCRIPTOR
+     */
+    public static String generateName()
+    {
+        return rng.getRandomElement(NAME_PREFIX) + (rng.nextBoolean() ? rng.getRandomElement(NAME_MIDDLE) : "") +
+               rng.getRandomElement(NAME_SUFFIX) + (rng.nextBoolean() ? " " + rng.getRandomElement(NAME_DESCRIPTOR) :
+                "");
+    }
+
     @Override
     public String toString()
     {
-        return name;
+        return type;
     }
 
     @Override
     public ColorString toColorString()
     {
-        return new ColorString(name, color);
+        return new ColorString(type, color);
     }
 
     /**
@@ -571,6 +627,16 @@ public class Star implements ColorStringObject
     public String getName()
     {
         return name;
+    }
+
+    /**
+     * Gets the type of star.
+     *
+     * @return the type of star
+     */
+    public String getType()
+    {
+        return type;
     }
 
     /**
@@ -623,5 +689,15 @@ public class Star implements ColorStringObject
     public int getSolarPowerAt(int orbit)
     {
         return getPowerAt(orbit) / (StarMass.SUBDWARF.getMass()) + 1;
+    }
+
+    /**
+     * Sets the star's name to the given string.
+     *
+     * @param name the string to become the star's new name
+     */
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

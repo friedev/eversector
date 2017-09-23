@@ -11,10 +11,7 @@ import boldorf.eversector.map.Region.RegionType;
 import squidpony.squidmath.Coord;
 import squidpony.squidmath.MerlinNoise;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static boldorf.eversector.Main.rng;
 import static boldorf.eversector.map.Region.RegionType.*;
@@ -297,6 +294,25 @@ public class Planet implements ColorStringObject
         }
     }
 
+    private final static TreeMap<Integer, String> romanNumeralMap = new TreeMap<Integer, String>();
+
+    static
+    {
+        romanNumeralMap.put(1000, "M");
+        romanNumeralMap.put(900, "CM");
+        romanNumeralMap.put(500, "D");
+        romanNumeralMap.put(400, "CD");
+        romanNumeralMap.put(100, "C");
+        romanNumeralMap.put(90, "XC");
+        romanNumeralMap.put(50, "L");
+        romanNumeralMap.put(40, "XL");
+        romanNumeralMap.put(10, "X");
+        romanNumeralMap.put(9, "IX");
+        romanNumeralMap.put(5, "V");
+        romanNumeralMap.put(4, "IV");
+        romanNumeralMap.put(1, "I");
+    }
+
     /**
      * The amount of hull damage done to ships when mining from asteroid belts.
      */
@@ -363,12 +379,12 @@ public class Planet implements ColorStringObject
     /**
      * Creates a planet with a name, location, and faction.
      *
-     * @param name     the name of the planet
+     * @param place    the place of planets generated before and including this one
      * @param location the location of the planet
      */
-    public Planet(String name, SectorLocation location)
+    public Planet(int place, SectorLocation location)
     {
-        this.name = name;
+        this.name = location.getSector().getStar().getName() + " " + toRomanNumeral(place);
         this.location = location;
         generateType();
 
@@ -397,6 +413,16 @@ public class Planet implements ColorStringObject
         {
             unclaim();
         }
+    }
+
+    private static String toRomanNumeral(int number)
+    {
+        int l = romanNumeralMap.floorKey(number);
+        if (number == l)
+        {
+            return romanNumeralMap.get(number);
+        }
+        return romanNumeralMap.get(l) + toRomanNumeral(number - l);
     }
 
     @Override
