@@ -3,13 +3,12 @@ package boldorf.eversector.map;
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
-import boldorf.eversector.Main;
+import boldorf.eversector.Symbol;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
 import boldorf.eversector.ships.Levels;
 import boldorf.eversector.ships.Ship;
-import boldorf.eversector.Symbol;
 import boldorf.util.Utility;
 
 import java.awt.*;
@@ -22,6 +21,7 @@ import static boldorf.eversector.Main.rng;
 
 /**
  * A location on the map, possibly containing a star system.
+ *
  * @author Boldorf Smokebane
  */
 public class Sector
@@ -47,16 +47,6 @@ public class Sector
      * @see Galaxy#nextTurn() Galaxy#nextTurn()
      */
     public static final int MIN_SHIPS = 4;
-
-    /**
-     * The sector's designation, consisting of two letters, a hyphen, and two numbers.
-     */
-    private String name;
-
-    /**
-     * The sector's randomly-generated nickname. This will not exist if there is no star system in the sector.
-     */
-    private String nickname;
 
     /**
      * The location of the sector on the map.
@@ -101,11 +91,6 @@ public class Sector
     private List<Ship> ships;
 
     /**
-     * All the letters currently assigned to ships as part of their name.
-     */
-    private List<Character> usedLetters;
-
-    /**
      * Creates a sector from a location and nebula.
      *
      * @param location the sector's location
@@ -116,14 +101,6 @@ public class Sector
         this.location = location;
         this.nebula = nebula;
         ships = new LinkedList<>();
-        usedLetters = new LinkedList<>();
-
-        // Generate a name that isn't used
-        do
-        {
-            name = generateName();
-        } while (location.getGalaxy().getDesignations().contains(name));
-        location.getGalaxy().getDesignations().add(name);
     }
 
     /**
@@ -151,7 +128,6 @@ public class Sector
                 generateShips(rng.nextInt(MIN_SHIPS + 1));
             }
 
-            nickname = Main.nameGenerator.generateName(2);
             updateFaction();
         }
         else
@@ -164,27 +140,7 @@ public class Sector
     @Override
     public String toString()
     {
-        return nickname == null ? "Sector " + name : "Sector " + name + " \"" + nickname + "\"";
-    }
-
-    /**
-     * Gets the name of the sector.
-     *
-     * @return the sector's name
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-    /**
-     * Gets the nickname of the sector.
-     *
-     * @return the sector's nickname
-     */
-    public String getNickname()
-    {
-        return nickname;
+        return isEmpty() ? "Empty Sector" : star.getName();
     }
 
     /**
@@ -225,16 +181,6 @@ public class Sector
     public Nebula getNebula()
     {
         return nebula;
-    }
-
-    /**
-     * Gets the list of used letters for ship names.
-     *
-     * @return the list of used letters for ship names
-     */
-    public List<Character> getUsedLetters()
-    {
-        return usedLetters;
     }
 
     /**
@@ -427,16 +373,16 @@ public class Sector
      * Gets the number of stations of the given type controlled by the given faction.
      *
      * @param faction the faction to check
-     * @param type    the type of stations to check for
+     * @param battle  true if the type of station to check for is battle
      * @return the number of stations of the given type controlled by the given faction
      */
-    public int getStationTypesControlledBy(Faction faction, String type)
+    public int getStationTypesControlledBy(Faction faction, boolean battle)
     {
         int stationsClaimed = 0;
 
         for (Station station : stations)
         {
-            if (station != null && station.getFaction() == faction && station.getType().equals(type))
+            if (station != null && station.getFaction() == faction && station.isBattle() == battle)
             {
                 stationsClaimed++;
             }
@@ -461,7 +407,7 @@ public class Sector
         {
             for (Station station : stations)
             {
-                if (station != null && Station.BATTLE.equals(station.getType()))
+                if (station != null && station.isBattle())
                 {
                     return new ColorChar(Symbol.BATTLE_STATION.get());
                 }
@@ -720,10 +666,7 @@ public class Sector
                 j = rng.nextInt(star.getMass());
             } while (planets[j] != null);
 
-            // Make a new planet with the sector's name and i's corresponding
-            // letter, this sector, and j adjusted from a whole number to a
-            // natural number
-            planets[j] = new Planet(generateNameFor(i), new SectorLocation(getLocation(), j + 1));
+            planets[j] = new Planet(i + 1, new SectorLocation(getLocation(), j + 1));
             planets[j].init();
         }
     }
@@ -751,11 +694,7 @@ public class Sector
 
             // There is no need to do a check for if this is a station system,
             // because stations would not otherwise be generated
-
-            // Make a new station with the sector's name and i's corresponding
-            // letter, this sector, and j adjusted from a whole number to a 
-            // natural number
-            stations[j] = new Station(generateNameFor(i), new SectorLocation(getLocation(), j + 1),
+            stations[j] = new Station(new SectorLocation(getLocation(), j + 1),
                     location.getGalaxy().getRandomFaction());
         }
     }
@@ -771,48 +710,11 @@ public class Sector
 
         for (int i = 0; i < nShips; i++)
         {
-            // Make a new ship with the sector's name and i's corresponding
-            // letter, the sector's location, and a random faction
-            Ship ship = new Ship(generateShipName(), new SectorLocation(location, rng.nextInt(star.getMass()) + 1),
+            Ship ship = new Ship(new SectorLocation(location, rng.nextInt(star.getMass()) + 1),
                     location.getGalaxy().getRandomFaction());
             ships.add(ship);
             location.getGalaxy().getShips().add(ship);
         }
-    }
-
-    /**
-     * Generates a name consisting of the sector's name and a letter, whose place is represented by the specified
-     * number.
-     *
-     * @param i the place of the letter in the alphabet to use
-     * @return a String containing the sector's name and the character form of i
-     */
-    public String generateNameFor(int i)
-    {
-        return name + (char) (i + 65);
-    }
-
-    /**
-     * Generates a name for a ship consisting of the sector's name and a random letter not already in use by another
-     * ship.
-     *
-     * @return a String containing the sector's name and a character that has not yet been used for ship names, if
-     * possible
-     */
-    public String generateShipName()
-    {
-        if (usedLetters.size() >= 26)
-        {
-            return generateNameFor(rng.nextInt(26));
-        }
-
-        char letterPlace;
-        do
-        {
-            letterPlace = (char) rng.nextInt(26);
-        } while (usedLetters.contains(letterPlace));
-        usedLetters.add(letterPlace);
-        return generateNameFor(letterPlace);
     }
 
     /**

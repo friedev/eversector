@@ -3,14 +3,12 @@ package boldorf.eversector.map;
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
-import boldorf.eversector.Main;
+import boldorf.eversector.Symbol;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
 import boldorf.eversector.locations.Location;
 import boldorf.eversector.locations.SectorLocation;
 import boldorf.eversector.ships.Ship;
-import boldorf.eversector.Symbol;
-import boldorf.util.NameGenerator;
 import squidpony.squidgrid.Splash;
 import squidpony.squidmath.Coord;
 
@@ -20,7 +18,6 @@ import java.util.List;
 
 import static boldorf.eversector.Main.COLOR_SELECTION_BACKGROUND;
 import static boldorf.eversector.Main.rng;
-import static boldorf.eversector.Names.ORE;
 
 /**
  * A 2D array of sectors representing a galaxy.
@@ -120,11 +117,6 @@ public class Galaxy
     private int turn;
 
     /**
-     * All designations in use as sector names.
-     */
-    private List<String> designations;
-
-    /**
      * Generates a galaxy with the default size.
      */
     public Galaxy()
@@ -142,7 +134,6 @@ public class Galaxy
         sectors = new Sector[size * 2 + 1][size * 2 + 1];
         ships = new LinkedList<>();
         factions = new Faction[rng.nextInt(FACTION_RANGE) + MIN_FACTIONS];
-        designations = new LinkedList<>();
         oreTypes = generateOreTypes();
         turn = -SIMULATED_TURNS;
 
@@ -391,7 +382,8 @@ public class Galaxy
         location = location.setOrbit(location.getSector().getRandomStationOrbit());
 
         Faction faction = location.getStation().getFaction();
-        player = new Ship("Player", location, faction);
+        player = new Ship(location, faction);
+        player.setName("Player");
         player.setAI(null);
     }
 
@@ -431,16 +423,6 @@ public class Galaxy
         }
 
         return rng.nextBoolean() ? sectors[edgeCoord][0] : sectors[edgeCoord][sectors.length - 1];
-    }
-
-    /**
-     * Gets all sector designations.
-     *
-     * @return all sector designations in use
-     */
-    public List<String> getDesignations()
-    {
-        return designations;
     }
 
     /**
@@ -582,8 +564,7 @@ public class Galaxy
 
                     // if (station.getFaction().changeEconomy(-Ship.BASE_VALUE))
                     // {
-                    Ship newShip = new Ship(sector.generateNameFor(rng.nextInt(26)),
-                            new SectorLocation(sector.getLocation(), station.getLocation().getOrbit()),
+                    Ship newShip = new Ship(new SectorLocation(sector.getLocation(), station.getLocation().getOrbit()),
                             station.getFaction());
                     newShip.dock();
                     ships.add(newShip);
@@ -708,16 +689,6 @@ public class Galaxy
 
         for (int i = 0; i < factions.length; i++)
         {
-            String name = Main.nameGenerator.generateName(2);
-
-            // Ensure no factions are of the same type
-            String type = rng.getRandomElement(Faction.TYPES);
-            while (usedTypes.contains(type))
-            {
-                type = rng.getRandomElement(Faction.TYPES);
-            }
-
-            usedTypes.add(type);
             Color color;
             switch (i)
             {
@@ -740,7 +711,7 @@ public class Galaxy
                     color = AsciiPanel.brightWhite;
                     break;
             }
-            factions[i] = new Faction(name, type, this, color);
+            factions[i] = new Faction(this, color);
         }
 
         // If there are only two factions, they will always be at war
@@ -769,15 +740,13 @@ public class Galaxy
     {
         Ore[] ores = new Ore[Math.min(MIN_ORE + rng.nextInt(ORE_RANGE), Ore.DENSITY)];
 
-        NameGenerator oreNames = new NameGenerator(ORE, rng);
-
         int totalDensity = 0;
         for (int i = 0; i < ores.length; i++)
         {
             String name;
             do
             {
-                name = oreNames.generateName(2);
+                name = rng.getRandomElement(Ore.NAME_PREFIX) + rng.getRandomElement(Ore.NAME_SUFFIX);
 
                 // Ensure unique names
                 for (Ore ore : ores)

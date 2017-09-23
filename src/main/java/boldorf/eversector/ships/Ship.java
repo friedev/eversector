@@ -31,6 +31,14 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
  */
 public class Ship implements ColorStringObject, Comparable<Ship>
 {
+    public static final String[] NAME_PREFIX = new String[]{
+            "Death", "Doom", "Ever", "Hyper", "Infini", "Light", "Ultra"
+    };
+
+    public static final String[] NAME_SUFFIX = new String[]{
+            "blade", "hawk", "seeker", "ship", "star", "talon", "voyager", "wing"
+    };
+
     /**
      * The amount of fuel all ships start with.
      */
@@ -42,7 +50,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public static final int ENERGY = 15;
 
     /**
-     * The amount of ore all ships start with.
+     * The amount of ore capacity all ships start with.
      */
     public static final int ORE = 25;
 
@@ -152,15 +160,15 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     private final Resource[] resources;
 
     /**
-     * Creates a ship from a name, location, and faction.
+     * Creates a ship in the given faction at the given location.
      *
-     * @param name     the name of the ship
      * @param location the location of the ship
      * @param faction  the faction the ship belongs to
      */
-    public Ship(String name, Location location, Faction faction)
+    public Ship(Location location, Faction faction)
     {
-        this.name = name;
+        this.name = rng.getRandomElement(NAME_PREFIX) + rng.getRandomElement(NAME_SUFFIX) + "-" + String.format("%02d",
+                rng.nextInt(100));
         this.ai = new AI(this);
         this.location = location;
         this.flags = new ArrayList<>();
@@ -241,14 +249,13 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Creates an unaligned ship from a name and Location.
+     * Creates an unaligned ship.
      *
-     * @param name     the name of the ship
-     * @param location the Location of the ship
+     * @param location the location of the ship
      */
-    public Ship(String name, Location location)
+    public Ship(Location location)
     {
-        this(name, location, null);
+        this(location, null);
     }
 
     @Override
@@ -3139,7 +3146,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public void destroy(boolean print)
     {
-        location.getSector().getUsedLetters().remove((Character) name.charAt(name.length() - 1));
         location.getSector().getShips().remove(this);
 
         if (isDocked())

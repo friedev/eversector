@@ -23,19 +23,26 @@ import static boldorf.eversector.Main.rng;
 public class Station implements ColorStringObject
 {
     /**
-     * The base cost in credits to claim any celestial body.
+     * The descriptors for trade stations.
      */
-    public static final int CLAIM_COST = 250;
+    private static final String[] NAME_TRADE = new String[]{
+            "Factory",
+            "Hub",
+            "Manufactory",
+            "Marketplace",
+            "Vendor"
+    };
 
     /**
-     * The name of a trade station. <b>To be removed in v0.8.</b>
+     * The descriptors for battle stations.
      */
-    public static final String TRADE = "Trade";
-
-    /**
-     * The name of a battle station. <b>To be removed in v0.8.</b>
-     */
-    public static final String BATTLE = "Battle";
+    private static final String[] NAME_BATTLE = new String[]{
+            "Armory",
+            "Arsenal",
+            "Bunker",
+            "Fortress",
+            "Outpost"
+    };
 
     /**
      * The base modules that all stations sell, at their base prices. <b>To be removed in v0.8.</b>
@@ -77,14 +84,19 @@ public class Station implements ColorStringObject
     };
 
     /**
+     * The base cost in credits to claim any celestial body.
+     */
+    public static final int CLAIM_COST = 250;
+
+    /**
      * The name of the station.
      */
     private final String name;
 
     /**
-     * The type of station.
+     * True if the ship is a battle station.
      */
-    private final String type;
+    private final boolean battle;
 
     /**
      * The location of this station.
@@ -112,19 +124,18 @@ public class Station implements ColorStringObject
     private BaseResource[] resources;
 
     /**
-     * Creates a station from a name, location, and faction.
+     * Creates a station owned by the given faction at the given location.
      *
-     * @param name     the name of the station
      * @param location the location of the station
      * @param faction  the faction the station belongs to
      */
-    public Station(String name, SectorLocation location, Faction faction)
+    public Station(SectorLocation location, Faction faction)
     {
-        this.name = name;
         this.location = location;
         this.faction = faction;
         ships = new LinkedList<>();
-        type = generateType();
+        battle = rng.nextBoolean();
+        name = location.getSector().getStar().getName() + " " + rng.getRandomElement(battle ? NAME_BATTLE : NAME_TRADE);
 
         cloneItems();
         generatePrices();
@@ -133,7 +144,7 @@ public class Station implements ColorStringObject
     @Override
     public String toString()
     {
-        return type + " Station " + name;
+        return name;
     }
 
     @Override
@@ -153,13 +164,13 @@ public class Station implements ColorStringObject
     }
 
     /**
-     * Gets the type of station.
+     * Returns true if the station is a battle station.
      *
-     * @return the type of station
+     * @return true if the station is a battle station
      */
-    public String getType()
+    public boolean isBattle()
     {
-        return type;
+        return battle;
     }
 
     /**
@@ -215,7 +226,7 @@ public class Station implements ColorStringObject
      */
     public ColorChar getSymbol()
     {
-        return new ColorChar(BATTLE.equals(type) ? Symbol.BATTLE_STATION.get() : Symbol.TRADE_STATION.get(),
+        return new ColorChar(battle ? Symbol.BATTLE_STATION.get() : Symbol.TRADE_STATION.get(),
                 getFaction().getColor());
     }
 
@@ -234,10 +245,10 @@ public class Station implements ColorStringObject
 
         if (module.isBattle())
         {
-            return BATTLE.equals(type);
+            return battle;
         }
 
-        return TRADE.equals(type);
+        return !battle;
     }
 
     /**
@@ -563,16 +574,6 @@ public class Station implements ColorStringObject
         }
 
         return copy;
-    }
-
-    /**
-     * Randomly selects the station's type.
-     *
-     * @return the generated type, will be non-null
-     */
-    private String generateType()
-    {
-        return rng.nextBoolean() ? TRADE : BATTLE;
     }
 
     /**
