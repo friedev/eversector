@@ -874,9 +874,8 @@ public class AI
             return false;
         }
 
-        boolean playerInBattle =
-                ship.getLocation().getGalaxy().getPlayer() != null && ship.getBattleLocation().getShips().contains(
-                        ship.getLocation().getGalaxy().getPlayer());
+        Ship player = ship.getLocation().getGalaxy().getPlayer();
+        boolean playerInBattle = player != null && ship.getBattleLocation().getShips().contains(player);
 
         if (!willAttack())
         {
@@ -884,35 +883,60 @@ public class AI
             {
                 ship.changeResourceBy(Action.FLEE);
                 battle.getFleeing().add(ship);
-                target.addPlayerColorMessage(ship.toColorString().add(" attempts to flee."));
+                if (playerInBattle)
+                {
+                    player.addPlayerColorMessage(ship.toColorString().add(" attempts to flee."));
+                }
                 return false;
             }
 
-            ship.destroy(playerInBattle);
+            battle.getSurrendered().add(ship);
+            if (playerInBattle)
+            {
+                player.addPlayerColorMessage(ship.toColorString().add(" surrenders."));
+            }
             return false;
         }
 
         if (!ship.isShielded() && ship.toggleActivation(Action.SHIELD))
         {
-            target.addPlayerColorMessage(ship.toColorString().add(" activates a shield."));
+            if (playerInBattle)
+            {
+                player.addPlayerColorMessage(ship.toColorString().add(" activates a shield."));
+            }
             // No return since shielding is a free action
         }
 
         if (ship.canFire(Action.PULSE, target))
         {
-            target.addPlayerColorMessage(ship.toColorString().add(" fires a pulse beam."));
+            if (playerInBattle)
+            {
+                player.addPlayerColorMessage(ship.toColorString()
+                                                 .add(" fires a pulse beam at " +
+                                                      (target == player ? "you" : target.toString()) + "."));
+            }
             target.playPlayerSound(Paths.PULSE);
             ship.fire(Action.PULSE, target);
         }
         else if (ship.canFire(ship.getWeapon(Action.TORPEDO.getName()), target))
         {
-            target.addPlayerColorMessage(ship.toColorString().add(" fires a torpedo."));
+            if (playerInBattle)
+            {
+                player.addPlayerColorMessage(ship.toColorString()
+                                                 .add(" fires a torpedo at " +
+                                                      (target == player ? "you" : target.toString()) + "."));
+            }
             target.playPlayerSound(Paths.TORPEDO);
             ship.fire(Action.TORPEDO, target);
         }
         else if (ship.canFire(Action.LASER, target))
         {
-            target.addPlayerColorMessage(ship.toColorString().add(" fires a laser."));
+            if (playerInBattle)
+            {
+                player.addPlayerColorMessage(ship.toColorString()
+                                                 .add(" fires a laser at " +
+                                                      (target == player ? "you" : target.toString()) + "."));
+            }
             target.playPlayerSound(Paths.LASER);
             ship.fire(Action.LASER, target);
         }
@@ -923,15 +947,25 @@ public class AI
             {
                 if (!ship.isCloaked() && ship.toggleActivation(Action.CLOAK))
                 {
-                    target.addPlayerColorMessage(ship.toColorString().add(" activates a cloaking device."));
+                    if (playerInBattle)
+                    {
+                        player.addPlayerColorMessage(ship.toColorString().add(" activates a cloaking device."));
+                    }
                     // No return since cloaking is a free action
                 }
 
-                target.addPlayerColorMessage(ship.toColorString().add(" attempts to flee."));
+                if (playerInBattle)
+                {
+                    player.addPlayerColorMessage(ship.toColorString().add(" attempts to flee."));
+                }
                 return false;
             }
 
-            ship.destroy(playerInBattle);
+            battle.getSurrendered().add(ship);
+            if (playerInBattle)
+            {
+                player.addPlayerColorMessage(ship.toColorString().add(" surrenders."));
+            }
             return false;
         }
 

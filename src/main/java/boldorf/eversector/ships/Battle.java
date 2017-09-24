@@ -31,6 +31,11 @@ public class Battle
     private List<Ship> fleeing;
 
     /**
+     * The ships that have surrendered to the other side.
+     */
+    private List<Ship> surrendered;
+
+    /**
      * All ships that have been destroyed in the battle.
      */
     private List<Ship> destroyed;
@@ -46,6 +51,7 @@ public class Battle
         this.attackers = attackers;
         this.defenders = defenders;
         this.fleeing = new LinkedList<>();
+        this.surrendered = new LinkedList<>();
         this.destroyed = new LinkedList<>();
     }
 
@@ -62,6 +68,7 @@ public class Battle
         defenders = new LinkedList<>();
         defenders.add(defender);
         fleeing = new LinkedList<>();
+        surrendered = new LinkedList<>();
         destroyed = new LinkedList<>();
     }
 
@@ -93,6 +100,16 @@ public class Battle
     public List<Ship> getFleeing()
     {
         return fleeing;
+    }
+
+    /**
+     * Gets the ships that have surrendered to the other side.
+     *
+     * @return ships that have surrendered to the other side
+     */
+    public List<Ship> getSurrendered()
+    {
+        return surrendered;
     }
 
     /**
@@ -151,7 +168,8 @@ public class Battle
      */
     public boolean continues()
     {
-        return !attackers.isEmpty() && !defenders.isEmpty();
+        return !attackers.isEmpty() && !defenders.isEmpty() && !surrendered.containsAll(attackers) &&
+               !surrendered.containsAll(defenders);
     }
 
     /**
@@ -166,12 +184,12 @@ public class Battle
         int size = Math.max(attackers.size(), defenders.size());
         for (int i = 0; i < size; i++)
         {
-            if (attackers.size() >= i + 1 && !attackers.get(i).isDestroyed() && attackers.get(i).getAI() != null)
+            if (attackers.size() >= i + 1 && shipCanAttack(attackers.get(i)))
             {
                 attackMade = attackMade || attackers.get(i).getAI().performBattleAction();
             }
 
-            if (defenders.size() >= i + 1 && !defenders.get(i).isDestroyed() && defenders.get(i).getAI() != null)
+            if (defenders.size() >= i + 1 && shipCanAttack(defenders.get(i)))
             {
                 attackMade = attackMade || defenders.get(i).getAI().performBattleAction();
             }
@@ -185,11 +203,23 @@ public class Battle
                 attackers.remove(ship);
                 defenders.remove(ship);
                 fleeing.remove(ship);
+                surrendered.remove(ship);
                 destroyed.add(ship);
             }
         }
 
         return attackMade;
+    }
+
+    /**
+     * Returns true if the given ship can attack.
+     *
+     * @param ship the ship to check
+     * @return true if the given ship can attack
+     */
+    private boolean shipCanAttack(Ship ship)
+    {
+        return !ship.isDestroyed() && !surrendered.contains(ship) && ship.getAI() != null;
     }
 
     /**
@@ -303,16 +333,58 @@ public class Battle
      */
     public void distributeLoot()
     {
-        List<Ship> winners = getShips();
+        List<Ship> winners = null;
 
-        if (winners == null || winners.isEmpty())
+        for (Ship ship : attackers)
+        {
+            if (!surrendered.contains(ship))
+            {
+                winners = attackers;
+            }
+        }
+
+        if (winners == null)
+        {
+            for (Ship ship : defenders)
+            {
+                if (!surrendered.contains(ship))
+                {
+                    winners = defenders;
+                }
+            }
+        }
+
+        if (winners == null)
         {
             return;
         }
 
-        for (int i = 0; i < destroyed.size(); i++)
+        List<Ship> looting = destroyed;
+        for (Ship ship : surrendered)
         {
-            winners.get(i % winners.size()).loot(destroyed.get(i));
+            if (!winners.contains(ship))
+            {
+                looting.add(ship);
+            }
+        }
+
+        int looterIndex = 0;
+        for (Ship lootedShip : looting)
+        {
+            Ship looter = winners.get(looterIndex);
+
+            while (surrendered.contains(looter))
+            {
+                looterIndex++;
+                if (looterIndex >= winners.size())
+                {
+                    looterIndex = 0;
+                }
+
+                looter = winners.get(looterIndex);
+            }
+
+            looter.loot(lootedShip);
         }
     }
 
@@ -332,6 +404,7 @@ public class Battle
         attackers.clear();
         defenders.clear();
         fleeing.clear();
+        surrendered.clear();
         destroyed.clear();
     }
 

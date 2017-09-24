@@ -58,6 +58,7 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
         {
             playSoundEffect(MINE);
         }
+        
         Main.galaxy.nextTurn();
         return null;
     }

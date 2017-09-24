@@ -1,5 +1,6 @@
 package boldorf.eversector.screens;
 
+import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.*;
 import boldorf.apwt.windows.AlignedMenu;
@@ -13,6 +14,7 @@ import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import squidpony.squidmath.Coord;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,6 +31,8 @@ import static boldorf.eversector.Paths.SCAN;
  */
 public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
+    public static final Color COLOR_SURRENDERED = AsciiPanel.brightBlack;
+
     /**
      * The screen temporarily displayed over and overriding all others.
      */
@@ -372,7 +376,12 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             for (Ship ally : battle.getAllies(player))
             {
                 getMenu().getRestrictions().add(index);
-                contents.add(ally.toColorString());
+                ColorString allyString = ally.toColorString();
+                if (battle.getSurrendered().contains(ally))
+                {
+                    allyString.setForeground(COLOR_SURRENDERED);
+                }
+                contents.add(allyString);
                 index++;
             }
 
@@ -386,7 +395,12 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         for (Ship enemy : battle.getEnemies(player))
         {
             getMenu().getRestrictions().add(index);
-            contents.add(enemy.toColorString());
+            ColorString enemyString = enemy.toColorString();
+            if (battle.getSurrendered().contains(enemy))
+            {
+                enemyString.setForeground(COLOR_SURRENDERED);
+            }
+            contents.add(enemyString);
             index++;
         }
 
