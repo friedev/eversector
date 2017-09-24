@@ -265,12 +265,6 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
         return popup;
     }
 
-    @Override
-    public boolean hasPopup()
-    {
-        return popup != null;
-    }
-
     /**
      * Returns true if the player is looking with the cursor.
      *

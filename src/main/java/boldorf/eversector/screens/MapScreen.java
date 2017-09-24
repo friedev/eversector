@@ -210,12 +210,6 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
         return popup;
     }
 
-    @Override
-    public boolean hasPopup()
-    {
-        return popup != null;
-    }
-
     /**
      * Returns true if the player is looking around the map.
      *

@@ -21,5 +21,8 @@ public interface PopupMaster
      *
      * @return true if the screen is currently displaying a popup scren
      */
-    boolean hasPopup();
+    default boolean hasPopup()
+    {
+        return getPopup() != null;
+    }
 }
