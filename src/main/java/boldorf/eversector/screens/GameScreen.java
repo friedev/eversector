@@ -541,6 +541,12 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         else
         {
             Ship leader = playerFaction.getLeader();
+
+            if (leader == null)
+            {
+                leaderString.add("None");
+            }
+
             ReputationRange reputation = leader.getReputation(playerFaction).getRange();
 
             leaderString.add(new ColorString(leader.toString(), COLOR_FIELD)).add(

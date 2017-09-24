@@ -122,7 +122,7 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
                 System.exit(1);
             }
 
