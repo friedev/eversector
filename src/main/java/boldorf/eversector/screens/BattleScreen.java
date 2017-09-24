@@ -109,6 +109,12 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         switch (key.getKeyCode())
         {
             case KeyEvent.VK_L:
+                if (battle.getSurrendered().contains(player))
+                {
+                    addError("You may not attack after surrendering,");
+                    break;
+                }
+
                 if (isOpponent && player.fire(Action.LASER, selected))
                 {
                     nextAttack = true;
@@ -116,6 +122,12 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 }
                 break;
             case KeyEvent.VK_T:
+                if (battle.getSurrendered().contains(player))
+                {
+                    addError("You may not attack after surrendering,");
+                    break;
+                }
+
                 if (isOpponent && player.fire(Action.TORPEDO, selected))
                 {
                     nextAttack = true;
@@ -123,14 +135,34 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 }
                 break;
             case KeyEvent.VK_P:
+                if (battle.getSurrendered().contains(player))
+                {
+                    addError("You may not attack after surrendering,");
+                    break;
+                }
+
                 if (isOpponent && player.fire(Action.PULSE, selected))
                 {
                     nextAttack = true;
                     playSoundEffect(Paths.PULSE);
                 }
                 break;
+            case KeyEvent.VK_S:
+                if (selected != player && !scanning.contains(selected) && player.scan())
+                {
+                    nextAttack = true;
+                    scanning.add(selected);
+                    playSoundEffect(SCAN);
+                }
+                break;
             case KeyEvent.VK_F:
             {
+                if (battle.getSurrendered().contains(player))
+                {
+                    addError("You may not flee after surrendering,");
+                    break;
+                }
+
                 Action flee = Action.FLEE;
 
                 if (!player.validateResources(flee, "flee"))
@@ -147,13 +179,10 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 nextAttack = true;
                 break;
             }
-            case KeyEvent.VK_S:
-                if (selected != player && !scanning.contains(selected) && player.scan())
-                {
-                    nextAttack = true;
-                    scanning.add(selected);
-                    playSoundEffect(SCAN);
-                }
+            case KeyEvent.VK_U:
+                addMessage("You surrender.");
+                battle.getSurrendered().add(player);
+                nextAttack = true;
                 break;
             /*
             case KeyEvent.VK_C:
@@ -190,22 +219,6 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 }
                 break;
             }
-            case KeyEvent.VK_U:
-            {
-                if (!opponent.willAttack())
-                {
-                    addColorMessage(opponent.toColorString()
-                            .add(" uses this opportunity to escape."));
-                    return endBattle();
-                }
-
-                if (opponent.willConvert() && opponent.convert(player))
-                    return endBattle();
-                
-                return new EndScreen(opponent.toColorString()
-                    .add(" strips your ship of its components and departs."),
-                        true);
-            }
             */
             case KeyEvent.VK_PERIOD:
             case KeyEvent.VK_SPACE:
@@ -218,6 +231,19 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
 
         if (nextAttack)
         {
+            if (!battle.continues())
+            {
+                battle.distributeLoot();
+                battle.endBattle();
+
+                if (player.isDestroyed())
+                {
+                    return new EndScreen(new ColorString("You have been destroyed."), true, false);
+                }
+
+                return endBattle();
+            }
+
             battle.processAttacks();
 
             if (player.isDestroyed())
@@ -335,7 +361,11 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         {
             keybindings.add(new Keybinding("scan selected ship", "s"));
         }
-        keybindings.add(new Keybinding("flee", "f"));
+        if (player.validateResources(Action.FLEE, "flee", false))
+        {
+            keybindings.add(new Keybinding("flee", "f"));
+        }
+        keybindings.add(new Keybinding("surrender", "u"));
         return keybindings;
     }
 

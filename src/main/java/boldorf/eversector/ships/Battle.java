@@ -384,6 +384,7 @@ public class Battle
                 looter = winners.get(looterIndex);
             }
 
+            lootedShip.destroy(false);
             looter.loot(lootedShip);
         }
     }

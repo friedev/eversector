@@ -2671,8 +2671,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         {
             if (print)
             {
-                addPlayerError("Insufficient " + resource.getName().toLowerCase() + " reserves to " + actionString + "; " +
-                               "have " + resource.getAmount() + ", need " + cost + ".");
+                addPlayerError(
+                        "Insufficient " + resource.getName().toLowerCase() + " reserves to " + actionString + "; " +
+                        "have " + resource.getAmount() + ", need " + cost + ".");
             }
             return false;
         }
@@ -3197,6 +3198,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public void destroy(boolean print)
     {
+        if (isDestroyed())
+        {
+            return;
+        }
+
         location.getSector().getShips().remove(this);
 
         if (isDocked())
