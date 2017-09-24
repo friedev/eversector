@@ -111,7 +111,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             case KeyEvent.VK_L:
                 if (battle.getSurrendered().contains(player))
                 {
-                    addError("You may not attack after surrendering,");
+                    addError("You may not attack after surrendering.");
                     break;
                 }
 
@@ -124,7 +124,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             case KeyEvent.VK_T:
                 if (battle.getSurrendered().contains(player))
                 {
-                    addError("You may not attack after surrendering,");
+                    addError("You may not attack after surrendering.");
                     break;
                 }
 
@@ -137,7 +137,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             case KeyEvent.VK_P:
                 if (battle.getSurrendered().contains(player))
                 {
-                    addError("You may not attack after surrendering,");
+                    addError("You may not attack after surrendering.");
                     break;
                 }
 
@@ -159,7 +159,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             {
                 if (battle.getSurrendered().contains(player))
                 {
-                    addError("You may not flee after surrendering,");
+                    addError("You may not flee after surrendering.");
                     break;
                 }
 

@@ -384,6 +384,15 @@ public class Battle
                 looter = winners.get(looterIndex);
             }
 
+            if (lootedShip.isLeader() && looter.getFaction() == lootedShip.getFaction())
+            {
+                looter.getFaction().setLeader(looter);
+                looter.getFaction().addNews(looter.toColorString()
+                                                  .add(" has destroyed our leader, ")
+                                                  .add(lootedShip)
+                                                  .add(", and taken control of the faction."));
+            }
+
             lootedShip.destroy(false);
             looter.loot(lootedShip);
         }
