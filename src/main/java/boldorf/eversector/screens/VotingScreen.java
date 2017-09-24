@@ -43,9 +43,8 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
     @Override
     public Screen onConfirm()
     {
-        String shipString = getMenu().getSelection().toString();
-        pendingElection.addVote(shipString.substring(0, shipString.indexOf(" (")));
-        return onCancel();
+        String selection = getMenu().getSelection().toString();
+        return new VotingConfirmScreen(getMenu(), pendingElection, selection);
     }
 
     @Override
