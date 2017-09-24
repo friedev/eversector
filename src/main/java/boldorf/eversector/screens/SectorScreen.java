@@ -159,18 +159,6 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (player.canMine(false) && player.isDangerousToMine())
-                {
-                    popup = new AsteroidMineConfirmScreen();
-                    break;
-                }
-                else if (player.mine())
-                {
-                    playSoundEffect(MINE);
-                    nextTurn = true;
-                    break;
-                }
-
                 Planet planet = player.getSectorLocation().getPlanet();
                 if (planet == null)
                 {
@@ -180,10 +168,19 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 
                 if (planet.getType().canMineFromOrbit())
                 {
-                    break;
+                    if (player.canMine(false) && player.isDangerousToMine())
+                    {
+                        popup = new AsteroidMineConfirmScreen();
+                        break;
+                    }
+                    else if (player.mine(true))
+                    {
+                        playSoundEffect(MINE);
+                        nextTurn = true;
+                        break;
+                    }
                 }
-
-                if (player.canLand())
+                else if (player.canLand())
                 {
                     popup = new LandScreen();
                 }
