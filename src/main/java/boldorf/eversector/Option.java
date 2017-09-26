@@ -38,9 +38,9 @@ public enum Option
     KEEP_SEED("Keep Seed", false, false),
 
     /**
-     * The font used on the game's AsciiPanel. The value of this option refers to an index in Tileset.
+     * The font used on the game's AsciiPanel. The value of this option refers to the index of Main.fonts.
      *
-     * @see Tileset
+     * @see Main#fonts
      */
     FONT("Font", 0, true),
 

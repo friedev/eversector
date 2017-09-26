@@ -6,12 +6,18 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.Mine;
 
+import java.awt.event.KeyEvent;
+
+import static boldorf.eversector.Main.addError;
 import static boldorf.eversector.Main.playSoundEffect;
-import static boldorf.eversector.Paths.*;
+import static boldorf.eversector.Paths.DEATH;
 
 /**
  * The prompt presented when the player is attempting to mine a potentially destructive asteroid.
+ *
+ * @author Dale Campbell
  */
 public class AsteroidMineConfirmScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
@@ -28,6 +34,7 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
         super(Main.display);
         window = new PopupWindow(Main.display);
         window.getContents().add(new ColorString("Your hull is dangerously low; attempt to mine the asteroid?"));
+        getConfirmCodes().remove((Integer) KeyEvent.VK_ENTER);
     }
 
     @Override
@@ -45,18 +52,18 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
     @Override
     public Screen onConfirm()
     {
-        if (!Main.player.mine())
+        String mineExecution = new Mine().execute(Main.player);
+        if (mineExecution != null)
+        {
+            addError(mineExecution);
             return null;
+        }
 
         if (Main.player.isDestroyed())
         {
             playSoundEffect(DEATH);
             return new EndScreen(new ColorString("You collide with the asteroid, which breaches your hull!"), true,
                     false);
-        }
-        else
-        {
-            playSoundEffect(MINE);
         }
         
         Main.galaxy.nextTurn();

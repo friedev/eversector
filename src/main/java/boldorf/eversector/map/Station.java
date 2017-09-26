@@ -3,11 +3,12 @@ package boldorf.eversector.map;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
+import boldorf.eversector.Paths;
+import boldorf.eversector.Symbol;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.items.*;
 import boldorf.eversector.locations.SectorLocation;
 import boldorf.eversector.ships.Ship;
-import boldorf.eversector.Symbol;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,23 +41,22 @@ public class Station implements ColorStringObject
      * The base modules that all stations sell, at their base prices. <b>To be removed in v0.8.</b>
      */
     public static final Module[] MODULES = new Module[]{
-            new Module("Scanner", "Reveals locations from a distance.", 150, false, new Action(Resource.ENERGY, 3)),
-            new Module("Refinery", "Can convert ore into fuel at a 1:1 ratio.", 250, false,
-                    new Action(Resource.ENERGY, 1)),
-            new Module("Solar Array", "Passively generates energy each turn based on solar proximity.", 250, false,
-                    new Action(Resource.ENERGY, 1)),
-            new Module("Warp Drive", "Facilitates long-range sector jumps powered by energy.", 400, false,
-                    new Action(Resource.ENERGY, 15)),
-            new Module("Shield", "When active, halves damage from oncoming energy weapon fire.", 200, true,
-                    Ship.SHIELDED, new Action(Resource.ENERGY, 2)),
-            new Module("Cloaking Device", "When active, renders the ship impossible to track.", 300, true, Ship.CLOAKED,
-                    new Action(Resource.ENERGY, 2)),
-            new Weapon("Laser", "A focused laser used to cut open enemy hulls.", 100, 2,
-                    new Action(Resource.ENERGY, 2)),
-            new Weapon("Torpedo Tube", "Fires guided torpedoes capable of bypassing energy shields.", 200, 4,
-                    new Action(Resource.FUEL, 2)),
-            new Weapon("Pulse Beam", "A devastating laser capable of ripping through weak ships.", 500, 7,
-                    new Action(Resource.ENERGY, 10))
+            new Module(Module.SCANNER, "Reveals locations from a distance.", 150, false, Resource.ENERGY, 3),
+            new Module(Module.REFINERY, "Can convert ore into fuel at a 1:1 ratio.", 250, false, Resource.ENERGY, 1),
+            new Module(Module.SOLAR_ARRAY, "Passively generates energy each turn based on solar proximity.", 250, false,
+                    Resource.ENERGY, -1),
+            new Module(Module.WARP_DRIVE, "Facilitates long-range sector jumps powered by energy" + ".", 400, false,
+                    Resource.ENERGY, 15),
+            new Module(Module.SHIELD, "When active, halves damage from oncoming energy weapon fire.", 200, true,
+                    Ship.SHIELDED, Resource.ENERGY, 2),
+            new Module(Module.CLOAKING_DEVICE, "When active, renders the ship impossible to track.", 300, true,
+                    Ship.CLOAKED, Resource.ENERGY, 2),
+            new Weapon(Weapon.LASER, "A focused laser used to cut open enemy hulls" + ".", 100, 2, Resource.ENERGY,
+                    2, Paths.LASER),
+            new Weapon(Weapon.TORPEDO_TUBE, "Fires guided torpedoes capable of bypassing energy " + "shields.", 200, 4,
+                    Resource.FUEL, 2, Paths.TORPEDO),
+            new Weapon(Weapon.PULSE_BEAM, "A devastating laser capable of ripping through weak ships" + ".", 500, 7,
+                    Resource.ENERGY, 10, Paths.PULSE)
     };
 
     /**

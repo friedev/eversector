@@ -9,10 +9,12 @@ import java.util.Properties;
  */
 public class Module extends Item
 {
-    /**
-     * The action that the module can perform.
-     */
-    private final Action action;
+    public static final String SCANNER = "Scanner";
+    public static final String REFINERY = "Refinery";
+    public static final String SOLAR_ARRAY = "Solar Array";
+    public static final String WARP_DRIVE = "Warp Drive";
+    public static final String SHIELD = "Shield ";
+    public static final String CLOAKING_DEVICE = "Cloaking Device";
 
     /**
      * True if the module is sold at a battle station.
@@ -30,36 +32,63 @@ public class Module extends Item
     private boolean isDamaged;
 
     /**
-     * Creates a new module with a name, description, value, and action.
-     *
-     * @param name        the name of the module
-     * @param description the description of the module
-     * @param value       the value of the module
-     * @param battle      if the module is sold at battle stations
-     * @param effect      the effect the module applies when activated
-     * @param action      the action that the module can perform
+     * The resource required for the module's action.
      */
-    public Module(String name, String description, int value, boolean battle, String effect, Action action)
+    private String actionResource;
+
+    /**
+     * The amount of the resource required for the module's action.
+     */
+    private int actionCost;
+
+    /**
+     * Creates a new module with all fields defined.
+     *
+     * @param name           the name of the module
+     * @param description    the description of the module
+     * @param value          the value of the module
+     * @param battle         if the module is sold at battle stations
+     * @param effect         the effect the module applies when activated
+     * @param actionResource the resource required for the module's action
+     * @param actionCost     he amount of the resource required for the module's action
+     */
+    public Module(String name, String description, int value, boolean battle, String effect, String actionResource,
+                  int actionCost)
     {
         super(name, description, value);
-        this.action = action;
         this.battle = battle;
         this.effect = effect;
         this.isDamaged = false;
+        this.actionResource = actionResource;
+        this.actionCost = actionCost;
     }
 
     /**
-     * Creates a new module with a name, description, value, and action.
+     * Creates a new module with no effect.
+     *
+     * @param name           the name of the module
+     * @param description    the description of the module
+     * @param value          the value of the module
+     * @param battle         if the module is sold at battle stations
+     * @param actionResource the resource required for the module's action
+     * @param actionCost     he amount of the resource required for the module's action
+     */
+    public Module(String name, String description, int value, boolean battle, String actionResource, int actionCost)
+    {
+        this(name, description, value, battle, null, actionResource, actionCost);
+    }
+
+    /**
+     * Creates a new module with no effect or action.
      *
      * @param name        the name of the module
      * @param description the description of the module
      * @param value       the value of the module
      * @param battle      if the module is sold at battle stations
-     * @param action      the action that the module can perform
      */
-    public Module(String name, String description, int value, boolean battle, Action action)
+    public Module(String name, String description, int value, boolean battle)
     {
-        this(name, description, value, battle, null, action);
+        this(name, description, value, battle, null, null, 0);
     }
 
     /**
@@ -70,7 +99,7 @@ public class Module extends Item
     public Module(Module copying)
     {
         this(copying.getName(), copying.getDescription(), copying.getValue(), copying.battle, copying.effect,
-                copying.action);
+                copying.actionResource, copying.actionCost);
     }
 
     /**
@@ -81,28 +110,11 @@ public class Module extends Item
     public Module(Properties properties)
     {
         super(properties);
-        String resource = properties.getProperty("resource");
-        if (resource == null)
-        {
-            throw new NullPointerException("Empty resource field found while generating modules.");
-        }
-
-        int cost = Math.abs(Integer.parseInt(properties.getProperty("cost")));
-
-        action = new Action(resource, cost);
+        actionResource = properties.getProperty("resource");
+        actionCost = Math.abs(Integer.parseInt(properties.getProperty("cost")));
         battle = "true".equals(properties.getProperty("battle"));
         effect = properties.getProperty("effect");
         isDamaged = false;
-    }
-
-    /**
-     * Returns the action the module can perform.
-     *
-     * @return the action the module can perform
-     */
-    public Action getAction()
-    {
-        return action;
     }
 
     /**
@@ -154,6 +166,26 @@ public class Module extends Item
     public boolean isDamaged()
     {
         return isDamaged;
+    }
+
+    /**
+     * Gets the resource required for the module's action.
+     *
+     * @return the resource required for the module's action
+     */
+    public String getActionResource()
+    {
+        return actionResource;
+    }
+
+    /**
+     * Gets the amount of the resource required for the module's action.
+     *
+     * @return the amount of the resource required for the module's action
+     */
+    public int getActionCost()
+    {
+        return actionCost;
     }
 
     /**

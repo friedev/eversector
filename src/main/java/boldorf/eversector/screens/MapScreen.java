@@ -10,7 +10,9 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
-import boldorf.eversector.items.Action;
+import boldorf.eversector.actions.Burn;
+import boldorf.eversector.actions.Enter;
+import boldorf.eversector.actions.Warp;
 import boldorf.util.Utility;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
@@ -20,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.ENGINE;
-import static boldorf.eversector.Paths.WARP;
 
 /**
  * The screen for viewing and navigating the galactic map.
@@ -98,17 +98,22 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
                 }
                 return this;
             }
-            else if (player.burn(direction))
+            else
             {
-                nextTurn = true;
-                playSoundEffect(ENGINE);
-            }
-            else if (player.getLocation().move(direction) == null)
-            {
-                if (player.getResource(Action.BURN.getResource()).getAmount() >= Action.BURN.getCost())
+                String burnExecution = new Burn(direction).execute(player);
+                if (burnExecution == null)
+                {
+                    nextTurn = true;
+                }
+                else if (player.getLocation().move(direction) == null && player.validateResources(Burn.RESOURCE,
+                        -Burn.COST, "burn") == null)
                 {
                     popup = new IntergalacticScreen();
                     return this;
+                }
+                else
+                {
+                    addError(burnExecution);
                 }
             }
         }
@@ -126,10 +131,14 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
                 case KeyEvent.VK_ENTER:
                     if (warping)
                     {
-                        if (player.warpTo(cursor))
+                        String warpExecution = new Warp(cursor).execute(player);
+                        if (warpExecution == null)
                         {
                             nextTurn = true;
-                            playSoundEffect(WARP);
+                        }
+                        else
+                        {
+                            addError(warpExecution);
                         }
                         warping = false;
                         cursor = null;
@@ -153,14 +162,18 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_ENTER:
-                    if (player.enter())
+                    String enterExecution = new Enter().execute(player);
+                    if (enterExecution == null)
                     {
                         nextTurn = true;
                         nextScreen = new SectorScreen();
+                        break;
                     }
+
+                    addError(enterExecution);
                     break;
                 case KeyEvent.VK_W:
-                    if (!player.hasModule(Action.WARP))
+                    if (!player.hasModule(Warp.MODULE))
                     {
                         break;
                     }
@@ -191,7 +204,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
         keybindings.add(new Keybinding("enter a sector", "enter"));
         keybindings.add(new Keybinding("look", "l"));
         keybindings.add(new Keybinding("toggle star view", "v"));
-        if (player.hasModule(Action.WARP))
+        if (player.hasModule(Warp.MODULE))
         {
             keybindings.add(new Keybinding("warp to any sector", "w"));
         }

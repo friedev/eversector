@@ -1,5 +1,8 @@
 package boldorf.eversector.ships;
 
+import boldorf.eversector.actions.Action;
+import boldorf.eversector.actions.Fire;
+import boldorf.eversector.actions.Loot;
 import boldorf.eversector.locations.SectorLocation;
 
 import java.util.ArrayList;
@@ -186,12 +189,16 @@ public class Battle
         {
             if (attackers.size() >= i + 1 && shipCanAttack(attackers.get(i)))
             {
-                attackMade = attackMade || attackers.get(i).getAI().performBattleAction();
+                Action action = attackers.get(i).getAI().performBattleAction();
+                attackMade = attackMade || action.executeBool(attackers.get(i));
+                updateReputation(attackers.get(i), action);
             }
 
             if (defenders.size() >= i + 1 && shipCanAttack(defenders.get(i)))
             {
-                attackMade = attackMade || defenders.get(i).getAI().performBattleAction();
+                Action action = defenders.get(i).getAI().performBattleAction();
+                attackMade = attackMade || action.executeBool(defenders.get(i));
+                updateReputation(defenders.get(i), action);
             }
         }
 
@@ -209,6 +216,28 @@ public class Battle
         }
 
         return attackMade;
+    }
+
+    private void updateReputation(Ship attacker, Action attack)
+    {
+        if (!(attack instanceof Fire))
+            return;
+
+        Ship defender = ((Fire) attack).getTarget();
+
+        if (defender.isDestroyed())
+        {
+            if (attacker.isPassive(defender))
+            {
+                attacker.changeReputation(attacker.getFaction(), Reputation.KILL_ALLY);
+            }
+            else
+            {
+                attacker.changeReputation(attacker.getFaction(), Reputation.KILL_ENEMY);
+            }
+
+            attacker.changeReputation(defender.getFaction(), Reputation.KILL_ALLY);
+        }
     }
 
     /**
@@ -394,7 +423,7 @@ public class Battle
             }
 
             lootedShip.destroy(false);
-            looter.loot(lootedShip);
+            new Loot(lootedShip).execute(looter);
         }
     }
 

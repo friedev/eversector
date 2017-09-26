@@ -7,7 +7,6 @@ import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.screens.Screen;
 import boldorf.eversector.faction.Election;
 import boldorf.eversector.faction.RelationshipChange;
-import boldorf.eversector.items.Action;
 import boldorf.eversector.map.Galaxy;
 import boldorf.eversector.screens.GameScreen;
 import boldorf.eversector.screens.StartScreen;
@@ -172,8 +171,6 @@ public class Main
             Option.options = new Properties();
         }
 
-        Action.initItems();
-
         List<ColorString> startMessages = startGame();
 
         int fontIndex = Option.FONT.toInt();
@@ -299,6 +296,11 @@ public class Main
      */
     public static void addColorMessage(ColorString message)
     {
+        if (message == null)
+        {
+            return;
+        }
+
         Screen currentScreen = display.getScreen();
         if (currentScreen instanceof GameScreen)
         {
@@ -313,6 +315,11 @@ public class Main
      */
     public static void addError(String error)
     {
+        if (error == null)
+        {
+            return;
+        }
+
         addColorMessage(new ColorString(error, COLOR_ERROR));
     }
 
@@ -323,6 +330,11 @@ public class Main
      */
     public static void addMessage(String message)
     {
+        if (message == null)
+        {
+            return;
+        }
+
         addColorMessage(new ColorString(message));
     }
 

@@ -6,10 +6,10 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.Dock;
 import boldorf.eversector.map.Station;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.CLAIM;
 
 /**
  * The prompt to claim a station when it is under the control of a hostile faction.
@@ -53,8 +53,7 @@ public class ClaimStationScreen extends ConfirmationScreen implements WindowScre
     @Override
     public Screen onConfirm()
     {
-        player.dock();
-        playSoundEffect(CLAIM);
+        new Dock().execute(player);
         galaxy.nextTurn();
         return new StationScreen();
     }

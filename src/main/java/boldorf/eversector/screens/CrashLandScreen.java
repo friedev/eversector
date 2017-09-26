@@ -6,6 +6,7 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.CrashLand;
 
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
@@ -49,7 +50,7 @@ public class CrashLandScreen extends ConfirmationScreen implements WindowScreen<
     @Override
     public Screen onConfirm()
     {
-        if (player.crashLand())
+        if (new CrashLand().executeBool(player))
         {
             if (player.isDestroyed())
             {

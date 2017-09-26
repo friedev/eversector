@@ -6,7 +6,7 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import boldorf.eversector.items.Action;
+import boldorf.eversector.actions.Burn;
 
 import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.Main.player;
@@ -49,7 +49,7 @@ public class IntergalacticScreen extends ConfirmationScreen implements WindowScr
     @Override
     public Screen onConfirm()
     {
-        player.changeResourceBy(Action.BURN);
+        player.getResource(Burn.RESOURCE).changeAmount(-Burn.COST);
         playSoundEffect(START);
         Main.changeGalaxy();
         return null;
