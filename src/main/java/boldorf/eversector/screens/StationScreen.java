@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.TRANSACTION;
 
 /**
  * The screen used to interact with stations, especially buying and selling items.
@@ -159,7 +158,7 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
             case KeyEvent.VK_R:
                 if (restock())
                 {
-                    playSoundEffect(TRANSACTION);
+                    playSoundEffect(TransactResource.SOUND_EFFECT);
                 }
                 break;
             case KeyEvent.VK_C:
@@ -222,7 +221,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
         if (!player.getResource(Resource.ORE).isEmpty())
         {
             new TransactResource(Resource.ORE, -1, false);
-            restocked = new TransactResource(Resource.ORE, -player.getMaxSellAmount(Resource.ORE)).executeBool(player);
+            restocked = new TransactResource(Resource.ORE, -player.getMaxSellAmount(Resource.ORE), false).executeBool
+                    (player);
         }
 
         restocked = restock(Resource.HULL) || restocked;

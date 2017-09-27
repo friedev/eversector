@@ -45,17 +45,17 @@ public class Station implements ColorStringObject
             new Module(Module.REFINERY, "Can convert ore into fuel at a 1:1 ratio.", 250, false, Resource.ENERGY, 1),
             new Module(Module.SOLAR_ARRAY, "Passively generates energy each turn based on solar proximity.", 250, false,
                     Resource.ENERGY, -1),
-            new Module(Module.WARP_DRIVE, "Facilitates long-range sector jumps powered by energy" + ".", 400, false,
+            new Module(Module.WARP_DRIVE, "Facilitates long-range sector jumps powered by energy.", 400, false,
                     Resource.ENERGY, 15),
             new Module(Module.SHIELD, "When active, halves damage from oncoming energy weapon fire.", 200, true,
                     Ship.SHIELDED, Resource.ENERGY, 2),
             new Module(Module.CLOAKING_DEVICE, "When active, renders the ship impossible to track.", 300, true,
                     Ship.CLOAKED, Resource.ENERGY, 2),
-            new Weapon(Weapon.LASER, "A focused laser used to cut open enemy hulls" + ".", 100, 2, Resource.ENERGY,
-                    2, Paths.LASER),
-            new Weapon(Weapon.TORPEDO_TUBE, "Fires guided torpedoes capable of bypassing energy " + "shields.", 200, 4,
+            new Weapon(Weapon.LASER, "A focused laser used to cut open enemy hulls.", 100, 2, Resource.ENERGY, 2,
+                    Paths.LASER),
+            new Weapon(Weapon.TORPEDO_TUBE, "Fires guided torpedoes capable of bypassing energy shields.", 200, 4,
                     Resource.FUEL, 2, Paths.TORPEDO),
-            new Weapon(Weapon.PULSE_BEAM, "A devastating laser capable of ripping through weak ships" + ".", 500, 7,
+            new Weapon(Weapon.PULSE_BEAM, "A devastating laser capable of ripping through weak ships.", 500, 7,
                     Resource.ENERGY, 10, Paths.PULSE)
     };
 
@@ -620,13 +620,7 @@ public class Station implements ColorStringObject
             }
         }
 
-        modules = new Module[moduleList.size()];
-
-        for (int i = 0; i < modules.length; i++)
-        {
-            modules[i] = moduleList.get(i);
-        }
-
+        modules = moduleList.toArray(new Module[moduleList.size()]);
         resources = new BaseResource[RESOURCES.length];
 
         for (int i = 0; i < RESOURCES.length; i++)

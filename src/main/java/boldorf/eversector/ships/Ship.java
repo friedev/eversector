@@ -1948,7 +1948,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
         for (Module module : modules)
         {
-            if (module != null && station.getModule(module.getName()) != null)
+            if (module != null && station.hasModule(module.getName()))
             {
                 module.setPrice(station.getModule(module.getName()).getPrice());
             }
@@ -1956,11 +1956,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
         for (Resource resource : resources)
         {
-            if (resource != null && station.getResource(resource.getName()) != null)
+            if (resource != null && station.hasResource(resource.getName()))
             {
                 resource.setPrice(station.getResource(resource.getName()).getPrice());
-
-                // This currently updates the expander's price for ALL ships
                 resource.getExpander().setPrice(station.getExpander(resource.getExpander().getName()).getPrice());
             }
         }

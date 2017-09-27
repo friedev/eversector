@@ -190,14 +190,20 @@ public class Battle
             if (attackers.size() >= i + 1 && shipCanAttack(attackers.get(i)))
             {
                 Action action = attackers.get(i).getAI().performBattleAction();
-                attackMade = attackMade || action.executeBool(attackers.get(i));
+                if (action != null)
+                {
+                    attackMade = attackMade || action.executeBool(attackers.get(i));
+                }
                 updateReputation(attackers.get(i), action);
             }
 
             if (defenders.size() >= i + 1 && shipCanAttack(defenders.get(i)))
             {
                 Action action = defenders.get(i).getAI().performBattleAction();
-                attackMade = attackMade || action.executeBool(defenders.get(i));
+                if (action != null)
+                {
+                    attackMade = attackMade || action.executeBool(defenders.get(i));
+                }
                 updateReputation(defenders.get(i), action);
             }
         }

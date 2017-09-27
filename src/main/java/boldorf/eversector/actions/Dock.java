@@ -70,7 +70,11 @@ public class Dock implements Action
         }
 
         actor.setLocation(actor.getSectorLocation().dock());
-        new Claim().execute(actor);
+        if (actor.isHostile(actor.getStationLocation().getStation().getFaction()))
+        {
+            new Claim().execute(actor);
+        }
+
         actor.repairModules();
         actor.updatePrices();
 

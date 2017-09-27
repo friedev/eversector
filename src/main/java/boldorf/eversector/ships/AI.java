@@ -190,7 +190,7 @@ public class AI
 
         if (rng.nextBoolean())
         {
-            buyItems(); // TODO replace with a loop
+            buyItems();
             buyExpanders();
         }
         return null;
@@ -355,8 +355,7 @@ public class AI
     {
         if (ship.isInSector())
         {
-            // TODO check for regions without ore
-            if (ship.isLanded())
+            if (ship.isLanded() & ship.getPlanetLocation().getRegion().hasOre())
             {
                 return ship.getPlanetLocation();
             }
