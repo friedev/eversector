@@ -365,12 +365,6 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         return popup;
     }
 
-    @Override
-    public boolean hasPopup()
-    {
-        return popup != null;
-    }
-
     /**
      * Returns true if the player is currently viewing message history.
      *

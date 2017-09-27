@@ -381,12 +381,6 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         return popup;
     }
 
-    @Override
-    public boolean hasPopup()
-    {
-        return popup != null;
-    }
-
     /**
      * Sets up the window and its contents.
      */
