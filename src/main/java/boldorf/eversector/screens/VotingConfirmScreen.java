@@ -7,7 +7,6 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import boldorf.eversector.faction.Election;
 
 /**
  * The prompt when selecting a faction leader vote.
@@ -25,21 +24,15 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
     private PopupMenu menu;
 
     /**
-     * The pending election candidates.
-     */
-    private Election pendingElection;
-
-    /**
      * Instantiates a new VotingConfirmScreen.
      */
-    public VotingConfirmScreen(PopupMenu electionMenu, Election election, String leaderSelection)
+    public VotingConfirmScreen(PopupMenu electionMenu, String leaderSelection)
     {
         super(Main.display);
         window = new PopupWindow(Main.display);
         window.getContents().add(new ColorString("Submit your vote for " + leaderSelection + "?"));
 
         menu = electionMenu;
-        pendingElection = election;
     }
 
     @Override
@@ -58,7 +51,7 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
     public Screen onConfirm()
     {
         String shipString = menu.getSelection().toString();
-        pendingElection.addVote(shipString.substring(0, shipString.indexOf(" (")));
+        Main.pendingElection.addVote(shipString.substring(0, shipString.indexOf(" (")));
 
         return new ElectionResultsScreen();
     }
