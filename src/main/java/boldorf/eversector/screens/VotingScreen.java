@@ -9,9 +9,11 @@ import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.screens.PopupMaster;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
@@ -21,8 +23,14 @@ import static boldorf.eversector.Main.*;
  *
  * @author Boldorf Smokebane
  */
-public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
+public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>, PopupMaster
 {
+
+    /**
+     * Popup screen for the confirmation prompt.
+     */
+    private Screen popup;
+
     /**
      * Instantiates a new VotingScreen.
      */
@@ -41,10 +49,30 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
     }
 
     @Override
+    public Screen getPopup()
+    {
+        return popup;
+    }
+
+    @Override
+    public Screen processInput(KeyEvent key)
+    {
+        if (popup != null)
+        {
+            popup = popup.processInput(key);
+            return this;
+        }
+
+        super.processInput(key);
+        return this;
+    }
+
+    @Override
     public Screen onConfirm()
     {
         String selection = getMenu().getSelection().toString();
-        return new VotingConfirmScreen(getMenu(), selection);
+        popup = new VotingConfirmScreen(selection);
+        return this;
     }
 
     @Override

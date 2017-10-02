@@ -19,20 +19,20 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
     private PopupWindow window;
 
     /**
-     * The menu containing election candidates.
+     * The leader getting the vote.
      */
-    private PopupMenu menu;
+    private String leaderSelection;
 
     /**
      * Instantiates a new VotingConfirmScreen.
      */
-    public VotingConfirmScreen(PopupMenu electionMenu, String leaderSelection)
+    public VotingConfirmScreen(String selection)
     {
         super(Main.display);
         window = new PopupWindow(Main.display);
-        window.getContents().add(new ColorString("Submit your vote for " + leaderSelection + "?"));
+        leaderSelection = selection;
 
-        menu = electionMenu;
+        window.getContents().add(new ColorString("Submit your vote for " + leaderSelection + "?"));
     }
 
     @Override
@@ -50,8 +50,7 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
     @Override
     public Screen onConfirm()
     {
-        String shipString = menu.getSelection().toString();
-        Main.pendingElection.addVote(shipString.substring(0, shipString.indexOf(" (")));
+        Main.pendingElection.addVote(leaderSelection.substring(0, leaderSelection.indexOf(" (")));
 
         return new ElectionResultsScreen();
     }
