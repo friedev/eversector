@@ -71,12 +71,13 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
         if (popup != null)
         {
             popup = popup.processInput(key);
-            return this;
-        }
 
-        if (popup instanceof ElectionResultsScreen)
-        {
-            return popup;
+            if (popup instanceof ElectionResultsScreen)
+            {
+                return popup;
+            }
+
+            return this;
         }
 
         return super.processInput(key);
