@@ -8,6 +8,7 @@ import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.Land;
 import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.map.Planet;
 import boldorf.eversector.map.Region;
@@ -19,7 +20,6 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.ENGINE;
 
 /**
  * The screen for selecting a landing destination.
@@ -84,13 +84,14 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
     @Override
     public Screen onConfirm()
     {
-        if (player.land(selection.getRegionCoord()))
+        String landExecution = new Land(selection.getRegionCoord()).execute(player);
+        if (landExecution == null)
         {
-            playSoundEffect(ENGINE);
             player.getLocation().getGalaxy().nextTurn();
             return new PlanetScreen();
         }
 
+        addError(landExecution);
         return null;
     }
 

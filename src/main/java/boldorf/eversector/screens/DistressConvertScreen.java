@@ -6,6 +6,7 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.Distress;
 import boldorf.eversector.faction.Faction;
 
 import static boldorf.eversector.Main.player;
@@ -56,7 +57,7 @@ public class DistressConvertScreen extends ConfirmationScreen implements WindowS
     @Override
     public Screen onConfirm()
     {
-        player.distress(converting);
+        new Distress(converting).execute(player);
         return null;
     }
 }

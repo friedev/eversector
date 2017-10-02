@@ -7,11 +7,10 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.Toggle;
 import boldorf.eversector.items.Module;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.OFF;
-import static boldorf.eversector.Paths.ON;
 
 /**
  * The screen used to toggle certain modules on or off.
@@ -47,18 +46,13 @@ public class ToggleScreen extends MenuScreen implements WindowScreen<PopupWindow
     {
         String module = getMenu().getSelection().toString();
         boolean hadFlag = player.hasFlag(player.getModule(module).getEffect());
-        player.toggleActivation(getMenu().getSelection().toString());
-        boolean hasFlag = player.hasFlag(player.getModule(module).getEffect());
 
-        if (hasFlag && !hadFlag)
+        String toggleExecution = new Toggle(getMenu().getSelection().toString()).execute(player);
+        if (toggleExecution != null)
         {
-            playSoundEffect(ON);
-        }
-        else if (!hasFlag && hadFlag)
-        {
-            playSoundEffect(OFF);
+            addError(toggleExecution);
         }
 
-        return null;
+        return this;
     }
 }

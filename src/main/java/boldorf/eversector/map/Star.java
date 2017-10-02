@@ -92,7 +92,7 @@ public class Star implements ColorStringObject
     /**
      * The mass of a star.
      */
-    private enum StarMass
+    public enum StarMass
     {
         /**
          * The smallest type of star.
@@ -237,6 +237,34 @@ public class Star implements ColorStringObject
             return inNebula;
         }
 
+        public static StarMass getLargest()
+        {
+            StarMass largest = StarMass.values()[0];
+            for (StarMass mass : StarMass.values())
+            {
+                if (mass.mass > largest.mass)
+                {
+                    largest = mass;
+                }
+            }
+
+            return largest;
+        }
+
+        public static StarMass getSmallest()
+        {
+            StarMass smallest = StarMass.values()[0];
+            for (StarMass mass : StarMass.values())
+            {
+                if (mass.mass < smallest.mass)
+                {
+                    smallest = mass;
+                }
+            }
+
+            return smallest;
+        }
+
         /**
          * Selects a random star mass.
          *
@@ -291,7 +319,7 @@ public class Star implements ColorStringObject
     /**
      * The temperature of a star.
      */
-    private enum StarTemperature
+    public enum StarTemperature
     {
         /**
          * The coldest, most common type of star.

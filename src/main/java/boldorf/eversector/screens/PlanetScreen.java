@@ -10,6 +10,10 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.Claim;
+import boldorf.eversector.actions.Mine;
+import boldorf.eversector.actions.Relocate;
+import boldorf.eversector.actions.Takeoff;
 import boldorf.eversector.locations.PlanetLocation;
 import boldorf.eversector.map.Planet;
 import boldorf.eversector.map.Region;
@@ -23,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.*;
 
 /**
  * The screen for interacting with planets and navigating their regions.
@@ -71,10 +74,17 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
             {
                 cursor = cursor.moveRegion(direction);
             }
-            else if (player.relocate(direction))
+            else
             {
-                nextTurn = true;
-                playSoundEffect(ENGINE);
+                String relocateExecution = new Relocate(direction).execute(player);
+                if (relocateExecution == null)
+                {
+                    nextTurn = true;
+                }
+                else
+                {
+                    addError(relocateExecution);
+                }
             }
         }
         else if (isLooking())
@@ -90,26 +100,32 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
             switch (key.getKeyCode())
             {
                 case KeyEvent.VK_ESCAPE:
-                    if (player.takeoff())
+                    String takeoffExecution = new Takeoff().execute(player);
+                    if (takeoffExecution == null)
                     {
                         nextTurn = true;
                         nextScreen = new SectorScreen();
-                        playSoundEffect(ENGINE);
+                        break;
                     }
+                    addError(takeoffExecution);
                     break;
                 case KeyEvent.VK_ENTER:
-                    if (player.mine())
+                    String mineExecution = new Mine().execute(player);
+                    if (mineExecution == null)
                     {
                         nextTurn = true;
-                        playSoundEffect(MINE);
+                        break;
                     }
+                    addError(mineExecution);
                     break;
                 case KeyEvent.VK_C:
-                    if (player.claim(true))
+                    String claimExecution = new Claim().execute(player);
+                    if (claimExecution == null)
                     {
                         nextTurn = true;
-                        playSoundEffect(CLAIM);
+                        break;
                     }
+                    addError(claimExecution);
                     break;
                 case KeyEvent.VK_L:
                     cursor = player.getPlanetLocation();

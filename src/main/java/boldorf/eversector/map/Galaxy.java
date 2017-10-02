@@ -4,6 +4,8 @@ import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorChar;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.eversector.Symbol;
+import boldorf.eversector.actions.Action;
+import boldorf.eversector.actions.Dock;
 import boldorf.eversector.faction.Faction;
 import boldorf.eversector.faction.Relationship;
 import boldorf.eversector.locations.Location;
@@ -84,7 +86,7 @@ public class Galaxy
     /**
      * The frequency at which to fade ship reputations toward zero, in turns.
      */
-    private static final int REPUTATION_FADE_FREQ = 2;
+    private static final int REPUTATION_FADE_FREQ = 4;
 
     /**
      * The sectors in the galaxy.
@@ -561,7 +563,11 @@ public class Galaxy
 
         for (Ship ship : ships)
         {
-            ship.getAI().act();
+            Action action = ship.getAI().act();
+            if (action != null)
+            {
+                action.execute(ship);
+            }
         }
 
         ships.removeIf(Ship::isDestroyed);
@@ -598,7 +604,7 @@ public class Galaxy
                     // {
                     Ship newShip = new Ship(new SectorLocation(sector.getLocation(), station.getLocation().getOrbit()),
                             station.getFaction());
-                    newShip.dock();
+                    new Dock().execute(newShip);
                     ships.add(newShip);
                     // }
                 }
