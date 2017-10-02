@@ -32,7 +32,13 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
         window = new PopupWindow(Main.display);
         leaderSelection = selection;
 
-        window.getContents().add(new ColorString("Submit your vote for " + leaderSelection + "?"));
+        window.getContents().add(
+                new ColorString("Submit your vote for ").add(
+                    new ColorString(leaderSelection, Main.player.getFaction().getColor()).add(
+                        new ColorString("?")
+                    )
+                )
+            );
     }
 
     @Override
