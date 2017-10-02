@@ -43,6 +43,17 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
     }
 
     @Override
+    public void displayOutput()
+    {
+        super.displayOutput();
+
+        if (popup != null)
+        {
+            popup.displayOutput();
+        }
+    }
+
+    @Override
     public PopupWindow getWindow()
     {
         return (PopupWindow) getMenu().getWindow();
@@ -63,8 +74,12 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
             return this;
         }
 
-        super.processInput(key);
-        return this;
+        if (popup instanceof ElectionResultsScreen)
+        {
+            return popup;
+        }
+
+        return super.processInput(key);
     }
 
     @Override
