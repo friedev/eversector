@@ -236,7 +236,7 @@ public class Planet implements ColorStringObject
         /**
          * Gets the minimum temperature of the planet.
          *
-         * @return the mininum temperature of the planet
+         * @return the minimum temperature of the planet
          */
         public int getMinTemp()
         {
@@ -294,7 +294,7 @@ public class Planet implements ColorStringObject
         }
     }
 
-    private final static TreeMap<Integer, String> romanNumeralMap = new TreeMap<Integer, String>();
+    private final static TreeMap<Integer, String> romanNumeralMap = new TreeMap<>();
 
     static
     {

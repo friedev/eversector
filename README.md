@@ -4,11 +4,11 @@ Welcome to the EverSector repository on Bitbucket! EverSector is a space-themed 
 
 ### Builds ###
 
-Whenever new commits are pushed to the repo, Bitbucket Pipelines will generate a new build of the game. You can see the status of the latest build on the Overview page or the Pipelines page. The most recent build will always be posted to Downloads.
+After new features are added to the game, I will run a Bitbucket Pipelines build. The most recent build will always be posted to Downloads.
 
 No sound files are included for the sake of file size. If you want to play with sound effects, download the audio.zip file from Downloads and unzip it to your assets folder. If you use Windows and don't have Java installed, you can download the windows.zip file and unzip it to your EverSector directory. This contains an executable launcher and a bundled JRE.
 
-Keep in mind that these builds probably won't be as stable as the main releases posted on itch.io. If you find a bug, please post it on the issue tracker or at certain links below.
+Keep in mind that these builds probably won't be as stable as the main releases posted on itch.io. If you find a bug, please post it on the issue tracker.
 
 ### Contributing ###
 

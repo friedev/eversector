@@ -247,7 +247,7 @@ public class Region implements ColorStringObject
     }
 
     /**
-     * Returns a ColorChar representation of the region, overwritten by the player's sybmol if they're present in the
+     * Returns a ColorChar representation of the region, overwritten by the player's symbol if they're present in the
      * region.
      *
      * @return a ColorChar representing the region

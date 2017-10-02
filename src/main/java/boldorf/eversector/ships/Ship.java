@@ -3,15 +3,19 @@ package boldorf.eversector.ships;
 import asciiPanel.AsciiPanel;
 import boldorf.apwt.glyphs.ColorString;
 import boldorf.apwt.glyphs.ColorStringObject;
-import boldorf.eversector.Main;
 import boldorf.eversector.Paths;
 import boldorf.eversector.Symbol;
+import boldorf.eversector.actions.Scan;
 import boldorf.eversector.faction.Faction;
-import boldorf.eversector.items.*;
+import boldorf.eversector.items.Expander;
+import boldorf.eversector.items.Module;
+import boldorf.eversector.items.Resource;
+import boldorf.eversector.items.Weapon;
 import boldorf.eversector.locations.*;
-import boldorf.eversector.map.*;
+import boldorf.eversector.map.Galaxy;
+import boldorf.eversector.map.Planet;
+import boldorf.eversector.map.Station;
 import boldorf.util.Utility;
-import squidpony.squidgrid.Direction;
 import squidpony.squidgrid.FOV;
 import squidpony.squidmath.Coord;
 
@@ -21,7 +25,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.faction.Relationship.RelationshipType.ALLIANCE;
 import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 
 /**
@@ -99,11 +102,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      * The amount of credits that a default ship is worth - must be manually updated.
      */
     public static final int BASE_VALUE = 400;
-
-    /**
-     * The amount of hull that crash will damage down to, and ships at or below it will be destroyed.
-     */
-    public static final int CRASH_THRESHOLD = 1;
 
     /**
      * The limit to how many of each expander can be installed on a ship.
@@ -359,7 +357,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public boolean isDangerousToMine()
     {
-        return getAmountOf(Resource.HULL) <= Planet.ASTEROID_DAMAGE;
+        return getResource(Resource.HULL).getAmount() <= Planet.ASTEROID_DAMAGE;
     }
 
     /**
@@ -680,7 +678,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public double getFOVRadius()
     {
-        return hasModule(Action.SCAN) ? FOV_RADIUS * 2.0 : FOV_RADIUS;
+        return hasModule(Scan.MODULE) ? FOV_RADIUS * 2.0 : FOV_RADIUS;
     }
 
     /**
@@ -980,19 +978,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Changes the amount of a resource on the ship.
-     *
-     * @param name   the name of the resource to change
-     * @param change the amount to change the resource by
-     * @return true if the change was completed
-     */
-    public boolean changeResource(String name, int change)
-    {
-        Resource resource = getResource(name);
-        return resource != null && resource.changeAmount(change);
-    }
-
-    /**
      * Calculates the amount of damage done by a weapon to the ship.
      *
      * @param weapon the weapon used to deal damage
@@ -1002,16 +987,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     {
         int damage = weapon.getDamage();
 
-        if (weapon.isEnergy() && isShielded() && hasModule(Action.SHIELD))
+        if (Resource.ENERGY.equals(weapon.getActionResource()) && isShielded())
         {
-            if (changeResourceBy(getModule(Action.SHIELD).getAction()))
-            {
-                damage /= 2;
-            }
-            else
-            {
-                removeFlag(SHIELDED);
-            }
+            damage /= 2;
         }
 
         return Math.max(damage, 1);
@@ -1194,19 +1172,19 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      *
      * @return the number of modules that are weapons in the ship's array
      */
-    public int getWeaponsUsed()
+    public List<Weapon> getWeapons()
     {
-        int counter = 0;
+        List<Weapon> weapons = new LinkedList<>();
 
         for (Module module : modules)
         {
             if (module instanceof Weapon)
             {
-                counter++;
+                weapons.add((Weapon) module);
             }
         }
 
-        return counter;
+        return weapons;
     }
 
     /**
@@ -1340,152 +1318,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Returns true if the ship has a resource with the name provided.
-     *
-     * @param name the name of the resource to find
-     * @return true if a search for the resource does not return null
-     */
-    public boolean hasResource(String name)
-    {
-        return getResource(name) != null;
-    }
-
-    /**
-     * Returns the amount of a resource on the ship with a specified name.
-     *
-     * @param name the name of the resource to get the amount of
-     * @return the amount of the resource, -1 if not found
-     */
-    public int getAmountOf(String name)
-    {
-        Resource resource = getResource(name);
-        return resource == null ? -1 : resource.getAmount();
-    }
-
-    /**
-     * Returns the capacity of a resource on the ship with a specified name.
-     *
-     * @param name the name of the resource to get the capacity of
-     * @return the capacity of the resource, -1 if not found
-     */
-    public int getCapOf(String name)
-    {
-        Resource resource = getResource(name);
-        return resource == null ? -1 : resource.getCapacity();
-    }
-
-    /**
-     * Changes an action's resource by the cost of that action.
-     *
-     * @param action the action to use in the change
-     * @return true if the change was completed
-     */
-    public boolean changeResourceBy(Action action)
-    {
-        return action != null && getResource(action.getResource()).changeAmount(-action.getCost());
-    }
-
-    /**
-     * Buys a resource on the ship with a specified name, increasing by a specified amount for a cost relative to the
-     * current station's prices.
-     *
-     * @param name     the name of the resource to buy
-     * @param quantity the amount of the resource to buy; will sell the resource if negative
-     * @return true if the purchase was successful
-     */
-    public boolean buyResource(String name, int quantity)
-    {
-        if (!validateDocking())
-        {
-            return false;
-        }
-
-        if (quantity == 0)
-        {
-            addPlayerError("Quantity of items in transaction must be positive.");
-            return false;
-        }
-
-        Resource resource = getResource(name);
-        Station station = getSectorLocation().getStation();
-
-        if (resource == null)
-        {
-            // Try finding if an expander was specified and continue purchase
-            Expander expander = station.getExpander(name);
-
-            if (expander == null)
-            {
-                addPlayerError("The specified item does not exist.");
-                return false;
-            }
-
-            resource = getResourceFromExpander(expander.getName());
-            int price = expander.getPrice() * quantity;
-
-            if (!validateFunds(price))
-            {
-                return false;
-            }
-
-            if (!resource.canExpand(quantity))
-            {
-                addPlayerError("Inadequate expanders to sell; have " + resource.getNExpanders() + ", need " +
-                               Math.abs(quantity) + ".");
-                return false;
-            }
-
-            if (resource.getNExpanders() + quantity > MAX_EXPANDERS)
-            {
-                addPlayerError(
-                        "The ship cannot store over " + MAX_EXPANDERS + " " + expander.getName().toLowerCase() + "s.");
-                return false;
-            }
-
-            changeCredits(station.getFaction(),
-                    resource.getPrice() * Math.max(0, resource.getAmount() - resource.getCapacity()));
-            resource.expand(quantity);
-            changeCredits(station.getFaction(), -price);
-            return true;
-        }
-
-        if (!resource.canSell() && quantity < 0)
-        {
-            addError(resource + " cannot be sold.");
-            return false;
-        }
-
-        int price = station.getResource(name).getPrice() * quantity;
-
-        if (!validateFunds(price))
-        {
-            return false;
-        }
-
-        if (!resource.canHold(quantity))
-        {
-            if (isPlayer())
-            {
-                if (quantity > 0)
-                {
-                    addError("Inadequate storage; have " + resource.getCapacity() + ", need " +
-                             (resource.getAmount() + quantity) + ".");
-                }
-                else
-                {
-                    addError("Inadequate resources to sell; have " + resource.getAmount() + ", need " +
-                             Math.abs(quantity) + ".");
-                }
-            }
-            return false;
-        }
-
-        resource.changeAmount(quantity);
-        changeCredits(station.getFaction(), -price);
-        return true;
-    }
-
-    /**
      * Performs the same function as getMaxBuyAmount(Resource), with the name of the resource instead.
      *
      * @param name the name of the resource being purchased
@@ -1493,7 +1325,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public int getMaxBuyAmount(String name)
     {
-        if (hasResource(name))
+        if (getResource(name) != null)
         {
             return getMaxBuyAmount(getResource(name));
         }
@@ -1571,1167 +1403,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Returns the highest amount of ore that can be refined into fuel.
-     *
-     * @return the amount of ore possessed or the remaining space for fuel, depending on which is lower
-     */
-    public int getMaxRefineAmount()
-    {
-        return Math.min(getAmountOf(Resource.ORE), getResource(Resource.FUEL).getRemainingSpace());
-    }
-
-    /**
-     * Buys a module with the specified name from the current station and adds it to the ship.
-     *
-     * @param name the name of the module to add
-     * @return true if the purchase was successful
-     */
-    public boolean buyModule(String name)
-    {
-        if (!validateDocking())
-        {
-            return false;
-        }
-
-        // Module must be retrieved after it is known that the ship is docked
-        Station station = getSectorLocation().getStation();
-        Module module = station.getModule(name);
-
-        if (module == null || module.getName() == null)
-        {
-            if (Station.hasBaseModule(name))
-            {
-                addPlayerError(station + " does not sell modules of this type.");
-                return false;
-            }
-
-            addPlayerError("Specified module does not exist.");
-            return false;
-        }
-
-        if (!station.sells(module))
-        {
-            addPlayerError(station + " does not sell modules of this type.");
-            return false;
-        }
-
-        if (module instanceof Weapon && isPirate())
-        {
-            addPlayerError(station + " refuses to sell weaponry to pirates.");
-
-            return false;
-        }
-
-        int price = module.getPrice();
-
-        if (!validateFunds(price))
-        {
-            return false;
-        }
-
-        // Capacity is checked by addModule
-        addModule(module);
-        changeCredits(station.getFaction(), -price);
-        return true;
-    }
-
-    /**
-     * Buys the module with the name of the one provided from the current station and adds it to the ship.
-     *
-     * @param module the module whose name will be used to find the module to add
-     * @return true if the purchase was successful
-     */
-    public boolean buyModule(Module module)
-    {
-        return buyModule(module.getName());
-    }
-
-    /**
-     * Sells a module with a specified name from the ship to the current station.
-     *
-     * @param name the name of the module to sell
-     * @return true if the sale was successful
-     */
-    public boolean sellModule(String name)
-    {
-        if (!validateDocking())
-        {
-            return false;
-        }
-
-        // Module must be retrieved after it is known that the ship is docked
-        Station station = getSectorLocation().getStation();
-        Module module = station.getModule(name);
-
-        if (module == null)
-        {
-            if (Station.hasBaseModule(name))
-            {
-                addPlayerError(station + " will not accept a module of this type.");
-                return false;
-            }
-
-            addPlayerError("Specified module does not exist.");
-            return false;
-        }
-
-        if (!station.sells(module))
-        {
-            addPlayerError(station + " will not accept a module of this type.");
-            return false;
-        }
-
-        // removeModule deals with the case where the module does not exist
-        if (removeModule(module))
-        {
-            changeCredits(station.getFaction(), module.getPrice());
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if the player's credits are sufficient for a purchase of a specified price.
-     *
-     * @param price the price of the item to be purchased funds
-     * @return true if the player has enough credits for the purchase
-     */
-    public boolean validateFunds(int price)
-    {
-        if (price > credits)
-        {
-            addPlayerError("Insufficient funds; have " + credits + " credits, need " + price + ".");
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the ship is docked, and optionally prints a message if not.
-     *
-     * @return true if the player is docked
-     */
-    public boolean validateDocking()
-    {
-        if (!isDocked())
-        {
-            addPlayerError("Ship must be docked with a station to buy and sell items.");
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Will burn in the designated coordinates.
-     *
-     * @param direction the Direction in which to burn
-     * @return true if burn was completed
-     */
-    public boolean burn(Direction direction)
-    {
-        if (isInSector())
-        {
-            addPlayerError("Ship must escape the sector before performing an interstellar burn.");
-            return false;
-        }
-
-        if (direction.isDiagonal())
-        {
-            addPlayerError("Diagonal burns are not allowed.");
-            return false;
-        }
-
-        if (!validateResources(Action.BURN, "initiate a burn"))
-        {
-            return false;
-        }
-
-        Location target = location.move(direction);
-        if (target == null)
-        {
-            return false;
-        }
-
-        setLocation(target);
-        getResource(Action.BURN.getResource()).changeAmount(-Action.BURN.getCost());
-
-        return true;
-    }
-
-    /**
-     * Will warp the ship to the designated coordinates.
-     *
-     * @param destination the Coord to warp to, must be on the map
-     * @return true if the warp was completed
-     */
-    public boolean warpTo(Coord destination)
-    {
-        if (!validateModule(Action.WARP, "warp"))
-        {
-            return false;
-        }
-
-        if (!validateResources(Action.WARP.getAction(), "charge warp drive"))
-        {
-            return false;
-        }
-
-        Location targetLocation = location.moveTo(destination);
-
-        if (targetLocation == null)
-        {
-            return false;
-        }
-
-        setLocation(targetLocation);
-        getResource(Action.WARP.getAction().getResource()).changeAmount(-Action.WARP.getAction().getCost());
-        return true;
-    }
-
-    /**
-     * Enter a neighboring orbit around a star, if possible.
-     *
-     * @param increase if true, will increase the orbit number; if false, will decrease it
-     * @return true if the maneuver was completed
-     */
-    public boolean orbit(boolean increase)
-    {
-        if (!isInSector())
-        {
-            addPlayerError("Ship must be in a sector to orbit it.");
-            return false;
-        }
-
-        if (location.getSector().isEmpty())
-        {
-            addPlayerError("There is nothing to orbit in this sector.");
-            return false;
-        }
-
-        if (isLanded())
-        {
-            addPlayerError("Ship must be orbital before attempting a maneuver.");
-            return false;
-        }
-
-        if (isDocked())
-        {
-            addPlayerError("Ship must undock before attempting an orbital maneuver.");
-            return false;
-        }
-
-        int orbit = getSectorLocation().getOrbit();
-        int target = increase ? orbit + 1 : orbit - 1;
-
-        if (!location.getSector().isValidOrbit(target))
-        {
-            if (increase)
-            {
-                return escape();
-            }
-
-            addPlayerError("Invalid orbit. Must be between 1 and " + location.getSector().getOrbits() + ".");
-            return false;
-        }
-
-        Resource resource = getResource(Action.ORBIT.getResource());
-
-        if (resource == null)
-        {
-            addPlayerError("Resource not found.");
-            return false;
-        }
-
-        int cost = Action.ORBIT.getCost();
-
-        if (!validateResources(resource, cost, "perform an orbital maneuver"))
-        {
-            return false;
-        }
-
-        setLocation(getSectorLocation().setOrbit(target));
-        resource.changeAmount(-cost);
-        return true;
-    }
-
-    /**
-     * Relocates to the region in the given direction.
-     *
-     * @param direction the direction to relocate in
-     * @return true if the relocation was successful
-     */
-    public boolean relocate(Direction direction)
-    {
-        if (!isLanded())
-        {
-            addPlayerError("You must already be landed on a planet to relocate.");
-            return false;
-        }
-
-        if (direction.isDiagonal())
-        {
-            addPlayerError("Diagonal relocation is not allowed.");
-            return false;
-        }
-
-        PlanetLocation target = getPlanetLocation().moveRegion(direction);
-
-        if (target == null)
-        {
-            addPlayerError("Invalid region specified.");
-            return false;
-        }
-
-        if (!validateResources(Action.RELOCATE, "relocate"))
-        {
-            return false;
-        }
-
-        getResource(Action.RELOCATE.getResource()).changeAmount(-Action.RELOCATE.getCost());
-        setLocation(target);
-        return true;
-    }
-
-    /**
-     * Returns true if the ship can escape from its sector.
-     *
-     * @return true if the ship can escape from its sector
-     */
-    public boolean canEscape()
-    {
-        if (isLanded())
-        {
-            addPlayerError("Ship must be orbital before attempting an escape.");
-            return false;
-        }
-
-        if (isDocked())
-        {
-            addPlayerError("Ship must undock before attempting an escape.");
-            return false;
-        }
-
-        if (!isInSector())
-        {
-            addPlayerError("Ship must be in a sector to escape from one.");
-            return false;
-        }
-
-        if (getSectorLocation().getOrbit() < location.getSector().getOrbits())
-        {
-            addPlayerError("Ship must be at the furthest orbit of " + location.getSector() + "to attempt an escape.");
-            return false;
-        }
-
-        return validateResources(Action.ESCAPE, "escape the gravity of " + location.getSector());
-    }
-
-    /**
-     * Escapes gravitation influence of the current sector, if possible.
-     *
-     * @return true if the escape was successful
-     */
-    public boolean escape()
-    {
-        if (!canEscape())
-        {
-            return false;
-        }
-
-        getResource(Action.ESCAPE.getResource()).changeAmount(-Action.ESCAPE.getCost());
-        setLocation(getSectorLocation().escapeSector());
-        return true;
-    }
-
-    /**
-     * Performs the scanning action, although all results must be performed elsewhere due to varying situations and
-     * targets.
-     *
-     * @return true if scan was completed
-     */
-    public boolean scan()
-    {
-        if (!validateModule(Action.SCAN, "conduct a scan"))
-        {
-            return false;
-        }
-
-        if (!validateResources(Action.SCAN.getAction(), "conduct a scan"))
-        {
-            return false;
-        }
-
-        if (isDocked())
-        {
-            addPlayerError("You may not conduct a scan while docked.");
-            return false;
-        }
-
-        getResource(Action.SCAN.getAction().getResource()).changeAmount(-Action.SCAN.getAction().getCost());
-        return true;
-    }
-
-    /**
-     * Enters the current sector, if not already in one.
-     *
-     * @return true if entrance was successful
-     */
-    public boolean enter()
-    {
-        Sector sector = location.getSector();
-
-        if (isInSector())
-        {
-            addPlayerError("Ship is already in " + sector + ".");
-            return false;
-        }
-
-        if (sector.isEmpty())
-        {
-            addPlayerError("There is nothing in " + sector + ".");
-            return false;
-        }
-
-        if (!validateResources(Action.ENTER, "enter into orbit around " + sector))
-        {
-            return false;
-        }
-
-        getResource(Action.ENTER.getResource()).changeAmount(-Action.ENTER.getCost());
-        setLocation(location.enterSector());
-        return true;
-    }
-
-    /**
-     * Docks with a station on the same orbit, if possible.
-     *
-     * @return true if docking was successful
-     */
-    public boolean dock()
-    {
-        if (!isInSector())
-        {
-            addPlayerError("Ship must be in orbit to dock.");
-            return false;
-        }
-
-        Station station = getSectorLocation().getStation();
-
-        if (station == null)
-        {
-            addPlayerError("There is no station at this orbit.");
-            return false;
-        }
-
-        if (isLanded())
-        {
-            addPlayerError("The ship cannot dock while landed.");
-            return false;
-        }
-
-        if (isDocked())
-        {
-            addPlayerError("The ship is already docked with " + station + ".");
-            return false;
-        }
-
-        if (isHostile(station.getFaction()) && isAligned())
-        {
-            setLocation(getSectorLocation().dock());
-
-            if (!claim(false))
-            {
-                addPlayerError(station + " is controlled by the hostile " + station.getFaction() + ", who deny you " +
-                               "entry.");
-                undock();
-                return false;
-            }
-        }
-        else
-        {
-            setLocation(getSectorLocation().dock());
-        }
-
-        repairModules();
-        updatePrices();
-        return true;
-    }
-
-    /**
-     * Undocks with the currently docked station, if possible.
-     *
-     * @return true if undocking was successful
-     */
-    public boolean undock()
-    {
-        if (!isDocked())
-        {
-            addPlayerError("The ship is not docked.");
-            return false;
-        }
-
-        setLocation(getStationLocation().undock());
-        return true;
-    }
-
-    /**
-     * Lands on the planet at the ship's orbit, if possible.
-     *
-     * @param coord the index of the region to land in
-     * @return true if the landing was successful
-     */
-    public boolean land(Coord coord)
-    {
-        if (!canLand())
-        {
-            return false;
-        }
-
-        Planet planet = getSectorLocation().getPlanet();
-
-        if (!planet.contains(coord))
-        {
-            addPlayerError("The specified region was not found on " + planet + ".");
-            return false;
-        }
-
-        getResource(Action.LAND.getResource()).changeAmount(-Action.LAND.getCost());
-        setLocation(getSectorLocation().land(coord));
-        return true;
-    }
-
-    /**
-     * Crash lands on the planet at the ship's orbit, if possible.
-     *
-     * @return true if the landing was successful
-     */
-    public boolean crashLand()
-    {
-        if (!canCrashLand())
-        {
-            return false;
-        }
-
-        if (getAmountOf(Resource.HULL) > CRASH_THRESHOLD)
-        {
-            getResource(Resource.HULL).setAmount(CRASH_THRESHOLD);
-        }
-        else
-        {
-            getResource(Resource.HULL).setAmount(0);
-            destroy(false);
-            return true;
-        }
-
-        Planet planet = getSectorLocation().getPlanet();
-        setLocation(getSectorLocation().land(planet.getRandomCoord()));
-        return true;
-    }
-
-    /**
-     * Returns true if the ship is in a position to make a powered landing on a planet.
-     *
-     * @return true if the ship is in a position to make a powered landing on a planet
-     */
-    public boolean canLand()
-    {
-        return canCrashLand() && validateResources(Action.LAND, "land on " + getSectorLocation().getPlanet());
-    }
-
-    /**
-     * Returns true if the ship is in a position to make a crash landing on a planet.
-     *
-     * @return true if the ship is in a position to make a crash landing on a planet
-     */
-    public boolean canCrashLand()
-    {
-        return canCrashLand(true);
-    }
-
-    /**
-     * Returns true if there is a planet that the ship can land on at its orbit.
-     *
-     * @param print if true, will print error messages for the player
-     * @return true if landing of any kind is possible in the ship's situation
-     */
-    public boolean canCrashLand(boolean print)
-    {
-        if (!isInSector())
-        {
-            if (print)
-            {
-                addPlayerError("Ship must be at a planet's orbit to land.");
-            }
-            return false;
-        }
-
-        if (isDocked())
-        {
-            if (print)
-            {
-                addPlayerError("Ship cannot land while docked.");
-            }
-            return false;
-        }
-
-        if (isLanded())
-        {
-            if (print)
-            {
-                addPlayerError("The ship is already landed.");
-            }
-            return false;
-        }
-
-        Planet planet = getSectorLocation().getPlanet();
-
-        if (planet == null)
-        {
-            if (print)
-            {
-                addPlayerError("There is no planet at this orbit.");
-            }
-            return false;
-        }
-
-        if (!planet.getType().canLandOn())
-        {
-            if (print)
-            {
-                addPlayerError("The ship cannot land on " + Utility.addArticle(planet.getType().toString()) + ".");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Takes off from the planet that the ship is currently landed on, if possible.
-     *
-     * @return true if the takeoff was successful
-     */
-    public boolean takeoff()
-    {
-        if (!isLanded())
-        {
-            addPlayerError("The ship is not landed.");
-            return false;
-        }
-
-        if (!validateResources(Action.TAKEOFF, "takeoff from the " + getPlanetLocation().getRegion()))
-        {
-            return false;
-        }
-
-        getResource(Action.TAKEOFF.getResource()).changeAmount(-Action.TAKEOFF.getCost());
-        setLocation(getPlanetLocation().takeoff());
-        return true;
-    }
-
-    /**
-     * Extracts ore from the planet currently landed on, if possible.
-     *
-     * @param print if true, will print information about the mining process
-     * @return the number of units of ore discarded, -1 if no mining occurred
-     */
-    public boolean mine(boolean print)
-    {
-        if (!canMine(print))
-        {
-            return false;
-        }
-
-        Resource resource = getResource(Action.MINE.getResource());
-
-        Ore ore;
-        if (isLanded())
-        {
-            ore = getPlanetLocation().getRegion().getOre();
-        }
-        else
-        {
-            ore = location.getGalaxy().getRandomOre();
-        }
-
-        if (ore == null)
-        {
-            addPlayerError(
-                    "There is no ore to mine in the " + getPlanetLocation().getRegion().toString().toLowerCase() + ".");
-            return false;
-        }
-
-        int discard = getResource(Resource.ORE).changeAmountWithDiscard(ore.getDensity());
-        resource.changeAmount(-Action.MINE.getCost());
-
-        if (isLanded())
-        {
-            Region region = getPlanetLocation().getRegion();
-            region.extractOre(1);
-            if (!region.hasOre())
-            {
-                addPlayerMessage("You have mined the " + region + " dry.");
-                changeGlobalReputation(Reputation.MINE_DRY);
-            }
-        }
-        else if (rng.nextBoolean())
-        {
-            // Chance of taking damage if mining from an asteroid belt
-            damage(Planet.ASTEROID_DAMAGE, false);
-            addPlayerMessage("Collided with an asteroid, dealing " + Planet.ASTEROID_DAMAGE + " damage.");
-        }
-
-        if (isPlayer())
-        {
-            if (print)
-            {
-                addMessage("Extracted 1 unit of " + ore.getName().toLowerCase() + ".");
-
-                if (discard > 0)
-                {
-                    addMessage("Maximum ore capacity exceeded; " + discard + " units discarded.");
-                }
-            }
-        }
-
-        changeGlobalReputation(Reputation.MINE);
-        return true;
-    }
-
-    /**
-     * Extracts ore from the planet currently landed on, if possible. Will not print any errors.
-     *
-     * @return the number of units of ore discarded, -1 if no mining occurred
-     */
-    public boolean mine()
-    {
-        return mine(false);
-    }
-
-    /**
-     * Returns true if the ship is capable of mining in its current state.
-     *
-     * @param print if true, will print any errors
-     * @return true if a mine would succeed
-     */
-    public boolean canMine(boolean print)
-    {
-        if (!isInSector())
-        {
-            if (print)
-            {
-                addPlayerError("The ship must be in a sector to mine.");
-            }
-            return false;
-        }
-
-        Planet planet = getSectorLocation().getPlanet();
-
-        if (planet == null)
-        {
-            if (print)
-            {
-                addPlayerError("There is no planet here to mine from.");
-            }
-            return false;
-        }
-
-        if (!isLanded() && !planet.getType().canMineFromOrbit())
-        {
-            if (print)
-            {
-                addPlayerError("Ship must be landed here to mine for ore.");
-            }
-            return false;
-        }
-
-        if (!validateResources(Action.MINE, "initiate mining operation", print))
-        {
-            return false;
-        }
-
-        Resource ore = getResource(Resource.ORE);
-
-        if (ore.isFull())
-        {
-            if (print)
-            {
-                addPlayerError("Ore storage full; cannot acquire more.");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns true if the ship is capable of mining in its current state, not printing any errors.
-     *
-     * @return true if a mine would succeed
-     * @see #canMine(boolean)
-     */
-    public boolean canMine()
-    {
-        return canMine(false);
-    }
-
-    /**
-     * Refines one unit of ore into one unit of fuel, if possible.
-     *
-     * @return true if the refining was successful
-     */
-    public boolean refine()
-    {
-        if (!validateModule(Action.REFINE, "refine ore"))
-        {
-            return false;
-        }
-
-        Resource ore = getResource(Resource.ORE);
-        if (!ore.canHold(-1))
-        {
-            addPlayerError("Ship has no ore to refine.");
-            return false;
-        }
-
-        Resource fuel = getResource(Resource.FUEL);
-        if (!fuel.canHold(1))
-        {
-            addPlayerError("Insufficient fuel storage.");
-            return false;
-        }
-
-        ore.changeAmount(-1);
-        fuel.changeAmount(1);
-        return true;
-    }
-
-    /**
-     * Toggles the flag of a module on the ship, if possible.
-     *
-     * @param name the name of the module to activate/deactivate
-     * @return true if the module was activated or deactivated
-     */
-    public boolean toggleActivation(String name)
-    {
-        return toggleActivation(getModule(name));
-    }
-
-    /**
-     * Toggles the flag of a module on the ship, if possible.
-     *
-     * @param module the module to activate/deactivate
-     * @return true if the module was activated or deactivated
-     */
-    public boolean toggleActivation(Module module)
-    {
-        if (module == null)
-        {
-            addPlayerError("Module not found on the ship.");
-            return false;
-        }
-
-        if (!validateModule(module))
-        {
-            return false;
-        }
-
-        String effect = module.getEffect();
-
-        if (effect == null)
-        {
-            addPlayerError(Utility.addCapitalizedArticle(module.getName()) + " cannot be activated.");
-            return false;
-        }
-
-        if (hasFlag(effect))
-        {
-            addPlayerMessage("Your " + module.toString().toLowerCase() + " has been deactivated.");
-            removeFlag(effect);
-            return true;
-        }
-
-        if (!validateResources(module.getAction(), "activate " + module))
-        {
-            return false;
-        }
-
-        addPlayerMessage(
-                "Your " + module.toString().toLowerCase() + " has been activated and will drain " + module.getAction() +
-                " per turn of use.");
-
-        addFlag(effect);
-        return true;
-    }
-
-    /**
-     * Fires on a designated ship using a weapon, if possible.
-     *
-     * @param weapon the weapon to fire with
-     * @param ship   the ship to fire upon
-     * @return true if the attack was successful
-     */
-    public boolean fire(Weapon weapon, Ship ship)
-    {
-        if (!canFire(weapon, ship))
-        {
-            return false;
-        }
-
-        // Print must be done first so destruction message comes afterwards
-        if (isPlayer())
-        {
-            if (ship.isShielded() && weapon.isEnergy())
-            {
-                addMessage("Attack diminished by enemy shield.");
-            }
-            else
-            {
-                addMessage("Attack successful; hit confirmed.");
-            }
-        }
-
-        ship.damageWith(weapon, false);
-        getResource(weapon.getAction().getResource()).changeAmount(-weapon.getAction().getCost());
-        return true;
-    }
-
-    /**
-     * Returns true if it is possible to fire the given weapon at the given ship.
-     *
-     * @param weapon the weapon to fire with
-     * @param ship   the ship to fire upon
-     * @return true if an attack with the given weapon would succeed on the given ship
-     */
-    public boolean canFire(Weapon weapon, Ship ship)
-    {
-        if (weapon == null || !Station.hasBaseWeapon(weapon.getName()))
-        {
-            addPlayerError("The specified weapon does not exist.");
-            return false;
-        }
-
-        if (!validateModule(weapon, "fire"))
-        {
-            return false;
-        }
-
-        if (ship == null)
-        {
-            addPlayerError("The specified ship was not found.");
-            return false;
-        }
-
-        return validateResources(weapon.getAction(), "fire");
-    }
-
-    /**
-     * Starts a battle with the given ship. Prompts other ships to join the battle. Processes the battle if the player
-     * does not participate in it.
-     *
-     * @param opponent the ship to start the battle with
-     * @return the resulting battle
-     */
-    public Battle startBattle(Ship opponent)
-    {
-        if (!location.equals(opponent.location))
-        {
-            return null;
-        }
-
-        Battle battle = new Battle(this, opponent);
-        setLocation(getSectorLocation().joinBattle(battle));
-        opponent.setLocation(location);
-
-        List<Ship> others = getSectorLocation().getShips();
-        for (Ship other : others)
-        {
-            if (other.ai != null && !other.isInBattle())
-            {
-                other.ai.joinBattle(battle);
-            }
-        }
-
-        if (opponent.isPlayer())
-        {
-            Main.pendingBattle = battle;
-            opponent.addPlayerColorMessage(new ColorString("You are under attack from ").add(this).add("!"));
-            return battle;
-        }
-
-        if (!isPlayer())
-        {
-            battle.processBattle();
-        }
-        return battle;
-    }
-
-    /**
-     * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a custom
-     * message if not.
-     *
-     * @param module the module to validate
-     * @param action the String to print as the need for the module
-     * @return true if the ship at least one undamaged module equipped
-     */
-    public boolean validateModule(Module module, String action)
-    {
-        // The ship can technically have this installed because it doesn't exist
-        if (module == null)
-        {
-            return true;
-        }
-
-        if (!hasModule(module))
-        {
-            if (action == null)
-            {
-                addPlayerError(Utility.addCapitalizedArticle(module.getName()) + " is required.");
-            }
-            else
-            {
-                addPlayerError(Utility.addCapitalizedArticle(module.getName()) + " is required to " + action + ".");
-            }
-            return false;
-        }
-
-        if (module.isDamaged())
-        {
-            if (getModuleAmount(module) > 1)
-            {
-                // Check for spares
-                for (Module m : cargo)
-                {
-                    if (m.getName().equalsIgnoreCase(module.getName()) && !m.isDamaged())
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            addPlayerError("Your " + module.getName().toLowerCase() + " is too damaged to function.");
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a custom
-     * message if not.
-     *
-     * @param module the name of the module to validate
-     * @param action the String to print as the need for the module
-     * @return true if the ship at least one undamaged module equipped
-     */
-    public boolean validateModule(String module, String action)
-    {
-        return validateModule(getModule(module), action);
-    }
-
-    /**
-     * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a message
-     * if not.
-     *
-     * @param module the module to validate
-     * @return true if the ship at least one undamaged module equipped
-     */
-    public boolean validateModule(Module module)
-    {
-        return validateModule(module, null);
-    }
-
-    /**
-     * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a message
-     * if not.
-     *
-     * @param module the name of the module to validate
-     * @return true if the ship at least one undamaged module equipped
-     */
-    public boolean validateModule(String module)
-    {
-        return validateModule(getModule(module), null);
-    }
-
-    /**
-     * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
-     *
-     * @param resource     the resource to validate
-     * @param cost         the amount of the resource that the ship must possess
-     * @param actionString the String to print as the need for resources
-     * @param print        true if print an message
-     * @return true if the ship has enough resources for the cost
-     */
-    public boolean validateResources(Resource resource, int cost, String actionString, boolean print)
-    {
-        if (resource != null && resource.getAmount() < cost)
-        {
-            if (print)
-            {
-                addPlayerError(
-                        "Insufficient " + resource.getName().toLowerCase() + " reserves to " + actionString + "; " +
-                        "have " + resource.getAmount() + ", need " + cost + ".");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the ship has enough of the specified resource; does not print a message.
-     *
-     * @param resource     the resource to validate
-     * @param cost         the amount of the resource that the ship must possess
-     * @param actionString the String to print as the need for resources
-     */
-    public boolean validateResources(Resource resource, int cost, String actionString)
-    {
-        return validateResources(resource, cost, actionString, true);
-    }
-
-    /**
-     * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
-     *
-     * @param resource     the name of the resource to validate
-     * @param cost         the amount of the resource that the ship must possess
-     * @param actionString the String to print as the need for resources
-     * @return true if the ship has enough resources for the cost
-     */
-    public boolean validateResources(String resource, int cost, String actionString)
-    {
-        return validateResources(getResource(resource), cost, actionString, true);
-    }
-
-    /**
-     * Checks if the ship has the required resources to perform an action, and optionally prints a message if not.
-     *
-     * @param action       the action from which to find the resource and cost
-     * @param actionString the String to print as the need for resources
-     * @param print        true if we should print a message
-     * @return true if the ship has enough resources for the cost
-     */
-    public boolean validateResources(Action action, String actionString, boolean print)
-    {
-        return validateResources(getResource(action.getResource()), action.getCost(), actionString, print);
-    }
-
-    /**
-     * Checks if the ship has the required resources to perform an action; does not print a message.
-     *
-     * @param action       the action from which to find the resource and cost
-     * @param actionString the String to print as the need for resources
-     * @return true if the ship has enough resources for the cost
-     */
-    public boolean validateResources(Action action, String actionString)
-    {
-        return validateResources(getResource(action.getResource()), action.getCost(), actionString, true);
-    }
-
-    /**
      * Decreases hull strength by the damage of a given weapon, and destroys the ship if the weapon deals too much
      * damage.
      *
@@ -2787,64 +1458,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Gather as much loot as possible from the given ship.
-     *
-     * @param ship the ship to loot
-     */
-    public void loot(Ship ship)
-    {
-        /*
-        addPlayerColorMessage(new ColorString("Salvaged ")
-                .add(new ColorString(Integer.toString(salvagedCredits),
-                        COLOR_FIELD))
-                .add(" credits."));
-        */
-
-        int salvagedCredits = ship.credits / LOOT_MODIFIER;
-        if (salvagedCredits > 0)
-        {
-            credits += salvagedCredits;
-            addPlayerMessage("Salvaged " + salvagedCredits + " credits.");
-        }
-
-        for (Module module : ship.modules)
-        {
-            if (module != null && rng.nextDouble() <= (1.0 / (double) LOOT_MODIFIER))
-            {
-                addModule(module);
-                addPlayerMessage("Salvaged " + Utility.addArticle(module.getName()) + ".");
-            }
-        }
-
-        for (Resource resource : ship.resources)
-        {
-            if (resource != null)
-            {
-                Resource yourResource = getResource(resource.getName());
-                int nExpanders = resource.getNExpanders() / LOOT_MODIFIER;
-                yourResource.expand(Math.min(MAX_EXPANDERS - yourResource.getNExpanders(), nExpanders));
-
-                if (nExpanders > 0)
-                {
-                    addPlayerMessage("Salvaged " + nExpanders + " " +
-                                     Utility.makePlural(resource.getExpander().getName().toLowerCase(), nExpanders) +
-                                     ".");
-                }
-
-                int oldAmount = yourResource.getAmount();
-                yourResource.changeAmountWithDiscard(resource.getAmount() / LOOT_MODIFIER);
-
-                int amountIncrease = yourResource.getAmount() - oldAmount;
-
-                if (amountIncrease > 0)
-                {
-                    addPlayerMessage("Salvaged " + amountIncrease + " " + resource.getName().toLowerCase() + ".");
-                }
-            }
-        }
-    }
-
-    /**
      * Joins the entered faction and adds the relevant reputation.
      *
      * @param faction the faction to join (use leaveFaction() instead of setting this to null)
@@ -2883,222 +1496,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     }
 
     /**
-     * Converts another ship to this ship's faction.
-     *
-     * @param ship the ship that is being converted
-     * @return true if the ship was converted
-     */
-    public boolean convert(Ship ship)
-    {
-        if (!canConvert(ship))
-        {
-            return false;
-        }
-
-        Faction shipFaction = ship.faction;
-
-        if (ship.isAligned())
-        {
-            ship.leaveFaction();
-        }
-
-        ship.joinFaction(faction);
-
-        changeReputation(faction, Reputation.CONVERT);
-        changeReputation(shipFaction, -Reputation.CONVERT);
-
-        ship.changeReputation(faction, Reputation.CONVERT);
-        ship.changeReputation(shipFaction, -Reputation.CONVERT);
-
-        ship.addPlayerColorMessage(toColorString().add(" has converted you to the ").add(faction).add("."));
-        return true;
-    }
-
-    /**
-     * Returns true if the ship is able to convert another ship to its faction.
-     *
-     * @param ship the ship that is being converted
-     * @return true if the ship can be converted
-     */
-    public boolean canConvert(Ship ship)
-    {
-        return isAligned() && faction != ship.faction && !ship.isPlayer();
-    }
-
-    /**
-     * Claims a celestial body for the ship's faction.
-     *
-     * @param print if true and this is the player, will print error messages
-     * @return true if the celestial body was claimed
-     */
-    public boolean claim(boolean print)
-    {
-        if (!canClaim(print))
-        {
-            return false;
-        }
-
-        if (isLanded())
-        {
-            Region region = getPlanetLocation().getRegion();
-            Planet planet = getSectorLocation().getPlanet();
-            int nRegions = planet.getNRegions();
-            changeCredits(region.getFaction(), -planet.getClaimCost());
-
-            if (ALLIANCE == faction.getRelationship(region.getFaction()))
-            {
-                changeReputation(faction, Reputation.CLAIM_ALLY / nRegions);
-            }
-            else
-            {
-                changeReputation(faction, Reputation.CLAIM / nRegions);
-            }
-
-            changeReputation(region.getFaction(), -Reputation.CLAIM / nRegions);
-
-            // Claim must be done here so the faction relations can be checked
-            region.claim(faction);
-            return true;
-        }
-
-        if (!isDocked())
-        {
-            return false;
-        }
-
-        Station station = getSectorLocation().getStation();
-        changeCredits(station.getFaction(), -Station.CLAIM_COST);
-
-        if (ALLIANCE.equals(faction.getRelationship(station.getFaction())))
-        {
-            changeReputation(faction, Reputation.CLAIM_ALLY);
-        }
-        else
-        {
-            changeReputation(faction, Reputation.CLAIM);
-        }
-
-        changeReputation(station.getFaction(), -Reputation.CLAIM);
-
-        // Claim must be done here so the faction relations can be checked
-        station.claim(faction);
-        return true;
-    }
-
-    /**
-     * Returns true if the ship can claim territory in its current position.
-     *
-     * @param print if true, will print any errors
-     * @return true if the ship can claim territory in its current position
-     */
-    public boolean canClaim(boolean print)
-    {
-        return (isLanded() && canClaim(getPlanetLocation().getPlanet(), print)) || (isDocked() && canClaim(
-                getSectorLocation().getStation(), print));
-    }
-
-    /**
-     * Returns true if the ship could claim territory on the given planet.
-     *
-     * @param print if true, will print any errors
-     * @return true if the ship could claim territory on the given planet
-     */
-    public boolean canClaim(Planet planet, boolean print)
-    {
-        if (!isAligned())
-        {
-            if (print)
-            {
-                addPlayerError("You must be part of a faction to claim territory.");
-            }
-            return false;
-        }
-
-        if (credits < planet.getClaimCost())
-        {
-            if (print)
-            {
-                addPlayerError(
-                        "You cannot afford the " + planet.getClaimCost() + " credit cost to claim territory on " +
-                        planet + ".");
-            }
-            return false;
-        }
-
-        Region region = getPlanetLocation().getRegion();
-        if (!region.getType().isLand())
-        {
-            addPlayerError("The " + region.toString().toLowerCase() + " cannot be claimed.");
-            return false;
-        }
-
-        if (region.getFaction() == faction)
-        {
-            addPlayerError("The " + region.toString().toLowerCase() + " is already claimed by the " + faction + ".");
-            return false;
-        }
-
-        if (region.getNShips(region.getFaction()) > 0)
-        {
-            addPlayerError("There are currently ships of the " + region.getFaction() + " guarding the " +
-                           region.toString().toLowerCase() + ".");
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns true if the ship could claim the given station.
-     *
-     * @param print if true, will print any errors
-     * @return true if the ship could claim the given station
-     */
-    public boolean canClaim(Station station, boolean print)
-    {
-        if (!isAligned())
-        {
-            if (print)
-            {
-                addPlayerError("You must be part of a faction to claim territory.");
-            }
-            return false;
-        }
-
-        if (credits < Station.CLAIM_COST)
-        {
-            if (print)
-            {
-                addPlayerError(
-                        "You cannot afford the " + Station.CLAIM_COST + " credit cost to claim " + station + ".");
-            }
-            return false;
-        }
-
-        // If the body is already claimed by solely your faction, return false
-        if (station.getFaction() == faction)
-        {
-            if (print)
-            {
-                addPlayerError(station + " is already claimed by the " + faction + ".");
-            }
-            return false;
-        }
-
-        if (station.getNShips(station.getFaction()) > 0)
-        {
-            if (print)
-            {
-                addPlayerError(
-                        "There are currently ships of the " + station.getFaction() + " guarding " + station + ".");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Gets the faction who would respond to a distress signal from this ship.
      *
      * @return the faction who would respond to a distress signal from this ship
@@ -3114,7 +1511,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
         if (isAligned())
         {
-            if (!canDistress())
+            if (getReputation(faction).get() >= Reputation.DISTRESS)
             {
                 // Otherwise they will refuse, giving others a chance to help
                 addPlayerColorMessage(new ColorString("The ").add(faction).add(" refuses to help you."));
@@ -3146,49 +1543,6 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
 
         return offerFaction;
-    }
-
-    /**
-     * Sends a distress signal and receives help from a faction if possible.
-     */
-    public void distress()
-    {
-        distress(getDistressResponder());
-    }
-
-    /**
-     * Sends a distress signal and receives help from a faction if possible.
-     *
-     * @param responder the faction that will respond
-     */
-    public void distress(Faction responder)
-    {
-        if (responder == null)
-        {
-            return;
-        }
-
-        if (responder != faction)
-        {
-            joinFaction(responder);
-        }
-
-        addPlayerColorMessage(new ColorString("The ").add(faction)
-                                                     .add(" responds and warps supplies to your location."));
-        changeCredits(faction, DISTRESS_CREDITS);
-        faction.changeEconomy(-refill());
-        changeReputation(faction, Reputation.DISTRESS);
-    }
-
-    /**
-     * Returns true if the ship's reputation is high enough to distress, but not other factors such as actual faction
-     * involvement.
-     *
-     * @return true if the ship's reputation is high enough to distress
-     */
-    public boolean canDistress()
-    {
-        return isAligned() && getReputation(faction).get() >= Math.abs(Reputation.DISTRESS);
     }
 
     /**
@@ -3234,13 +1588,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public int refill()
     {
         int cost = 0;
-
         cost += getResource(Resource.FUEL).fill() * getResource(Resource.FUEL).getValue();
-
         cost += getResource(Resource.ENERGY).fill() * getResource(Resource.ENERGY).getValue();
-
         cost += getResource(Resource.HULL).fill() * getResource(Resource.HULL).getValue();
-
         return cost;
     }
 
@@ -3258,6 +1608,110 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         {
             module.repair();
         }
+    }
+
+    /**
+     * Checks if the player's credits are sufficient for a purchase of a specified price.
+     *
+     * @param price the price of the item to be purchased funds
+     * @return the error message to display if the check fails, null if successful
+     */
+    public String validateFunds(int price)
+    {
+        return price > credits ? "Insufficient funds; have " + credits + " credits, need " + price + "." : null;
+    }
+
+    /**
+     * Checks if the ship is docked, and optionally prints a message if not.
+     *
+     * @return the error message to display if the check fails, null if successful
+     */
+    public String validateDocking()
+    {
+        return isDocked() ? null : "Ship must be docked with a station to buy and sell items.";
+    }
+
+    /**
+     * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a custom
+     * message if not.
+     *
+     * @param module the name of the module to validate
+     * @param action the String to print as the need for the module
+     * @return the error message to display if the check fails, null if successful
+     */
+    public String validateModule(String module, String action)
+    {
+        // The ship can technically have this installed because it doesn't exist
+        if (module == null || !hasModule(module))
+        {
+            return Utility.addCapitalizedArticle(module) + " is required" + (action == null ? "" : " to " + action) +
+                   ".";
+        }
+
+        Module moduleObj = getModule(module);
+
+        if (moduleObj.isDamaged())
+        {
+            if (getModuleAmount(moduleObj) > 1)
+            {
+                // Check for spares
+                for (Module cargoModule : cargo)
+                {
+                    if (cargoModule.getName().equalsIgnoreCase(moduleObj.getName()) && !cargoModule.isDamaged())
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            return "Your " + moduleObj.getName().toLowerCase() + " is too damaged to function.";
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a message
+     * if not.
+     *
+     * @param module the name of the module to validate
+     * @return the error message to display if the check fails, null if successful
+     */
+    public String validateModule(String module)
+    {
+        return validateModule(module, null);
+    }
+
+    /**
+     * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
+     *
+     * @param resource     the resource to validate
+     * @param cost         the amount of the resource that the ship must possess
+     * @param actionString the String to use as the need for resources
+     * @return the error message to display if the check fails, null if successful
+     */
+    public String validateResources(Resource resource, int cost, String actionString)
+    {
+        if (resource != null && resource.getAmount() < cost)
+        {
+            return "Insufficient " + resource.getName().toLowerCase() + " reserves to " + actionString + "; " +
+                   "have " + resource.getAmount() + ", need " + cost + ".";
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
+     *
+     * @param resource     the name of the resource to validate
+     * @param cost         the amount of the resource that the ship must possess
+     * @param actionString the String to print as the need for resources
+     * @return the error message to display if the check fails, null if successful
+     */
+    public String validateResources(String resource, int cost, String actionString)
+    {
+        return validateResources(getResource(resource), cost, actionString);
     }
 
     /**
@@ -3452,7 +1906,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
         }
 
         int level = 0;
-        level += getWeaponsUsed() * Levels.LEVEL_AMOUNT;
+        level += getWeapons().size() * Levels.LEVEL_AMOUNT;
         level += getResource(Resource.HULL).getNExpanders() * 2;
         return level;
     }
@@ -3475,7 +1929,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
     public int getAbsoluteMiningLevel()
     {
         int level = 0;
-        level += (modules.size() - getWeaponsUsed()) * Levels.LEVEL_AMOUNT;
+        level += (modules.size() - getWeapons().size()) * Levels.LEVEL_AMOUNT;
         level += getResource(Resource.ORE).getNExpanders() * 2;
         return level;
     }
@@ -3494,7 +1948,7 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
         for (Module module : modules)
         {
-            if (module != null && station.getModule(module.getName()) != null)
+            if (module != null && station.hasModule(module.getName()))
             {
                 module.setPrice(station.getModule(module.getName()).getPrice());
             }
@@ -3502,11 +1956,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
         for (Resource resource : resources)
         {
-            if (resource != null && station.getResource(resource.getName()) != null)
+            if (resource != null && station.hasResource(resource.getName()))
             {
                 resource.setPrice(station.getResource(resource.getName()).getPrice());
-
-                // This currently updates the expander's price for ALL ships
                 resource.getExpander().setPrice(station.getExpander(resource.getExpander().getName()).getPrice());
             }
         }
@@ -3517,24 +1969,23 @@ public class Ship implements ColorStringObject, Comparable<Ship>
      */
     public void updateContinuousEffects()
     {
-        if (hasModule(Action.SOLAR) && isInSector() && !isLanded())
+        for (Module module : modules)
         {
-            getResource(Action.SOLAR.getAction().getResource()).changeAmountWithDiscard(
-                    Action.SOLAR.getAction().getCost() *
-                    location.getSector().getStar().getSolarPowerAt(getSectorLocation().getOrbit()));
+            if (module.hasEffect() && flags.contains(module.getEffect()))
+            {
+                if (!getResource(module.getActionResource()).changeAmount(-module.getActionCost()))
+                {
+                    removeFlag(module.getEffect());
+                }
+            }
         }
 
-        if (isShielded() && !changeResourceBy(Action.SHIELD.getAction()))
-        {
-            addPlayerMessage("The ship has run out of energy to stay shielded.");
-            removeFlag(SHIELDED);
-        }
-
-        if (isCloaked() && !changeResourceBy(Action.CLOAK.getAction()))
-        {
-            addPlayerMessage("The ship has run out of energy to stay cloaked.");
-            removeFlag(CLOAKED);
-        }
+        // if (hasModule(Action.SOLAR) && isInSector() && !isLanded())
+        // {
+        //     getResource(Action.SOLAR.getAction().getResource()).changeAmountWithDiscard(
+        //             Action.SOLAR.getAction().getCost() *
+        //             location.getSector().getStar().getSolarPowerAt(getSectorLocation().getOrbit()));
+        // }
     }
 
     /**

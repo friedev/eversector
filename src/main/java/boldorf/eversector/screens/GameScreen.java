@@ -12,8 +12,9 @@ import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
 import boldorf.eversector.Option;
 import boldorf.eversector.Symbol;
+import boldorf.eversector.actions.Distress;
+import boldorf.eversector.actions.Refine;
 import boldorf.eversector.faction.Faction;
-import boldorf.eversector.items.Action;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 import boldorf.util.Utility;
@@ -26,8 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.DISTRESS;
-import static boldorf.eversector.Paths.REFINE;
 import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 
 /**
@@ -193,18 +192,19 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
             //                popup = new OreScreen();
             //                break;
             case KeyEvent.VK_I:
-                if (player.refine())
+                String refineExecution = new Refine().execute(player);
+                if (refineExecution == null)
                 {
-                    nextTurn = true;
-                    playSoundEffect(REFINE);
+                    break;
                 }
+
+                addError(refineExecution);
                 break;
             case KeyEvent.VK_J:
                 popup = player.isAligned() ? new LeaveScreen(true) : new JoinScreen();
                 break;
             case KeyEvent.VK_D:
                 nextTurn = true;
-                playSoundEffect(DISTRESS);
                 Faction distressResponder = player.getDistressResponder();
 
                 if (distressResponder == null)
@@ -214,7 +214,12 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
                 if (player.getFaction() == distressResponder)
                 {
-                    player.distress(distressResponder);
+                    String distressExecution = new Distress(distressResponder).execute(player);
+                    if (distressExecution != null)
+                    {
+                        addError(distressExecution);
+                        break;
+                    }
                     break;
                 }
 
@@ -327,7 +332,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         {
             keybindings.add(new Keybinding("toggle module activation", "m"));
         }
-        if (player.hasModule(Action.REFINE))
+        if (player.hasModule(Refine.MODULE))
         {
             keybindings.add(new Keybinding("refine ore into fuel", "i"));
         }

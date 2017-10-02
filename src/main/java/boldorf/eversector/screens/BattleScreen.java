@@ -8,8 +8,12 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
-import boldorf.eversector.Paths;
-import boldorf.eversector.items.Action;
+import boldorf.eversector.actions.Fire;
+import boldorf.eversector.actions.Flee;
+import boldorf.eversector.actions.Pursue;
+import boldorf.eversector.actions.Scan;
+import boldorf.eversector.items.Module;
+import boldorf.eversector.items.Weapon;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 import squidpony.squidmath.Coord;
@@ -21,8 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.ENGINE;
-import static boldorf.eversector.Paths.SCAN;
 
 /**
  * A screen for managing interactions in battle.
@@ -105,54 +107,59 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         Ship selected = getSelectedShip();
         List<Ship> enemies = battle.getEnemies(player);
         boolean isOpponent = enemies.contains(selected);
+        // Possibly add a local action variable and process at end
 
         switch (key.getKeyCode())
         {
             case KeyEvent.VK_L:
-                if (battle.getSurrendered().contains(player))
+                if (isOpponent)
                 {
-                    addError("You may not attack after surrendering.");
-                    break;
-                }
+                    String fire = new Fire(Weapon.LASER, selected).execute(player);
+                    if (fire == null)
+                    {
+                        nextAttack = true;
+                        break;
+                    }
 
-                if (isOpponent && player.fire(Action.LASER, selected))
-                {
-                    nextAttack = true;
-                    playSoundEffect(Paths.LASER);
+                    addError(fire);
                 }
                 break;
             case KeyEvent.VK_T:
-                if (battle.getSurrendered().contains(player))
+                if (isOpponent)
                 {
-                    addError("You may not attack after surrendering.");
-                    break;
-                }
+                    String fire = new Fire(Weapon.TORPEDO_TUBE, selected).execute(player);
+                    if (fire == null)
+                    {
+                        nextAttack = true;
+                    }
 
-                if (isOpponent && player.fire(Action.TORPEDO, selected))
-                {
-                    nextAttack = true;
-                    playSoundEffect(Paths.TORPEDO);
+                    addError(fire);
                 }
                 break;
             case KeyEvent.VK_P:
-                if (battle.getSurrendered().contains(player))
+                if (isOpponent)
                 {
-                    addError("You may not attack after surrendering.");
-                    break;
-                }
+                    String fire = new Fire(Weapon.PULSE_BEAM, selected).execute(player);
+                    if (fire == null)
+                    {
+                        nextAttack = true;
+                    }
 
-                if (isOpponent && player.fire(Action.PULSE, selected))
-                {
-                    nextAttack = true;
-                    playSoundEffect(Paths.PULSE);
+                    addError(fire);
                 }
                 break;
             case KeyEvent.VK_S:
-                if (selected != player && !scanning.contains(selected) && player.scan())
+                if (selected != player && !scanning.contains(selected))
                 {
+                    String scanExecution = new Scan().execute(player);
+                    if (scanExecution != null)
+                    {
+                        addError(scanExecution);
+                        break;
+                    }
+
                     nextAttack = true;
                     scanning.add(selected);
-                    playSoundEffect(SCAN);
                 }
                 break;
             case KeyEvent.VK_F:
@@ -163,19 +170,13 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                     break;
                 }
 
-                Action flee = Action.FLEE;
-
-                if (!player.validateResources(flee, "flee"))
+                String fleeExecution = new Flee().execute(player);
+                if (fleeExecution != null)
                 {
+                    addError(fleeExecution);
                     break;
                 }
 
-                player.changeResourceBy(flee);
-                playSoundEffect(ENGINE);
-                battle.getFleeing().add(player);
-
-                // The opponent has enough resources to pursue because 
-                // it is checked in willPursue()
                 nextAttack = true;
                 break;
             }
@@ -251,7 +252,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                 return new EndScreen(new ColorString("You have been destroyed."), true, false);
             }
 
-            if (!battle.getFleeing().contains(player) && player.validateResources(Action.PURSUE, "pursue"))
+            if (!battle.getFleeing().contains(player) && new Pursue().canExecute(player) == null)
             {
                 List<Ship> enemiesEscaping = new LinkedList<>();
                 for (Ship escaping : battle.getFleeing())
@@ -341,15 +342,15 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         keybindings.add(new Keybinding("keybindings", "h", "?"));
         keybindings.add(new Keybinding("quit", "Q"));
         keybindings.add(null);
-        if (player.hasModule(Action.LASER))
+        if (player.hasModule("Laser"))
         {
             keybindings.add(new Keybinding("fire laser", "l"));
         }
-        if (player.hasModule(Action.TORPEDO))
+        if (player.hasModule("Torpedo Tube"))
         {
             keybindings.add(new Keybinding("fire torpedo", "t"));
         }
-        if (player.hasModule(Action.PULSE))
+        if (player.hasModule("Pulse Beam"))
         {
             keybindings.add(new Keybinding("fire pulse beam", "p"));
         }
@@ -357,11 +358,11 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
         {
             keybindings.add(new Keybinding("toggle module activation", "m"));
         }
-        if (player.hasModule(Action.SCAN))
+        if (player.hasModule(Module.SCANNER))
         {
             keybindings.add(new Keybinding("scan selected ship", "s"));
         }
-        if (player.validateResources(Action.FLEE, "flee", false))
+        if (new Flee().canExecuteBool(player))
         {
             keybindings.add(new Keybinding("flee", "f"));
         }

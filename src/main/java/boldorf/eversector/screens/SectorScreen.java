@@ -10,6 +10,7 @@ import boldorf.apwt.windows.AlignedWindow;
 import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.*;
 import boldorf.eversector.map.Planet;
 import boldorf.eversector.map.Sector;
 import boldorf.eversector.map.Station;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.*;
 
 /**
  * The screen used for navigating the orbits of sectors.
@@ -128,34 +128,44 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
         switch (key.getKeyCode())
         {
             case KeyEvent.VK_UP:
-                if (player.orbit(false))
+                String orbitDecrementExecution = new Orbit(false).execute(player);
+                if (orbitDecrementExecution == null)
                 {
                     nextTurn = true;
-                    playSoundEffect(ENGINE);
+                    break;
                 }
+                addError(orbitDecrementExecution);
                 break;
             case KeyEvent.VK_DOWN:
-                if (player.orbit(true))
+                String orbitIncrementExecution = new Orbit(true).execute(player);
+                if (orbitIncrementExecution == null)
                 {
                     nextTurn = true;
-                    playSoundEffect(ENGINE);
                     if (!player.isInSector())
                     {
                         nextScreen = new MapScreen();
                     }
+                    break;
                 }
+                addError(orbitIncrementExecution);
                 break;
             case KeyEvent.VK_LEFT:
                 Station station = player.getSectorLocation().getStation();
-                if (station != null && player.isHostile(station.getFaction()) && player.canClaim(station, false))
+                if (station != null && player.isHostile(station.getFaction()) && new Claim().canExecute(player,
+                        station) == null)
                 {
                     popup = new ClaimStationScreen();
                 }
-                else if (player.dock())
+                else
                 {
-                    nextTurn = true;
-                    nextScreen = new StationScreen();
-                    playSoundEffect(DOCK);
+                    String dockExecution = new Dock().execute(player);
+                    if (dockExecution == null)
+                    {
+                        nextTurn = true;
+                        nextScreen = new StationScreen();
+                        break;
+                    }
+                    addError(dockExecution);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
@@ -168,23 +178,30 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 
                 if (planet.getType().canMineFromOrbit())
                 {
-                    if (player.canMine(false) && player.isDangerousToMine())
+                    Mine mine = new Mine();
+                    if (mine.canExecuteBool(player) && player.isDangerousToMine())
                     {
                         popup = new AsteroidMineConfirmScreen();
                         break;
                     }
-                    else if (player.mine(true))
+                    else
                     {
-                        playSoundEffect(MINE);
-                        nextTurn = true;
+                        String mineExecution = mine.execute(player);
+                        if (mineExecution == null)
+                        {
+                            nextTurn = true;
+                            break;
+                        }
+                        addError(mineExecution);
                         break;
                     }
                 }
-                else if (player.canLand())
+                // TODO replace with a more reliable land check
+                else if (new Land(Coord.get(0, 0)).canExecuteBool(player))
                 {
                     popup = new LandScreen();
                 }
-                else if (player.canCrashLand(false))
+                else if (new CrashLand().canExecuteBool(player))
                 {
                     popup = new CrashLandScreen();
                 }
@@ -207,8 +224,8 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
                 {
                     List<Ship> ships = player.getSectorLocation().getSector().getShipsAt(
                             player.getSectorLocation().getOrbit());
-                    return new BattleScreen(player.startBattle(ships.get(0) == player ? ships.get(1) : ships.get(0)),
-                            true);
+                    new StartBattle(ships.get(0) == player ? ships.get(1) : ships.get(0)).execute(player);
+                    return new BattleScreen(player.getBattleLocation().getBattle(), true);
                 }
                 else
                 {

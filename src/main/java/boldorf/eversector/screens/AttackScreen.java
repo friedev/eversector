@@ -6,6 +6,7 @@ import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.actions.StartBattle;
 import boldorf.eversector.ships.Ship;
 
 import static boldorf.eversector.Main.*;
@@ -43,6 +44,7 @@ public class AttackScreen extends MenuScreen<PopupMenu> implements WindowScreen<
     public Screen onConfirm()
     {
         Ship opponent = player.getLocation().getSector().getShip(getMenu().getSelection().toString());
-        return new BattleScreen(player.startBattle(opponent), true);
+        new StartBattle(opponent).execute(player);
+        return new BattleScreen(player.getBattleLocation().getBattle(), true);
     }
 }

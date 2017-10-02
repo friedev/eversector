@@ -35,12 +35,12 @@ public class Reputation implements Comparable<Reputation>
     /**
      * The reputation change for killing an enemy.
      */
-    public static final int KILL_ENEMY = 75;
+    public static final int KILL_ENEMY = 125;
 
     /**
      * The reputation change for killing a peaceful or allied ship.
      */
-    public static final int KILL_ALLY = -200;
+    public static final int KILL_ALLY = -250;
 
     /**
      * The reputation change for converting a ship to your faction.

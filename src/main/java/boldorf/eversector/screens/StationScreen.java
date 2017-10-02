@@ -10,6 +10,7 @@ import boldorf.apwt.windows.Border;
 import boldorf.apwt.windows.Line;
 import boldorf.eversector.Main;
 import boldorf.eversector.Symbol;
+import boldorf.eversector.actions.*;
 import boldorf.eversector.items.BaseResource;
 import boldorf.eversector.items.Item;
 import boldorf.eversector.items.Module;
@@ -26,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
-import static boldorf.eversector.Paths.*;
 
 /**
  * The screen used to interact with stations, especially buying and selling items.
@@ -111,35 +111,37 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
         {
             case KeyEvent.VK_ENTER:
             {
-                boolean success;
+                Action action;
                 Item item = getSelectedItem();
                 if (buying)
                 {
                     if (item instanceof Module)
                     {
-                        success = player.buyModule(item.getName());
+                        action = new BuyModule(item.getName());
                     }
                     else
                     {
-                        success = player.buyResource(item.getName(), 1);
+                        action = new TransactResource(item.getName(), 1);
                     }
                 }
                 else
                 {
                     if (item instanceof Module)
                     {
-                        success = player.sellModule(item.getName());
+                        action = new SellModule(item.getName());
                     }
                     else
                     {
-                        success = player.buyResource(item.getName(), -1);
+                        action = new TransactResource(item.getName(), -1);
                     }
                 }
 
-                if (success)
+                String actionExecution = action.execute(player);
+                if (actionExecution == null)
                 {
-                    playSoundEffect(TRANSACTION);
+                    break;
                 }
+                addError(actionExecution);
                 break;
             }
             case KeyEvent.VK_LEFT:
@@ -156,22 +158,28 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
             case KeyEvent.VK_R:
                 if (restock())
                 {
-                    playSoundEffect(TRANSACTION);
+                    playSoundEffect(TransactResource.SOUND_EFFECT);
                 }
                 break;
             case KeyEvent.VK_C:
-                if (player.claim(true))
+                String claimExecution = new Claim().execute(player);
+                if (claimExecution == null)
                 {
                     nextTurn = true;
-                    playSoundEffect(CLAIM);
+                    break;
                 }
+                addError(claimExecution);
                 break;
             case KeyEvent.VK_ESCAPE:
             {
-                player.undock();
-                nextTurn = true;
-                playSoundEffect(DOCK);
-                nextScreen = new SectorScreen();
+                String undockExecution = new Undock().execute(player);
+                if (undockExecution == null)
+                {
+                    nextTurn = true;
+                    nextScreen = new SectorScreen();
+                    break;
+                }
+                addError(undockExecution);
                 break;
             }
         }
@@ -212,7 +220,9 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 
         if (!player.getResource(Resource.ORE).isEmpty())
         {
-            restocked = player.buyResource(Resource.ORE, -player.getMaxSellAmount(Resource.ORE));
+            new TransactResource(Resource.ORE, -1, false);
+            restocked = new TransactResource(Resource.ORE, -player.getMaxSellAmount(Resource.ORE), false).executeBool
+                    (player);
         }
 
         restocked = restock(Resource.HULL) || restocked;
@@ -230,7 +240,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
     private boolean restock(String name)
     {
         Resource resource = player.getResource(name);
-        return resource != null && !resource.isFull() && player.buyResource(name, player.getMaxBuyAmount(resource));
+        return resource != null && !resource.isFull() && new TransactResource(name,
+                player.getMaxBuyAmount(resource), false).executeBool(player);
     }
 
     @Override

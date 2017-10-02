@@ -6,7 +6,7 @@ import boldorf.apwt.screens.Screen;
 import boldorf.apwt.screens.WindowScreen;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
-import boldorf.eversector.items.Action;
+import boldorf.eversector.actions.Pursue;
 import boldorf.eversector.ships.Battle;
 import boldorf.eversector.ships.Ship;
 
@@ -66,7 +66,7 @@ public class PursuitScreen extends ConfirmationScreen implements WindowScreen<Po
     @Override
     public Screen onConfirm()
     {
-        player.changeResourceBy(Action.PURSUE);
+        new Pursue().execute(player);
         List<Ship> pursuers = battle.getPursuers(pursuing.get(0));
         pursuers.add(player);
         battle.processEscape(pursuing.get(0), pursuers);

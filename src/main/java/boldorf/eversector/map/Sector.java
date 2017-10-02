@@ -957,9 +957,7 @@ public class Sector
         {
             if (ship != null && ship.getSectorLocation().getOrbit() == orbit && !ship.isPlayer())
             {
-                // 12 is the max number of orbits in a sector
-                // TODO reference Star.StarMass
-                if (contents.size() >= 12)
+                if (contents.size() >= Star.StarMass.getLargest().getMass())
                 {
                     notShown++;
                     break;
