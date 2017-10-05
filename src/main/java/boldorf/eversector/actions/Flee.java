@@ -53,11 +53,7 @@ public class Flee implements Action
 
         actor.getResource(RESOURCE).changeAmount(-COST);
         actor.getBattleLocation().getBattle().getFleeing().add(actor);
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

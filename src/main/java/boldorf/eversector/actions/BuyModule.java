@@ -6,8 +6,6 @@ import boldorf.eversector.items.Weapon;
 import boldorf.eversector.map.Station;
 import boldorf.eversector.ships.Ship;
 
-import static boldorf.eversector.Main.playSoundEffect;
-
 public class BuyModule implements Action
 {
     private final String module;
@@ -75,11 +73,7 @@ public class BuyModule implements Action
 
         actor.addModule(moduleObj);
         actor.changeCredits(station.getFaction(), -moduleObj.getPrice());
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

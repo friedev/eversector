@@ -54,11 +54,7 @@ public class Escape implements Action
 
         actor.getResource(RESOURCE).changeAmount(-COST);
         actor.setLocation(actor.getSectorLocation().escapeSector());
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

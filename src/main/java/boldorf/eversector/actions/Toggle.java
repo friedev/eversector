@@ -7,6 +7,7 @@ import boldorf.eversector.ships.Ship;
 import boldorf.util.Utility;
 
 import static boldorf.eversector.Main.addMessage;
+import static boldorf.eversector.Main.playSoundEffect;
 
 public class Toggle implements Action
 {
@@ -83,12 +84,14 @@ public class Toggle implements Action
             if (activating)
             {
                 addMessage("Your " + moduleObj.toString().toLowerCase() + " has been deactivated.");
+                playSoundEffect(SOUND_EFFECT_ENABLE);
             }
             else
             {
                 addMessage("Your " + moduleObj.toString().toLowerCase() + " has been activated and will drain " +
                            moduleObj.getActionCost() + " " + moduleObj.getActionResource().toLowerCase() +
                            " per turn of use.");
+                playSoundEffect(SOUND_EFFECT_DISABLE);
             }
         }
         else if (actor.isInBattle())

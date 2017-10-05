@@ -3,8 +3,6 @@ package boldorf.eversector.actions;
 import boldorf.eversector.Paths;
 import boldorf.eversector.ships.Ship;
 
-import static boldorf.eversector.Main.playSoundEffect;
-
 public class Undock implements Action
 {
     public static final String SOUND_EFFECT = Paths.DOCK;
@@ -35,11 +33,7 @@ public class Undock implements Action
         }
 
         actor.setLocation(actor.getStationLocation().undock());
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

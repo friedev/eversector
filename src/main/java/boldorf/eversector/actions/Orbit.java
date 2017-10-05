@@ -89,11 +89,7 @@ public class Orbit implements Action
 
         actor.setLocation(actor.getSectorLocation().setOrbit(target));
         actor.getResource(RESOURCE).changeAmount(-COST);
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

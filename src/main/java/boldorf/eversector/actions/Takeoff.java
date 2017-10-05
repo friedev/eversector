@@ -39,11 +39,7 @@ public class Takeoff implements Action
 
         actor.getResource(RESOURCE).changeAmount(-COST);
         actor.setLocation(actor.getPlanetLocation().takeoff());
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

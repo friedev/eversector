@@ -8,7 +8,6 @@ import boldorf.eversector.map.Station;
 import boldorf.eversector.ships.Reputation;
 import boldorf.eversector.ships.Ship;
 
-import static boldorf.eversector.Main.playSoundEffect;
 import static boldorf.eversector.faction.Relationship.RelationshipType.ALLIANCE;
 
 public class Claim implements Action
@@ -127,10 +126,7 @@ public class Claim implements Action
 
             // Claim must be done here so the faction relations can be checked
             region.claim(faction);
-            if (actor.isPlayer())
-            {
-                playSoundEffect(SOUND_EFFECT);
-            }
+            actor.playPlayerSound(SOUND_EFFECT);
             return null;
         }
 
@@ -147,12 +143,8 @@ public class Claim implements Action
         }
 
         actor.changeReputation(station.getFaction(), -Reputation.CLAIM);
-
         station.claim(faction);
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

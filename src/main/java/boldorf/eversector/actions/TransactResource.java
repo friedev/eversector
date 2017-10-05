@@ -147,9 +147,9 @@ public class TransactResource implements Action
             actor.changeCredits(station.getFaction(), -price);
         }
 
-        if (sound && actor.isPlayer())
+        if (sound)
         {
-            playSoundEffect(SOUND_EFFECT);
+            actor.playPlayerSound(SOUND_EFFECT);
         }
         return null;
     }

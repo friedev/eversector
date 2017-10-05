@@ -58,11 +58,7 @@ public class Burn implements Action
 
         actor.setLocation(getDestination(actor));
         actor.getResource(RESOURCE).changeAmount(-COST);
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 

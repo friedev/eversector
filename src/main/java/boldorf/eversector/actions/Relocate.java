@@ -58,11 +58,7 @@ public class Relocate implements Action
 
         actor.getResource(RESOURCE).changeAmount(-COST);
         actor.setLocation(getDestination(actor));
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 

@@ -60,11 +60,7 @@ public class Distress implements Action
         actor.changeCredits(responder, DISTRESS_CREDITS);
         responder.changeEconomy(-actor.refill());
         actor.changeReputation(responder, Reputation.DISTRESS);
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

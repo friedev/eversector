@@ -99,11 +99,7 @@ public class Fire implements Action
 
         target.damageWith(weaponObj, false);
         actor.getResource(weaponObj.getActionResource()).changeAmount(-weaponObj.getActionCost());
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(weaponObj.getSoundEffect());
-        }
+        actor.playPlayerSound(weaponObj.getSoundEffect());
         return null;
     }
 

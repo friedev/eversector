@@ -107,11 +107,7 @@ public class Mine implements Action
         }
 
         actor.changeGlobalReputation(Reputation.MINE);
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

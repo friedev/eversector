@@ -47,11 +47,7 @@ public class Enter implements Action
 
         actor.getResource(RESOURCE).changeAmount(-COST);
         actor.setLocation(actor.getLocation().enterSector());
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }

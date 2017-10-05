@@ -77,11 +77,7 @@ public class Dock implements Action
 
         actor.repairModules();
         actor.updatePrices();
-
-        if (actor.isPlayer())
-        {
-            playSoundEffect(SOUND_EFFECT);
-        }
+        actor.playPlayerSound(SOUND_EFFECT);
         return null;
     }
 }
