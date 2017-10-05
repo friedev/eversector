@@ -9,9 +9,11 @@ import boldorf.apwt.windows.Line;
 import boldorf.apwt.windows.PopupMenu;
 import boldorf.apwt.windows.PopupWindow;
 import boldorf.eversector.Main;
+import boldorf.eversector.screens.PopupMaster;
 import boldorf.eversector.ships.Reputation.ReputationRange;
 import boldorf.eversector.ships.Ship;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import static boldorf.eversector.Main.*;
@@ -21,8 +23,14 @@ import static boldorf.eversector.Main.*;
  *
  * @author Boldorf Smokebane
  */
-public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
+public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>, PopupMaster
 {
+
+    /**
+     * Popup screen for the confirmation prompt.
+     */
+    private Screen popup;
+
     /**
      * Instantiates a new VotingScreen.
      */
@@ -35,17 +43,52 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
     }
 
     @Override
+    public void displayOutput()
+    {
+        super.displayOutput();
+
+        if (popup != null)
+        {
+            popup.displayOutput();
+        }
+    }
+
+    @Override
     public PopupWindow getWindow()
     {
         return (PopupWindow) getMenu().getWindow();
     }
 
     @Override
+    public Screen getPopup()
+    {
+        return popup;
+    }
+
+    @Override
+    public Screen processInput(KeyEvent key)
+    {
+        if (popup != null)
+        {
+            popup = popup.processInput(key);
+
+            if (popup instanceof ElectionResultsScreen)
+            {
+                return popup;
+            }
+
+            return this;
+        }
+
+        return super.processInput(key);
+    }
+
+    @Override
     public Screen onConfirm()
     {
-        String shipString = getMenu().getSelection().toString();
-        pendingElection.addVote(shipString.substring(0, shipString.indexOf(" (")));
-        return onCancel();
+        String selection = getMenu().getSelection().toString();
+        popup = new VotingConfirmScreen(selection);
+        return this;
     }
 
     @Override
