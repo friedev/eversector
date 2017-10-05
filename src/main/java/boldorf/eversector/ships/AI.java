@@ -355,7 +355,7 @@ public class AI
     {
         if (ship.isInSector())
         {
-            if (ship.isLanded() & ship.getPlanetLocation().getRegion().hasOre())
+            if (ship.isLanded() && ship.getPlanetLocation().getRegion().hasOre())
             {
                 return ship.getPlanetLocation();
             }
