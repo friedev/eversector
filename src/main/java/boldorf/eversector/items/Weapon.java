@@ -10,7 +10,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 /**
  * A module that also holds the amount of damage it deals.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Weapon extends Module
 {

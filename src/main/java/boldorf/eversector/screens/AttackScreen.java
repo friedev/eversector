@@ -14,7 +14,7 @@ import static boldorf.eversector.Main.*;
 /**
  * A menu for choosing ships to attack.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class AttackScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
 {

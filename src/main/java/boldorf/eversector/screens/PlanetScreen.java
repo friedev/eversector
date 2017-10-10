@@ -31,7 +31,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen for interacting with planets and navigating their regions.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>, KeyScreen
 {

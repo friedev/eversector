@@ -16,7 +16,7 @@ import static boldorf.eversector.Paths.TORPEDO;
 /**
  * The prompt presented when the player has insufficient fuel to land.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class CrashLandScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

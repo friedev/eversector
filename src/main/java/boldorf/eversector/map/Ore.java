@@ -3,7 +3,7 @@ package boldorf.eversector.map;
 /**
  * A type of ore with a name and density.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Ore implements Comparable<Ore>
 {

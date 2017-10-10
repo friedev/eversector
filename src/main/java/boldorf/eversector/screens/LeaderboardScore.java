@@ -14,7 +14,7 @@ import static boldorf.eversector.screens.EndScreen.COLOR_HEADER;
 /**
  * A score on the leaderboard, consisting of a  name, credits, and reputation.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class LeaderboardScore implements Comparable<LeaderboardScore>
 {

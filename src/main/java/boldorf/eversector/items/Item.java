@@ -13,7 +13,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * An item with a name and price for both ships and stations.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public abstract class Item
 {

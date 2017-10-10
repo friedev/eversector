@@ -24,7 +24,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * A 2D array of sectors representing a galaxy.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Galaxy
 {

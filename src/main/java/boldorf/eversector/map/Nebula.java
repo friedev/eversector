@@ -8,7 +8,7 @@ import java.awt.Color;
 
 /**
  * A cloud of gas and dust in space that blocks vision.
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public enum Nebula implements ColorStringObject
 {

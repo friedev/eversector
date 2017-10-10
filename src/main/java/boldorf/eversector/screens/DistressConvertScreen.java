@@ -14,7 +14,7 @@ import static boldorf.eversector.Main.player;
 /**
  * The prompt displayed when another faction offers to aid the player in distress.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class DistressConvertScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

@@ -12,7 +12,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The menu for choosing a faction to join.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class JoinScreen extends MenuScreen<PopupMenu>
 {

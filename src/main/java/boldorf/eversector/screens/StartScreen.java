@@ -24,7 +24,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * The menu screen that is displayed at the start of the game.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class StartScreen extends Screen
 {
@@ -36,12 +36,12 @@ public class StartScreen extends Screen
     /**
      * The longest version that can be compensated for with spaces.
      */
-    private static final int MAX_VERSION_LENGTH = 22;
+    private static final int MAX_VERSION_LENGTH = 33;
 
     /**
      * The name of the game's developer.
      */
-    private static final String DEVELOPER = "Boldorf Smokebane";
+    private static final String DEVELOPER = "Maugrift";
 
     /**
      * The year the game is copyrighted in.
@@ -161,16 +161,13 @@ public class StartScreen extends Screen
          __  / __ | / /  _ \_  ___/____ \_  _ \  ___/  __/  __ \_  ___/
          _  __/__ |/ //  __/  /   ____/ //  __/ /__ / /_ / /_/ /  /
          / /___ ____/ \___//_/    /____/ \___/\___/ \__/ \____//_/
-        /_____/ C 20XX Boldorf Smokebane                   vX.X.X
+        /_____/
         */
 
-        String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length() + 2);
-
+        String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
         String infoLine = Symbol.COPYRIGHT + " " + COPYRIGHT_YEAR + " " + DEVELOPER + " " + padding + VERSION;
-
         List<ColorString> titleArt = new LinkedList<>();
 
-        // Comment above is final form; print is distorted by extra backslashes
         titleArt.add(new ColorString(" __________               ________          _____              "));
         titleArt.add(new ColorString(" ___  ____/  _______________  ___/____________  /______________"));
         titleArt.add(new ColorString(" __  /___ | / /  _ \\_  ___/____ \\_  _ \\  ___/  __/  __ \\_  ___/"));

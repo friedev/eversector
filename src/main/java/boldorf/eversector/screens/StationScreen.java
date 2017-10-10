@@ -31,7 +31,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen used to interact with stations, especially buying and selling items.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, KeyScreen
 {

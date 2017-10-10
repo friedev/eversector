@@ -3,7 +3,7 @@ package boldorf.eversector.locations;
 /**
  * The location of a station. Does not currently differ from SectorLocation, but is used to denote being docked with a
  * station.
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class StationLocation extends SectorLocation
 {

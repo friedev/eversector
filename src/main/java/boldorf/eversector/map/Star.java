@@ -16,7 +16,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * A star that possesses a type and a power level.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Star implements ColorStringObject
 {

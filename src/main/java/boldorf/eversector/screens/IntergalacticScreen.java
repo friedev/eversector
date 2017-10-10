@@ -15,7 +15,7 @@ import static boldorf.eversector.Paths.START;
 /**
  * The prompt to travel to a new galaxy.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class IntergalacticScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

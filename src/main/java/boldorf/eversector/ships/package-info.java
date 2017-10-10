@@ -1,6 +1,6 @@
 /**
  * Ships and abstract concepts surrounding them.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 package boldorf.eversector.ships;

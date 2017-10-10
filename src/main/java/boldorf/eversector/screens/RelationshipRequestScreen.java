@@ -21,7 +21,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The menu for requesting relationships with other factions as a leader.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
 {

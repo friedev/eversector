@@ -22,7 +22,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * A location on the map, possibly containing a star system.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Sector
 {

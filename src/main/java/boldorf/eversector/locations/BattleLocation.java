@@ -4,7 +4,7 @@ import boldorf.eversector.ships.Battle;
 
 /**
  * The location of a battle.
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class BattleLocation extends SectorLocation
 {

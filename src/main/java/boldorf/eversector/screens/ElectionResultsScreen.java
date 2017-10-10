@@ -18,7 +18,7 @@ import static boldorf.eversector.Main.pendingElection;
 /**
  * The screen displaying the results of an election.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class ElectionResultsScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

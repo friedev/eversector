@@ -15,7 +15,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen used to toggle certain modules on or off.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class ToggleScreen extends MenuScreen implements WindowScreen<PopupWindow>
 {

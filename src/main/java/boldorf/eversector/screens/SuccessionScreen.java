@@ -13,7 +13,7 @@ import static boldorf.eversector.Main.player;
 /**
  * The screen shown when the player can take the place of a former leader. <b>Currently unused.</b>
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class SuccessionScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

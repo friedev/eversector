@@ -29,7 +29,7 @@ import static boldorf.eversector.screens.StartScreen.getTitleArt;
 /**
  * The screen displayed at the end of the game.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 {

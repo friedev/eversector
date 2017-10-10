@@ -5,7 +5,7 @@ import boldorf.apwt.screens.Screen;
 /**
  * A screen that manages popup screens.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public interface PopupMaster
 {

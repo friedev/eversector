@@ -3,7 +3,7 @@ package boldorf.eversector.ships;
 /**
  * A collection of ship classifications.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public abstract class Levels
 {

@@ -16,7 +16,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 /**
  * The screen for entering names.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class NamePromptScreen extends PopupTerminal
 {

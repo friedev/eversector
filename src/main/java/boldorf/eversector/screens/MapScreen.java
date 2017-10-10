@@ -26,7 +26,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen for viewing and navigating the galactic map.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {

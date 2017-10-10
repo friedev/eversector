@@ -19,7 +19,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * A station at which ships can refuel and purchase upgrades.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Station implements ColorStringObject
 {

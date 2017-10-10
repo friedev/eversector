@@ -17,7 +17,7 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.*;
 /**
  * A named group that owns ships and territory and has relationships with other factions.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Faction implements ColorStringObject
 {

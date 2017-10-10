@@ -11,7 +11,7 @@ import static boldorf.eversector.Main.player;
 /**
  * The prompt for leaving a faction.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class LeaveScreen extends ConfirmationScreen
 {

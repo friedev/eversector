@@ -26,7 +26,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen used for navigating the orbits of sectors.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {

@@ -15,7 +15,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 /**
  * Shows a context-sensitive list of keybindings.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class HelpScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

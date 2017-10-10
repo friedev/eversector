@@ -8,7 +8,7 @@ import java.awt.Color;
 /**
  * A container class for an integer representing reputation, and the faction the reputation is with.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Reputation implements Comparable<Reputation>
 {

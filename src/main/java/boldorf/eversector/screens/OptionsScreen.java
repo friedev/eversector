@@ -20,7 +20,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen for viewing and changing game options.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class OptionsScreen extends MenuScreen<PopupMenu>
 {

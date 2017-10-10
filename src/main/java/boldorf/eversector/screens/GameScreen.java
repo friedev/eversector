@@ -33,7 +33,7 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
  * The main screen on which gameplay will take place. This screen will process global commands and host more specific
  * screens based on the player's situation.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {

@@ -29,7 +29,7 @@ import static boldorf.eversector.Main.*;
 /**
  * A screen for managing interactions in battle.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {

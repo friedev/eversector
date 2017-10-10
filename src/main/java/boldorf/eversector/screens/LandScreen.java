@@ -24,7 +24,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen for selecting a landing destination.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class LandScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

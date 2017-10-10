@@ -14,7 +14,7 @@ import static boldorf.eversector.Main.player;
 /**
  * The screen presented to the player when they have been nominated for leader.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class PlayerCandidateScreen extends ConfirmationScreen
 {

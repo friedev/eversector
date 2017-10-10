@@ -14,14 +14,14 @@ import static boldorf.eversector.Main.rng;
 /**
  * A relationship between factions, containing the two factions and the terms between them.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Relationship
 {
     /**
      * All types of relationships factions can be in.
      *
-     * @author Boldorf Smokebane
+     * @author Maugrift
      */
     public enum RelationshipType implements ColorStringObject
     {

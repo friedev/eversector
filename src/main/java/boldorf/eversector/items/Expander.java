@@ -12,7 +12,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
  * An item designed to be included in resources that hold the information about increasing the resource's capacity.
  * <b>To be removed in v0.7.2.</b>
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Expander extends Item
 {

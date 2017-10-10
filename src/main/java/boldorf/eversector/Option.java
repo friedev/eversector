@@ -13,7 +13,7 @@ import static boldorf.eversector.Main.COLOR_FIELD;
 /**
  * A game option stored as a property.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public enum Option
 {

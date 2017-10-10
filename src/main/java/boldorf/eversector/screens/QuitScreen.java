@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * The screen presented to the player when they attempt to quit.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class QuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

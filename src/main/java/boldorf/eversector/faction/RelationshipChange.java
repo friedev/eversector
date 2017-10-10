@@ -6,7 +6,7 @@ import boldorf.eversector.faction.Relationship.RelationshipType;
 /**
  * A class to store information about a relationship change for one faction.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class RelationshipChange
 {

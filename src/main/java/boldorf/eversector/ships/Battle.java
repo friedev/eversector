@@ -14,7 +14,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * A class for managing battles between ships.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Battle
 {

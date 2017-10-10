@@ -14,7 +14,7 @@ import static boldorf.eversector.Main.player;
 /**
  * The screen used to respond to relationship requests as a leader.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class RelationshipResponseScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

@@ -3,7 +3,7 @@ package boldorf.eversector;
 /**
  * A wrapper class for all of the file paths loaded from the main manifest.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public abstract class Paths
 {

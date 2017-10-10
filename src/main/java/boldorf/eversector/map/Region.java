@@ -18,7 +18,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * A planetary region with various characteristics.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Region implements ColorStringObject
 {

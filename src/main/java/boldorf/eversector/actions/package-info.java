@@ -1,6 +1,6 @@
 /**
  * The actions that can be performed by ships.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 package boldorf.eversector.actions;

@@ -6,7 +6,7 @@ import squidpony.squidmath.Coord;
 
 /**
  * The location of a region on a planet.
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class PlanetLocation extends SectorLocation
 {

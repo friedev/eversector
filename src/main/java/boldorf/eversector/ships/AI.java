@@ -16,7 +16,7 @@ import static boldorf.eversector.Main.rng;
 /**
  * The "artificial intelligence" in charge of making decisions for a ship.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class AI
 {

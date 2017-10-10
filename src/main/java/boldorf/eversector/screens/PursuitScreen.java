@@ -17,7 +17,7 @@ import static boldorf.eversector.Main.player;
 /**
  * The prompt presenting to the player when enemy ships flee a battle that they're in.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class PursuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

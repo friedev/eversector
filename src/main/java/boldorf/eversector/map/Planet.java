@@ -19,7 +19,7 @@ import static boldorf.eversector.map.Region.RegionType.*;
 /**
  * A planet in a sector that can be interacted with in different ways.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Planet implements ColorStringObject
 {

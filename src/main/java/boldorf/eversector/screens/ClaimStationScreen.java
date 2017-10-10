@@ -14,7 +14,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The prompt to claim a station when it is under the control of a hostile faction.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class ClaimStationScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {

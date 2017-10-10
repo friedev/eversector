@@ -21,7 +21,7 @@ import static boldorf.eversector.Main.*;
 /**
  * The screen used to vote on faction leaders.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>, PopupMaster
 {

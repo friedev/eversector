@@ -1,6 +1,6 @@
 /**
  * All screens passed to Display.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 package boldorf.eversector.screens;

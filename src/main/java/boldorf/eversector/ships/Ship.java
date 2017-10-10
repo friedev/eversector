@@ -30,7 +30,7 @@ import static boldorf.eversector.faction.Relationship.RelationshipType.WAR;
 /**
  * A spaceship which can travel through and interact with the map.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Ship implements ColorStringObject, Comparable<Ship>
 {

@@ -13,7 +13,7 @@ import static boldorf.eversector.Main.player;
 /**
  * A class to handle leader elections for factions.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Election
 {

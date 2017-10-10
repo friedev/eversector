@@ -28,7 +28,7 @@ import java.util.Queue;
 /**
  * The main class for EverSector, which primarily manages player input.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 public class Main
 {

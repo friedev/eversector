@@ -1,6 +1,6 @@
 /**
  * Information regarding factions and their relationships.
  *
- * @author Boldorf Smokebane
+ * @author Maugrift
  */
 package boldorf.eversector.faction;
