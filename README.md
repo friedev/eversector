@@ -18,10 +18,10 @@ Make sure all contributions are documented with JavaDoc comments where possible.
 
 ### Links ###
 
-* [itch.io Page](https://boldorf.itch.io/eversector)
+* [itch.io Page](https://maugrift.itch.io/eversector)
 * [Trello Board](https://trello.com/b/nOsMSRe3)
 * [Subreddit](https://reddit.com/r/EverSector)
 * [Discord Server](https://discord.gg/TZTEQTz)
-* [Twitter](https://twitter.com/DLMogrithe)
+* [Twitter](https://twitter.com/Maugrift)
 * [YouTube Channel](https://youtube.com/BoldorfSmokebane)
 * [RogueBasin Page](http://roguebasin.com/index.php?title=EverSector)
