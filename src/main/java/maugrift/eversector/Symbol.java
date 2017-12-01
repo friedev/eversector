@@ -13,6 +13,7 @@ import java.util.HashMap;
  */
 public enum Symbol
 {
+    ELLIPSIS,
     COPYRIGHT,
     UNDISCOVERED,
     EMPTY,
@@ -46,6 +47,7 @@ public enum Symbol
 
     static
     {
+        tiles.put(ELLIPSIS, ExtChars.DOT_SMALL);
         tiles.put(COPYRIGHT, (char) 0);
         tiles.put(UNDISCOVERED, ' ');
         tiles.put(EMPTY, ExtChars.DOT);
@@ -74,6 +76,7 @@ public enum Symbol
         tiles.put(MOUNTAIN_REGION, (char) 22);
         tiles.put(FOREST_REGION, (char) 28);
 
+        ascii.put(ELLIPSIS, ExtChars.DOT_SMALL);
         ascii.put(COPYRIGHT, (char) 0);
         ascii.put(UNDISCOVERED, ' ');
         ascii.put(EMPTY, ExtChars.DOT);
