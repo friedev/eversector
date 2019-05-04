@@ -7,6 +7,7 @@ import maugrift.eversector.Paths;
 import maugrift.eversector.Symbol;
 import maugrift.eversector.faction.Faction;
 import maugrift.eversector.items.*;
+import maugrift.eversector.items.Module;
 import maugrift.eversector.locations.SectorLocation;
 import maugrift.eversector.ships.Ship;
 import maugrift.eversector.Main;
