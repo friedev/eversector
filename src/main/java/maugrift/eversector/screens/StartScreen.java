@@ -31,7 +31,7 @@ public class StartScreen extends Screen
     /**
      * The version number of the game.
      */
-    private static final String VERSION = "v0.7";
+    private static final String VERSION = "v0.7.1";
 
     /**
      * The longest version that can be compensated for with spaces.
@@ -46,7 +46,7 @@ public class StartScreen extends Screen
     /**
      * The year the game is copyrighted in.
      */
-    private static final int COPYRIGHT_YEAR = 2017;
+    private static final int COPYRIGHT_YEAR = 2019;
 
     /**
      * The average number of stars per tile.
