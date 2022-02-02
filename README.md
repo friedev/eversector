@@ -6,25 +6,12 @@ EverSector is written in Java and displayed with [AsciiPanel](https://github.com
 
 For more information about the game itself, see [README.html](https://github.com/Maugrift/EverSector/blob/master/bundle/README.html) in the bundle directory.
 
-### Compiling
+## Compiling
 
-To compile EverSector as a jar file, simply clone the repository and run ``gradle clean build jar``. To run directly from the source, use ``gradle run``.
+To compile EverSector as a jar file, simply clone the repository and run `gradle clean build jar`. To run directly from the source, use `gradle run`.
 
-No sound files are included in the repository for the sake of file size. If you want to play with sound effects, download the audio.zip file from the latest release and unzip it to your assets folder. If you use Windows and don't have Java installed, you can download the windows.zip file and unzip it to your EverSector directory. This contains an executable launcher and a bundled JRE.
+No sound files are included in the repository for the sake of file size. If you want to play with sound effects, download the `audio.zip` file from the latest release and unzip it to your assets folder. If you use Windows and don't have Java installed, you can download the `windows.zip` file and unzip it to your EverSector directory. This contains an executable launcher and a bundled JRE.
 
-### Contributing
+## Contributing
 
-EverSector is no longer in development, but I'd gladly consider any pull requests. EverSector's issues and massive backlog of planned features are listed on the [Trello board](https://trello.com/b/nOsMSRe3). If you are interested in contributing, I would also recommend joining the [Discord server](https://discord.gg/TZTEQTz) to discuss changes. Notable contributors will be duly credited.
-
-Make sure all contributions are documented with JavaDoc comments where possible. Try to match the style and format of the rest of the code as well.
-
-### Links
-
-* [Download on itch.io](https://maugrift.itch.io/eversector)
-* [Bitbucket Mirror](https://bitbucket.org/maugrift/eversector)
-* [Trello Roadmap](https://trello.com/b/nOsMSRe3)
-* [Subreddit](https://reddit.com/r/EverSector)
-* [Discord](https://discord.gg/TZTEQTz)
-* [Twitter](https://twitter.com/Maugrift)
-* [YouTube](https://youtube.com/BoldorfSmokebane)
-* [RogueBasin](http://roguebasin.com/index.php?title=EverSector)
+EverSector is no longer in development, and I do not intend to accept pull requests. If you want to add features to EverSector, consider making your own fork! Just make sure to abide by the terms of the source code license (found in `LICENSE.txt`).
