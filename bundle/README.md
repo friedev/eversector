@@ -1,6 +1,6 @@
-# EverSector README
+# EverSector
 
-Copyright (C) 2016-2019 Maugrift
+Copyright (C) 2016-2021 Aaron Friesen
 
 ## Guide
 
@@ -73,7 +73,7 @@ Now go forth, and shape the future of your galaxy!
 
 ## Credits
 
-Developer: [Maugrift](https://maugrift.com)
+Developer: [Aaron Friesen (Maugrift)](https://maugrift.com)
 
 Contributors:
 
@@ -83,7 +83,7 @@ Libraries:
 
 - [AsciiPanel](https://github.com/trystan/AsciiPanel) by [Trystan Spangler](https://trystans.blogspot.com)
 - [SquidLib](https://github.com/SquidPony/SquidLib) by [Eben Howard (SquidPony)](https://github.com/SquidPony)
-- [APWT](https://github.com/Maugrift/APWT) by [Maugrift](https://maugrift.com)
+- [APWT](https://github.com/Maugrift/APWT) by [Aaron Friesen (Maugrift)](https://maugrift.com)
 
 Title ASCII Art: [TAAG](http://patorjk.com/software/taag) by [Patrick Gillespie](http://patorjk.com)
 
