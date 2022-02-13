@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.github.maugrift:apwt:cdddc35f76'
+	implementation 'com.github.maugrift:apwt:v1.0.0'
 	implementation 'com.github.trystan:asciipanel:4af354155a'
 	implementation 'com.github.yellowstonegames.SquidLib:squidlib-util:v3.0.4'
 }
