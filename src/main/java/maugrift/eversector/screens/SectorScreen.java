@@ -52,7 +52,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
     public SectorScreen()
     {
         super(Main.display);
-        window = new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2));
+        window = new AlignedWindow(Main.display, 0, 0, new Border(2));
         cursor = 0;
     }
 
@@ -67,7 +67,7 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
             if (popup instanceof WindowScreen && ((WindowScreen) popup).getWindow() instanceof AlignedWindow)
             {
                 ((AlignedWindow) ((WindowScreen) popup).getWindow()).setLocation(
-                        Coord.get(1, window.getBottomRight().y + 3));
+                        1, window.getBottom() + 3);
             }
 
             popup.displayOutput();

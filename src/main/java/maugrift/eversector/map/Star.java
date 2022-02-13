@@ -5,7 +5,7 @@ import maugrift.apwt.glyphs.ColorChar;
 import maugrift.apwt.glyphs.ColorString;
 import maugrift.apwt.glyphs.ColorStringObject;
 import maugrift.eversector.Symbol;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import maugrift.eversector.Main;
 
 import java.awt.*;

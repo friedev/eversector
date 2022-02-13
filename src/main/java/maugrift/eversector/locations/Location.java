@@ -2,7 +2,7 @@ package maugrift.eversector.locations;
 
 import maugrift.eversector.map.Galaxy;
 import maugrift.eversector.map.Sector;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 

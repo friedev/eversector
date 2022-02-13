@@ -2,8 +2,8 @@ package maugrift.eversector;
 
 import asciiPanel.AsciiPanel;
 import maugrift.apwt.glyphs.ColorString;
-import maugrift.util.FileManager;
-import maugrift.util.Utility;
+import maugrift.apwt.util.FileManager;
+import maugrift.apwt.util.Utility;
 
 import java.awt.*;
 import java.util.Properties;

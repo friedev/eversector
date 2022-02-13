@@ -1,9 +1,4 @@
-.*/
-EverSector.iml
+.gradle/
 build/
-bundle/assets/audio/
-bundle/local/
-bundle/jre/
-bundle/EverSector.jar
-bundle/EverSector.exe
-bundle/crash.txt
+EverSector/
+EverSector.zip

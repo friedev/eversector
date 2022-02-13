@@ -3,8 +3,8 @@ package maugrift.eversector.screens;
 import asciiPanel.AsciiPanel;
 import maugrift.apwt.glyphs.ColorString;
 import maugrift.eversector.Paths;
-import maugrift.util.FileManager;
-import maugrift.util.Utility;
+import maugrift.apwt.util.FileManager;
+import maugrift.apwt.util.Utility;
 
 import java.io.IOException;
 import java.util.*;

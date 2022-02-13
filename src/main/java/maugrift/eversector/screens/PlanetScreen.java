@@ -18,7 +18,7 @@ import maugrift.eversector.locations.PlanetLocation;
 import maugrift.eversector.map.Planet;
 import maugrift.eversector.map.Region;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 
@@ -51,7 +51,7 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
     public PlanetScreen()
     {
         super(Main.display);
-        window = new AlignedWindow(Main.display, Coord.get(1, 1), new Border(2));
+        window = new AlignedWindow(Main.display, 1, 1, new Border(2));
     }
 
     @Override

@@ -3,7 +3,7 @@ package maugrift.eversector.actions;
 import maugrift.eversector.items.Resource;
 import maugrift.eversector.map.Planet;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 
 public class CrashLand implements Action
 {

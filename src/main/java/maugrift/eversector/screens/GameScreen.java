@@ -17,7 +17,7 @@ import maugrift.eversector.actions.Refine;
 import maugrift.eversector.faction.Faction;
 import maugrift.eversector.ships.Reputation.ReputationRange;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 
@@ -78,8 +78,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
     public GameScreen()
     {
         super(Main.display);
-        statusWindow = new AlignedWindow(Main.display, Coord.get(1, 1));
-        factionWindow = new AlignedWindow(Main.display, Coord.get(1, 1));
+        statusWindow = new AlignedWindow(Main.display, 1, 1);
+        factionWindow = new AlignedWindow(Main.display, 1, 1);
         messages = new LinkedList<>();
         subscreen = new SectorScreen();
         messageOffset = -1;
@@ -90,12 +90,12 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
     {
         setUpStatusWindow();
         statusWindow.display();
-        int bottomY = statusWindow.getBottomRight().y;
+        int bottomY = statusWindow.getBottom();
 
         setUpFactionWindow();
-        factionWindow.setLocation(Coord.get(statusWindow.getBottomRight().x + 3, 1));
+        factionWindow.setLocation(statusWindow.getRight() + 3, 1);
         factionWindow.display();
-        bottomY = Math.max(bottomY, factionWindow.getBottomRight().y);
+        bottomY = Math.max(bottomY, factionWindow.getBottom());
 
         drawMessageWindow();
 
@@ -103,7 +103,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         {
             if (subscreen instanceof WindowScreen && ((WindowScreen) subscreen).getWindow() instanceof AlignedWindow)
             {
-                ((AlignedWindow) ((WindowScreen) subscreen).getWindow()).setLocation(Coord.get(1, bottomY + 3));
+                ((AlignedWindow) ((WindowScreen) subscreen).getWindow()).setLocation(1, bottomY + 3);
             }
 
             subscreen.displayOutput();
@@ -573,8 +573,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
      */
     private void drawMessageWindow()
     {
-        getDisplay().drawBorder(Coord.get(0, getDisplay().getCharHeight() - (MESSAGE_LINES + 2)),
-                Coord.get(getDisplay().getCharWidth() - 1, getDisplay().getCharHeight() - 1), new Border(1));
+        getDisplay().drawBorder(0, getDisplay().getHeightInCharacters() - (MESSAGE_LINES + 2),
+                getDisplay().getWidthInCharacters() - 1, getDisplay().getHeightInCharacters() - 1, new Border(1));
 
         int offset = Math.max(0, messageOffset);
         int lines = Math.min(messages.size(), MESSAGE_LINES);
@@ -585,9 +585,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         {
             ColorString currentOutput = new ColorString(current.getOutput());
 
-            if (currentOutput.length() >= getDisplay().getCharWidth() - 2)
+            if (currentOutput.length() >= getDisplay().getWidthInCharacters() - 2)
             {
-                int splitIndex = getDisplay().getCharWidth() - 3;
+                int splitIndex = getDisplay().getWidthInCharacters() - 3;
                 while (currentOutput.charAt(splitIndex) != ' ')
                 {
                     splitIndex--;
@@ -595,7 +595,7 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
                 if (currentOutput.charAt(splitIndex) != ' ')
                 {
-                    splitIndex = getDisplay().getCharWidth();
+                    splitIndex = getDisplay().getWidthInCharacters();
                 }
                 else
                 {
@@ -616,20 +616,20 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
             messageOutput = messageOutput.subList(messageOutput.size() - MESSAGE_LINES, messageOutput.size());
         }
 
-        getDisplay().write(Coord.get(1, getDisplay().getCharHeight() - (MESSAGE_LINES + 1)),
+        getDisplay().write(1, getDisplay().getHeightInCharacters() - (MESSAGE_LINES + 1),
                 messageOutput.toArray(new ColorString[lines]));
 
         if (viewingHistory())
         {
             if (canScrollHistoryUp())
             {
-                getDisplay().writeCenter(getDisplay().getCharHeight() - MESSAGE_LINES - 2,
+                getDisplay().writeCenter(getDisplay().getHeightInCharacters() - MESSAGE_LINES - 2,
                         new ColorString(Character.toString(ExtChars.ARROW1_U), COLOR_FIELD));
             }
 
             if (canScrollHistoryDown())
             {
-                getDisplay().writeCenter(getDisplay().getCharHeight() - 1,
+                getDisplay().writeCenter(getDisplay().getHeightInCharacters() - 1,
                         new ColorString(Character.toString(ExtChars.ARROW1_D), COLOR_FIELD));
             }
         }

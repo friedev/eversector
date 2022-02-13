@@ -6,7 +6,7 @@ import maugrift.eversector.items.Resource;
 import maugrift.eversector.items.Weapon;
 import maugrift.eversector.locations.*;
 import maugrift.eversector.map.*;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import maugrift.eversector.actions.*;
 import maugrift.eversector.locations.*;
 import maugrift.eversector.map.*;

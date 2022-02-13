@@ -3,7 +3,7 @@ package maugrift.eversector.actions;
 import maugrift.eversector.items.Module;
 import maugrift.eversector.items.Resource;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 
 import static maugrift.eversector.Main.rng;
 import static maugrift.eversector.ships.Ship.LOOT_MODIFIER;

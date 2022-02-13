@@ -10,7 +10,7 @@ import maugrift.eversector.Option;
 import maugrift.eversector.Paths;
 import maugrift.eversector.Symbol;
 import maugrift.eversector.map.Galaxy;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import squidpony.squidmath.Coord;
 
 import java.awt.event.KeyEvent;
@@ -183,14 +183,14 @@ public class StartScreen extends Screen
      */
     private void generateStarfield()
     {
-        int nStars = (int) (STARS_PER_TILE * (getDisplay().getCharWidth() * getDisplay().getCharHeight()));
+        int nStars = (int) (STARS_PER_TILE * (getDisplay().getWidthInCharacters() * getDisplay().getHeightInCharacters()));
         starCoords = new ArrayList<>(nStars);
         for (int i = 0; i < nStars; i++)
         {
             Coord starCoord;
             do
             {
-                starCoord = rng.nextCoord(getDisplay().getCharWidth(), getDisplay().getCharHeight());
+                starCoord = rng.nextCoord(getDisplay().getWidthInCharacters(), getDisplay().getHeightInCharacters());
             } while (starCoords.contains(starCoord));
 
             starCoords.add(starCoord);
@@ -204,7 +204,7 @@ public class StartScreen extends Screen
     {
         for (Coord starCoord : starCoords)
         {
-            getDisplay().write(starCoord, STAR_CHARACTER);
+            getDisplay().write(starCoord.x, starCoord.y, STAR_CHARACTER);
         }
     }
 }

@@ -7,8 +7,8 @@ import maugrift.apwt.windows.PopupMenu;
 import maugrift.apwt.windows.PopupWindow;
 import maugrift.eversector.Main;
 import maugrift.eversector.Option;
-import maugrift.util.FileManager;
-import maugrift.util.Utility;
+import maugrift.apwt.util.FileManager;
+import maugrift.apwt.util.Utility;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;

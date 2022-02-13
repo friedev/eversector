@@ -12,7 +12,7 @@ import maugrift.eversector.locations.Location;
 import maugrift.eversector.locations.SectorLocation;
 import maugrift.eversector.ships.Ship;
 import maugrift.eversector.Main;
-import squidpony.squidgrid.Splash;
+import squidpony.squidgrid.MultiSpill;
 import squidpony.squidmath.Coord;
 
 import java.awt.*;
@@ -57,7 +57,7 @@ public class Galaxy
     private static final int ORE_RANGE = 3;
 
     /**
-     * The size of each nebula generated, in sectors. Also the number of sectors  per nebula generated.
+     * The size of each nebula generated, in sectors.
      */
     private static final int NEBULA_SIZE = 100;
 
@@ -679,16 +679,31 @@ public class Galaxy
      */
     private void init()
     {
-        Splash nebulaGenerator = new Splash();
-        int nNebulae = sectors.length * sectors[0].length / NEBULA_SIZE;
-        List<List<Coord>> nebulae = new ArrayList<>(nNebulae);
+        char[][] level = new char[sectors.length + 2][sectors[0].length + 2];
+        // Initialize all sectors to passable for nebula generation
+        for (int i = 1; i < level.length - 1; i++) {
+            for (int j = 1; j < level.length - 1; j++) {
+                level[i][j] = '.';
+            }
+        }
+        // Surround the map with walls so that MultiSpill doesn't go out of bounds
+        for (int i = 0; i < level.length; i++) {
+            level[0][i] = '#';
+            level[level.length - 1][0] = '#';
+            level[i][0] = '#';
+            level[i][level[i].length - 1] = '#';
+        }
 
-        char[][] level = new char[sectors.length][sectors[0].length];
+        MultiSpill nebulaGenerator = new MultiSpill(Main.rng).initialize(level);
+        int nNebulae = sectors.length * sectors[0].length / NEBULA_SIZE / 2;
+
+        List<Coord> entries = new ArrayList<Coord>();
         for (int i = 0; i < nNebulae; i++)
         {
-            nebulae.add(nebulaGenerator.spill(Main.rng, level, Main.rng.nextCoord(sectors[0].length, sectors.length), NEBULA_SIZE,
-                    1));
+            entries.add(Main.rng.nextCoord(sectors[0].length, sectors.length));
         }
+
+        ArrayList<ArrayList<Coord>> nebulae = nebulaGenerator.start(entries, NEBULA_SIZE * entries.size(), null);
 
         Nebula[] nebulaTypes = new Nebula[nNebulae];
         for (int i = 0; i < nNebulae; i++)
@@ -703,7 +718,8 @@ public class Galaxy
                 Nebula nebula = null;
                 for (int i = 0; i < nNebulae; i++)
                 {
-                    if (nebulae.get(i).contains(Coord.get(x, y)))
+                    List<Coord> tempNebula = nebulae.get(i);
+                    if (tempNebula != null && tempNebula.contains(Coord.get(x, y)))
                     {
                         nebula = nebulaTypes[i];
                         break;

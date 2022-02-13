@@ -2,7 +2,8 @@ package maugrift.eversector;
 
 import asciiPanel.AsciiFont;
 import asciiPanel.AsciiPanel;
-import maugrift.apwt.Display;
+import maugrift.apwt.display.AsciiPanelDisplay;
+import maugrift.apwt.display.Display;
 import maugrift.apwt.glyphs.ColorString;
 import maugrift.apwt.screens.Screen;
 import maugrift.eversector.faction.Election;
@@ -12,8 +13,8 @@ import maugrift.eversector.screens.GameScreen;
 import maugrift.eversector.screens.StartScreen;
 import maugrift.eversector.ships.Battle;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.FileManager;
-import maugrift.util.Utility;
+import maugrift.apwt.util.FileManager;
+import maugrift.apwt.util.Utility;
 import squidpony.squidmath.RNG;
 
 import javax.sound.sampled.Clip;
@@ -157,7 +158,6 @@ public class Main
         if (FileManager.getPath().contains("lib"))
         {
             FileManager.movePathUp();
-            FileManager.addToPath("bundle/");
         }
 
         fonts = new File(FileManager.getPath() + Paths.FONTS).listFiles(File::isDirectory);
@@ -181,15 +181,13 @@ public class Main
         }
 
         Properties fontProperties = getFontProperties(fontIndex);
-        AsciiFont font = new AsciiFont(FileManager.getPath() + Paths.FONTS + fonts[fontIndex].getName() + "/" +
+        AsciiFont font = new AsciiFont(/*FileManager.getPath() +*/ Paths.FONTS + fonts[fontIndex].getName() + "/" +
                                        (Option.TILES.toBoolean() ? Paths.FONT_TILES : Paths.FONT_ASCII),
                 Utility.parseInt(fontProperties.getProperty(Option.FONT_WIDTH)),
                 Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT)));
-        display = new Display(new AsciiPanel(Option.WIDTH.toInt(), Option.HEIGHT.toInt(), font));
 
-        display.setIconImage(FileManager.loadImage(Paths.ICON));
-        display.setTitle("EverSector");
-        display.init(new StartScreen(startMessages));
+		display = new AsciiPanelDisplay(new AsciiPanel(Option.WIDTH.toInt(), Option.HEIGHT.toInt(), font));
+		((AsciiPanelDisplay) display).init(new StartScreen(startMessages));
 
         try
         {

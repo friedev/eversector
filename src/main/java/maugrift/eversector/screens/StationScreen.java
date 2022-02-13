@@ -17,7 +17,7 @@ import maugrift.eversector.items.Module;
 import maugrift.eversector.items.Resource;
 import maugrift.eversector.map.Station;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import maugrift.eversector.actions.*;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
@@ -61,7 +61,7 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
      */
     public StationScreen()
     {
-        super(new AlignedMenu(new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2)),
+        super(new AlignedMenu(new AlignedWindow(Main.display, 0, 0, new Border(2)),
                 COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         buying = true;
     }
@@ -77,7 +77,7 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
     public Screen processInput(KeyEvent key)
     {
         Direction direction = Utility.keyToDirectionRestricted(key);
-        if (getMenu().updateSelection(direction))
+        if (direction != null && getMenu().select(direction.deltaY))
         {
             int index = getMenu().getSelectionIndex();
             if (buying)

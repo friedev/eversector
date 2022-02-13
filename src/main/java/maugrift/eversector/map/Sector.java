@@ -9,7 +9,7 @@ import maugrift.eversector.locations.Location;
 import maugrift.eversector.locations.SectorLocation;
 import maugrift.eversector.ships.Levels;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 
 import java.awt.*;
 import java.util.ArrayList;

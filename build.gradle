@@ -1,41 +1,35 @@
 apply plugin: 'application'
 
 mainClassName = 'maugrift.eversector.Main'
-libsDirName = '../bundle'
+ext.mainClass = 'maugrift.eversector.Main'
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-if (!hasProperty('mainClass')) {
-    ext.mainClass = 'maugrift.eversector.Main'
-}
-
 jar {
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-        configurations.runtime.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
-    manifest {
-      attributes('Main-Class': 'maugrift.eversector.Main')
-    }
+	manifest {
+		attributes('Main-Class': 'maugrift.eversector.Main')
+		// Include the base directory on the classpath because AsciiPanel loads
+		// font resources with the class loader, which only looks for files in
+		// the classpath
+		// This probably impacts performance to some degree
+		attributes('Class-Path': '..')
+	}
 }
 
 repositories {
-    flatDir {
-        dirs 'lib'
-    }
+	mavenCentral()
+	allprojects {
+		repositories {
+			maven {
+				url 'https://jitpack.io'
+			}
+		}
+	}
 }
 
 dependencies {
-    compile fileTree(dir: 'lib', include: ['*.jar'])
-}
-
-buildscript {
-    dependencies {
-        classpath fileTree(dir: 'lib', include: ['*.jar'])
-    }
+	implementation 'com.github.maugrift:apwt:cdddc35f76'
+	implementation 'com.github.trystan:asciipanel:4af354155a'
+	implementation 'com.github.yellowstonegames.SquidLib:squidlib-util:v3.0.4'
 }

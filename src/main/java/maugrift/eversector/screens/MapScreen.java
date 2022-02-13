@@ -13,7 +13,7 @@ import maugrift.eversector.Main;
 import maugrift.eversector.actions.Burn;
 import maugrift.eversector.actions.Enter;
 import maugrift.eversector.actions.Warp;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 
@@ -56,7 +56,7 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
     public MapScreen()
     {
         super(Main.display);
-        window = new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2));
+        window = new AlignedWindow(Main.display, 0, 0, new Border(2));
         popup = null;
         cursor = null;
         warping = false;

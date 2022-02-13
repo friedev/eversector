@@ -15,7 +15,7 @@ import maugrift.eversector.locations.*;
 import maugrift.eversector.map.Galaxy;
 import maugrift.eversector.map.Planet;
 import maugrift.eversector.map.Station;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import maugrift.eversector.faction.Relationship;
 import maugrift.eversector.locations.*;
 import squidpony.squidgrid.FOV;

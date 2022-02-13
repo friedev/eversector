@@ -3,6 +3,7 @@ package maugrift.eversector.screens;
 import asciiPanel.AsciiPanel;
 import maugrift.apwt.glyphs.ColorString;
 import maugrift.apwt.screens.*;
+import maugrift.apwt.util.Utility;
 import maugrift.apwt.windows.AlignedMenu;
 import maugrift.apwt.windows.AlignedWindow;
 import maugrift.apwt.windows.Border;
@@ -17,6 +18,7 @@ import maugrift.eversector.items.Weapon;
 import maugrift.eversector.ships.Battle;
 import maugrift.eversector.ships.Ship;
 import squidpony.squidmath.Coord;
+import squidpony.squidgrid.Direction;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -59,7 +61,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
      */
     public BattleScreen(Battle battle, boolean nextTurn)
     {
-        super(new AlignedMenu(new AlignedWindow(Main.display, Coord.get(0, 0), new Border(2)),
+        super(new AlignedMenu(new AlignedWindow(Main.display, 0, 0, new Border(2)),
                 COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
         this.battle = battle;
         scanning = new LinkedList<>();
@@ -98,7 +100,8 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
             return popup instanceof SectorScreen ? popup : this;
         }
 
-        if (getMenu().updateSelectionRestricted(key))
+        Direction direction = Utility.keyToDirectionRestricted(key);
+        if (getMenu().select(direction.deltaY))
         {
             return this;
         }

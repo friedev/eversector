@@ -4,7 +4,7 @@ import maugrift.eversector.Paths;
 import maugrift.eversector.items.Module;
 import maugrift.eversector.ships.Battle;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 
 import static maugrift.eversector.Main.addMessage;
 import static maugrift.eversector.Main.playSoundEffect;

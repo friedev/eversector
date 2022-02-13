@@ -12,7 +12,7 @@ import maugrift.eversector.actions.Land;
 import maugrift.eversector.locations.PlanetLocation;
 import maugrift.eversector.map.Planet;
 import maugrift.eversector.map.Region;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 import squidpony.squidgrid.Direction;
 import squidpony.squidmath.Coord;
 

@@ -38,7 +38,7 @@ public class NamePromptScreen extends PopupTerminal
      */
     public NamePromptScreen(String naming, Option option)
     {
-        super(new PopupWindow(Main.display, toContentList(naming)), new ColorString(), Main.display.getWidth() - 2,
+        super(new PopupWindow(Main.display, toContentList(naming)), new ColorString(), Main.display.getWidthInCharacters() - 2,
                 COLOR_FIELD);
         this.naming = naming;
         this.option = option;

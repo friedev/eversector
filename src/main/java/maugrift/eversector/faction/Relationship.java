@@ -4,7 +4,7 @@ import asciiPanel.AsciiPanel;
 import maugrift.apwt.glyphs.ColorString;
 import maugrift.apwt.glyphs.ColorStringObject;
 import maugrift.eversector.ships.Ship;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 
 import java.awt.*;
 

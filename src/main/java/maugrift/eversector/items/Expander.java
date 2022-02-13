@@ -1,7 +1,7 @@
 package maugrift.eversector.items;
 
 import maugrift.apwt.glyphs.ColorString;
-import maugrift.util.Utility;
+import maugrift.apwt.util.Utility;
 
 import java.util.List;
 import java.util.Properties;
