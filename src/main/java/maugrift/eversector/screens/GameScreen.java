@@ -81,7 +81,17 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
         statusWindow = new AlignedWindow(Main.display, 1, 1);
         factionWindow = new AlignedWindow(Main.display, 1, 1);
         messages = new LinkedList<>();
-        subscreen = new SectorScreen();
+        if (player.isOrbital()) {
+            subscreen = new SectorScreen();
+        } else if (player.isLanded()) {
+            subscreen = new PlanetScreen();
+        } else if (player.isDocked()) {
+            subscreen = new StationScreen();
+        } else if (player.isInBattle()) {
+            subscreen = new BattleScreen(player.getBattleLocation().getBattle(), false);
+        } else {
+            subscreen = new MapScreen();
+        }
         messageOffset = -1;
     }
 
