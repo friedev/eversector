@@ -5,6 +5,9 @@ import maugrift.eversector.items.Resource;
 import maugrift.eversector.map.Sector;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Enter implements Action
 {
 	public static final String RESOURCE = Resource.FUEL;

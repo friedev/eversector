@@ -10,7 +10,7 @@ import static maugrift.eversector.Main.COLOR_FIELD;
 /**
  * A module that also holds the amount of damage it deals.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Weapon extends Module
 {

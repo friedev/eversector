@@ -24,7 +24,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen for selecting a landing destination.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class LandScreen
 	extends ConfirmationScreen

@@ -18,7 +18,7 @@ import static maugrift.eversector.Main.player;
  * The prompt presenting to the player when enemy ships flee a battle that
  * they're in.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class PursuitScreen
 	extends ConfirmationScreen

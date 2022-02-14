@@ -12,7 +12,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The menu for choosing a faction to join.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class JoinScreen extends MenuScreen<PopupMenu>
 {

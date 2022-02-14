@@ -6,7 +6,7 @@ import java.util.Properties;
  * A resource to be sold in an undefined quantity by a station. <b>To be
  * removed in v0.7.2.</b>
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class BaseResource extends Item
 {

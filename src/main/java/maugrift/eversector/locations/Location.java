@@ -8,7 +8,7 @@ import squidpony.squidmath.Coord;
 
 /**
  * An interstellar location.
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Location
 {

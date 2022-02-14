@@ -16,7 +16,7 @@ import static maugrift.eversector.Paths.TORPEDO;
 /**
  * The prompt presented when the player has insufficient fuel to land.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class CrashLandScreen
 	extends ConfirmationScreen

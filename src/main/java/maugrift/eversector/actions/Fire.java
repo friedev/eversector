@@ -9,6 +9,9 @@ import maugrift.eversector.ships.Ship;
 import static maugrift.eversector.Main.addColorMessage;
 import static maugrift.eversector.Main.addMessage;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Fire implements Action
 {
 	private final String weapon;

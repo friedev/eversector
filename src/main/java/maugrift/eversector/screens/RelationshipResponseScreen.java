@@ -14,7 +14,7 @@ import static maugrift.eversector.Main.player;
 /**
  * The screen used to respond to relationship requests as a leader.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class RelationshipResponseScreen
 	extends ConfirmationScreen

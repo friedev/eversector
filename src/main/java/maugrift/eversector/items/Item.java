@@ -11,7 +11,7 @@ import java.util.Properties;
 /**
  * An item with a name and price for both ships and stations.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public abstract class Item
 {

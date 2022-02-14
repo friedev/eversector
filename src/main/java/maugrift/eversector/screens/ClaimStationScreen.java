@@ -15,7 +15,7 @@ import static maugrift.eversector.Main.*;
  * The prompt to claim a station when it is under the control of a hostilex
  * faction.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class ClaimStationScreen
 	extends ConfirmationScreen

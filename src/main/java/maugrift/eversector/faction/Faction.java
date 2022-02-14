@@ -16,7 +16,7 @@ import static maugrift.eversector.Main.rng;
  * A named group that owns ships and territory and has relationships with other
  * factions.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Faction implements ColorStringObject
 {

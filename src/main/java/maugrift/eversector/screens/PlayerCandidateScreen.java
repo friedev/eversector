@@ -14,7 +14,7 @@ import static maugrift.eversector.Main.player;
 /**
  * The screen presented to the player when they have been nominated for leader.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class PlayerCandidateScreen extends ConfirmationScreen
 {

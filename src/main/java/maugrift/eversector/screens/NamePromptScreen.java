@@ -16,7 +16,7 @@ import static maugrift.eversector.Main.COLOR_FIELD;
 /**
  * The screen for entering names.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class NamePromptScreen extends PopupTerminal
 {

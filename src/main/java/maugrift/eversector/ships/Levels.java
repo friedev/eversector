@@ -3,7 +3,7 @@ package maugrift.eversector.ships;
 /**
  * A collection of ship classifications.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public abstract class Levels
 {

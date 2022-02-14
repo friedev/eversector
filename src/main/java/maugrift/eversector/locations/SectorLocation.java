@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * A location in a sector.
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class SectorLocation extends Location
 {

@@ -4,6 +4,9 @@ import maugrift.eversector.faction.Faction;
 import maugrift.eversector.ships.Reputation;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Convert implements Action
 {
 	private final Ship converting;

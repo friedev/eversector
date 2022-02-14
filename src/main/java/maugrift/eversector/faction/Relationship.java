@@ -15,14 +15,14 @@ import static maugrift.eversector.Main.rng;
  * A relationship between factions, containing the two factions and the terms
  * between them.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Relationship
 {
 	/**
 	 * All types of relationships factions can be in.
 	 *
-	 * @author Maugrift
+	 * @author Aaron Friesen
 	 */
 	public enum RelationshipType implements ColorStringObject
 	{

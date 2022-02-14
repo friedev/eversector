@@ -14,7 +14,7 @@ import static maugrift.eversector.Main.player;
  * The screen shown when the player can take the place of a former leader.
  * <b>Currently unused.</b>
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class SuccessionScreen
 	extends ConfirmationScreen

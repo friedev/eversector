@@ -5,6 +5,9 @@ import maugrift.eversector.map.Planet;
 import maugrift.eversector.ships.Ship;
 import maugrift.apwt.util.Utility;
 
+/**
+ * @author Aaron Friesen
+ */
 public class CrashLand implements Action
 {
 	/**

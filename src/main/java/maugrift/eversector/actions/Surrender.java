@@ -5,6 +5,9 @@ import maugrift.eversector.ships.Ship;
 
 import static maugrift.eversector.Main.addMessage;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Surrender implements Action
 {
 	@Override

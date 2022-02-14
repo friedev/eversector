@@ -4,6 +4,8 @@ import maugrift.eversector.ships.Ship;
 
 /**
  * An action that can be executed by a ship.
+ *
+ * @author Aaron Friesen
  */
 public interface Action
 {

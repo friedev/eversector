@@ -5,7 +5,7 @@ import java.util.Properties;
 /**
  * A version of an item designed to perform an action.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Module extends Item
 {

@@ -8,6 +8,9 @@ import maugrift.eversector.ships.Ship;
 
 import static maugrift.eversector.ships.Ship.DISTRESS_CREDITS;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Distress implements Action
 {
 	public static final String SOUND_EFFECT = Paths.DISTRESS;

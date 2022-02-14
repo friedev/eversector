@@ -13,7 +13,7 @@ import static maugrift.eversector.Main.COLOR_FIELD;
 /**
  * A game option stored as a property.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public enum Option
 {

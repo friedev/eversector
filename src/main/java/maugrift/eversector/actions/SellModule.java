@@ -5,6 +5,9 @@ import maugrift.eversector.items.Module;
 import maugrift.eversector.map.Station;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class SellModule implements Action
 {
 	public static final String SOUND_EFFECT = Paths.TRANSACTION;

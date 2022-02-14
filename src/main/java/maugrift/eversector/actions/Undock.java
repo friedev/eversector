@@ -3,6 +3,9 @@ package maugrift.eversector.actions;
 import maugrift.eversector.Paths;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Undock implements Action
 {
 	public static final String SOUND_EFFECT = Paths.DOCK;

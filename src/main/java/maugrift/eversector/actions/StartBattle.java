@@ -10,6 +10,8 @@ import java.util.List;
 /**
  * Starts a battle with the given ship. Prompts other ships to join the battle.
  * Processes the battle if the player does not participate in it.
+ *
+ * @author Aaron Friesen
  */
 public class StartBattle implements Action
 {

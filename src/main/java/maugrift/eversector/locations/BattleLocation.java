@@ -4,7 +4,7 @@ import maugrift.eversector.ships.Battle;
 
 /**
  * The location of a battle.
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class BattleLocation extends SectorLocation
 {

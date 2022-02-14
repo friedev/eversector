@@ -1,6 +1,6 @@
 /**
  * Information regarding factions and their relationships.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 package maugrift.eversector.faction;

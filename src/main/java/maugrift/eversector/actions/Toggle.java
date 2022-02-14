@@ -9,6 +9,9 @@ import maugrift.apwt.util.Utility;
 import static maugrift.eversector.Main.addMessage;
 import static maugrift.eversector.Main.playSoundEffect;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Toggle implements Action
 {
 	public static final String SOUND_EFFECT_ENABLE = Paths.ON;

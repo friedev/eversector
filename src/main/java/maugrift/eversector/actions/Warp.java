@@ -6,6 +6,9 @@ import maugrift.eversector.locations.Location;
 import maugrift.eversector.ships.Ship;
 import squidpony.squidmath.Coord;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Warp implements Action
 {
 	public static final String MODULE = Module.WARP_DRIVE;

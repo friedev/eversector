@@ -6,7 +6,7 @@ import maugrift.eversector.faction.Relationship.RelationshipType;
 /**
  * A class to store information about a relationship change for one faction.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class RelationshipChange
 {

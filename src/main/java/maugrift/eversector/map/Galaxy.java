@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * A 2D array of sectors representing a galaxy.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Galaxy
 {

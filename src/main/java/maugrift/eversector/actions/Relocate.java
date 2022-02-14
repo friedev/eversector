@@ -6,6 +6,9 @@ import maugrift.eversector.locations.Location;
 import maugrift.eversector.ships.Ship;
 import squidpony.squidgrid.Direction;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Relocate implements Action
 {
 	public static final String RESOURCE = Resource.FUEL;

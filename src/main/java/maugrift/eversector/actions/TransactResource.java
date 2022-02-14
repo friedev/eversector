@@ -6,6 +6,9 @@ import maugrift.eversector.items.Resource;
 import maugrift.eversector.map.Station;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class TransactResource implements Action
 {
 	public static final String SOUND_EFFECT = Paths.TRANSACTION;

@@ -27,7 +27,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen displayed at the end of the game.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 {

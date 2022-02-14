@@ -21,7 +21,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The menu for requesting relationships with other factions as a leader.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class RelationshipRequestScreen
 	extends MenuScreen<PopupMenu>

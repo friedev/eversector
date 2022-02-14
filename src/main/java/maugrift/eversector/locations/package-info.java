@@ -3,6 +3,6 @@
  * is designed to handle movement and seamless cross-referencing between
  * location types.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 package maugrift.eversector.locations;

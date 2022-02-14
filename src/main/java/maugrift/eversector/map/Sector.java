@@ -22,7 +22,7 @@ import static maugrift.eversector.Main.rng;
 /**
  * A location on the map, possibly containing a star system.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Sector
 {

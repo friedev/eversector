@@ -9,7 +9,7 @@ import java.awt.Color;
  * A resource with all the properties of an item, in addition to amounts and
  * capacities for use on ships.  <b>To be removed in v0.7.2.</b>
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Resource extends BaseResource
 {

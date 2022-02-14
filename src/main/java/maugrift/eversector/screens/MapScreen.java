@@ -26,7 +26,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen for viewing and navigating the galactic map.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class MapScreen
 	extends Screen

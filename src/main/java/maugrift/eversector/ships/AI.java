@@ -19,7 +19,7 @@ import static maugrift.eversector.Main.rng;
 /**
  * The "artificial intelligence" in charge of making decisions for a ship.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class AI
 {

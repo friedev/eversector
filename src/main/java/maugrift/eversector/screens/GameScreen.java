@@ -34,7 +34,7 @@ import static maugrift.eversector.faction.Relationship.RelationshipType.WAR;
  * global commands and host more specific screens based on the player's
  * situation.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class GameScreen
 	extends Screen

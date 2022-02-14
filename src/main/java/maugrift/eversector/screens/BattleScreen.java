@@ -31,7 +31,7 @@ import static maugrift.eversector.Main.*;
 /**
  * A screen for managing interactions in battle.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class BattleScreen
 	extends MenuScreen<AlignedMenu>

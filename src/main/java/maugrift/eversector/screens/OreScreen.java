@@ -15,7 +15,7 @@ import java.util.List;
  * A popup Screen used for temporarily displaying ore values. <b>Currently
  * unused.</b>
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class OreScreen extends ConfirmationScreen
 {

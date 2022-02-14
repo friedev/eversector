@@ -11,6 +11,9 @@ import maugrift.eversector.ships.Ship;
 import static maugrift.eversector.Main.addMessage;
 import static maugrift.eversector.Main.rng;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Mine implements Action
 {
 	public static final String RESOURCE = Resource.ENERGY;

@@ -11,7 +11,7 @@ import static maugrift.eversector.Main.player;
 /**
  * The prompt for leaving a faction.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class LeaveScreen extends ConfirmationScreen
 {

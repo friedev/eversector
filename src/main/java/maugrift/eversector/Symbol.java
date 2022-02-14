@@ -9,7 +9,7 @@ import java.util.HashMap;
 /**
  * All symbols in the game, with separate versions for tiles and ASCII.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public enum Symbol
 {

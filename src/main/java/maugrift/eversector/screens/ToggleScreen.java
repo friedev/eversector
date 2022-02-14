@@ -15,7 +15,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen used to toggle certain modules on or off.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class ToggleScreen
 	extends MenuScreen

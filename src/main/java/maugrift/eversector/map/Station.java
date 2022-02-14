@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * A station at which ships can refuel and purchase upgrades.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Station implements ColorStringObject
 {

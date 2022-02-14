@@ -15,7 +15,7 @@ import static maugrift.eversector.Main.player;
  * The prompt displayed when another faction offers to aid the player in
  * distress.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class DistressConvertScreen
 	extends ConfirmationScreen

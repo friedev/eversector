@@ -14,7 +14,7 @@ import static maugrift.eversector.screens.EndScreen.COLOR_HEADER;
 /**
  * A score on the leaderboard, consisting of a name, credits, and reputation.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class LeaderboardScore implements Comparable<LeaderboardScore>
 {

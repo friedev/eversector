@@ -4,6 +4,9 @@ import maugrift.eversector.Paths;
 import maugrift.eversector.items.Module;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Scan implements Action
 {
 	public static final String MODULE = Module.SCANNER;

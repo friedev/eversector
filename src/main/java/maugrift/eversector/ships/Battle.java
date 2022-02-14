@@ -14,7 +14,7 @@ import static maugrift.eversector.Main.rng;
 /**
  * A class for managing battles between ships.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Battle
 {

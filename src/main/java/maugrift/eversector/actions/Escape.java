@@ -4,6 +4,9 @@ import maugrift.eversector.Paths;
 import maugrift.eversector.items.Resource;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Escape implements Action
 {
 	public static final String RESOURCE = Resource.FUEL;

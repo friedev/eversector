@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A screen used for temporarily displaying the leaderboard.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class LeaderboardScreen
 	extends ConfirmationScreen

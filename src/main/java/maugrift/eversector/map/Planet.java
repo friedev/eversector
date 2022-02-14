@@ -19,7 +19,7 @@ import static maugrift.eversector.map.Region.RegionType.*;
 /**
  * A planet in a sector that can be interacted with in different ways.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Planet implements ColorStringObject
 {

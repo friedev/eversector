@@ -4,6 +4,9 @@ import maugrift.eversector.Paths;
 import maugrift.eversector.map.Station;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Dock implements Action
 {
 	public static final String SOUND_EFFECT = Paths.DOCK;

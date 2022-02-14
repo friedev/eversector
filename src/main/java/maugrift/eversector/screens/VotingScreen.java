@@ -20,7 +20,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen used to vote on faction leaders.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class VotingScreen
 	extends MenuScreen<PopupMenu>

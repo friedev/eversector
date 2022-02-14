@@ -33,7 +33,7 @@ import static maugrift.eversector.Main.*;
  * The screen used to interact with stations, especially buying and selling
  * items.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 class StationScreen
 	extends MenuScreen<AlignedMenu>

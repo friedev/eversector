@@ -13,7 +13,7 @@ import static maugrift.eversector.Main.player;
 /**
  * A class to handle leader elections for factions.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Election
 {

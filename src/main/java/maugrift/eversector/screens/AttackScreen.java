@@ -14,7 +14,7 @@ import static maugrift.eversector.Main.*;
 /**
  * A menu for choosing ships to attack.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class AttackScreen
 	extends MenuScreen<PopupMenu>

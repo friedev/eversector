@@ -15,7 +15,7 @@ import static maugrift.eversector.Main.COLOR_FIELD;
 /**
  * Shows a context-sensitive list of keybindings.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class HelpScreen
 	extends ConfirmationScreen

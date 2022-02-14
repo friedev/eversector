@@ -31,7 +31,7 @@ import static maugrift.eversector.Main.*;
 /**
  * A spaceship which can travel through and interact with the map.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Ship implements ColorStringObject, Comparable<Ship>
 {

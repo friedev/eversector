@@ -8,6 +8,9 @@ import maugrift.apwt.util.Utility;
 import static maugrift.eversector.Main.rng;
 import static maugrift.eversector.ships.Ship.LOOT_MODIFIER;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Loot implements Action
 {
 	private final Ship looting;

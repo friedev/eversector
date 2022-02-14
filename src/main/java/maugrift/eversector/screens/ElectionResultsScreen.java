@@ -18,7 +18,7 @@ import static maugrift.eversector.Main.pendingElection;
 /**
  * The screen displaying the results of an election.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class ElectionResultsScreen
 	extends ConfirmationScreen

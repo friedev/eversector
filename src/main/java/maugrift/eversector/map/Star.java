@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * A star that possesses a type and a power level.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Star implements ColorStringObject
 {

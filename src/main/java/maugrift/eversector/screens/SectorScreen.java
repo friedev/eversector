@@ -27,7 +27,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen used for navigating the orbits of sectors.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 class SectorScreen
 	extends Screen

@@ -6,6 +6,9 @@ import maugrift.eversector.map.Planet;
 import maugrift.eversector.ships.Ship;
 import squidpony.squidmath.Coord;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Land implements Action
 {
 	public static final String RESOURCE = Resource.FUEL;

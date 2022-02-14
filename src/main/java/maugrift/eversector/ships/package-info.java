@@ -1,6 +1,6 @@
 /**
  * Ships and abstract concepts surrounding them.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 package maugrift.eversector.ships;

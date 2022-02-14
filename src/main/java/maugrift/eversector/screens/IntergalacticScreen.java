@@ -15,7 +15,7 @@ import static maugrift.eversector.Paths.START;
 /**
  * The prompt to travel to a new galaxy.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class IntergalacticScreen
 	extends ConfirmationScreen

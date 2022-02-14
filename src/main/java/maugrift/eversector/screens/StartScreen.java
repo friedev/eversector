@@ -24,7 +24,7 @@ import static maugrift.eversector.Main.rng;
 /**
  * The menu screen that is displayed at the start of the game.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class StartScreen extends Screen
 {

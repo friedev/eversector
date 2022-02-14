@@ -3,7 +3,7 @@ package maugrift.eversector.map;
 /**
  * A type of ore with a name and density.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Ore implements Comparable<Ore>
 {

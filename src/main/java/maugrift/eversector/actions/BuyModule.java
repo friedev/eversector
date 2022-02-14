@@ -6,6 +6,9 @@ import maugrift.eversector.items.Weapon;
 import maugrift.eversector.map.Station;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class BuyModule implements Action
 {
 	private final String module;

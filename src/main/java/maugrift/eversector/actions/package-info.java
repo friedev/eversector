@@ -1,6 +1,6 @@
 /**
  * The actions that can be performed by ships.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 package maugrift.eversector.actions;

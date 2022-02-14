@@ -1,6 +1,6 @@
 /**
  * All screens passed to Display.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 package maugrift.eversector.screens;

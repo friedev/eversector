@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * A planetary region with various characteristics.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class Region implements ColorStringObject
 {

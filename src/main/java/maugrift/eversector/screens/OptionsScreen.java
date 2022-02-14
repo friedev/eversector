@@ -20,7 +20,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen for viewing and changing game options.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class OptionsScreen extends MenuScreen<PopupMenu>
 {

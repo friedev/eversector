@@ -3,7 +3,7 @@ package maugrift.eversector.locations;
 /**
  * The location of a station. Does not currently differ from SectorLocation,
  * but is used to denote being docked with a station.
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class StationLocation extends SectorLocation
 {

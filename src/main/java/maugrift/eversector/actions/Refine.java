@@ -5,6 +5,9 @@ import maugrift.eversector.items.Module;
 import maugrift.eversector.items.Resource;
 import maugrift.eversector.ships.Ship;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Refine implements Action
 {
 	public static final String MODULE = Module.REFINERY;

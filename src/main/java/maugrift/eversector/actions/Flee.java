@@ -7,6 +7,9 @@ import maugrift.eversector.ships.Ship;
 
 import static maugrift.eversector.Main.addMessage;
 
+/**
+ * @author Aaron Friesen
+ */
 public class Flee implements Action
 {
 	public static final String RESOURCE = Resource.FUEL;

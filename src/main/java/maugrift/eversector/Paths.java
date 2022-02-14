@@ -3,7 +3,7 @@ package maugrift.eversector;
 /**
  * A wrapper class for all of the file paths loaded from the main manifest.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public abstract class Paths
 {

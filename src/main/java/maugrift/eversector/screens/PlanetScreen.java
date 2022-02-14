@@ -31,7 +31,7 @@ import static maugrift.eversector.Main.*;
 /**
  * The screen for interacting with planets and navigating their regions.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public class PlanetScreen
 	extends Screen

@@ -5,7 +5,7 @@ import maugrift.apwt.screens.Screen;
 /**
  * A screen that manages popup screens.
  *
- * @author Maugrift
+ * @author Aaron Friesen
  */
 public interface PopupMaster
 {

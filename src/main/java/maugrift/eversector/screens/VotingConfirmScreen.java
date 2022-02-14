@@ -9,6 +9,8 @@ import maugrift.eversector.Main;
 
 /**
  * The prompt when selecting a faction leader vote.
+ *
+ * @author Aaron Friesen
  */
 public class VotingConfirmScreen
 	extends ConfirmationScreen
