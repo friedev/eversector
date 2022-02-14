@@ -31,22 +31,23 @@ public class StartScreen extends Screen
 	/**
 	 * The version number of the game.
 	 */
-	private static final String VERSION = "v0.7.1";
-
-	/**
-	 * The longest version that can be compensated for with spaces.
-	 */
-	private static final int MAX_VERSION_LENGTH = 33;
+	private static final String VERSION = "v0.7.2-dev";
 
 	/**
 	 * The name of the game's developer.
 	 */
-	private static final String DEVELOPER = "Maugrift";
+	private static final String DEVELOPER = "Aaron Friesen (Maugrift)";
 
 	/**
-	 * The year the game is copyrighted in.
+	 * The years for which the game is copyrighted.
 	 */
-	private static final int COPYRIGHT_YEAR = 2019;
+	private static final String COPYRIGHT_YEAR = "2016-2022";
+
+	/**
+	 * The maximum padding for the copyright year, developer, and version
+	 * strings.
+	 */
+	private static final int MAX_PADDING = 45;
 
 	/**
 	 * The average number of stars per tile.
@@ -172,7 +173,12 @@ public class StartScreen extends Screen
 		/_____/
 		*/
 
-		String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
+		String padding = Utility.getSpaces(
+				MAX_PADDING
+				- COPYRIGHT_YEAR.length()
+				- DEVELOPER.length()
+				- VERSION.length()
+		);
 		String infoLine = Symbol.COPYRIGHT
 			+ " "
 			+ COPYRIGHT_YEAR

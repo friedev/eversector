@@ -263,12 +263,7 @@ public class Main
 		startMessages.add(new ColorString("Welcome to EverSector!"));
 		startMessages.add(
 				new ColorString(
-					"Please consult the bundled README to learn how to play."
-				)
-		);
-		startMessages.add(
-				new ColorString(
-					"By playing, you accept the Terms of Use in the README."
+					"Consult the README to learn how to play."
 				)
 		);
 
