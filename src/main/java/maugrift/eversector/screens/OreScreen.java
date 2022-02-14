@@ -18,44 +18,44 @@ import java.util.List;
  */
 public class OreScreen extends ConfirmationScreen
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * Instantiates a new OreScreen.
-     */
-    public OreScreen()
-    {
-        super(Main.display);
-        List<ColorString> list = new LinkedList<>();
-        for (Ore ore : Main.galaxy.getOreTypes())
-        {
-            list.add(new ColorString(ore.toString() + ": " + ore.getDensity() + " Density"));
-        }
-        window = new PopupWindow(getDisplay(), list);
-    }
+	/**
+	 * Instantiates a new OreScreen.
+	 */
+	public OreScreen()
+	{
+		super(Main.display);
+		List<ColorString> list = new LinkedList<>();
+		for (Ore ore : Main.galaxy.getOreTypes())
+		{
+			list.add(new ColorString(ore.toString() + ": " + ore.getDensity() + " Density"));
+		}
+		window = new PopupWindow(getDisplay(), list);
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public Screen processInput(KeyEvent key)
-    {
-        if (key.getKeyCode() == KeyEvent.VK_G)
-        {
-            return null;
-        }
-        return super.processInput(key);
-    }
+	@Override
+	public Screen processInput(KeyEvent key)
+	{
+		if (key.getKeyCode() == KeyEvent.VK_G)
+		{
+			return null;
+		}
+		return super.processInput(key);
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        return onCancel();
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		return onCancel();
+	}
 }

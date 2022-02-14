@@ -18,50 +18,50 @@ import static maugrift.eversector.Main.player;
  */
 public class PlayerCandidateScreen extends ConfirmationScreen
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * Instantiates a new PlayerCandidateScreen.
-     */
-    public PlayerCandidateScreen()
-    {
-        super(Main.display);
-        window = new PopupWindow(Main.display);
+	/**
+	 * Instantiates a new PlayerCandidateScreen.
+	 */
+	public PlayerCandidateScreen()
+	{
+		super(Main.display);
+		window = new PopupWindow(Main.display);
 
-        List<ColorString> contents = window.getContents();
-        contents.add(pendingElection.getDescription());
-        if (pendingElection.isReelected(player))
-        {
-            contents.add(new ColorString("You have performed well as leader and have been nominated again."));
-            contents.add(new ColorString("Run for reelection?"));
-        }
-        else
-        {
-            contents.add(new ColorString("You have been recognized for your deeds and nominated."));
-            contents.add(new ColorString("Run for office?"));
-        }
-    }
+		List<ColorString> contents = window.getContents();
+		contents.add(pendingElection.getDescription());
+		if (pendingElection.isReelected(player))
+		{
+			contents.add(new ColorString("You have performed well as leader and have been nominated again."));
+			contents.add(new ColorString("Run for reelection?"));
+		}
+		else
+		{
+			contents.add(new ColorString("You have been recognized for your deeds and nominated."));
+			contents.add(new ColorString("Run for office?"));
+		}
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        pendingElection.addPlayer();
-        pendingElection.gatherVotes();
-        return new ElectionResultsScreen();
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		pendingElection.addPlayer();
+		pendingElection.gatherVotes();
+		return new ElectionResultsScreen();
+	}
 
-    @Override
-    public Screen onCancel()
-    {
-        return new VotingScreen();
-    }
+	@Override
+	public Screen onCancel()
+	{
+		return new VotingScreen();
+	}
 }

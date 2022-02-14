@@ -25,69 +25,69 @@ import static maugrift.eversector.Main.*;
  */
 public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
 {
-    /**
-     * The factions the player can request a relationship with.
-     */
-    private List<Faction> factions;
+	/**
+	 * The factions the player can request a relationship with.
+	 */
+	private List<Faction> factions;
 
-    /**
-     * The relationship changes the player can request.
-     */
-    private List<RelationshipType> changes;
+	/**
+	 * The relationship changes the player can request.
+	 */
+	private List<RelationshipType> changes;
 
-    /**
-     * Instantiates a new RelationshipRequestScreen.
-     */
-    public RelationshipRequestScreen()
-    {
-        super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
-        factions = new ArrayList<>();
-        changes = new ArrayList<>();
-        setUpMenu();
-    }
+	/**
+	 * Instantiates a new RelationshipRequestScreen.
+	 */
+	public RelationshipRequestScreen()
+	{
+		super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+		factions = new ArrayList<>();
+		changes = new ArrayList<>();
+		setUpMenu();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return (PopupWindow) getMenu().getWindow();
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return (PopupWindow) getMenu().getWindow();
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        int index = getMenu().getSelectionIndex();
-        player.getFaction().requestRelationship(factions.get(index), changes.get(index));
-        return null;
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		int index = getMenu().getSelectionIndex();
+		player.getFaction().requestRelationship(factions.get(index), changes.get(index));
+		return null;
+	}
 
-    /**
-     * Sets up the menu and its contents.
-     */
-    private void setUpMenu()
-    {
-        List<ColorString> contents = getWindow().getContents();
+	/**
+	 * Sets up the menu and its contents.
+	 */
+	private void setUpMenu()
+	{
+		List<ColorString> contents = getWindow().getContents();
 
-        for (Relationship relationship : player.getFaction().getRelationships())
-        {
-            Faction otherFaction = relationship.getOtherFaction(player.getFaction());
-            RelationshipType type = relationship.getType();
-            ColorString base = otherFaction.toColorString().add(": ").add(type).add(
-                    new ColorChar(ExtChars.ARROW1_R, COLOR_FIELD));
+		for (Relationship relationship : player.getFaction().getRelationships())
+		{
+			Faction otherFaction = relationship.getOtherFaction(player.getFaction());
+			RelationshipType type = relationship.getType();
+			ColorString base = otherFaction.toColorString().add(": ").add(type).add(
+					new ColorChar(ExtChars.ARROW1_R, COLOR_FIELD));
 
-            factions.add(otherFaction);
+			factions.add(otherFaction);
 
-            if (type == RelationshipType.PEACE)
-            {
-                factions.add(otherFaction);
-                changes.add(RelationshipType.WAR);
-                changes.add(RelationshipType.ALLIANCE);
-                contents.add(new ColorString(base).add(RelationshipType.WAR));
-                contents.add(base.add(RelationshipType.ALLIANCE));
-                continue;
-            }
+			if (type == RelationshipType.PEACE)
+			{
+				factions.add(otherFaction);
+				changes.add(RelationshipType.WAR);
+				changes.add(RelationshipType.ALLIANCE);
+				contents.add(new ColorString(base).add(RelationshipType.WAR));
+				contents.add(base.add(RelationshipType.ALLIANCE));
+				continue;
+			}
 
-            changes.add(RelationshipType.PEACE);
-            contents.add(base.add(RelationshipType.PEACE));
-        }
-    }
+			changes.add(RelationshipType.PEACE);
+			contents.add(base.add(RelationshipType.PEACE));
+		}
+	}
 }

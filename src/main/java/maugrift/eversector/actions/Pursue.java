@@ -6,37 +6,37 @@ import maugrift.eversector.ships.Ship;
 
 public class Pursue implements Action
 {
-    public static final String RESOURCE = Resource.FUEL;
-    public static final int COST = 1;
-    public static final String SOUND_EFFECT = Paths.ENGINE;
+	public static final String RESOURCE = Resource.FUEL;
+	public static final int COST = 1;
+	public static final String SOUND_EFFECT = Paths.ENGINE;
 
-    @Override
-    public String canExecute(Ship actor)
-    {
-        if (actor == null)
-        {
-            return "Ship not found.";
-        }
+	@Override
+	public String canExecute(Ship actor)
+	{
+		if (actor == null)
+		{
+			return "Ship not found.";
+		}
 
-        if (!actor.isInBattle())
-        {
-            return "You must be in a battle to pursue.";
-        }
+		if (!actor.isInBattle())
+		{
+			return "You must be in a battle to pursue.";
+		}
 
-        return actor.validateResources(RESOURCE, COST, "pursue");
-    }
+		return actor.validateResources(RESOURCE, COST, "pursue");
+	}
 
-    @Override
-    public String execute(Ship actor)
-    {
-        String canExecute = canExecute(actor);
-        if (canExecute != null)
-        {
-            return canExecute;
-        }
+	@Override
+	public String execute(Ship actor)
+	{
+		String canExecute = canExecute(actor);
+		if (canExecute != null)
+		{
+			return canExecute;
+		}
 
-        actor.getResource(RESOURCE).changeAmount(-COST);
-        actor.playPlayerSound(SOUND_EFFECT);
-        return null;
-    }
+		actor.getResource(RESOURCE).changeAmount(-COST);
+		actor.playPlayerSound(SOUND_EFFECT);
+		return null;
+	}
 }

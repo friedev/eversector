@@ -18,65 +18,65 @@ import static maugrift.eversector.Main.player;
  */
 public class RelationshipResponseScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * The relationship change being requested.
-     */
-    private RelationshipChange change;
+	/**
+	 * The relationship change being requested.
+	 */
+	private RelationshipChange change;
 
-    /**
-     * Instantiates a new RelationshipResponseScreen.
-     */
-    public RelationshipResponseScreen()
-    {
-        super(Main.display);
-        window = new PopupWindow(Main.display);
-        change = pendingRelationships.poll();
-        window.getContents().add(change.getMessage());
-        window.getContents().add(new ColorString(change.getQuestion()));
-    }
+	/**
+	 * Instantiates a new RelationshipResponseScreen.
+	 */
+	public RelationshipResponseScreen()
+	{
+		super(Main.display);
+		window = new PopupWindow(Main.display);
+		change = pendingRelationships.poll();
+		window.getContents().add(change.getMessage());
+		window.getContents().add(new ColorString(change.getQuestion()));
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        if (!change.negateAnswer())
-        {
-            enactChange();
-        }
-        return null;
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		if (!change.negateAnswer())
+		{
+			enactChange();
+		}
+		return null;
+	}
 
-    @Override
-    public Screen onCancel()
-    {
-        if (change.negateAnswer())
-        {
-            enactChange();
-        }
-        return null;
-    }
+	@Override
+	public Screen onCancel()
+	{
+		if (change.negateAnswer())
+		{
+			enactChange();
+		}
+		return null;
+	}
 
-    /**
-     * Enacts the relationship change.
-     */
-    public void enactChange()
-    {
-        player.getFaction().setRelationship(change.getOtherFaction(), change.getRelationship());
-    }
+	/**
+	 * Enacts the relationship change.
+	 */
+	public void enactChange()
+	{
+		player.getFaction().setRelationship(change.getOtherFaction(), change.getRelationship());
+	}
 }

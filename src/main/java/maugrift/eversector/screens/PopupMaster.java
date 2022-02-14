@@ -9,20 +9,20 @@ import maugrift.apwt.screens.Screen;
  */
 public interface PopupMaster
 {
-    /**
-     * Gets the popup screen.
-     *
-     * @return the popup screen
-     */
-    Screen getPopup();
+	/**
+	 * Gets the popup screen.
+	 *
+	 * @return the popup screen
+	 */
+	Screen getPopup();
 
-    /**
-     * Returns true if the screen is currently displaying a popup scren.
-     *
-     * @return true if the screen is currently displaying a popup scren
-     */
-    default boolean hasPopup()
-    {
-        return getPopup() != null;
-    }
+	/**
+	 * Returns true if the screen is currently displaying a popup scren.
+	 *
+	 * @return true if the screen is currently displaying a popup scren
+	 */
+	default boolean hasPopup()
+	{
+		return getPopup() != null;
+	}
 }

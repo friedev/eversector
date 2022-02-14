@@ -16,33 +16,33 @@ import java.util.List;
  */
 public class LeaderboardScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * Instantiates a new LeaderboardScreen.
-     *
-     * @param leaderboard the leaderboard
-     * @see LeaderboardScore#buildLeaderboard()
-     */
-    public LeaderboardScreen(List<ColorString> leaderboard)
-    {
-        super(Main.display);
-        getConfirmCodes().add(KeyEvent.VK_B);
-        window = new PopupWindow(Main.display, leaderboard);
-    }
+	/**
+	 * Instantiates a new LeaderboardScreen.
+	 *
+	 * @param leaderboard the leaderboard
+	 * @see LeaderboardScore#buildLeaderboard()
+	 */
+	public LeaderboardScreen(List<ColorString> leaderboard)
+	{
+		super(Main.display);
+		getConfirmCodes().add(KeyEvent.VK_B);
+		window = new PopupWindow(Main.display, leaderboard);
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 }

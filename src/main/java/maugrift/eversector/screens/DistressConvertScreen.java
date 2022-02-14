@@ -18,46 +18,46 @@ import static maugrift.eversector.Main.player;
  */
 public class DistressConvertScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * The faction offering help.
-     */
-    private Faction converting;
+	/**
+	 * The faction offering help.
+	 */
+	private Faction converting;
 
-    /**
-     * Instantiates a new DistressConvertScreen.
-     *
-     * @param converting the faction offering help
-     */
-    public DistressConvertScreen(Faction converting)
-    {
-        super(Main.display);
-        window = new PopupWindow(Main.display);
-        window.getContents().add(new ColorString("The ").add(converting).add(" offers to aid you if you join them."));
-        window.getContents().add(new ColorString("Accept the offer?"));
-        this.converting = converting;
-    }
+	/**
+	 * Instantiates a new DistressConvertScreen.
+	 *
+	 * @param converting the faction offering help
+	 */
+	public DistressConvertScreen(Faction converting)
+	{
+		super(Main.display);
+		window = new PopupWindow(Main.display);
+		window.getContents().add(new ColorString("The ").add(converting).add(" offers to aid you if you join them."));
+		window.getContents().add(new ColorString("Accept the offer?"));
+		this.converting = converting;
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        new Distress(converting).execute(player);
-        return null;
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		new Distress(converting).execute(player);
+		return null;
+	}
 }

@@ -21,63 +21,63 @@ import static maugrift.eversector.Main.player;
  */
 public class PursuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * The battle the player is in.
-     */
-    private Battle battle;
+	/**
+	 * The battle the player is in.
+	 */
+	private Battle battle;
 
-    /**
-     * The ships the player has the option of pursuing.
-     */
-    private List<Ship> pursuing;
+	/**
+	 * The ships the player has the option of pursuing.
+	 */
+	private List<Ship> pursuing;
 
-    /**
-     * Instantiates a new PursuitScreen.
-     *
-     * @param battle   the battle the player is in
-     * @param pursuing the ships the player has the option of pursuing
-     */
-    public PursuitScreen(Battle battle, List<Ship> pursuing)
-    {
-        super(Main.display);
-        this.battle = battle;
-        this.pursuing = pursuing;
-        window = new PopupWindow(Main.display);
-        window.getContents().add(new ColorString("Pursue ").add(pursuing.get(0)).add("?"));
-    }
+	/**
+	 * Instantiates a new PursuitScreen.
+	 *
+	 * @param battle   the battle the player is in
+	 * @param pursuing the ships the player has the option of pursuing
+	 */
+	public PursuitScreen(Battle battle, List<Ship> pursuing)
+	{
+		super(Main.display);
+		this.battle = battle;
+		this.pursuing = pursuing;
+		window = new PopupWindow(Main.display);
+		window.getContents().add(new ColorString("Pursue ").add(pursuing.get(0)).add("?"));
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        new Pursue().execute(player);
-        List<Ship> pursuers = battle.getPursuers(pursuing.get(0));
-        pursuers.add(player);
-        battle.processEscape(pursuing.get(0), pursuers);
-        return null;
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		new Pursue().execute(player);
+		List<Ship> pursuers = battle.getPursuers(pursuing.get(0));
+		pursuers.add(player);
+		battle.processEscape(pursuing.get(0), pursuers);
+		return null;
+	}
 
-    @Override
-    public Screen onCancel()
-    {
-        battle.processEscape(pursuing.get(0));
-        pursuing.remove(0);
-        return pursuing.isEmpty() ? null : this;
-    }
+	@Override
+	public Screen onCancel()
+	{
+		battle.processEscape(pursuing.get(0));
+		pursuing.remove(0);
+		return pursuing.isEmpty() ? null : this;
+	}
 }

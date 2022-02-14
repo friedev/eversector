@@ -13,68 +13,68 @@ import java.util.List;
  */
 public class StartBattle implements Action
 {
-    private final Ship opponent;
+	private final Ship opponent;
 
-    public StartBattle(Ship opponent)
-    {
-        this.opponent = opponent;
-    }
+	public StartBattle(Ship opponent)
+	{
+		this.opponent = opponent;
+	}
 
-    @Override
-    public String canExecute(Ship actor)
-    {
-        if (actor == null)
-        {
-            return "Ship not found.";
-        }
+	@Override
+	public String canExecute(Ship actor)
+	{
+		if (actor == null)
+		{
+			return "Ship not found.";
+		}
 
-        if (actor == opponent)
-        {
-            return "You cannot attack yourself.";
-        }
+		if (actor == opponent)
+		{
+			return "You cannot attack yourself.";
+		}
 
-        if (!actor.getLocation().equals(opponent.getLocation()))
-        {
-            return "You must be at the same location as the chosen ship.";
-        }
+		if (!actor.getLocation().equals(opponent.getLocation()))
+		{
+			return "You must be at the same location as the chosen ship.";
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    @Override
-    public String execute(Ship actor)
-    {
-        String canExecute = canExecute(actor);
-        if (canExecute != null)
-        {
-            return canExecute;
-        }
+	@Override
+	public String execute(Ship actor)
+	{
+		String canExecute = canExecute(actor);
+		if (canExecute != null)
+		{
+			return canExecute;
+		}
 
-        Battle battle = new Battle(actor, opponent);
-        actor.setLocation(actor.getSectorLocation().joinBattle(battle));
-        opponent.setLocation(actor.getLocation());
+		Battle battle = new Battle(actor, opponent);
+		actor.setLocation(actor.getSectorLocation().joinBattle(battle));
+		opponent.setLocation(actor.getLocation());
 
-        List<Ship> others = actor.getSectorLocation().getShips();
-        for (Ship other : others)
-        {
-            if (other.getAI() != null && !other.isInBattle())
-            {
-                other.getAI().joinBattle(battle);
-            }
-        }
+		List<Ship> others = actor.getSectorLocation().getShips();
+		for (Ship other : others)
+		{
+			if (other.getAI() != null && !other.isInBattle())
+			{
+				other.getAI().joinBattle(battle);
+			}
+		}
 
-        if (opponent.isPlayer())
-        {
-            Main.pendingBattle = battle;
-            opponent.addPlayerColorMessage(new ColorString("You are under attack from ").add(actor).add("!"));
-            return null;
-        }
+		if (opponent.isPlayer())
+		{
+			Main.pendingBattle = battle;
+			opponent.addPlayerColorMessage(new ColorString("You are under attack from ").add(actor).add("!"));
+			return null;
+		}
 
-        if (!actor.isPlayer())
-        {
-            battle.processBattle();
-        }
+		if (!actor.isPlayer())
+		{
+			battle.processBattle();
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

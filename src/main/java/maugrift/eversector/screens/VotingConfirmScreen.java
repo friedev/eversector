@@ -12,57 +12,57 @@ import maugrift.eversector.Main;
  */
 public class VotingConfirmScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * The leader getting the vote.
-     */
-    private String leaderSelection;
+	/**
+	 * The leader getting the vote.
+	 */
+	private String leaderSelection;
 
-    /**
-     * Instantiates a new VotingConfirmScreen.
-     */
-    public VotingConfirmScreen(String selection)
-    {
-        super(Main.display);
-        window = new PopupWindow(Main.display);
-        leaderSelection = selection;
+	/**
+	 * Instantiates a new VotingConfirmScreen.
+	 */
+	public VotingConfirmScreen(String selection)
+	{
+		super(Main.display);
+		window = new PopupWindow(Main.display);
+		leaderSelection = selection;
 
-        window.getContents().add(
-                new ColorString("Submit your vote for ").add(
-                    new ColorString(leaderSelection, Main.player.getFaction().getColor()).add(
-                        new ColorString("?")
-                    )
-                )
-            );
-    }
+		window.getContents().add(
+				new ColorString("Submit your vote for ").add(
+					new ColorString(leaderSelection, Main.player.getFaction().getColor()).add(
+						new ColorString("?")
+					)
+				)
+			);
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        Main.pendingElection.addVote(leaderSelection.substring(0, leaderSelection.indexOf(" (")));
+	@Override
+	public Screen onConfirm()
+	{
+		Main.pendingElection.addVote(leaderSelection.substring(0, leaderSelection.indexOf(" (")));
 
-        return new ElectionResultsScreen();
-    }
+		return new ElectionResultsScreen();
+	}
 
-    @Override
-    public Screen onCancel()
-    {
-        return new VotingScreen();
-    }
+	@Override
+	public Screen onCancel()
+	{
+		return new VotingScreen();
+	}
 }

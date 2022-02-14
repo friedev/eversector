@@ -19,39 +19,39 @@ import static maugrift.eversector.Paths.START;
  */
 public class IntergalacticScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * Instantiates a new IntergalacticScreen.
-     */
-    public IntergalacticScreen()
-    {
-        super(Main.display);
-        window = new PopupWindow(Main.display);
-        window.getContents().add(new ColorString("Travel to another galaxy?"));
-    }
+	/**
+	 * Instantiates a new IntergalacticScreen.
+	 */
+	public IntergalacticScreen()
+	{
+		super(Main.display);
+		window = new PopupWindow(Main.display);
+		window.getContents().add(new ColorString("Travel to another galaxy?"));
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        player.getResource(Burn.RESOURCE).changeAmount(-Burn.COST);
-        playSoundEffect(START);
-        Main.changeGalaxy();
-        return null;
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		player.getResource(Burn.RESOURCE).changeAmount(-Burn.COST);
+		playSoundEffect(START);
+		Main.changeGalaxy();
+		return null;
+	}
 }

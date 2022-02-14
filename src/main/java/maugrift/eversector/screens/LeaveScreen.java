@@ -15,39 +15,39 @@ import static maugrift.eversector.Main.player;
  */
 public class LeaveScreen extends ConfirmationScreen
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * If true, will redirect to a new JoinScreen after confirming.
-     */
-    private boolean redirect;
+	/**
+	 * If true, will redirect to a new JoinScreen after confirming.
+	 */
+	private boolean redirect;
 
-    /**
-     * Instantiates a new LeaveScreen.
-     *
-     * @param redirect if true, will redirect to a new JoinScreen after confirming
-     */
-    public LeaveScreen(boolean redirect)
-    {
-        super(Main.display);
-        window = new PopupWindow(Main.display);
-        window.getContents().add(new ColorString("Really leave the ").add(player.getFaction()).add("?"));
-        this.redirect = redirect;
-    }
+	/**
+	 * Instantiates a new LeaveScreen.
+	 *
+	 * @param redirect if true, will redirect to a new JoinScreen after confirming
+	 */
+	public LeaveScreen(boolean redirect)
+	{
+		super(Main.display);
+		window = new PopupWindow(Main.display);
+		window.getContents().add(new ColorString("Really leave the ").add(player.getFaction()).add("?"));
+		this.redirect = redirect;
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        player.leaveFaction();
-        return redirect ? new JoinScreen() : null;
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		player.leaveFaction();
+		return redirect ? new JoinScreen() : null;
+	}
 }

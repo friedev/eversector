@@ -18,43 +18,43 @@ import java.util.List;
  */
 public class QuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
 {
-    /**
-     * The window.
-     */
-    private PopupWindow window;
+	/**
+	 * The window.
+	 */
+	private PopupWindow window;
 
-    /**
-     * Instantiates a new QuitScreen.
-     */
-    public QuitScreen()
-    {
-        super(Main.display);
-        List<ColorString> contents = new LinkedList<>();
-        contents.add(new ColorString("Save before quitting?", AsciiPanel.brightRed));
-        window = new PopupWindow(Main.display, contents);
-    }
+	/**
+	 * Instantiates a new QuitScreen.
+	 */
+	public QuitScreen()
+	{
+		super(Main.display);
+		List<ColorString> contents = new LinkedList<>();
+		contents.add(new ColorString("Save before quitting?", AsciiPanel.brightRed));
+		window = new PopupWindow(Main.display, contents);
+	}
 
-    @Override
-    public void displayOutput()
-    {
-        window.display();
-    }
+	@Override
+	public void displayOutput()
+	{
+		window.display();
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return window;
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return window;
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        return new EndScreen(false, true);
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		return new EndScreen(false, true);
+	}
 
-    @Override
-    public Screen onDeny()
-    {
-        return new EndScreen(true, false);
-    }
+	@Override
+	public Screen onDeny()
+	{
+		return new EndScreen(true, false);
+	}
 }

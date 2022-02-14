@@ -18,33 +18,33 @@ import static maugrift.eversector.Main.*;
  */
 public class AttackScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
 {
-    /**
-     * Instantiates a new AttackScreen.
-     */
-    public AttackScreen()
-    {
-        super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+	/**
+	 * Instantiates a new AttackScreen.
+	 */
+	public AttackScreen()
+	{
+		super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
 
-        for (Ship ship : player.getLocation().getSector().getShipsAt(player.getSectorLocation().getOrbit()))
-        {
-            if (!ship.isPlayer())
-            {
-                getMenu().getWindow().getContents().add(ship.toColorString());
-            }
-        }
-    }
+		for (Ship ship : player.getLocation().getSector().getShipsAt(player.getSectorLocation().getOrbit()))
+		{
+			if (!ship.isPlayer())
+			{
+				getMenu().getWindow().getContents().add(ship.toColorString());
+			}
+		}
+	}
 
-    @Override
-    public PopupWindow getWindow()
-    {
-        return (PopupWindow) getMenu().getWindow();
-    }
+	@Override
+	public PopupWindow getWindow()
+	{
+		return (PopupWindow) getMenu().getWindow();
+	}
 
-    @Override
-    public Screen onConfirm()
-    {
-        Ship opponent = player.getLocation().getSector().getShip(getMenu().getSelection().toString());
-        new StartBattle(opponent).execute(player);
-        return new BattleScreen(player.getBattleLocation().getBattle(), true);
-    }
+	@Override
+	public Screen onConfirm()
+	{
+		Ship opponent = player.getLocation().getSector().getShip(getMenu().getSelection().toString());
+		new StartBattle(opponent).execute(player);
+		return new BattleScreen(player.getBattleLocation().getBattle(), true);
+	}
 }
