@@ -29,7 +29,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
+class SectorScreen
+	extends Screen
+	implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
 	/**
 	 * The window.
@@ -64,10 +66,11 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 
 		if (popup != null)
 		{
-			if (popup instanceof WindowScreen && ((WindowScreen) popup).getWindow() instanceof AlignedWindow)
+			if (popup instanceof WindowScreen &&
+					((WindowScreen) popup).getWindow() instanceof AlignedWindow)
 			{
-				((AlignedWindow) ((WindowScreen) popup).getWindow()).setLocation(
-						1, window.getBottom() + 3);
+				((AlignedWindow) ((WindowScreen) popup).getWindow())
+					.setLocation(1, window.getBottom() + 3);
 			}
 
 			popup.displayOutput();
@@ -154,8 +157,9 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 				break;
 			case KeyEvent.VK_LEFT:
 				Station station = player.getSectorLocation().getStation();
-				if (station != null && player.isHostile(station.getFaction()) && new Claim().canExecute(player,
-						station) == null)
+				if (station != null &&
+						player.isHostile(station.getFaction()) &&
+						new Claim().canExecute(player, station) == null)
 				{
 					popup = new ClaimStationScreen();
 				}
@@ -227,7 +231,11 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 				{
 					List<Ship> ships = player.getSectorLocation().getSector().getShipsAt(
 							player.getSectorLocation().getOrbit());
-					new StartBattle(ships.get(0) == player ? ships.get(1) : ships.get(0)).execute(player);
+					new StartBattle(
+							ships.get(0) == player
+							? ships.get(1)
+							: ships.get(0)
+					).execute(player);
 					return new BattleScreen(player.getBattleLocation().getBattle(), true);
 				}
 				else
@@ -258,7 +266,13 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 	public List<Keybinding> getKeybindings()
 	{
 		List<Keybinding> keybindings = new ArrayList<>();
-		keybindings.add(new Keybinding("change orbit", ExtChars.ARROW1_U, ExtChars.ARROW1_D));
+		keybindings.add(
+				new Keybinding(
+					"change orbit",
+					ExtChars.ARROW1_U,
+					ExtChars.ARROW1_D
+				)
+		);
 		if (!isLooking())
 		{
 			keybindings.add(new Keybinding("land", ExtChars.ARROW1_R));
@@ -313,8 +327,14 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 			contents.add(new ColorString("Nebula: ").add(sector.getNebula()));
 		}
 
-		contents.add(new ColorString("Ruler: ").add(
-				sector.isClaimed() ? sector.getFaction().toColorString() : new ColorString("Disputed", COLOR_FIELD)));
+		contents.add(
+				new ColorString("Ruler: ")
+				.add(
+					sector.isClaimed()
+					? sector.getFaction().toColorString()
+					: new ColorString("Disputed", COLOR_FIELD)
+				)
+		);
 
 		window.addSeparator(new Line(true, 2, 1));
 		for (int orbit = 1; orbit <= sector.getOrbits(); orbit++)
@@ -328,6 +348,12 @@ class SectorScreen extends Screen implements WindowScreen<AlignedWindow>, PopupM
 		}
 
 		window.addSeparator(new Line(false, 1, 2, 1));
-		contents.addAll(sector.getOrbitContents(isLooking() ? cursor : player.getSectorLocation().getOrbit()));
+		contents.addAll(
+				sector.getOrbitContents(
+					isLooking()
+					? cursor
+					: player.getSectorLocation().getOrbit()
+				)
+		);
 	}
 }

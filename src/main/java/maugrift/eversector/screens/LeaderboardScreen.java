@@ -14,7 +14,9 @@ import java.util.List;
  *
  * @author Maugrift
  */
-public class LeaderboardScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class LeaderboardScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.

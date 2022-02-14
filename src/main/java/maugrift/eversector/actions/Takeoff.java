@@ -23,7 +23,11 @@ public class Takeoff implements Action
 			return "You are not landed.";
 		}
 
-		return actor.validateResources(RESOURCE, COST, "takeoff from the " + actor.getPlanetLocation().getRegion());
+		return actor.validateResources(
+				RESOURCE,
+				COST,
+				"takeoff from the " + actor.getPlanetLocation().getRegion()
+		);
 	}
 
 	@Override

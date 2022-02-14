@@ -11,11 +11,14 @@ import maugrift.eversector.ships.Ship;
 import static maugrift.eversector.Main.player;
 
 /**
- * The screen shown when the player can take the place of a former leader. <b>Currently unused.</b>
+ * The screen shown when the player can take the place of a former leader.
+ * <b>Currently unused.</b>
  *
  * @author Maugrift
  */
-public class SuccessionScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class SuccessionScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -36,7 +39,8 @@ public class SuccessionScreen extends ConfirmationScreen implements WindowScreen
 	{
 		super(Main.display);
 		window = new PopupWindow(Main.display);
-		window.getContents().add(leader.toColorString().add(" offers you their status as leader if you spare them."));
+		window.getContents().add(leader.toColorString()
+				.add(" offers you their status as leader if you spare them."));
 		window.getContents().add(new ColorString("Accept the offer?"));
 		this.leader = leader;
 	}
@@ -57,7 +61,10 @@ public class SuccessionScreen extends ConfirmationScreen implements WindowScreen
 	public Screen onConfirm()
 	{
 		player.getFaction().addNews(
-				player + " has defeated our leader, " + leader + ", and has wrested control of the faction.");
+				player
+				+ " has defeated our leader, "
+				+ leader
+				+ ", and has wrested control of the faction.");
 		player.getFaction().setLeader(player);
 		return new SectorScreen();
 	}

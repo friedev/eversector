@@ -49,30 +49,36 @@ public class Claim implements Action
 
 		if (actor.getCredits() < planet.getClaimCost())
 		{
-			return "You cannot afford the " +
-				planet.getClaimCost() +
-				" credit cost to claim territory on " +
-				planet +
-				".";
+			return "You cannot afford the "
+				+ planet.getClaimCost()
+				+ " credit cost to claim territory on "
+				+ planet
+				+ ".";
 		}
 
 		if (!region.getType().isLand())
 		{
-			return "The " + region.toString().toLowerCase() + " cannot be claimed.";
+			return "The "
+				+ region.toString().toLowerCase()
+				+ " cannot be claimed.";
 		}
 
 		if (region.getFaction() == faction)
 		{
-			return "The " + region.toString().toLowerCase() + " is already claimed by the " + faction + ".";
+			return "The "
+				+ region.toString().toLowerCase()
+				+ " is already claimed by the "
+				+ faction
+				+ ".";
 		}
 
 		if (region.getNShips(region.getFaction()) > 0)
 		{
-			return "There are currently ships of the " +
-				region.getFaction() +
-				" guarding the " +
-				region.toString().toLowerCase() +
-				".";
+			return "There are currently ships of the "
+				+ region.getFaction()
+				+ " guarding the "
+				+ region.toString().toLowerCase()
+				+ ".";
 		}
 
 		return null;
@@ -84,7 +90,11 @@ public class Claim implements Action
 
 		if (actor.getCredits() < Station.CLAIM_COST)
 		{
-			return "You cannot afford the " + Station.CLAIM_COST + " credit cost to claim " + station + ".";
+			return "You cannot afford the "
+				+ Station.CLAIM_COST
+				+ " credit cost to claim "
+				+ station
+				+ ".";
 		}
 
 		// If the body is already claimed by solely your faction, return false
@@ -95,7 +105,11 @@ public class Claim implements Action
 
 		if (station.getNShips(station.getFaction()) > 0)
 		{
-			return "There are currently ships of the " + station.getFaction() + " guarding " + station + ".";
+			return "There are currently ships of the "
+				+ station.getFaction()
+				+ " guarding "
+				+ station
+				+ ".";
 		}
 
 		return null;
@@ -128,7 +142,10 @@ public class Claim implements Action
 				actor.changeReputation(faction, Reputation.CLAIM / nRegions);
 			}
 
-			actor.changeReputation(region.getFaction(), -Reputation.CLAIM / nRegions);
+			actor.changeReputation(
+					region.getFaction(),
+					-Reputation.CLAIM / nRegions
+			);
 
 			// Claim must be done here so the faction relations can be checked
 			region.claim(faction);

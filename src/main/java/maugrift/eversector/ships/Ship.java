@@ -39,14 +39,30 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 * The first part of a ship's name.
 	 */
 	private static final String[] NAME_PREFIX = new String[]{
-			"Dark", "Death", "Ever", "Great", "Heavy", "Hyper", "Infini", "Light", "Ultra"
+		"Dark",
+		"Death",
+		"Ever",
+		"Great",
+		"Heavy",
+		"Hyper",
+		"Infini",
+		"Light",
+		"Ultra",
 	};
 
 	/**
 	 * The second part a ship's name.
 	 */
 	private static final String[] NAME_SUFFIX = new String[]{
-			"blade", "hawk", "seeker", "ship", "spear", "star", "talon", "voyager", "wing"
+		"blade",
+		"hawk",
+		"seeker",
+		"ship",
+		"spear",
+		"star",
+		"talon",
+		"voyager",
+		"wing",
 	};
 
 	/**
@@ -100,7 +116,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	public static final int DISTRESS_CREDITS = 100;
 
 	/**
-	 * The amount of credits that a default ship is worth - must be manually updated.
+	 * The amount of credits that a default ship is worth - must be manually
+	 * updated.
 	 */
 	public static final int BASE_VALUE = 400;
 
@@ -110,7 +127,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	public static final int MAX_EXPANDERS = 100;
 
 	/**
-	 * The amount by which each item looted from a destroyed ship will be divided by.
+	 * The amount by which each item looted from a destroyed ship will be
+	 * divided by.
 	 */
 	public static final int LOOT_MODIFIER = 2;
 
@@ -175,8 +193,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 		String testName;
 		do
 		{
-			testName = rng.getRandomElement(NAME_PREFIX) + rng.getRandomElement(NAME_SUFFIX) + "-" + String.format(
-					"%02d", rng.nextInt(100));
+			testName = rng.getRandomElement(NAME_PREFIX)
+				+ rng.getRandomElement(NAME_SUFFIX)
+				+ "-"
+				+ String.format("%02d", rng.nextInt(100));
 		} while (location.getGalaxy().getShipNames().contains(testName));
 
 		this.name = testName;
@@ -222,8 +242,18 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 				{
 					String[] amtFraction = value.split("/");
 
-					int amount = Math.abs(Utility.parseInt(amtFraction[0], getDefaultAmount(resource)));
-					int capacity = Math.abs(Utility.parseInt(amtFraction[1], getDefaultAmount(resource)));
+					int amount = Math.abs(
+							Utility.parseInt(
+								amtFraction[0],
+								getDefaultAmount(resource)
+							)
+					);
+					int capacity = Math.abs(
+							Utility.parseInt(
+								amtFraction[1],
+								getDefaultAmount(resource)
+							)
+					);
 
 					resource.setAmount(Math.min(amount, capacity));
 					resource.setCapacity(capacity);
@@ -278,7 +308,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	@Override
 	public ColorString toColorString()
 	{
-		return isAligned() ? new ColorString(toString(), faction.getColor()) : new ColorString(toString());
+		return isAligned()
+			? new ColorString(toString(), faction.getColor())
+			: new ColorString(toString());
 	}
 
 	/**
@@ -352,9 +384,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns true if the ship is in danger of being destroyed while mining an asteroid.
+	 * Returns true if the ship is in danger of being destroyed while mining an
+	 * asteroid.
 	 *
-	 * @return true if the ship is in danger of being destroyed while mining an asteroid
+	 * @return true if the ship is in danger of being destroyed while mining an
+	 *         asteroid
 	 */
 	public boolean isDangerousToMine()
 	{
@@ -402,8 +436,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns true if the ship is orbital in a sector. This means that it is in a sector, but not on a planet, at a
-	 * station, or in a battle.
+	 * Returns true if the ship is orbital in a sector. This means that it is
+	 * in a sector, but not on a planet, at a station, or in a battle.
 	 *
 	 * @return true if the ship is orbital in a sector
 	 */
@@ -456,8 +490,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Gets the location of the ship, converted to a SectorLocation. Should only been used when the ship's location is
-	 * known.
+	 * Gets the location of the ship, converted to a SectorLocation. Should
+	 * only be used when the ship's location is known.
 	 *
 	 * @return the location of the ship as a SectorLocation
 	 */
@@ -467,8 +501,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Gets the location of the ship, converted to a PlanetLocation. Should only been used when the ship's location is
-	 * known.
+	 * Gets the location of the ship, converted to a PlanetLocation. Should
+	 * only be used when the ship's location is known.
 	 *
 	 * @return the location of the ship as a PlanetLocation
 	 */
@@ -478,8 +512,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Gets the location of the ship, converted to a StationLocation. Should only been used when the ship's location is
-	 * known.
+	 * Gets the location of the ship, converted to a StationLocation. Should
+	 * only be used when the ship's location is known.
 	 *
 	 * @return the location of the ship as a StationLocation
 	 */
@@ -489,8 +523,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Gets the location of the ship, converted to a BattleLocation. Should only been used when the ship's location is
-	 * known.
+	 * Gets the location of the ship, converted to a BattleLocation. Should
+	 * only be used when the ship's location is known.
 	 *
 	 * @return the location of the ship as a BattleLocation
 	 */
@@ -503,7 +537,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 * Returns true if there is a flag in the flags list with the given name.
 	 *
 	 * @param flag the string to find in the flags list
-	 * @return true if the flags list contains a String that matches the one provided
+	 * @return true if the flags list contains a String that matches the one
+	 *         provided
 	 */
 	public boolean hasFlag(String flag)
 	{
@@ -531,7 +566,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns true if the ship is unaligned and their reputation is too low for any faction to accept them.
+	 * Returns true if the ship is unaligned and their reputation is too low
+	 * for any faction to accept them.
 	 *
 	 * @return true if the player is considered a pirate
 	 */
@@ -565,17 +601,22 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns true if the specified ship is considered non-hostile (including if this ship is a pirate).
+	 * Returns true if the specified ship is considered non-hostile (including
+	 * if this ship is a pirate).
 	 *
 	 * @param ship the ship to check
-	 * @return true if: the ship is not a pirate and this ship is a pirate or an ally (this is so reputation is lowered
-	 * for piracy)
+	 * @return true if: the ship is not a pirate and this ship is a pirate or
+	 * an ally (this is so reputation is lowered for piracy)
 	 */
 	public boolean isPassive(Ship ship)
 	{
-		return ship.isAligned() && (!isAligned() || faction == ship.faction || !ship.getFaction().isRelationship(
-				Relationship.RelationshipType.WAR,
-				faction));
+		return ship.isAligned() && (
+				!isAligned() ||
+				 faction == ship.faction ||
+				 !ship.getFaction().isRelationship(
+					 Relationship.RelationshipType.WAR, faction
+				)
+		);
 	}
 
 	/**
@@ -586,7 +627,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public boolean isHostile(Faction faction)
 	{
-		return this.faction != faction && (!isAligned() || this.faction.isRelationship(Relationship.RelationshipType.WAR, faction));
+		return this.faction != faction && (
+			 !isAligned() ||
+			 this.faction.isRelationship(
+				 Relationship.RelationshipType.WAR, faction
+			 )
+		);
 	}
 
 	/**
@@ -631,7 +677,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 			return;
 		}
 
-		if (destination instanceof StationLocation && !(location instanceof StationLocation))
+		if (destination instanceof StationLocation &&
+				!(location instanceof StationLocation))
 		{
 			getSectorLocation().getStation().getShips().add(this);
 			location.getSector().getShips().remove(this);
@@ -691,8 +738,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public List<Coord> getFOV()
 	{
-		double[][] light = new FOV().calculateFOV(getLocation().getGalaxy().getResistanceMap(),
-				getLocation().getCoord().x, getLocation().getCoord().y, getFOVRadius());
+		double[][] light = new FOV().calculateFOV(
+				getLocation().getGalaxy().getResistanceMap(),
+				getLocation().getCoord().x,
+				getLocation().getCoord().y,
+				getFOVRadius()
+		);
 
 		List<Coord> fov = new ArrayList<>();
 		for (int y = 0; y < light.length; y++)
@@ -739,15 +790,18 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
 		for (Resource resource : resources)
 		{
-			properties.setProperty("r_" + resource.getName().toLowerCase(), resource.getAmountAsFraction());
+			properties.setProperty(
+					"r_" + resource.getName().toLowerCase(),
+					resource.getAmountAsFraction()
+			);
 		}
 
 		return properties;
 	}
 
 	/**
-	 * Changes the number of credits possessed by the ship, taking or giving the inverse to the specified faction's
-	 * economy.
+	 * Changes the number of credits possessed by the ship, taking or giving
+	 * the inverse to the specified faction's economy.
 	 *
 	 * @param faction the faction who will receive the inverse of the change
 	 * @param change  the change in credits
@@ -784,10 +838,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns the reputation object with the faction specified, null if not found.
+	 * Returns the reputation object with the faction specified, null if not
+	 * found.
 	 *
 	 * @param faction the faction to get a reputation with
-	 * @return the Reputation object with the faction specified, null if not found
+	 * @return the Reputation object with the faction specified, null if not
+	 *         found
 	 */
 	public Reputation getReputation(Faction faction)
 	{
@@ -816,7 +872,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 		{
 			if (rep.get() != 0)
 			{
-				int change = Math.max(1, Math.abs(rep.get()) / rep.getFaction().getAverageReputation());
+				int change = Math.max(
+						1,
+						Math.abs(rep.get()) / rep.getFaction().getAverageReputation()
+				);
 
 				if (rep.get() > 0)
 				{
@@ -833,7 +892,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	/**
 	 * Changes the ship's reputation by a specified amount.
 	 *
-	 * @param otherFaction the faction with which to change the ship's reputation
+	 * @param otherFaction the faction with which to change the ship's
+	 *                     reputation
 	 * @param change       the amount by which to change the ship's reputation
 	 */
 	public void changeReputation(Faction otherFaction, int change)
@@ -867,9 +927,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Changes the ship's reputation among all factions by the specified amount.
+	 * Changes the ship's reputation among all factions by the specified
+	 * amount.
 	 *
-	 * @param change the amount by which to change the ship's reputation for every faction
+	 * @param change the amount by which to change the ship's reputation for
+	 *               every faction
 	 */
 	public void changeGlobalReputation(int change)
 	{
@@ -880,10 +942,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns the Reputation object for the faction that the player is most respected in, besides the faction they are
-	 * a part of.
+	 * Returns the Reputation object for the faction that the player is most
+	 * respected in, besides the faction they are a part of.
 	 *
-	 * @return the Reputation object containing the popular faction and the ship's reputation in it
+	 * @return the Reputation object containing the popular faction and the
+	 *         ship's reputation in it
 	 */
 	public Reputation getMostPopularOtherFaction()
 	{
@@ -891,7 +954,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
 		for (Reputation rep : reputations)
 		{
-			if ((highestRep == null || rep.get() > highestRep.get()) && rep.getFaction() != faction)
+			if ((highestRep == null || rep.get() > highestRep.get()) &&
+					rep.getFaction() != faction)
 			{
 				highestRep = rep;
 			}
@@ -948,7 +1012,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as getDefaultAmount(String), but uses the resource's name instead.
+	 * Performs the same function as getDefaultAmount(String), but uses the
+	 * resource's name instead.
 	 *
 	 * @param resource the Resource whose name will be used
 	 * @return the constant amount for the resource of the given name
@@ -1055,7 +1120,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as hasModule(String), except with a pre-existing module.
+	 * Performs the same function as hasModule(String), except with a
+	 * pre-existing module.
 	 *
 	 * @param module the module to find
 	 * @return whether a module of the same name exists on the ship
@@ -1066,10 +1132,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Scans through the ship's modules and returns the first module with the specified name.
+	 * Scans through the ship's modules and returns the first module with the
+	 * specified name.
 	 *
 	 * @param name the name of the module to find
-	 * @return the first module encountered with the specified name, null if not found
+	 * @return the first module encountered with the specified name, null if
+	 *         not found
 	 */
 	public Module getModule(String name)
 	{
@@ -1085,10 +1153,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as hasModule(String), except with a pre-existing module.
+	 * Performs the same function as hasModule(String), except with a
+	 * pre-existing module.
 	 *
 	 * @param module the module to find
-	 * @return the first module encountered with the same name as the specified module, null if not found
+	 * @return the first module encountered with the same name as the specified
+	 *         module, null if not found
 	 */
 	public Module getModule(Module module)
 	{
@@ -1096,10 +1166,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Scans through the ship's cargo and returns the first module with the specified name.
+	 * Scans through the ship's cargo and returns the first module with the
+	 * specified name.
 	 *
 	 * @param name the name of the module to find
-	 * @return the first module encountered in cargo with the specified name, null if not found
+	 * @return the first module encountered in cargo with the specified name,
+	 *         null if not found
 	 */
 	public Module getCargoModule(String name)
 	{
@@ -1144,7 +1216,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as getModuleAmount(String), using the module's name instead.
+	 * Performs the same function as getModuleAmount(String), using the
+	 * module's name instead.
 	 *
 	 * @param module the module to find the amount of, must be non-null
 	 * @return the number of modules with the same name
@@ -1155,7 +1228,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as getModule(), but will only return the module if it is a weapon.
+	 * Performs the same function as getModule(), but will only return the
+	 * module if it is a weapon.
 	 *
 	 * @param name the name of the weapon to find
 	 * @return the first weapon installed of the same name, null if not found
@@ -1192,7 +1266,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Adds the specified module to the ship's module array, or cargo if already installed.
+	 * Adds the specified module to the ship's module array, or cargo if
+	 * already installed.
 	 *
 	 * @param module the module to add
 	 */
@@ -1209,8 +1284,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as addModule(Module), finding a module of the designated name to add - must be final
-	 * as it is used in a constructor.
+	 * Performs the same function as addModule(Module), finding a module of the
+	 * designated name to add - must be final as it is used in a constructor.
 	 *
 	 * @param name the name of the module to find and add
 	 */
@@ -1253,7 +1328,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as removeModule(String), using the module's name as the name of the removed module.
+	 * Performs the same function as removeModule(String), using the module's
+	 * name as the name of the removed module.
 	 *
 	 * @param module the module whose name will be used in the removal
 	 * @return true if the module was removed
@@ -1306,7 +1382,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 * Returns a resource on the ship with an expander of a specified name.
 	 *
 	 * @param expanderName the name of the expander on the resource to find
-	 * @return a resource on the ship with the designated expander name, null if not found
+	 * @return a resource on the ship with the designated expander name, null
+	 *         if not found
 	 */
 	public Resource getResourceFromExpander(String expanderName)
 	{
@@ -1322,10 +1399,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Performs the same function as getMaxBuyAmount(Resource), with the name of the resource instead.
+	 * Performs the same function as getMaxBuyAmount(Resource), with the name
+	 * of the resource instead.
 	 *
 	 * @param name the name of the resource being purchased
-	 * @return the highest amount of the resource that can be purchased, -1 if the resource was not found
+	 * @return the highest amount of the resource that can be purchased, -1 if
+	 *         the resource was not found
 	 */
 	public int getMaxBuyAmount(String name)
 	{
@@ -1346,7 +1425,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 * Returns the highest amount of a resource that can be purchased.
 	 *
 	 * @param resource the resource being purchased
-	 * @return the highest amount of the resource that can be purchased, -1 if the resource was not found
+	 * @return the highest amount of the resource that can be purchased, -1 if
+	 *         the resource was not found
 	 */
 	public int getMaxBuyAmount(Resource resource)
 	{
@@ -1357,18 +1437,24 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
 		if (isDocked())
 		{
-			return Math.min(credits / getSectorLocation().getStation().getResource(resource.getName()).getPrice(),
-					resource.getCapacity() - resource.getAmount());
+			return Math.min(
+					credits / getSectorLocation().getStation().getResource(resource.getName()).getPrice(),
+					resource.getCapacity() - resource.getAmount()
+			);
 		}
 
-		return Math.min(credits / resource.getPrice(), resource.getCapacity() - resource.getAmount());
+		return Math.min(
+				credits / resource.getPrice(),
+				resource.getCapacity() - resource.getAmount()
+		);
 	}
 
 	/**
 	 * Returns the most expanders of a specified type that can be purchased.
 	 *
 	 * @param expander the expander being purchased
-	 * @return the most expanders that can be purchased, -1 if the expander was not found
+	 * @return the most expanders that can be purchased, -1 if the expander was
+	 *         not found
 	 */
 	public int getMaxBuyAmount(Expander expander)
 	{
@@ -1379,19 +1465,25 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
 		if (isDocked())
 		{
-			return Math.min(MAX_EXPANDERS - getResourceFromExpander(expander.getName()).getNExpanders(),
-					credits / getSectorLocation().getStation().getExpander(expander.getName()).getPrice());
+			return Math.min(
+					MAX_EXPANDERS - getResourceFromExpander(expander.getName()).getNExpanders(),
+					credits / getSectorLocation().getStation().getExpander(expander.getName()).getPrice()
+			);
 		}
 
-		return Math.min(MAX_EXPANDERS - getResourceFromExpander(expander.getName()).getNExpanders(),
-				credits / expander.getPrice());
+		return Math.min(
+				MAX_EXPANDERS - getResourceFromExpander(expander.getName()).getNExpanders(),
+				credits / expander.getPrice()
+		);
 	}
 
 	/**
-	 * Returns the highest amount of a resource that can be sold, which will be the amount of the resource.
+	 * Returns the highest amount of a resource that can be sold, which will be
+	 * the amount of the resource.
 	 *
 	 * @param name the name of the resource
-	 * @return the highest amount of the resource that can be sold, -1 if the resource was not found
+	 * @return the highest amount of the resource that can be sold, -1 if the
+	 *         resource was not found
 	 */
 	public int getMaxSellAmount(String name)
 	{
@@ -1407,8 +1499,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Decreases hull strength by the damage of a given weapon, and destroys the ship if the weapon deals too much
-	 * damage.
+	 * Decreases hull strength by the damage of a given weapon, and destroys
+	 * the ship if the weapon deals too much damage.
 	 *
 	 * @param weapon the weapon to damage the ship with
 	 * @param print  if true, will print if the ship was destroyed
@@ -1419,15 +1511,16 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Decreases hull strength by a given amount, destroys the ship if the damage is too great, and has the possibility
-	 * of damaging modules.
+	 * Decreases hull strength by a given amount, destroys the ship if the
+	 * damage is too great, and has the possibility of damaging modules.
 	 *
 	 * @param damage the amount of damage to deal to the ship
 	 * @param print  if true, will print if the ship was destroyed
 	 */
 	public void damage(int damage, boolean print)
 	{
-		if (!getResource(Resource.HULL).changeAmount(-damage) || getResource(Resource.HULL).isEmpty())
+		if (!getResource(Resource.HULL).changeAmount(-damage) ||
+				getResource(Resource.HULL).isEmpty())
 		{
 			getResource(Resource.HULL).setAmount(0);
 			destroy(print);
@@ -1435,13 +1528,18 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 
 		// Damages a module if the damage is above a threshold that is
 		// proportional to the number of modules installed
-		if (!modules.isEmpty() && damage >= getResource(Resource.HULL).getCapacity() / modules.size())
+		if (!modules.isEmpty() &&
+				damage >= getResource(Resource.HULL).getCapacity() / modules.size())
 		{
 			Module damagedModule = modules.get(rng.nextInt(modules.size()));
 
 			if (damagedModule.damage())
 			{
-				addPlayerMessage("Your " + damagedModule.getName().toLowerCase() + " has been damaged by the impact.");
+				addPlayerMessage(
+						"Your "
+						+ damagedModule.getName().toLowerCase()
+						+ " has been damaged by the impact."
+				);
 
 				if (damagedModule.isEffect(SHIELDED) && isShielded())
 				{
@@ -1455,7 +1553,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 			else
 			{
 				addPlayerMessage(
-						"Your " + damagedModule.getName().toLowerCase() + " has been destroyed by the impact!");
+						"Your "
+						+ damagedModule.getName().toLowerCase()
+						+ " has been destroyed by the impact!"
+				);
 				modules.remove(damagedModule);
 			}
 		}
@@ -1464,7 +1565,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	/**
 	 * Joins the entered faction and adds the relevant reputation.
 	 *
-	 * @param faction the faction to join (use leaveFaction() instead of setting this to null)
+	 * @param faction the faction to join (use leaveFaction() instead of
+	 *                setting this to null)
 	 */
 	public void joinFaction(Faction faction)
 	{
@@ -1478,7 +1580,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Leaves a faction, resetting the ship's faction and incurring a reputation penalty if the ship was in a faction.
+	 * Leaves a faction, resetting the ship's faction and incurring a
+	 * reputation penalty if the ship was in a faction.
 	 */
 	public void leaveFaction()
 	{
@@ -1502,7 +1605,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	/**
 	 * Gets the faction who would respond to a distress signal from this ship.
 	 *
-	 * @return the faction who would respond to a distress signal from this ship
+	 * @return the faction who would respond to a distress signal from this
+	 *         ship
 	 */
 	public Faction getDistressResponder()
 	{
@@ -1518,12 +1622,20 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 			if (getReputation(faction).get() >= Reputation.DISTRESS)
 			{
 				// Otherwise they will refuse, giving others a chance to help
-				addPlayerColorMessage(new ColorString("The ").add(faction).add(" refuses to help you."));
+				addPlayerColorMessage(
+						new ColorString("The ")
+						.add(faction)
+						.add(" refuses to help you.")
+				);
 				changeReputation(faction, Reputation.DISTRESS_ATTEMPT);
 			}
 			else if (faction.getEconomyCredits() < DISTRESS_CREDITS)
 			{
-				addPlayerColorMessage(new ColorString("The ").add(faction).add(" cannot afford to help you."));
+				addPlayerColorMessage(
+						new ColorString("The ")
+						.add(faction)
+						.add(" cannot afford to help you.")
+				);
 			}
 			else
 			{
@@ -1535,8 +1647,9 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 		Reputation offerReputation = getMostPopularOtherFaction();
 		Faction offerFaction = offerReputation.getFaction();
 
-		if (offerFaction == null || offerFaction.getEconomyCredits() < DISTRESS_CREDITS ||
-			offerReputation.get() + Reputation.JOIN + Reputation.DISTRESS < 0)
+		if (offerFaction == null ||
+				offerFaction.getEconomyCredits() < DISTRESS_CREDITS ||
+				offerReputation.get() + Reputation.JOIN + Reputation.DISTRESS < 0)
 		{
 			if (!isAligned())
 			{
@@ -1592,9 +1705,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	public int refill()
 	{
 		int cost = 0;
-		cost += getResource(Resource.FUEL).fill() * getResource(Resource.FUEL).getValue();
-		cost += getResource(Resource.ENERGY).fill() * getResource(Resource.ENERGY).getValue();
-		cost += getResource(Resource.HULL).fill() * getResource(Resource.HULL).getValue();
+		cost += getResource(Resource.FUEL).fill() *
+			getResource(Resource.FUEL).getValue();
+		cost += getResource(Resource.ENERGY).fill() *
+			getResource(Resource.ENERGY).getValue();
+		cost += getResource(Resource.HULL).fill() *
+			getResource(Resource.HULL).getValue();
 		return cost;
 	}
 
@@ -1615,43 +1731,55 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Checks if the player's credits are sufficient for a purchase of a specified price.
+	 * Checks if the player's credits are sufficient for a purchase of a
+	 * specified price.
 	 *
 	 * @param price the price of the item to be purchased funds
-	 * @return the error message to display if the check fails, null if successful
+	 * @return the error message to display if the check fails, null if
+	 *         successful
 	 */
 	public String validateFunds(int price)
 	{
-		return price > credits ? "Insufficient funds; have " + credits + " credits, need " + price + "." : null;
+		return price > credits
+			? "Insufficient funds; have "
+			+ credits
+			+ " credits, need "
+			+ price
+			+ "."
+			: null;
 	}
 
 	/**
 	 * Checks if the ship is docked, and optionally prints a message if not.
 	 *
-	 * @return the error message to display if the check fails, null if successful
+	 * @return the error message to display if the check fails, null if
+	 *         successful
 	 */
 	public String validateDocking()
 	{
-		return isDocked() ? null : "Ship must be docked with a station to buy and sell items.";
+		return isDocked()
+			? null
+			: "Ship must be docked with a station to buy and sell items.";
 	}
 
 	/**
-	 * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a custom
-	 * message if not.
+	 * Checks if the ship is equipped with a specified module and that it is
+	 * undamaged, and optionally prints a custom message if not.
 	 *
 	 * @param module the name of the module to validate
 	 * @param action the String to print as the need for the module
-	 * @return the error message to display if the check fails, null if successful
+	 * @return the error message to display if the check fails, null if
+	 *         successful
 	 */
 	public String validateModule(String module, String action)
 	{
 		// The ship can technically have this installed because it doesn't exist
 		if (module == null || !hasModule(module))
 		{
-			return Utility.addCapitalizedArticle(module) +
-				" is required" +
-				(action == null ? "" : " to " + action) +
-				".";
+			return Utility.addCapitalizedArticle(module)
+				+ " is required"
+				+ (action == null ? "" : " to " + action)
+				+ ".";
 		}
 
 		Module moduleObj = getModule(module);
@@ -1663,25 +1791,29 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 				// Check for spares
 				for (Module cargoModule : cargo)
 				{
-					if (cargoModule.getName().equalsIgnoreCase(moduleObj.getName()) && !cargoModule.isDamaged())
+					if (cargoModule.getName().equalsIgnoreCase(moduleObj.getName()) &&
+							!cargoModule.isDamaged())
 					{
 						return null;
 					}
 				}
 			}
 
-			return "Your " + moduleObj.getName().toLowerCase() + " is too damaged to function.";
+			return "Your "
+				+ moduleObj.getName().toLowerCase()
+				+ " is too damaged to function.";
 		}
 
 		return null;
 	}
 
 	/**
-	 * Checks if the ship is equipped with a specified module and that it is undamaged, and optionally prints a message
-	 * if not.
+	 * Checks if the ship is equipped with a specified module and that it is
+	 * undamaged, and optionally prints a message if not.
 	 *
 	 * @param module the name of the module to validate
-	 * @return the error message to display if the check fails, null if successful
+	 * @return the error message to display if the check fails, null if
+	 *         successful
 	 */
 	public String validateModule(String module)
 	{
@@ -1689,42 +1821,54 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
+	 * Checks if the ship has enough of the specified resource, and optionally
+	 * prints a message if not.
 	 *
 	 * @param resource     the resource to validate
-	 * @param cost         the amount of the resource that the ship must possess
+	 * @param cost         the amount of the resource that the ship must
+	 *                     possess
 	 * @param actionString the String to use as the need for resources
-	 * @return the error message to display if the check fails, null if successful
+	 * @return the error message to display if the check fails, null if
+	 *         successful
 	 */
-	public String validateResources(Resource resource, int cost, String actionString)
-	{
+	public String validateResources(
+			Resource resource,
+			int cost,
+			String actionString
+	) {
 		if (resource != null && resource.getAmount() < cost)
 		{
-			return "Insufficient " +
-				resource.getName().toLowerCase() +
-				" reserves to " +
-				actionString +
-				"; " +
-				"have " +
-				resource.getAmount() +
-				", need " +
-				cost +
-				".";
+			return "Insufficient "
+				+ resource.getName().toLowerCase()
+				+ " reserves to "
+				+ actionString
+				+ "; "
+				+ "have "
+				+ resource.getAmount()
+				+ ", need "
+				+ cost
+				+ ".";
 		}
 
 		return null;
 	}
 
 	/**
-	 * Checks if the ship has enough of the specified resource, and optionally prints a message if not.
+	 * Checks if the ship has enough of the specified resource, and optionally
+	 * prints a message if not.
 	 *
 	 * @param resource     the name of the resource to validate
-	 * @param cost         the amount of the resource that the ship must possess
+	 * @param cost         the amount of the resource that the ship must
+	 *                     possess
 	 * @param actionString the String to print as the need for resources
-	 * @return the error message to display if the check fails, null if successful
+	 * @return the error message to display if the check fails, null if
+	 *         successful
 	 */
-	public String validateResources(String resource, int cost, String actionString)
-	{
+	public String validateResources(
+			String resource,
+			int cost,
+			String actionString
+	) {
 		return validateResources(getResource(resource), cost, actionString);
 	}
 
@@ -1736,12 +1880,18 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	public List<ColorString> getStatusList()
 	{
 		List<ColorString> contents = new LinkedList<>();
-		contents.add(new ColorString("Credits: ").add(
-				new ColorString(Integer.toString(credits) + Symbol.CREDITS, COLOR_FIELD)));
+		contents.add(new ColorString("Credits: ")
+				.add(
+					new ColorString(
+						Integer.toString(credits) + Symbol.CREDITS,
+						COLOR_FIELD)
+				)
+		);
 
 		for (Resource resource : resources)
 		{
-			contents.add(resource.getAmountAsColoredFraction().add(" " + resource.getName()));
+			contents.add(resource.getAmountAsColoredFraction()
+					.add(" " + resource.getName()));
 		}
 
 		if (!modules.isEmpty())
@@ -1776,9 +1926,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Adds the given ColorString as a message, only if this ship is the player. Intended for player-specific messages.
+	 * Adds the given ColorString as a message, only if this ship is the
+	 * player. Intended for player-specific messages.
 	 *
-	 * @param message the ColorString to add as a message if this ship is the player
+	 * @param message the ColorString to add as a message if this ship is the
+	 * player
 	 */
 	public void addPlayerColorMessage(ColorString message)
 	{
@@ -1789,7 +1941,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Adds the given String as a message, only if this ship is the player. Intended for player-specific messages.
+	 * Adds the given String as a message, only if this ship is the player.
+	 * Intended for player-specific messages.
 	 *
 	 * @param message the String to add as a message if this ship is the player
 	 */
@@ -1802,7 +1955,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Adds the given String as an error, only if this ship is the player. Intended for player-specific errors.
+	 * Adds the given String as an error, only if this ship is the player.
+	 * Intended for player-specific errors.
 	 *
 	 * @param error the String to add as an error if this ship is the player
 	 */
@@ -1828,7 +1982,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Generates a relevant classification for the ship based off its abilities in both battle and mining.
+	 * Generates a relevant classification for the ship based off its abilities
+	 * in both battle and mining.
 	 *
 	 * @return a String that describes the ship's strength and specialization
 	 */
@@ -1890,7 +2045,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	/**
 	 * Returns the sum of the absolute battle and mining levels.
 	 *
-	 * @return the sum of the absolute battle level and the absolute mining level
+	 * @return the sum of the absolute battle level and the absolute mining
+	 *         level
 	 */
 	public int getTotalLevel()
 	{
@@ -1898,9 +2054,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns the ship's "level" of power in battle, to be used in determining a classification.
+	 * Returns the ship's "level" of power in battle, to be used in determining
+	 * a classification.
 	 *
-	 * @return an integer based on the ship's amount of weaponry and hull capacity
+	 * @return an integer based on the ship's amount of weaponry and hull
+	 *         capacity
 	 */
 	private int getBattleLevel()
 	{
@@ -1908,9 +2066,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns the ship's absolute "level" of power in battle, to be used in determining a classification.
+	 * Returns the ship's absolute "level" of power in battle, to be used in
+	 * determining a classification.
 	 *
-	 * @return an integer based on the ship's amount of weaponry and hull capacity
+	 * @return an integer based on the ship's amount of weaponry and hull
+	 *         capacity
 	 */
 	public int getAbsoluteBattleLevel()
 	{
@@ -1926,9 +2086,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns the ship's "level" of mining ability, to be used in determining a classification.
+	 * Returns the ship's "level" of mining ability, to be used in determining
+	 * a classification.
 	 *
-	 * @return an integer based on the ship's amount of non-combat modules and ore capacity
+	 * @return an integer based on the ship's amount of non-combat modules and
+	 *         ore capacity
 	 */
 	private int getMiningLevel()
 	{
@@ -1936,9 +2098,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Returns the ship's absolute "level" of mining ability, to be used in determining a classification.
+	 * Returns the ship's absolute "level" of mining ability, to be used in
+	 * determining a classification.
 	 *
-	 * @return an integer based on the ship's amount of non-combat modules and ore capacity
+	 * @return an integer based on the ship's amount of non-combat modules and
+	 *         ore capacity
 	 */
 	public int getAbsoluteMiningLevel()
 	{
@@ -1949,7 +2113,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	}
 
 	/**
-	 * Resets the prices of all items on the ship to the current station's prices, if docked.
+	 * Resets the prices of all items on the ship to the current station's
+	 * prices, if docked.
 	 */
 	public void updatePrices()
 	{
@@ -1972,8 +2137,14 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 		{
 			if (resource != null && station.hasResource(resource.getName()))
 			{
-				resource.setPrice(station.getResource(resource.getName()).getPrice());
-				resource.getExpander().setPrice(station.getExpander(resource.getExpander().getName()).getPrice());
+				resource.setPrice(
+						station.getResource(resource.getName()).getPrice()
+				);
+				resource.getExpander().setPrice(
+						station.getExpander(
+							resource.getExpander().getName()
+						).getPrice()
+				);
 			}
 		}
 	}

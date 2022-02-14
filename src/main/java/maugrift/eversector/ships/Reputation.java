@@ -6,7 +6,8 @@ import maugrift.eversector.faction.Faction;
 import java.awt.Color;
 
 /**
- * A container class for an integer representing reputation, and the faction the reputation is with.
+ * A container class for an integer representing reputation, and the faction
+ * the reputation is with.
  *
  * @author Maugrift
  */
@@ -48,13 +49,14 @@ public class Reputation implements Comparable<Reputation>
 	public static final int CONVERT = 100;
 
 	/**
-	 * The reputation change for claiming territory for your faction. This decreases on planets based on the number of
-	 * regions.
+	 * The reputation change for claiming territory for your faction. This
+	 * decreases on planets based on the number of regions.
 	 */
 	public static final int CLAIM = 175;
 
 	/**
-	 * The reputation change for claiming territory for your faction that was formerly owned by an allied faction.
+	 * The reputation change for claiming territory for your faction that was
+	 * formerly owned by an allied faction.
 	 */
 	public static final int CLAIM_ALLY = 100;
 
@@ -84,17 +86,11 @@ public class Reputation implements Comparable<Reputation>
 	public enum ReputationRange
 	{
 		HEROIC("Heroic", "Admires", AsciiPanel.brightYellow, 4.0, 4.1),
-
 		RESPECTED("Respected", "Respects", AsciiPanel.brightGreen, 1.5, 4.0),
-
 		POSITIVE("Positive", "Likes", AsciiPanel.green, 0.5, 1.5),
-
 		NEGATIVE("Negative", "Dislikes", AsciiPanel.red, -1.5, -0.5),
-
 		DESPISED("Despised", "Despises", AsciiPanel.brightRed, -4.0, -1.5),
-
 		INFAMOUS("Infamous", "Loathes", AsciiPanel.brightMagenta, -4.1, -4.0),
-
 		NEUTRAL("Neutral", "Ignores", null, -0.5, 0.5);
 
 		/**
@@ -108,7 +104,8 @@ public class Reputation implements Comparable<Reputation>
 		private String adjective;
 
 		/**
-		 * The verb describing the faction's feelings toward ships of this reputation.
+		 * The verb describing the faction's feelings toward ships of this
+		 * reputation.
 		 */
 		private String verb;
 
@@ -118,12 +115,14 @@ public class Reputation implements Comparable<Reputation>
 		private Color color;
 
 		/**
-		 * The fraction of the average reputation defining the lower bound of this range.
+		 * The fraction of the average reputation defining the lower bound of
+		 * this range.
 		 */
 		private double min;
 
 		/**
-		 * The fraction of the average reputation defining the upper bound of this range.
+		 * The fraction of the average reputation defining the upper bound of
+		 * this range.
 		 */
 		private double max;
 
@@ -131,13 +130,21 @@ public class Reputation implements Comparable<Reputation>
 		 * Creates a reputation range with all fields defined.
 		 *
 		 * @param adjective the adjective describing ships of this reputation
-		 * @param verb      the verb describing the faction's feelings toward ships of this reputation
+		 * @param verb      the verb describing the faction's feelings toward
+		 *                  ships of this reputation
 		 * @param color     the color of the reputation range
-		 * @param min       the fraction of the average reputation defining the lower bound of this range
-		 * @param max       the fraction of the average reputation defining the upper bound of this range
+		 * @param min       the fraction of the average reputation defining the
+		 *                  lower bound of this range
+		 * @param max       the fraction of the average reputation defining the
+		 *                  upper bound of this range
 		 */
-		ReputationRange(String adjective, String verb, Color color, double min, double max)
-		{
+		ReputationRange(
+				String adjective,
+				String verb,
+				Color color,
+				double min,
+				double max
+		) {
 			this.adjective = adjective;
 			this.verb = verb;
 			this.color = color;
@@ -156,9 +163,11 @@ public class Reputation implements Comparable<Reputation>
 		}
 
 		/**
-		 * Gets the verb describing the faction's feelings toward ships of this reputation
+		 * Gets the verb describing the faction's feelings toward ships of this
+		 * reputation.
 		 *
-		 * @return the verb describing the faction's feelings toward ships of this reputation
+		 * @return the verb describing the faction's feelings toward ships of
+		 *         this reputation
 		 */
 		public String getVerb()
 		{
@@ -176,9 +185,11 @@ public class Reputation implements Comparable<Reputation>
 		}
 
 		/**
-		 * Gets the fraction of the average reputation defining the lower bound of this range.
+		 * Gets the fraction of the average reputation defining the lower bound
+		 * of this range.
 		 *
-		 * @return the fraction of the average reputation defining the lower bound of this range
+		 * @return the fraction of the average reputation defining the lower
+		 *         bound of this range
 		 */
 		public double getMin()
 		{
@@ -186,9 +197,11 @@ public class Reputation implements Comparable<Reputation>
 		}
 
 		/**
-		 * Gets the fraction of the average reputation defining the upper bound of this range.
+		 * Gets the fraction of the average reputation defining the upper bound
+		 * of this range.
 		 *
-		 * @return the fraction of the average reputation defining the upper bound of this range
+		 * @return the fraction of the average reputation defining the upper
+		 *         bound of this range
 		 */
 		public double getMax()
 		{
@@ -196,7 +209,8 @@ public class Reputation implements Comparable<Reputation>
 		}
 
 		/**
-		 * Gets the actual lower bound of the range for the given extreme reputation.
+		 * Gets the actual lower bound of the range for the given extreme
+		 * reputation.
 		 *
 		 * @return the actual lower bound of the range
 		 */
@@ -206,7 +220,8 @@ public class Reputation implements Comparable<Reputation>
 		}
 
 		/**
-		 * Gets the actual upper bound of the range for the given extreme reputation.
+		 * Gets the actual upper bound of the range for the given extreme
+		 * reputation.
 		 *
 		 * @return the actual upper bound of the range
 		 */
@@ -216,7 +231,8 @@ public class Reputation implements Comparable<Reputation>
 		}
 
 		/**
-		 * Returns true if the given value is in the actual range for the given extreme reputation.
+		 * Returns true if the given value is in the actual range for the given
+		 * extreme reputation.
 		 *
 		 * @param value the value to check
 		 * @param range the average reputation with the faction

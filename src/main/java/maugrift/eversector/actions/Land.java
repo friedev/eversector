@@ -40,7 +40,11 @@ public class Land implements Action
 			return "The specified region was not found on " + planet + ".";
 		}
 
-		return actor.validateResources(RESOURCE, COST, "land on " + actor.getSectorLocation().getPlanet());
+		return actor.validateResources(
+				RESOURCE,
+				COST,
+				"land on " + actor.getSectorLocation().getPlanet()
+		);
 	}
 
 	@Override

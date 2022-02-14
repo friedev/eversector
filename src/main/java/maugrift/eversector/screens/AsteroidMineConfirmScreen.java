@@ -15,11 +15,14 @@ import static maugrift.eversector.Main.playSoundEffect;
 import static maugrift.eversector.Paths.DEATH;
 
 /**
- * The prompt presented when the player is attempting to mine a potentially destructive asteroid.
+ * The prompt presented when the player is attempting to mine a potentially
+ * destructive asteroid.
  *
  * @author Dale Campbell
  */
-public class AsteroidMineConfirmScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class AsteroidMineConfirmScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -33,7 +36,11 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
 	{
 		super(Main.display);
 		window = new PopupWindow(Main.display);
-		window.getContents().add(new ColorString("Your hull is dangerously low; attempt to mine the asteroid?"));
+		window.getContents().add(
+				new ColorString(
+					"Your hull is dangerously low; attempt to mine the asteroid?"
+				)
+		);
 		getConfirmCodes().remove((Integer) KeyEvent.VK_ENTER);
 	}
 
@@ -62,8 +69,13 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
 		if (Main.player.isDestroyed())
 		{
 			playSoundEffect(DEATH);
-			return new EndScreen(new ColorString("You collide with the asteroid, which breaches your hull!"), true,
-					false);
+			return new EndScreen(
+					new ColorString(
+						"You collide with the asteroid, which breaches your hull!"
+					),
+					true,
+					false
+			);
 		}
 
 		Main.galaxy.nextTurn();

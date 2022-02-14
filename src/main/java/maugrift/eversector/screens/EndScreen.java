@@ -54,14 +54,20 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 	/**
 	 * Instantiates a new EndScreen.
 	 *
-	 * @param message     the message to display as the reason for the game ending
+	 * @param message     the message to display as the reason for the game
+	 *                    ending
 	 * @param leaderboard if true, will show the leaderboard
-	 * @param saved       true if the game was saved; will influence what files are saved
+	 * @param saved       true if the game was saved; will influence what files
+	 *                    are saved
 	 */
 	public EndScreen(ColorString message, boolean leaderboard, boolean saved)
 	{
 		super(Main.display);
-		window = new PopupWindow(Main.display, new Border(2), new Line(true, 2, 1));
+		window = new PopupWindow(
+				Main.display,
+				new Border(2),
+				new Line(true, 2, 1)
+		);
 		if (leaderboard && Option.LEADERBOARD.toBoolean())
 		{
 			setUpLeaderboard();
@@ -93,7 +99,8 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 	 * Instantiates a new EndScreen with no message.
 	 *
 	 * @param leaderboard if true, will show the leaderboard
-	 * @param saved       true if the game was saved; will influence what files are saved
+	 * @param saved       true if the game was saved; will influence what files
+	 *                    are saved
 	 */
 	public EndScreen(boolean leaderboard, boolean saved)
 	{
@@ -104,8 +111,13 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 	public void displayOutput()
 	{
 		ColorString[] titleArt = StartScreen.getTitleArt();
-		getDisplay().writeCenter(getDisplay().getCenterY() - titleArt.length / 2 - window.getContents().size() / 2 - 1,
-				titleArt);
+		getDisplay().writeCenter(
+				getDisplay().getCenterY()
+				- titleArt.length / 2
+				- window.getContents().size() / 2
+				- 1,
+				titleArt
+		);
 		window.display();
 	}
 
@@ -120,7 +132,10 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 			}
 			catch (Exception e)
 			{
-				Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+				Thread.getDefaultUncaughtExceptionHandler().uncaughtException(
+						Thread.currentThread(),
+						e
+				);
 				System.exit(1);
 			}
 
@@ -155,20 +170,40 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 		// If the player hasn't improved their ship, don't print it
 		if (shipValue > Ship.BASE_VALUE)
 		{
-			contents.add(new ColorString("You owned a ship worth ").add(
-					new ColorString(Integer.toString(shipValue), COLOR_FIELD)).add(" credits."));
+			contents.add(
+					new ColorString("You owned a ship worth ")
+					.add(
+						new ColorString(
+							Integer.toString(shipValue),
+							COLOR_FIELD
+						)
+					)
+					.add(" credits.")
+			);
 		}
 
 		// Print either leadership and reputation status
-		if (player.isAligned() && player.getReputation(player.getFaction()).get() != 0)
+		if (player.isAligned() &&
+				player.getReputation(player.getFaction()).get() != 0)
 		{
-			ReputationRange reputation = player.getReputation(player.getFaction()).getRange();
+			ReputationRange reputation = player
+				.getReputation(player.getFaction()).
+				getRange();
 
-			String playerArticle = player.isLeader() ? "the" : Utility.getArticle(reputation.getAdjective());
-			String playerTitle = player.isLeader() ? "leader" : "member";
+			String playerArticle = player.isLeader()
+				? "the"
+				: Utility.getArticle(reputation.getAdjective());
+			String playerTitle = player.isLeader()
+				? "leader"
+				: "member";
 
 			contents.add(new ColorString("You were " + playerArticle + " ")
-					.add(new ColorString(reputation.getAdjective().toLowerCase(), reputation.getColor()))
+					.add(
+						new ColorString(
+							reputation.getAdjective().toLowerCase(),
+							reputation.getColor()
+						)
+					)
 					.add(" " + playerTitle + " of the ")
 					.add(player.getFaction())
 					.add("."));
@@ -207,19 +242,32 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 		if (galaxy.getTurn() <= MIN_TURNS)
 		{
 			window.getContents().addAll(LeaderboardScore.buildLeaderboard());
-			contents.add(new ColorString("This game has been too short to log a score.", COLOR_SCORE));
+			contents.add(
+					new ColorString(
+						"This game has been too short to log a score.",
+						COLOR_SCORE
+					)
+			);
 		}
 		else if (player.calculateShipValue() <= Ship.BASE_VALUE)
 		{
 			window.getContents().addAll(LeaderboardScore.buildLeaderboard());
-			contents.add(new ColorString("You have not scored enough for a leaderboard entry.", COLOR_SCORE));
+			contents.add(
+					new ColorString(
+						"You have not scored enough for a leaderboard entry.",
+						COLOR_SCORE
+					)
+			);
 		}
 		else
 		{
 			String reputationAdjective;
 			if (player.isAligned())
 			{
-				reputationAdjective = player.getReputation(player.getFaction()).getRange().getAdjective();
+				reputationAdjective = player
+					.getReputation(player.getFaction())
+					.getRange()
+					.getAdjective();
 			}
 			else if (player.isPirate())
 			{
@@ -235,13 +283,24 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 			LeaderboardScore playerScore;
 			if (Option.CAPTAIN_NAME.getDefault().equals(name))
 			{
-				playerScore = new LeaderboardScore(player.calculateShipValue(), galaxy.getTurn(), kills,
-						reputationAdjective, player.isLeader());
+				playerScore = new LeaderboardScore(
+						player.calculateShipValue(),
+						galaxy.getTurn(),
+						kills,
+						reputationAdjective,
+						player.isLeader()
+				);
 			}
 			else
 			{
-				playerScore = new LeaderboardScore(name, player.calculateShipValue(), galaxy.getTurn(), kills,
-						reputationAdjective, player.isLeader());
+				playerScore = new LeaderboardScore(
+						name,
+						player.calculateShipValue(),
+						galaxy.getTurn(),
+						kills,
+						reputationAdjective,
+						player.isLeader()
+				);
 			}
 
 			// Current player's score must be added after the leaderboard print
@@ -249,7 +308,13 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 			int nScores = printLeaderboard(playerScore);
 			try
 			{
-				FileManager.save(playerScore.toProperties(), Paths.LEADERBOARD + "score_" + nScores + ".properties");
+				FileManager.save(
+						playerScore.toProperties(),
+						Paths.LEADERBOARD
+						+ "score_"
+						+ nScores
+						+ ".properties"
+				);
 			}
 			catch (IOException e)
 			{
@@ -262,7 +327,8 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 	/**
 	 * Prints the leaderboard as well as the given score, if separate.
 	 *
-	 * @param playerScore the score to add to the leaderboard and print regardless of position
+	 * @param playerScore the score to add to the leaderboard and print
+	 *                    regardless of position
 	 * @return the number of scores
 	 */
 	private int printLeaderboard(LeaderboardScore playerScore)
@@ -283,7 +349,9 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 		boolean playerScoreNoted = false;
 		contents.add(LeaderboardScore.buildLeaderboardHeader(scores.size()));
 
-		for (int i = 0; i < Math.min(scores.size(), LeaderboardScore.DISPLAYED_SCORES); i++)
+		for (int i = 0;
+				i < Math.min(scores.size(), LeaderboardScore.DISPLAYED_SCORES);
+				i++)
 		{
 			ColorString scoreString = new ColorString(scores.get(i).toString());
 
@@ -301,7 +369,14 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 		{
 			if (playerRank > LeaderboardScore.DISPLAYED_SCORES)
 			{
-				contents.add(new ColorString("(" + (playerRank - LeaderboardScore.DISPLAYED_SCORES) + " more)", AsciiPanel.brightBlack));
+				contents.add(
+						new ColorString(
+							"("
+							+ (playerRank - LeaderboardScore.DISPLAYED_SCORES)
+							+ " more)",
+							AsciiPanel.brightBlack
+						)
+				);
 			}
 
 			contents.add(new ColorString(playerScore.toString(), COLOR_SCORE));

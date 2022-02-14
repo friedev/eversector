@@ -24,7 +24,11 @@ public class Scan implements Action
 		}
 
 		Module module = actor.getModule(MODULE);
-		return actor.validateResources(module.getActionResource(), module.getActionCost(), "conduct a scan");
+		return actor.validateResources(
+				module.getActionResource(),
+				module.getActionCost(),
+				"conduct a scan"
+		);
 	}
 
 	@Override

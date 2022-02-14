@@ -35,10 +35,18 @@ public abstract class Levels
 	/**
 	 * The in-bound classifications for ships with a higher mining level.
 	 */
-	public static final String[] MINING_LEVELS = {"Miner", "Transport", "Freighter"};
+	public static final String[] MINING_LEVELS = {
+		"Miner",
+		"Transport",
+		"Freighter",
+	};
 
 	/**
 	 * The in-bound classifications for ships with a higher battle level.
 	 */
-	public static final String[] BATTLE_LEVELS = {"Fighter", "Cruiser", "Battleship"};
+	public static final String[] BATTLE_LEVELS = {
+		"Fighter",
+		"Cruiser",
+		"Battleship",
+	};
 }

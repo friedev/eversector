@@ -20,7 +20,9 @@ import static maugrift.eversector.Main.pendingElection;
  *
  * @author Maugrift
  */
-public class ElectionResultsScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class ElectionResultsScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -33,7 +35,11 @@ public class ElectionResultsScreen extends ConfirmationScreen implements WindowS
 	public ElectionResultsScreen()
 	{
 		super(Main.display);
-		window = new PopupWindow(Main.display, new Border(1), new Line(true, 1, 1));
+		window = new PopupWindow(
+				Main.display,
+				new Border(1),
+				new Line(true, 1, 1)
+		);
 		setUpWindow();
 	}
 
@@ -59,7 +65,9 @@ public class ElectionResultsScreen extends ConfirmationScreen implements WindowS
 		Ship winner = pendingElection.getWinner();
 
 		String messageSubject = winner.isPlayer() ? "You have" : winner + " has";
-		String messageAction = pendingElection.isReelected(winner) ? "been reelected." : "won the election.";
+		String messageAction = pendingElection.isReelected(winner)
+			? "been reelected."
+			: "won the election.";
 		contents.add(new ColorString(messageSubject + " " + messageAction));
 		window.addSeparator();
 
@@ -71,7 +79,11 @@ public class ElectionResultsScreen extends ConfirmationScreen implements WindowS
 			int votes = pendingElection.getVotes().get(i);
 			contents.add(new ColorString(shipName)
 					.add(" ")
-					.add(new ColorString("(" + reputation.getAdjective() + ")", reputation.getColor()))
+					.add(new ColorString("("
+							+ reputation.getAdjective()
+							+ ")",
+							reputation.getColor())
+					)
 					.add(" - ")
 					.add(new ColorString(Integer.toString(votes), COLOR_FIELD))
 					.add(votes == 1 ? " Vote" : " Votes"));

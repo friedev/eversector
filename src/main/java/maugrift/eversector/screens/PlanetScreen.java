@@ -33,7 +33,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>, KeyScreen
+public class PlanetScreen
+	extends Screen
+	implements WindowScreen<AlignedWindow>, KeyScreen
 {
 	/**
 	 * The window.
@@ -89,8 +91,9 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
 		}
 		else if (isLooking())
 		{
-			if (key.getKeyCode() == KeyEvent.VK_L || key.getKeyCode() == KeyEvent.VK_ESCAPE ||
-				key.getKeyCode() == KeyEvent.VK_ENTER)
+			if (key.getKeyCode() == KeyEvent.VK_L ||
+					key.getKeyCode() == KeyEvent.VK_ESCAPE ||
+					key.getKeyCode() == KeyEvent.VK_ENTER)
 			{
 				cursor = null;
 			}
@@ -147,8 +150,15 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
 	public List<Keybinding> getKeybindings()
 	{
 		List<Keybinding> keybindings = new ArrayList<>();
-		keybindings.add(new Keybinding("change region", ExtChars.ARROW1_U, ExtChars.ARROW1_D, ExtChars.ARROW1_L,
-				ExtChars.ARROW1_R));
+		keybindings.add(
+				new Keybinding(
+					"change region",
+					ExtChars.ARROW1_U,
+					ExtChars.ARROW1_D,
+					ExtChars.ARROW1_L,
+					ExtChars.ARROW1_R
+				)
+		);
 		keybindings.add(new Keybinding("takeoff", "escape"));
 		keybindings.add(new Keybinding("mine", "enter"));
 		keybindings.add(new Keybinding("claim", "c"));
@@ -182,27 +192,46 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
 		contents.clear();
 		window.getSeparators().clear();
 		Planet planet = player.getSectorLocation().getPlanet();
-		Region region = isLooking() ? cursor.getRegion() : player.getPlanetLocation().getRegion();
+		Region region = isLooking()
+			? cursor.getRegion()
+			: player.getPlanetLocation().getRegion();
 		contents.add(new ColorString(planet.toString()));
-		contents.add(new ColorString("Orbit: ").add(
-				new ColorString(Integer.toString(planet.getLocation().getOrbit()), COLOR_FIELD)));
+		contents.add(
+				new ColorString("Orbit: ")
+				.add(
+					new ColorString(
+						Integer.toString(planet.getLocation().getOrbit()),
+						COLOR_FIELD
+					)
+				)
+		);
 
 		if (planet.isClaimed())
 		{
-			contents.add(new ColorString("Ruler: ").add(
-					new ColorString(planet.getFaction().toString(), planet.getFaction().getColor())));
+			contents.add(
+					new ColorString("Ruler: ")
+					.add(
+						new ColorString(
+							planet.getFaction().toString(),
+							planet.getFaction().getColor())
+					)
+			);
 		}
 		else
 		{
-			contents.add(new ColorString("Ruler: ").add(new ColorString("Disputed", COLOR_FIELD)));
+			contents.add(
+					new ColorString("Ruler: ")
+					.add(new ColorString("Disputed", COLOR_FIELD))
+			);
 		}
 
 		window.addSeparator(new Line(true, 2, 1));
 		List<ColorString> colorStrings = planet.toColorStrings(Main.showFactions);
 		if (isLooking())
 		{
-			colorStrings.get(cursor.getRegionCoord().y).getColorCharAt(cursor.getRegionCoord().x).setBackground(
-					COLOR_SELECTION_BACKGROUND);
+			colorStrings.get(cursor.getRegionCoord().y)
+				.getColorCharAt(cursor.getRegionCoord().x)
+				.setBackground(COLOR_SELECTION_BACKGROUND);
 		}
 		contents.addAll(colorStrings);
 
@@ -220,9 +249,18 @@ public class PlanetScreen extends Screen implements WindowScreen<AlignedWindow>,
 
 		if (region.hasOre())
 		{
-			contents.add(new ColorString("Ore: ").add(
-					new ColorString(region.getOre().toString() + " (" + region.getOre().getDensity() + ")",
-							COLOR_FIELD)));
+			contents.add(
+					new ColorString("Ore: ")
+					.add(
+						new ColorString(
+							region.getOre().toString()
+							+ " ("
+							+ region.getOre().getDensity()
+							+ ")",
+							COLOR_FIELD
+						)
+					)
+			);
 		}
 
 		for (Ship ship : region.getShips())

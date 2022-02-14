@@ -23,7 +23,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>
+public class RelationshipRequestScreen
+	extends MenuScreen<PopupMenu>
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The factions the player can request a relationship with.
@@ -40,7 +42,13 @@ public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements 
 	 */
 	public RelationshipRequestScreen()
 	{
-		super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+		super(
+				new PopupMenu(
+					new PopupWindow(Main.display),
+					COLOR_SELECTION_FOREGROUND,
+					COLOR_SELECTION_BACKGROUND
+				)
+		);
 		factions = new ArrayList<>();
 		changes = new ArrayList<>();
 		setUpMenu();
@@ -56,7 +64,10 @@ public class RelationshipRequestScreen extends MenuScreen<PopupMenu> implements 
 	public Screen onConfirm()
 	{
 		int index = getMenu().getSelectionIndex();
-		player.getFaction().requestRelationship(factions.get(index), changes.get(index));
+		player.getFaction().requestRelationship(
+				factions.get(index),
+				changes.get(index)
+		);
 		return null;
 	}
 

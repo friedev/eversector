@@ -13,18 +13,20 @@ import java.awt.Color;
 public enum Nebula implements ColorStringObject
 {
 	/**
-	 * Emission nebula. Color is created by the emission of charged particles for large stars. Quite hot and energetic
-	 * compared to other nebulae.
+	 * Emission nebula. Color is created by the emission of charged particles
+	 * for large stars. Quite hot and energetic compared to other nebulae.
 	 */
 	EMISSION("Emission", AsciiPanel.red),
 
 	/**
-	 * Reflection nebula. Consists of gas and dust that reflect light from nearby stars.
+	 * Reflection nebula. Consists of gas and dust that reflect light from
+	 * nearby stars.
 	 */
 	REFLECTION("Reflection", AsciiPanel.cyan),
 
 	/**
-	 * Dark nebula. Made primarily of dust, thick enough to block light from stars.
+	 * Dark nebula. Made primarily of dust, thick enough to block light from
+	 * stars.
 	 */
 	DARK("Dark", new Color(48, 48, 48));
 

@@ -38,7 +38,11 @@ public class Warp implements Action
 		}
 
 		Module module = actor.getModule(MODULE);
-		return actor.validateResources(module.getActionResource(), module.getActionCost(), "charge warp drive");
+		return actor.validateResources(
+				module.getActionResource(),
+				module.getActionCost(),
+				"charge warp drive"
+		);
 	}
 
 	@Override

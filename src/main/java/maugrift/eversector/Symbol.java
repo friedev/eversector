@@ -114,15 +114,23 @@ public enum Symbol
 	}
 
 	public static ColorChar empty()
-	{return new ColorChar(EMPTY.get(), AsciiPanel.brightBlack);}
+	{
+		return new ColorChar(EMPTY.get(), AsciiPanel.brightBlack);
+	}
 
 	public static ColorChar player()
-	{return new ColorChar(PLAYER.get(), AsciiPanel.brightWhite);}
+	{
+		return new ColorChar(PLAYER.get(), AsciiPanel.brightWhite);
+	}
 
 	@Override
 	public String toString()
-	{return Character.toString(get());}
+	{
+		return Character.toString(get());
+	}
 
 	public char get()
-	{return map.get(this);}
+	{
+		return map.get(this);
+	}
 }

@@ -23,64 +23,82 @@ public class Star implements ColorStringObject
 	 * The first part of a star's name.
 	 */
 	private static final String[] NAME_PREFIX = new String[]{
-			"Aquar",
-			"Can",
-			"Del",
-			"Dom",
-			"Drac",
-			"Erid",
-			"Ign",
-			"Lyr",
-			"Mag",
-			"Or",
-			"Ret",
-			"Rig",
-			"Sin",
-			"Sirr",
-			"Sol",
-			"Stell",
-			"Taur",
-			"Vel",
-			"Ven",
-			"Xen"
+		"Aquar",
+		"Can",
+		"Del",
+		"Dom",
+		"Drac",
+		"Erid",
+		"Ign",
+		"Lyr",
+		"Mag",
+		"Or",
+		"Ret",
+		"Rig",
+		"Sin",
+		"Sirr",
+		"Sol",
+		"Stell",
+		"Taur",
+		"Vel",
+		"Ven",
+		"Xen",
 	};
 
 	/**
 	 * The second part of a star's name.
 	 */
 	private static final String[] NAME_MIDDLE = new String[]{
-			"an", "ar", "at", "it", "itar", "in", "on", "un"
+		"an",
+		"ar",
+		"at",
+		"it",
+		"itar",
+		"in",
+		"on",
+		"un",
 	};
 
 	/**
 	 * The third part of a star's name.
 	 */
 	private static final String[] NAME_SUFFIX = new String[]{
-			"a", "ae", "as", "ex", "i", "ii", "io", "is", "ias", "ius", "os", "us",
+		"a",
+		"ae",
+		"as",
+		"ex",
+		"i",
+		"ii",
+		"io",
+		"is",
+		"ias",
+		"ius",
+		"os",
+		"us",
 	};
 
 	/**
 	 * The descriptor appended to the end of a star's name.
 	 */
 	private static final String[] NAME_DESCRIPTOR = new String[]{
-			"Alpha",
-			"Beta",
-			"Gamma",
-			"Delta",
-			"Epsilon",
-			"Eta",
-			"Iota",
-			"Major",
-			"Majoris",
-			"Maximus",
-			"Malus",
-			"Minor",
-			"Minoris",
-			"Minimus",
-			"Omega",
-			"Prime",
-			"Sigma",
-			"Zeta",
+		"Alpha",
+		"Beta",
+		"Gamma",
+		"Delta",
+		"Epsilon",
+		"Eta",
+		"Iota",
+		"Major",
+		"Majoris",
+		"Maximus",
+		"Malus",
+		"Minor",
+		"Minoris",
+		"Minimus",
+		"Omega",
+		"Prime",
+		"Sigma",
+		"Zeta",
 	};
 
 	/**
@@ -157,8 +175,13 @@ public class Star implements ColorStringObject
 		 * @param mass        the mass of the star
 		 * @param inNebula    if true, the star mass can generate in a nebula
 		 */
-		StarMass(String name, char symbol, double probability, int mass, boolean inNebula)
-		{
+		StarMass(
+				String name,
+				char symbol,
+				double probability,
+				int mass,
+				boolean inNebula
+		) {
 			this.name = name;
 			this.symbol = symbol;
 			this.probability = probability;
@@ -167,7 +190,8 @@ public class Star implements ColorStringObject
 		}
 
 		/**
-		 * Creates a new star mass with all fields defined. Uses a Symbol instead of a char.
+		 * Creates a new star mass with all fields defined. Uses a Symbol
+		 * instead of a char.
 		 *
 		 * @param name        the type of the star mass
 		 * @param symbol      the symbol representing stars of this mass
@@ -175,8 +199,13 @@ public class Star implements ColorStringObject
 		 * @param mass        the mass of the star
 		 * @param inNebula    if true, the star mass can generate in a nebula
 		 */
-		StarMass(String name, Symbol symbol, double probability, int mass, boolean inNebula)
-		{
+		StarMass(
+				String name,
+				Symbol symbol,
+				double probability,
+				int mass,
+				boolean inNebula
+		) {
 			this(name, symbol.get(), probability, mass, inNebula);
 		}
 
@@ -276,7 +305,10 @@ public class Star implements ColorStringObject
 			{
 				probabilities[i] = StarMass.values()[i].probability;
 			}
-			return (StarMass) Utility.select(Main.rng, StarMass.values(), probabilities);
+			return (StarMass) Utility.select(
+					Main.rng,
+					StarMass.values(),
+					probabilities);
 		}
 
 		/**
@@ -311,7 +343,11 @@ public class Star implements ColorStringObject
 
 			probabilities[0] += 1.0 - totalProbability;
 
-			return (StarMass) Utility.select(Main.rng, masses.toArray(), probabilities);
+			return (StarMass) Utility.select(
+					Main.rng,
+					masses.toArray(),
+					probabilities
+			);
 		}
 	}
 
@@ -323,17 +359,35 @@ public class Star implements ColorStringObject
 		/**
 		 * The coldest, most common type of star.
 		 */
-		RED("Red", AsciiPanel.brightRed, false, StarMass.SUBDWARF.mass, StarMass.HYPERGIANT.mass),
+		RED(
+				"Red",
+				AsciiPanel.brightRed,
+				false,
+				StarMass.SUBDWARF.mass,
+				StarMass.HYPERGIANT.mass
+		),
 
 		/**
 		 * A mid-range star temperature.
 		 */
-		YELLOW("Yellow", AsciiPanel.brightYellow, false, StarMass.DWARF.mass, StarMass.HYPERGIANT.mass),
+		YELLOW(
+				"Yellow",
+				AsciiPanel.brightYellow,
+				false,
+				StarMass.DWARF.mass,
+				StarMass.HYPERGIANT.mass
+		),
 
 		/**
 		 * The hottest, brightest stars.
 		 */
-		BLUE("Blue", AsciiPanel.brightCyan, true, StarMass.GIANT.mass, StarMass.HYPERGIANT.mass);
+		BLUE(
+				"Blue",
+				AsciiPanel.brightCyan,
+				true,
+				StarMass.GIANT.mass,
+				StarMass.HYPERGIANT.mass
+		);
 
 		/**
 		 * The type of the star temperature.
@@ -346,7 +400,8 @@ public class Star implements ColorStringObject
 		private final Color color;
 
 		/**
-		 * If true, the star emits radiation that prevents rocky planets with atmospheres from forming.
+		 * If true, the star emits radiation that prevents rocky planets with
+		 * atmospheres from forming.
 		 */
 		private final boolean radiation;
 
@@ -366,11 +421,18 @@ public class Star implements ColorStringObject
 		 * @param name      the type of the star temperature
 		 * @param color     the color of the star temperature
 		 * @param radiation if true, the star emits radiation
-		 * @param minMass   the lowest mass of star that can have this temperature
-		 * @param maxMass   the highest mass of star that can have this temperature
+		 * @param minMass   the lowest mass of star that can have this
+		 *                  temperature
+		 * @param maxMass   the highest mass of star that can have this
+		 *                  temperature
 		 */
-		StarTemperature(String name, Color color, boolean radiation, int minMass, int maxMass)
-		{
+		StarTemperature(
+				String name,
+				Color color,
+				boolean radiation,
+				int minMass,
+				int maxMass
+		) {
 			this.name = name;
 			this.color = color;
 			this.radiation = radiation;
@@ -477,7 +539,8 @@ public class Star implements ColorStringObject
 	}
 
 	/**
-	 * All types of stars that cannot be generated through combinations of common masses and temperatures.
+	 * All types of stars that cannot be generated through combinations ofx
+	 * common masses and temperatures.
 	 */
 	private enum SpecialStar
 	{
@@ -485,33 +548,66 @@ public class Star implements ColorStringObject
 		 * A small, cold, protostar that cannot sustain fusion.
 		 */
 		BROWN_DWARF(
-				new Star("Brown Dwarf", AsciiPanel.yellow, StarMass.SUBDWARF.getSymbol(), StarMass.SUBDWARF.getMass(),
-						false)),
+				new Star(
+					"Brown Dwarf",
+					AsciiPanel.yellow,
+					StarMass.SUBDWARF.getSymbol(),
+					StarMass.SUBDWARF.getMass(),
+					false
+				)
+		),
 
 		/**
 		 * The dense core of a dead star.
 		 */
-		WHITE_DWARF(new Star("White Dwarf", AsciiPanel.brightWhite, StarMass.SUBDWARF.getSymbol(),
-				StarMass.SUBDWARF.getMass(), false)),
+		WHITE_DWARF(
+				new Star(
+					"White Dwarf",
+					AsciiPanel.brightWhite,
+					StarMass.SUBDWARF.getSymbol(),
+					StarMass.SUBDWARF.getMass(),
+					false
+				)
+		),
 
 		/**
 		 * Two stars that orbit each other.
 		 */
 		BINARY_STAR(
-				new Star("Binary Star", AsciiPanel.brightWhite, Symbol.BINARY_STAR.get(), StarMass.SUBGIANT.getMass(),
-						false)),
+				new Star(
+					"Binary Star",
+					AsciiPanel.brightWhite,
+					Symbol.BINARY_STAR.get(),
+					StarMass.SUBGIANT.getMass(),
+					false
+				)
+		),
 
 		/**
 		 * The corpse of a large star, held together by neutron degeneracy.
 		 */
 		NEUTRON_STAR(
-				new Star("Neutron Star", AsciiPanel.brightWhite, Symbol.NEUTRON_STAR.get(), StarMass.GIANT.getMass(),
-						true)),
+				new Star(
+					"Neutron Star",
+					AsciiPanel.brightWhite,
+					Symbol.NEUTRON_STAR.get(),
+					StarMass.GIANT.getMass(),
+					true
+				)
+		),
 
 		/**
 		 * A rapidly-spinning neutron star that appears to emit pulses of light.
 		 */
-		PULSAR(new Star("Pulsar", NEUTRON_STAR.star.color, Symbol.PULSAR.get(), NEUTRON_STAR.star.mass, true));
+		PULSAR(
+				new Star(
+					"Pulsar",
+					NEUTRON_STAR.star.color,
+					Symbol.PULSAR.get(),
+					NEUTRON_STAR.star.mass,
+					true
+				)
+		);
 
 		/**
 		 * The special type of star.
@@ -555,7 +651,8 @@ public class Star implements ColorStringObject
 	private final int mass;
 
 	/**
-	 * If true, the star emits radiation that prevents rocky planets with atmospheres from forming.
+	 * If true, the star emits radiation that prevents rocky planets with
+	 * atmospheres from forming.
 	 */
 	private final boolean radiation;
 
@@ -568,8 +665,13 @@ public class Star implements ColorStringObject
 	 * @param mass      the mass of the star
 	 * @param radiation true if the star emits substantial radiation
 	 */
-	private Star(String type, Color color, char symbol, int mass, boolean radiation)
-	{
+	private Star(
+			String type,
+			Color color,
+			char symbol,
+			int mass,
+			boolean radiation
+	) {
 		this.name = generateName();
 		this.type = type;
 		this.color = color;
@@ -586,8 +688,13 @@ public class Star implements ColorStringObject
 	 */
 	private Star(StarMass mass, StarTemperature temperature)
 	{
-		this(temperature.getName() + " " + mass.getName(), temperature.getColor(), mass.getSymbol(), mass.getMass(),
-				temperature.hasRadiation());
+		this(
+				temperature.getName() + " " + mass.getName(),
+				temperature.getColor(),
+				mass.getSymbol(),
+				mass.getMass(),
+				temperature.hasRadiation()
+		);
 	}
 
 	/**
@@ -629,8 +736,18 @@ public class Star implements ColorStringObject
 	 */
 	public static String generateName()
 	{
-		return Main.rng.getRandomElement(NAME_PREFIX) + (Main.rng.nextBoolean() ? Main.rng.getRandomElement(NAME_MIDDLE) : "") +
-		       Main.rng.getRandomElement(NAME_SUFFIX) + (Main.rng.nextBoolean() ? " " + Main.rng.getRandomElement(NAME_DESCRIPTOR) : "");
+		return Main.rng.getRandomElement(NAME_PREFIX)
+				+ (
+						Main.rng.nextBoolean()
+						? Main.rng.getRandomElement(NAME_MIDDLE)
+						: ""
+				)
+				+ Main.rng.getRandomElement(NAME_SUFFIX)
+				+ (
+						Main.rng.nextBoolean()
+						? " " + Main.rng.getRandomElement(NAME_DESCRIPTOR)
+						: ""
+				);
 	}
 
 	@Override
@@ -698,8 +815,10 @@ public class Star implements ColorStringObject
 	/**
 	 * Calculates the power level of the star at a certain orbit.
 	 *
-	 * @param orbit the orbit at which to calculate the star's power, must be a valid orbit
-	 * @return the reduced power of the star at the orbit, -1 if the orbit is invalid
+	 * @param orbit the orbit at which to calculate the star's power, must be a
+	 *              valid orbit
+	 * @return the reduced power of the star at the orbit, -1 if the orbit is
+	 *         invalid
 	 */
 	public int getPowerAt(int orbit)
 	{
@@ -707,10 +826,13 @@ public class Star implements ColorStringObject
 	}
 
 	/**
-	 * Calculates the amount of energy generated by a solar array at the given orbit.
+	 * Calculates the amount of energy generated by a solar array at the given
+	 * orbit.
 	 *
-	 * @param orbit the orbit at which to calculate the star's solar power, must be a valid orbit
-	 * @return the power generated by a solar array at the given orbit of the star, -1 if the orbit is invalid
+	 * @param orbit the orbit at which to calculate the star's solar power,
+	 *              must be a valid orbit
+	 * @return the power generated by a solar array at the given orbit of the
+	 *         star, -1 if the orbit is invalid
 	 */
 	public int getSolarPowerAt(int orbit)
 	{

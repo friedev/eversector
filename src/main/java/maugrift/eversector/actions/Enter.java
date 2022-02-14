@@ -31,7 +31,11 @@ public class Enter implements Action
 			return "There is nothing in " + sector + ".";
 		}
 
-		return actor.validateResources(RESOURCE, COST, "enter into orbit around " + sector);
+		return actor.validateResources(
+				RESOURCE,
+				COST,
+				"enter into orbit around " + sector
+		);
 	}
 
 	@Override

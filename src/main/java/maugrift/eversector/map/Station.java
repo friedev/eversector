@@ -28,52 +28,154 @@ public class Station implements ColorStringObject
 	 * The descriptors for trade stations.
 	 */
 	private static final String[] NAME_TRADE = new String[]{
-			"Factory", "Hub", "Manufactory", "Marketplace", "Vendor"
+		"Factory",
+		"Hub",
+		"Manufactory",
+		"Marketplace",
+		"Vendor",
 	};
 
 	/**
 	 * The descriptors for battle stations.
 	 */
 	private static final String[] NAME_BATTLE = new String[]{
-			"Armory", "Arsenal", "Bunker", "Fortress", "Outpost"
+		"Armory",
+		"Arsenal",
+		"Bunker",
+		"Fortress",
+		"Outpost",
 	};
 
 	/**
-	 * The base modules that all stations sell, at their base prices. <b>To be removed in v0.8.</b>
-	 */
-	public static final Module[] MODULES = new Module[]{
-			new Module(Module.SCANNER, "Reveals locations from a distance.", 150, false, Resource.ENERGY, 3),
-			new Module(Module.REFINERY, "Can convert ore into fuel at a 1:1 ratio.", 250, false, Resource.ENERGY, 1),
-			new Module(Module.SOLAR_ARRAY, "Passively generates energy each turn based on solar proximity.", 250, false,
-					Resource.ENERGY, -1),
-			new Module(Module.WARP_DRIVE, "Facilitates long-range sector jumps powered by energy.", 400, false,
-					Resource.ENERGY, 15),
-			new Module(Module.SHIELD, "When active, halves damage from oncoming energy weapon fire.", 200, true,
-					Ship.SHIELDED, Resource.ENERGY, 2),
-			new Module(Module.CLOAKING_DEVICE, "When active, renders the ship impossible to track.", 300, true,
-					Ship.CLOAKED, Resource.ENERGY, 2),
-			new Weapon(Weapon.LASER, "A focused laser used to cut open enemy hulls.", 100, 2, Resource.ENERGY, 2,
-					Paths.LASER),
-			new Weapon(Weapon.TORPEDO_TUBE, "Fires guided torpedoes capable of bypassing energy shields.", 200, 4,
-					Resource.FUEL, 2, Paths.TORPEDO),
-			new Weapon(Weapon.PULSE_BEAM, "A devastating laser capable of ripping through weak ships.", 500, 7,
-					Resource.ENERGY, 10, Paths.PULSE)
-	};
-
-	/**
-	 * The base resources that all stations sell, at the base prices for themselves and their expanders. <b>To be
+	 * The base modules that all stations sell, at their base prices. <b>To be
 	 * removed in v0.8.</b>
 	 */
+	public static final Module[] MODULES = new Module[]{
+		new Module(
+				Module.SCANNER,
+				"Reveals locations from a distance.",
+				150,
+				false,
+				Resource.ENERGY,
+				3
+		),
+		new Module(
+				Module.REFINERY,
+				"Can convert ore into fuel at a 1:1 ratio.",
+				250,
+				false,
+				Resource.ENERGY,
+				1
+		),
+		new Module(
+				Module.SOLAR_ARRAY,
+				"Passively generates energy each turn based on solar proximity.",
+				250,
+				false,
+				Resource.ENERGY,
+				-1
+		),
+		new Module(
+				Module.WARP_DRIVE,
+				"Facilitates long-range sector jumps powered by energy.",
+				400,
+				false,
+				Resource.ENERGY,
+				15
+		),
+		new Module(
+				Module.SHIELD,
+				"When active, halves damage from oncoming energy weapon fire.",
+				200,
+				true,
+				Ship.SHIELDED,
+				Resource.ENERGY,
+				2
+		),
+		new Module(
+				Module.CLOAKING_DEVICE,
+				"When active, renders the ship impossible to track.",
+				300,
+				true,
+				Ship.CLOAKED,
+				Resource.ENERGY,
+				2
+		),
+		new Weapon(
+				Weapon.LASER,
+				"A focused laser used to cut open enemy hulls.",
+				100,
+				2,
+				Resource.ENERGY,
+				2,
+				Paths.LASER
+		),
+		new Weapon(
+				Weapon.TORPEDO_TUBE,
+				"Fires guided torpedoes capable of bypassing energy shields.",
+				200,
+				4,
+				Resource.FUEL,
+				2,
+				Paths.TORPEDO
+		),
+		new Weapon(
+				Weapon.PULSE_BEAM,
+				"A devastating laser capable of ripping through weak ships.",
+				500,
+				7,
+				Resource.ENERGY,
+				10,
+				Paths.PULSE
+		)
+	};
+
+	/**
+	 * The base resources that all stations sell, at the base prices for
+	 * themselves and their expanders. <b>To be removed in v0.8.</b>
+	 */
 	public static final BaseResource[] RESOURCES = new BaseResource[]{
-			new BaseResource(Resource.FUEL, "A reactive mixture able to create highly efficient thrust.", 10, true,
-					new Expander(Resource.FUEL_EXPANDER, "A compact container able to withstand extreme pressures.",
-							70)), new BaseResource(Resource.ENERGY, "Highly concentrated electrical charge.", 5, false,
-			new Expander(Resource.ENERGY_EXPANDER, "A supercapacitor capable of retaining charge for long durations.",
-					85)), new BaseResource(Resource.ORE, "A versatile compound that can be refined into fuel.", 10,
-			true,
-			new Expander(Resource.ORE_EXPANDER, "An interior hold designed for containing large quantities of ore.",
-					85)), new BaseResource(Resource.HULL, "Layered alloys and ceramics that protect the ship.", 15,
-			false, new Expander(Resource.HULL_EXPANDER, "A frame to allow the mounting of additional plating.", 85, 2))
+		new BaseResource(
+				Resource.FUEL,
+				"A reactive mixture able to create highly efficient thrust.",
+				10,
+				true,
+				new Expander(Resource.FUEL_EXPANDER,
+					"A compact container able to withstand extreme pressures.",
+					70
+				)
+		),
+		new BaseResource(
+				Resource.ENERGY,
+				"Highly concentrated electrical charge.",
+				5,
+				false,
+				new Expander(Resource.ENERGY_EXPANDER,
+					"A supercapacitor capable of retaining charge for long durations.",
+					85
+				)
+		),
+		new BaseResource(
+				Resource.ORE,
+				"A versatile compound that can be refined into fuel.",
+				10,
+				true,
+				new Expander(Resource.ORE_EXPANDER,
+					"An interior hold designed for containing large quantities of ore.",
+					85
+				)
+		),
+		new BaseResource(
+				Resource.HULL,
+				"Layered alloys and ceramics that protect the ship.",
+				15,
+				false,
+				new Expander(Resource.HULL_EXPANDER,
+					"A frame to allow the mounting of additional plating.",
+					85,
+					2
+				)
+		)
 	};
 
 	/**
@@ -132,8 +234,9 @@ public class Station implements ColorStringObject
 		String testName;
 		do
 		{
-			testName = location.getSector().getStar().getName() + " " + Main.rng.getRandomElement(
-					battle ? NAME_BATTLE : NAME_TRADE);
+			testName = location.getSector().getStar().getName()
+				+ " "
+				+ Main.rng.getRandomElement(battle ? NAME_BATTLE : NAME_TRADE);
 		} while (location.getSector().getStation(testName) != null);
 
 		name = testName;
@@ -151,7 +254,10 @@ public class Station implements ColorStringObject
 	@Override
 	public ColorString toColorString()
 	{
-		return new ColorString(toString(), isClaimed() ? getFaction().getColor() : null);
+		return new ColorString(
+				toString(),
+				isClaimed() ? getFaction().getColor() : null
+		);
 	}
 
 	/**
@@ -227,8 +333,12 @@ public class Station implements ColorStringObject
 	 */
 	public ColorChar getSymbol()
 	{
-		return new ColorChar(battle ? Symbol.BATTLE_STATION.get() : Symbol.TRADE_STATION.get(),
-				getFaction().getColor());
+		return new ColorChar(
+				battle
+				? Symbol.BATTLE_STATION.get()
+				: Symbol.TRADE_STATION.get(),
+				getFaction().getColor()
+		);
 	}
 
 	/**
@@ -276,7 +386,8 @@ public class Station implements ColorStringObject
 	 * Returns true if the station has any item with the specified name.
 	 *
 	 * @param name the name of the item to find
-	 * @return true if a search for any type of item of this name does not return null
+	 * @return true if a search for any type of item of this name does not
+	 *         return null
 	 */
 	public boolean isItem(String name)
 	{
@@ -543,7 +654,8 @@ public class Station implements ColorStringObject
 	 * Returns the number of ships that belong to a specified faction.
 	 *
 	 * @param faction the faction to count ships in
-	 * @return the number of ships docked with the station that belong to the faction
+	 * @return the number of ships docked with the station that belong to the
+	 *         faction
 	 */
 	public int getNShips(Faction faction)
 	{

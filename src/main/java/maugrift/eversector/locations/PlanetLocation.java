@@ -20,8 +20,10 @@ public class PlanetLocation extends SectorLocation
 	 *
 	 * @param location    the location of the planet
 	 * @param regionCoord the coordinates of the region
-	 * @throws IllegalArgumentException  if no planet is found at the given location
-	 * @throws IndexOutOfBoundsException if the given coordinates are not found in the planet
+	 * @throws IllegalArgumentException  if no planet is found at the given
+	 *                                   location
+	 * @throws IndexOutOfBoundsException if the given coordinates are not found
+	 *                                   in the planet
 	 */
 	public PlanetLocation(SectorLocation location, Coord regionCoord)
 	{
@@ -29,12 +31,16 @@ public class PlanetLocation extends SectorLocation
 
 		if (!location.isPlanet())
 		{
-			throw new IllegalArgumentException("No planet found at the given location");
+			throw new IllegalArgumentException(
+					"No planet found at the given location"
+			);
 		}
 
 		if (!getPlanet().contains(regionCoord))
 		{
-			throw new IndexOutOfBoundsException("Given coord not found on planet");
+			throw new IndexOutOfBoundsException(
+					"Given coord not found on planet"
+			);
 		}
 
 		this.regionCoord = regionCoord;
@@ -71,7 +77,8 @@ public class PlanetLocation extends SectorLocation
 	}
 
 	/**
-	 * Returns the location that a ship would be in after taking off from the planet.
+	 * Returns the location that a ship would be in after taking off from the
+	 * planet.
 	 *
 	 * @return the resulting location
 	 */
@@ -101,12 +108,18 @@ public class PlanetLocation extends SectorLocation
 
 		if (direction.hasUp() || direction.hasDown())
 		{
-			return new PlanetLocation(this, regionCoord.setX(getPlanet().getOppositeSide(regionCoord.x)));
+			return new PlanetLocation(
+					this,
+					regionCoord.setX(getPlanet().getOppositeSide(regionCoord.x))
+			);
 		}
 
-		return direction.hasRight() ?
-			new PlanetLocation(this, regionCoord.setX(0)) :
-			new PlanetLocation(this, regionCoord.setX(getPlanet().getNColumns() - 1));
+		return direction.hasRight()
+			? new PlanetLocation(this, regionCoord.setX(0))
+			: new PlanetLocation(
+					this,
+					regionCoord.setX(getPlanet().getNColumns() - 1)
+			);
 	}
 
 	@Override

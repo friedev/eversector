@@ -1,8 +1,8 @@
 package maugrift.eversector.locations;
 
 /**
- * The location of a station. Does not currently differ from SectorLocation, but is used to denote being docked with a
- * station.
+ * The location of a station. Does not currently differ from SectorLocation,
+ * but is used to denote being docked with a station.
  * @author Maugrift
  */
 public class StationLocation extends SectorLocation
@@ -11,7 +11,8 @@ public class StationLocation extends SectorLocation
 	 * Creates a new station location.
 	 *
 	 * @param location the location of the station
-	 * @throws IllegalArgumentException if no station is found at the given location
+	 * @throws IllegalArgumentException if no station is found at the given
+	 *                                  location
 	 */
 	public StationLocation(SectorLocation location)
 	{
@@ -19,7 +20,9 @@ public class StationLocation extends SectorLocation
 
 		if (!location.isStation())
 		{
-			throw new IllegalArgumentException("No station found at the given location");
+			throw new IllegalArgumentException(
+					"No station found at the given location"
+			);
 		}
 	}
 
@@ -42,6 +45,8 @@ public class StationLocation extends SectorLocation
 		}
 
 		StationLocation cast = (StationLocation) o;
-		return getGalaxy() == cast.getGalaxy() && getCoord().equals(cast.getCoord()) && getOrbit() == cast.getOrbit();
+		return getGalaxy() == cast.getGalaxy() &&
+			getCoord().equals(cast.getCoord()) &&
+			getOrbit() == cast.getOrbit();
 	}
 }

@@ -16,7 +16,9 @@ import java.util.List;
  *
  * @author Maugrift
  */
-public class QuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class QuitScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -30,7 +32,12 @@ public class QuitScreen extends ConfirmationScreen implements WindowScreen<Popup
 	{
 		super(Main.display);
 		List<ColorString> contents = new LinkedList<>();
-		contents.add(new ColorString("Save before quitting?", AsciiPanel.brightRed));
+		contents.add(
+				new ColorString(
+					"Save before quitting?",
+					AsciiPanel.brightRed
+				)
+		);
 		window = new PopupWindow(Main.display, contents);
 	}
 

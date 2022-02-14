@@ -17,7 +17,9 @@ import static maugrift.eversector.Paths.START;
  *
  * @author Maugrift
  */
-public class IntergalacticScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class IntergalacticScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.

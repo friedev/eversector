@@ -12,7 +12,7 @@ import java.util.*;
 import static maugrift.eversector.screens.EndScreen.COLOR_HEADER;
 
 /**
- * A score on the leaderboard, consisting of a  name, credits, and reputation.
+ * A score on the leaderboard, consisting of a name, credits, and reputation.
  *
  * @author Maugrift
  */
@@ -61,7 +61,8 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	/**
 	 * Loads a LeaderboardScore from a Properties object.
 	 *
-	 * @param properties the Properties object containing information about the score
+	 * @param properties the Properties object containing information about the
+	 *                   score
 	 */
 	public LeaderboardScore(Properties properties)
 	{
@@ -88,8 +89,14 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	 * @param reputation the reputation
 	 * @param leader     true if the player was a leader
 	 */
-	public LeaderboardScore(String name, int score, int turns, int kills, String reputation, boolean leader)
-	{
+	public LeaderboardScore(
+			String name,
+			int score,
+			int turns,
+			int kills,
+			String reputation,
+			boolean leader
+	) {
 		this.name = name;
 		this.score = score;
 		this.turns = turns;
@@ -107,8 +114,13 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	 * @param reputation the reputation of the score
 	 * @param leader     true if the player was a leader
 	 */
-	public LeaderboardScore(int score, int turns, int kills, String reputation, boolean leader)
-	{
+	public LeaderboardScore(
+			int score,
+			int turns,
+			int kills,
+			String reputation,
+			boolean leader
+	) {
 		this(null, score, turns, kills, reputation, leader);
 	}
 
@@ -127,11 +139,17 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 			builder.append(name).append(": ");
 		}
 
-		builder.append(score).append(" Credits, ").append(turns).append(" Turns, ");
+		builder.append(score)
+			.append(" Credits, ")
+			.append(turns)
+			.append(" Turns, ");
 
 		if (kills > 0)
 		{
-			builder.append(kills).append(" ").append(Utility.makePlural("Kill", kills)).append(", ");
+			builder.append(kills)
+				.append(" ")
+				.append(Utility.makePlural("Kill", kills))
+				.append(", ");
 		}
 
 		builder.append(reputation);
@@ -168,11 +186,15 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	/**
 	 * Returns true if the two required fields (score and reputation) are set.
 	 *
-	 * @return true if the score and reputation of the object are not their default values
+	 * @return true if the score and reputation of the object are not their
+	 *         default values
 	 */
 	public boolean isValid()
 	{
-		return score != null && turns != null && kills != null && reputation != null;
+		return score != null &&
+			turns != null &&
+			kills != null &&
+			reputation != null;
 	}
 
 	@Override
@@ -217,7 +239,14 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 		ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
 		if (nScores > DISPLAYED_SCORES)
 		{
-			header.add(new ColorString(" (" + nScores + " Scores Total)", AsciiPanel.brightBlack));
+			header.add(
+					new ColorString(
+						" ("
+						+ nScores
+						+ " Scores Total)",
+						AsciiPanel.brightBlack
+					)
+			);
 		}
 		return header;
 	}
@@ -225,7 +254,8 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	/**
 	 * Returns a sorted list of every leaderboard score.
 	 *
-	 * @return an ArrayList of Integers parsed from the leaderboard file and sorted from greatest to least
+	 * @return an ArrayList of Integers parsed from the leaderboard file and
+	 *         sorted from greatest to least
 	 */
 	public static List<LeaderboardScore> getLeaderboardScores()
 	{
@@ -234,8 +264,11 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 		try
 		{
 			int index = 1;
-			while (scores.add(
-					new LeaderboardScore(FileManager.load(Paths.LEADERBOARD + "score_" + index + ".properties"))))
+			while (scores.add(new LeaderboardScore(FileManager.load(
+								Paths.LEADERBOARD
+								+ "score_"
+								+ index
+								+ ".properties"))))
 			{
 				index++;
 			}

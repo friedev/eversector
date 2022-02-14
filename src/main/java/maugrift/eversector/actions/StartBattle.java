@@ -8,8 +8,8 @@ import maugrift.eversector.ships.Ship;
 import java.util.List;
 
 /**
- * Starts a battle with the given ship. Prompts other ships to join the battle. Processes the battle if the player does
- * not participate in it.
+ * Starts a battle with the given ship. Prompts other ships to join the battle.
+ * Processes the battle if the player does not participate in it.
  */
 public class StartBattle implements Action
 {
@@ -66,7 +66,11 @@ public class StartBattle implements Action
 		if (opponent.isPlayer())
 		{
 			Main.pendingBattle = battle;
-			opponent.addPlayerColorMessage(new ColorString("You are under attack from ").add(actor).add("!"));
+			opponent.addPlayerColorMessage(
+					new ColorString("You are under attack from ")
+					.add(actor)
+					.add("!")
+			);
 			return null;
 		}
 

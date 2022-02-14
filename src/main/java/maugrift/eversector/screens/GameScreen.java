@@ -30,12 +30,15 @@ import static maugrift.eversector.Main.*;
 import static maugrift.eversector.faction.Relationship.RelationshipType.WAR;
 
 /**
- * The main screen on which gameplay will take place. This screen will process global commands and host more specific
- * screens based on the player's situation.
+ * The main screen on which gameplay will take place. This screen will process
+ * global commands and host more specific screens based on the player's
+ * situation.
  *
  * @author Maugrift
  */
-public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
+public class GameScreen
+	extends Screen
+	implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
 	/**
 	 * The number of lines in the message window.
@@ -68,7 +71,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 	private Screen popup;
 
 	/**
-	 * The offset of messages displayed when scrolling through message history. -1 if not viewing history.
+	 * The offset of messages displayed when scrolling through message history.
+	 * -1 if not viewing history.
 	 */
 	private int messageOffset;
 
@@ -88,7 +92,10 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 		} else if (player.isDocked()) {
 			subscreen = new StationScreen();
 		} else if (player.isInBattle()) {
-			subscreen = new BattleScreen(player.getBattleLocation().getBattle(), false);
+			subscreen = new BattleScreen(
+					player.getBattleLocation().getBattle(),
+					false
+			);
 		} else {
 			subscreen = new MapScreen();
 		}
@@ -111,7 +118,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
 		if (subscreen != null)
 		{
-			if (subscreen instanceof WindowScreen && ((WindowScreen) subscreen).getWindow() instanceof AlignedWindow)
+			if (subscreen instanceof WindowScreen &&
+					((WindowScreen) subscreen).getWindow() instanceof AlignedWindow)
 			{
 				((AlignedWindow) ((WindowScreen) subscreen).getWindow()).setLocation(1, bottomY + 3);
 			}
@@ -147,8 +155,9 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
 		if (viewingHistory())
 		{
-			if (key.getKeyCode() == KeyEvent.VK_H || key.getKeyCode() == KeyEvent.VK_ENTER ||
-				key.getKeyCode() == KeyEvent.VK_ESCAPE)
+			if (key.getKeyCode() == KeyEvent.VK_H ||
+					key.getKeyCode() == KeyEvent.VK_ENTER ||
+					key.getKeyCode() == KeyEvent.VK_ESCAPE)
 			{
 				messageOffset = -1;
 				return this;
@@ -182,11 +191,13 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
 		if (subscreen != null)
 		{
-			boolean subscreenHasPopup = subscreen instanceof PopupMaster && ((PopupMaster) subscreen).hasPopup();
+			boolean subscreenHasPopup = subscreen instanceof PopupMaster &&
+				((PopupMaster) subscreen).hasPopup();
 
 			subscreen = subscreen.processInput(key);
 
-			// Stop even if popup was closed to prevent keypresses performing multiple functions
+			// Stop even if popup was closed to prevent keypresses performing
+			// multiple functions
 			if (subscreenHasPopup)
 			{
 				return this;
@@ -293,7 +304,11 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 		if (player.isDestroyed())
 		{
 			subscreen = null;
-			popup = new EndScreen(new ColorString("You have been destroyed!"), true, false);
+			popup = new EndScreen(
+					new ColorString("You have been destroyed!"),
+					true,
+					false
+			);
 		}
 
 		if (nextTurn)
@@ -332,7 +347,14 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 		keybindings.add(new Keybinding("deny", "n"));
 		keybindings.add(new Keybinding("cancel", "q", "escape"));
 		keybindings.add(null);
-		keybindings.add(new Keybinding(player.isAligned() ? "join/leave faction" : "join faction", "j"));
+		keybindings.add(
+				new Keybinding(
+					player.isAligned()
+					? "join/leave faction"
+					: "join faction",
+					"j"
+				)
+		);
 		keybindings.add(new Keybinding("broadcast distress signal", "d"));
 		if (player.isLeader() && galaxy.getFactions().length > 2)
 		{
@@ -351,7 +373,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 		{
 			keybindings.add(new Keybinding("message history", "h"));
 		}
-		if (Option.LEADERBOARD.toBoolean() && !LeaderboardScore.buildLeaderboard().isEmpty())
+		if (Option.LEADERBOARD.toBoolean() &&
+				!LeaderboardScore.buildLeaderboard().isEmpty())
 		{
 			keybindings.add(new Keybinding("leaderboard", "b"));
 		}
@@ -411,7 +434,8 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 	}
 
 	/**
-	 * A message on the message list, storing the message itself and the number of times it has been received.
+	 * A message on the message list, storing the message itself and the number
+	 * of times it has been received.
 	 */
 	private class Message
 	{
@@ -431,7 +455,14 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 				return message;
 			}
 
-			return new ColorString(message).add(new ColorString(" (x" + Integer.toString(counter) + ")", COLOR_FIELD));
+			return new ColorString(message).add(
+					new ColorString(
+						" (x"
+						+ Integer.toString(counter)
+						+ ")",
+						COLOR_FIELD
+					)
+			);
 		}
 	}
 
@@ -483,7 +514,14 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
 		statusWindow.addSeparator(new Line(true, 1, 1));
 		contents.add(
-				new ColorString("Turn ").add(new ColorString(Integer.toString(Main.galaxy.getTurn()), COLOR_FIELD)));
+				new ColorString("Turn ")
+				.add(
+					new ColorString(
+						Integer.toString(Main.galaxy.getTurn()),
+						COLOR_FIELD
+					)
+				)
+		);
 	}
 
 	/**
@@ -526,14 +564,26 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 		factionWindow.addSeparator(new Line(false, 1, 1));
 		for (Faction faction : galaxy.getFactions())
 		{
-			contents.add(new ColorString("Rank ").add(new ColorString("#" + faction.getRank(), COLOR_FIELD)));
+			contents.add(
+					new ColorString("Rank ")
+					.add(
+						new ColorString(
+							"#" + faction.getRank(), COLOR_FIELD
+						)
+					)
+			);
 		}
 
 		factionWindow.addSeparator(new Line(false, 1, 1));
 		for (Faction faction : galaxy.getFactions())
 		{
 			ReputationRange reputation = player.getReputation(faction).getRange();
-			contents.add(new ColorString(reputation.getVerb() + " You", reputation.getColor()));
+			contents.add(
+					new ColorString(
+						reputation.getVerb() + " You",
+						reputation.getColor()
+					)
+			);
 		}
 
 		if (playerFaction == null)
@@ -558,23 +608,70 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
 			ReputationRange reputation = leader.getReputation(playerFaction).getRange();
 
-			leaderString.add(new ColorString(leader.toString(), COLOR_FIELD)).add(
-					new ColorString(" (" + reputation.getAdjective() + ")", reputation.getColor()));
+			leaderString.add(new ColorString(leader.toString(), COLOR_FIELD))
+				.add(
+						new ColorString(
+							" (" + reputation.getAdjective() + ")",
+							reputation.getColor()
+						)
+				);
 		}
 		contents.add(leaderString);
 
 		if (player.isLeader())
 		{
 			factionWindow.addSeparator(new Line(true, 1, 1));
-			contents.add(new ColorString("Economy: ").add(
-					new ColorString(playerFaction.getEconomyCredits() + "" + Symbol.CREDITS, COLOR_FIELD)));
-			contents.add(new ColorString("Sectors: ").add(
-					new ColorString(Integer.toString(playerFaction.getSectorsControlled()), COLOR_FIELD)));
-			contents.add(new ColorString("Planets: ").add(
-					new ColorString(Integer.toString(playerFaction.getPlanetsControlled()), COLOR_FIELD)));
 			contents.add(
-					new ColorString("Stations: ").add(new ColorString(playerFaction.getStationTypes(), COLOR_FIELD)));
-			contents.add(new ColorString("Ships: ").add(new ColorString(playerFaction.getShipTypes(), COLOR_FIELD)));
+					new ColorString("Economy: ")
+					.add(
+						new ColorString(
+							playerFaction.getEconomyCredits()
+							+ ""
+							+ Symbol.CREDITS,
+							COLOR_FIELD
+						)
+					)
+			);
+			contents.add(
+					new ColorString("Sectors: ")
+					.add(
+						new ColorString(
+							Integer.toString(
+								playerFaction.getSectorsControlled()
+							),
+							COLOR_FIELD
+						)
+					)
+			);
+			contents.add(
+					new ColorString("Planets: ")
+					.add(
+						new ColorString(
+							Integer.toString(
+								playerFaction.getPlanetsControlled()
+							),
+							COLOR_FIELD
+						)
+					)
+			);
+			contents.add(
+					new ColorString("Stations: ")
+					.add(
+						new ColorString(
+							playerFaction.getStationTypes(),
+							COLOR_FIELD
+						)
+					)
+			);
+			contents.add(
+					new ColorString("Ships: ")
+					.add(
+						new ColorString(
+							playerFaction.getShipTypes(),
+							COLOR_FIELD
+						)
+					)
+			);
 		}
 	}
 
@@ -583,13 +680,21 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 	 */
 	private void drawMessageWindow()
 	{
-		getDisplay().drawBorder(0, getDisplay().getHeightInCharacters() - (MESSAGE_LINES + 2),
-				getDisplay().getWidthInCharacters() - 1, getDisplay().getHeightInCharacters() - 1, new Border(1));
+		getDisplay().drawBorder(
+				0,
+				getDisplay().getHeightInCharacters() - (MESSAGE_LINES + 2),
+				getDisplay().getWidthInCharacters() - 1,
+				getDisplay().getHeightInCharacters() - 1,
+				new Border(1)
+		);
 
 		int offset = Math.max(0, messageOffset);
 		int lines = Math.min(messages.size(), MESSAGE_LINES);
 		List<ColorString> messageOutput = new ArrayList<>(lines);
-		List<Message> displayedMessages = messages.subList(messages.size() - lines - offset, messages.size() - offset);
+		List<Message> displayedMessages = messages.subList(
+				messages.size() - lines - offset,
+				messages.size() - offset
+		);
 
 		for (Message current : displayedMessages)
 		{
@@ -613,7 +718,12 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 				}
 
 				messageOutput.add(currentOutput.subSequence(0, splitIndex));
-				messageOutput.add(currentOutput.subSequence(splitIndex, currentOutput.length()));
+				messageOutput.add(
+						currentOutput.subSequence(
+							splitIndex,
+							currentOutput.length()
+						)
+				);
 			}
 			else
 			{
@@ -623,24 +733,40 @@ public class GameScreen extends Screen implements WindowScreen<AlignedWindow>, P
 
 		if (messageOutput.size() > MESSAGE_LINES)
 		{
-			messageOutput = messageOutput.subList(messageOutput.size() - MESSAGE_LINES, messageOutput.size());
+			messageOutput = messageOutput.subList(
+					messageOutput.size() - MESSAGE_LINES,
+					messageOutput.size()
+			);
 		}
 
-		getDisplay().write(1, getDisplay().getHeightInCharacters() - (MESSAGE_LINES + 1),
-				messageOutput.toArray(new ColorString[lines]));
+		getDisplay().write(
+				1,
+				getDisplay().getHeightInCharacters() - (MESSAGE_LINES + 1),
+				messageOutput.toArray(new ColorString[lines])
+		);
 
 		if (viewingHistory())
 		{
 			if (canScrollHistoryUp())
 			{
-				getDisplay().writeCenter(getDisplay().getHeightInCharacters() - MESSAGE_LINES - 2,
-						new ColorString(Character.toString(ExtChars.ARROW1_U), COLOR_FIELD));
+				getDisplay().writeCenter(
+						getDisplay().getHeightInCharacters() - MESSAGE_LINES - 2,
+						new ColorString(
+							Character.toString(ExtChars.ARROW1_U),
+							COLOR_FIELD
+						)
+				);
 			}
 
 			if (canScrollHistoryDown())
 			{
-				getDisplay().writeCenter(getDisplay().getHeightInCharacters() - 1,
-						new ColorString(Character.toString(ExtChars.ARROW1_D), COLOR_FIELD));
+				getDisplay().writeCenter(
+						getDisplay().getHeightInCharacters() - 1,
+						new ColorString(
+							Character.toString(ExtChars.ARROW1_D),
+							COLOR_FIELD
+						)
+				);
 			}
 		}
 	}

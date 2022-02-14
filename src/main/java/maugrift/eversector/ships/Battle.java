@@ -139,10 +139,12 @@ public class Battle
 	}
 
 	/**
-	 * Gets all the ships fighting on the same side as the given ship. This list will not include the given ship.
+	 * Gets all the ships fighting on the same side as the given ship. This
+	 * list will not include the given ship.
 	 *
 	 * @param ship the ship to get allies of
-	 * @return all the ships fighting on the same side as the given ship, excluding the given ship itself
+	 * @return all the ships fighting on the same side as the given ship,
+	 *         excluding the given ship itself
 	 */
 	public List<Ship> getAllies(Ship ship)
 	{
@@ -164,8 +166,8 @@ public class Battle
 	}
 
 	/**
-	 * Returns true if the battle is continuing. This is the case when there is at least one attacker and at least one
-	 * defender.
+	 * Returns true if the battle is continuing. This is the case when there is
+	 * at least one attacker and at least one defender.
 	 *
 	 * @return true if the battle is continuing
 	 */
@@ -178,8 +180,8 @@ public class Battle
 	}
 
 	/**
-	 * Gives all ships an opportunity to attack others, alternating between sides. Ships that are destroyed will be
-	 * moved into the destroyed list.
+	 * Gives all ships an opportunity to attack others, alternating between
+	 * sides. Ships that are destroyed will be moved into the destroyed list.
 	 *
 	 * @return true if at least one ship attacked another
 	 */
@@ -256,7 +258,9 @@ public class Battle
 	 */
 	private boolean shipCanAttack(Ship ship)
 	{
-		return !ship.isDestroyed() && !surrendered.contains(ship) && ship.getAI() != null;
+		return !ship.isDestroyed() &&
+			!surrendered.contains(ship) &&
+			ship.getAI() != null;
 	}
 
 	/**
@@ -271,7 +275,9 @@ public class Battle
 
 		for (Ship enemy : getEnemies(ship))
 		{
-			if (enemy.getAI() != null && !fleeing.contains(enemy) && enemy.getAI().pursue())
+			if (enemy.getAI() != null &&
+					!fleeing.contains(enemy) &&
+					enemy.getAI().pursue())
 			{
 				pursuing.add(enemy);
 			}
@@ -281,10 +287,11 @@ public class Battle
 	}
 
 	/**
-	 * Processes the given ship's escape and the pursuits of all given pursuing ships. Creates a new battle between the
-	 * fleeing ship and its pursuers.
+	 * Processes the given ship's escape and the pursuits of all given pursuing
+	 * ships. Creates a new battle between the fleeing ship and its pursuers.
 	 *
-	 * @param ship     the fleeing ship, must be listed as fleeing in the battle
+	 * @param ship     the fleeing ship, must be listed as fleeing in the
+	 *                 battle
 	 * @param pursuing the list of ships pursuing the fleeing ship
 	 */
 	public void processEscape(Ship ship, List<Ship> pursuing)
@@ -341,7 +348,8 @@ public class Battle
 	}
 
 	/**
-	 * Processes the escape of the given ship, gathering all ships that will pursuer it.
+	 * Processes the escape of the given ship, gathering all ships that will
+	 * pursuer it.
 	 *
 	 * @param ship the fleeing ship
 	 * @see #processEscape(Ship, List)
@@ -421,7 +429,8 @@ public class Battle
 				looter = winners.get(looterIndex);
 			}
 
-			if (lootedShip.isLeader() && looter.getFaction() == lootedShip.getFaction())
+			if (lootedShip.isLeader() &&
+					looter.getFaction() == lootedShip.getFaction())
 			{
 				looter.getFaction().setLeader(looter);
 				looter.getFaction().addNews(looter.toColorString()
@@ -456,7 +465,8 @@ public class Battle
 	}
 
 	/**
-	 * Processes the entire battle. Only to be used when the player is not participating in the battle.
+	 * Processes the entire battle. Only to be used when the player is not
+	 * participating in the battle.
 	 */
 	public void processBattle()
 	{

@@ -33,7 +33,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
+public class BattleScreen
+	extends MenuScreen<AlignedMenu>
+	implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
 	public static final Color COLOR_SURRENDERED = AsciiPanel.brightBlack;
 
@@ -61,8 +63,18 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
 	 */
 	public BattleScreen(Battle battle, boolean nextTurn)
 	{
-		super(new AlignedMenu(new AlignedWindow(Main.display, 0, 0, new Border(2)),
-				COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+		super(
+				new AlignedMenu(
+					new AlignedWindow(
+						Main.display,
+						0,
+						0,
+						new Border(2)
+					),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+				)
+		);
 		this.battle = battle;
 		scanning = new LinkedList<>();
 
@@ -242,7 +254,11 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
 
 				if (player.isDestroyed())
 				{
-					return new EndScreen(new ColorString("You have been destroyed."), true, false);
+					return new EndScreen(
+							new ColorString("You have been destroyed."),
+							true,
+							false
+					);
 				}
 
 				return endBattle();
@@ -252,10 +268,15 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
 
 			if (player.isDestroyed())
 			{
-				return new EndScreen(new ColorString("You have been destroyed."), true, false);
+				return new EndScreen(
+						new ColorString("You have been destroyed."),
+						true,
+						false
+				);
 			}
 
-			if (!battle.getFleeing().contains(player) && new Pursue().canExecute(player) == null)
+			if (!battle.getFleeing().contains(player) &&
+					new Pursue().canExecute(player) == null)
 			{
 				List<Ship> enemiesEscaping = new LinkedList<>();
 				for (Ship escaping : battle.getFleeing())

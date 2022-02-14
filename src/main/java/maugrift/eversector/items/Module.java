@@ -50,10 +50,18 @@ public class Module extends Item
 	 * @param battle         if the module is sold at battle stations
 	 * @param effect         the effect the module applies when activated
 	 * @param actionResource the resource required for the module's action
-	 * @param actionCost     he amount of the resource required for the module's action
+	 * @param actionCost     the amount of the resource required for the
+	 *                       module's action
 	 */
-	public Module(String name, String description, int value, boolean battle, String effect, String actionResource, int actionCost)
-	{
+	public Module(
+			String name,
+			String description,
+			int value,
+			boolean battle,
+			String effect,
+			String actionResource,
+			int actionCost
+	) {
 		super(name, description, value);
 		this.battle = battle;
 		this.effect = effect;
@@ -70,10 +78,17 @@ public class Module extends Item
 	 * @param value          the value of the module
 	 * @param battle         if the module is sold at battle stations
 	 * @param actionResource the resource required for the module's action
-	 * @param actionCost     he amount of the resource required for the module's action
+	 * @param actionCost     the amount of the resource required for the
+	 *                       module's action
 	 */
-	public Module(String name, String description, int value, boolean battle, String actionResource, int actionCost)
-	{
+	public Module(
+			String name,
+			String description,
+			int value,
+			boolean battle,
+			String actionResource,
+			int actionCost
+	) {
 		this(name, description, value, battle, null, actionResource, actionCost);
 	}
 
@@ -91,20 +106,29 @@ public class Module extends Item
 	}
 
 	/**
-	 * Copying constructor that creates a new module identical to the one provided.
+	 * Copying constructor that creates a new module identical to the one
+	 * provided.
 	 *
 	 * @param copying the module to create a copy of
 	 */
 	public Module(Module copying)
 	{
-		this(copying.getName(), copying.getDescription(), copying.getValue(), copying.battle, copying.effect,
-				copying.actionResource, copying.actionCost);
+		this(
+				copying.getName(),
+				copying.getDescription(),
+				copying.getValue(),
+				copying.battle,
+				copying.effect,
+				copying.actionResource,
+				copying.actionCost
+		);
 	}
 
 	/**
 	 * Creates a new module from a set of Properties.
 	 *
-	 * @param properties the Properties object from which to construct the module
+	 * @param properties the Properties object from which to construct the
+	 *                   module
 	 */
 	public Module(Properties properties)
 	{
@@ -200,7 +224,8 @@ public class Module extends Item
 	/**
 	 * Repairs the module, returning true if it was possible to repair.
 	 *
-	 * @return true if the module was repaired, false if it was already repaired
+	 * @return true if the module was repaired, false if it was already
+	 *         repaired
 	 */
 	public boolean repair()
 	{
@@ -208,7 +233,8 @@ public class Module extends Item
 	}
 
 	/**
-	 * Sets the damage to either true or false, returning true if the damaged status was changed.
+	 * Sets the damage to either true or false, returning true if the damaged
+	 * status was changed.
 	 *
 	 * @param newDamage the state to set the damage to
 	 * @return true if the damaged status was changed

@@ -47,7 +47,9 @@ public class Mine implements Action
 			Region region = actor.getPlanetLocation().getRegion();
 			if (!region.hasOre())
 			{
-				return "There is no ore to mine in the " + region.toString().toLowerCase() + ".";
+				return "There is no ore to mine in the "
+					+ region.toString().toLowerCase()
+					+ ".";
 			}
 		}
 
@@ -58,7 +60,11 @@ public class Mine implements Action
 			return "Ore storage full; cannot acquire more.";
 		}
 
-		return actor.validateResources(RESOURCE, COST, "initiate mining operation");
+		return actor.validateResources(
+				RESOURCE,
+				COST,
+				"initiate mining operation"
+		);
 	}
 
 	@Override
@@ -72,8 +78,9 @@ public class Mine implements Action
 
 
 
-		Ore ore = actor.isLanded() ? actor.getPlanetLocation().getRegion().getOre() :
-				actor.getLocation().getGalaxy().getRandomOre();
+		Ore ore = actor.isLanded()
+			? actor.getPlanetLocation().getRegion().getOre()
+			: actor.getLocation().getGalaxy().getRandomOre();
 
 		int discard = actor.getResource(Resource.ORE).changeAmountWithDiscard(ore.getDensity());
 		actor.getResource(RESOURCE).changeAmount(-COST);
@@ -84,7 +91,11 @@ public class Mine implements Action
 			region.extractOre(1);
 			if (!region.hasOre())
 			{
-				actor.addPlayerMessage("You have mined the " + region + " dry.");
+				actor.addPlayerMessage(
+						"You have mined the "
+						+ region
+						+ " dry."
+				);
 				actor.changeGlobalReputation(Reputation.MINE_DRY);
 			}
 		}
@@ -92,16 +103,27 @@ public class Mine implements Action
 		{
 			// Chance of taking damage if mining from an asteroid belt
 			actor.damage(Planet.ASTEROID_DAMAGE, false);
-			actor.addPlayerMessage("Collided with an asteroid, dealing " + Planet.ASTEROID_DAMAGE + " damage.");
+			actor.addPlayerMessage(
+					"Collided with an asteroid, dealing "
+					+ Planet.ASTEROID_DAMAGE
+					+ " damage."
+			);
 		}
 
 		if (actor.isPlayer())
 		{
-			addMessage("Extracted 1 unit of " + ore.getName().toLowerCase() + ".");
+			addMessage(
+					"Extracted 1 unit of "
+					+ ore.getName().toLowerCase()
+					+ "."
+			);
 
 			if (discard > 0)
 			{
-				addMessage("Maximum ore capacity exceeded; " + discard + " units discarded.");
+				addMessage(
+						"Maximum ore capacity exceeded; "
+						+ discard
+						+ " units discarded.");
 			}
 		}
 

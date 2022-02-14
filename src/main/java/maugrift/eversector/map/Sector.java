@@ -41,8 +41,9 @@ public class Sector
 	private static final int MAX_STATIONS = 3;
 
 	/**
-	 * The minimum number of ships that will be allowed to exist in station systems. If the amount of ships drops below
-	 * this number, more will be spawned from a random station.
+	 * The minimum number of ships that will be allowed to exist in station
+	 * systems. If the amount of ships drops below this number, more will be
+	 * spawned from a random station.
 	 *
 	 * @see Galaxy#nextTurn() Galaxy#nextTurn()
 	 */
@@ -64,27 +65,30 @@ public class Sector
 	private Nebula nebula;
 
 	/**
-	 * The dominant faction in this sector. Manually updated when territory is claimed.
+	 * The dominant faction in this sector. Manually updated when territory is
+	 * claimed.
 	 *
 	 * @see #updateFaction()
 	 */
 	private Faction faction;
 
 	/**
-	 * All planets in the sector. Each index represents an orbit in the sector. If an index is null, there is no planet
-	 * at that orbit. If there is no star, this array will have a length of 0.
+	 * All planets in the sector. Each index represents an orbit in the sector.
+	 * If an index is null, there is no planet at that orbit. If there is no
+	 * star, this array will have a length of 0.
 	 */
 	private Planet[] planets;
 
 	/**
-	 * All stations in the sector. Each index represents an orbit in the sector. If an index is null, there is no
-	 * station at that orbit. If there is no star, this array will have a length of 0.
+	 * All stations in the sector. Each index represents an orbit in the
+	 * sector. If an index is null, there is no station at that orbit. If there
+	 * is no star, this array will have a length of 0.
 	 */
 	private Station[] stations;
 
 	/**
-	 * A list of all ships in the sector, excluding those on planets or at stations. Each ship must register when they
-	 * enter the sector.
+	 * A list of all ships in the sector, excluding those on planets or at
+	 * stations. Each ship must register when they enter the sector.
 	 *
 	 * @see Ship#setLocation(Location)
 	 */
@@ -108,7 +112,13 @@ public class Sector
 	 */
 	public void init()
 	{
-		double chance = 0.2 + Math.min(0.7, 1.0 / location.getCoord().distance(location.getGalaxy().getCenter()));
+		double chance = 0.2
+			+ Math.min(
+				0.7,
+				1.0 / location.getCoord().distance(
+					location.getGalaxy().getCenter()
+			)
+		);
 
 		if (Utility.getChance(rng, chance))
 		{
@@ -276,7 +286,8 @@ public class Sector
 	}
 
 	/**
-	 * Calculates the dominant faction in the sector, based on their control of claimable bodies.
+	 * Calculates the dominant faction in the sector, based on their control of
+	 * claimable bodies.
 	 */
 	public final void updateFaction()
 	{
@@ -376,11 +387,13 @@ public class Sector
 	}
 
 	/**
-	 * Gets the number of stations of the given type controlled by the given faction.
+	 * Gets the number of stations of the given type controlled by the given
+	 * faction.
 	 *
 	 * @param faction the faction to check
 	 * @param battle  true if the type of station to check for is battle
-	 * @return the number of stations of the given type controlled by the given faction
+	 * @return the number of stations of the given type controlled by the given
+	 *         faction
 	 */
 	public int getStationTypesControlledBy(Faction faction, boolean battle)
 	{
@@ -388,7 +401,9 @@ public class Sector
 
 		for (Station station : stations)
 		{
-			if (station != null && station.getFaction() == faction && station.isBattle() == battle)
+			if (station != null &&
+					station.getFaction() == faction &&
+					station.isBattle() == battle)
 			{
 				stationsClaimed++;
 			}
@@ -431,7 +446,8 @@ public class Sector
 	}
 
 	/**
-	 * Gets the sector's symbol, based on the player's presence or its contents.
+	 * Gets the sector's symbol, based on the player's presence or its
+	 * contents.
 	 *
 	 * @return the sector's symbol as a ColorChar
 	 */
@@ -481,7 +497,8 @@ public class Sector
 	}
 
 	/**
-	 * Gets the symbol of the sector's star, or the player's symbol if they are in the sector.
+	 * Gets the symbol of the sector's star, or the player's symbol if they are
+	 * in the sector.
 	 *
 	 * @return the sector's star symbol
 	 */
@@ -508,7 +525,8 @@ public class Sector
 	}
 
 	/**
-	 * Returns the number of ships in the sector, including those on its planets and in its stations.
+	 * Returns the number of ships in the sector, including those on its
+	 * planets and in its stations.
 	 *
 	 * @return the total number of ships in the sector
 	 */
@@ -536,10 +554,12 @@ public class Sector
 	}
 
 	/**
-	 * Returns the number of ships in the sector that belong to a specified faction.
+	 * Returns the number of ships in the sector that belong to a specified
+	 * faction.
 	 *
 	 * @param faction the faction that ships will be counted in
-	 * @return the total number of ships in the sector that belong to the specified faction
+	 * @return the total number of ships in the sector that belong to the
+	 *         specified faction
 	 */
 	public int getNShips(Faction faction)
 	{
@@ -611,7 +631,8 @@ public class Sector
 	/**
 	 * Returns the planet at the specified orbit.
 	 *
-	 * @param orbit the orbit of the planet, must be a valid orbit (between 1 and 10)
+	 * @param orbit the orbit of the planet, must be a valid orbit (between 1
+	 *              and 10)
 	 * @return the planet at the specified orbit, null if invalid orbit
 	 */
 	public Planet getPlanetAt(int orbit)
@@ -622,7 +643,8 @@ public class Sector
 	/**
 	 * Returns the station at the specified orbit.
 	 *
-	 * @param orbit the orbit of the station, must be a valid orbit (between 1 and 10)
+	 * @param orbit the orbit of the station, must be a valid orbit (between 1
+	 *              and 10)
 	 * @return the planet at the specified orbit, null if invalid orbit
 	 */
 	public Station getStationAt(int orbit)
@@ -653,10 +675,12 @@ public class Sector
 	}
 
 	/**
-	 * Returns the station in the sector with the given name, null if not found.
+	 * Returns the station in the sector with the given name, null if not
+	 * found.
 	 *
 	 * @param name the name to search for
-	 * @return the station found in the sector with the given name, null if not found
+	 * @return the station found in the sector with the given name, null if not
+	 *         found
 	 */
 	public Station getStation(String name)
 	{
@@ -682,7 +706,9 @@ public class Sector
 		}
 
 		// The (... - 1) + 2 is to ensure at least one planet
-		for (int i = 0; i < rng.nextInt(Math.min(MAX_PLANETS, star.getMass()) - 1) + 2; i++)
+		for (int i = 0;
+				i < rng.nextInt(Math.min(MAX_PLANETS, star.getMass()) - 1) + 2;
+				i++)
 		{
 			int j;
 			do
@@ -708,7 +734,9 @@ public class Sector
 
 		// The (...) + 1  is to ensure at least 1 station
 		// Power is divided by 2 to avoid overpopulating small sectors
-		for (int i = 0; i < rng.nextInt(Math.min(MAX_STATIONS, star.getMass() / 2)) + 1; i++)
+		for (int i = 0;
+				i < rng.nextInt(Math.min(MAX_STATIONS, star.getMass() / 2)) + 1;
+				i++)
 		{
 			int j;
 			do
@@ -718,8 +746,10 @@ public class Sector
 
 			// There is no need to do a check for if this is a station system,
 			// because stations would not otherwise be generated
-			stations[j] = new Station(new SectorLocation(getLocation(), j + 1),
-					location.getGalaxy().getRandomFaction());
+			stations[j] = new Station(
+					new SectorLocation(getLocation(), j + 1),
+					location.getGalaxy().getRandomFaction()
+			);
 		}
 	}
 
@@ -734,8 +764,13 @@ public class Sector
 
 		for (int i = 0; i < nShips; i++)
 		{
-			Ship ship = new Ship(new SectorLocation(location, rng.nextInt(star.getMass()) + 1),
-					location.getGalaxy().getRandomFaction());
+			Ship ship = new Ship(
+					new SectorLocation(
+						location,
+						rng.nextInt(star.getMass()) + 1
+					),
+					location.getGalaxy().getRandomFaction()
+			);
 			ships.add(ship);
 			location.getGalaxy().getShips().add(ship);
 		}
@@ -751,7 +786,9 @@ public class Sector
 	{
 		for (Ship ship : ships)
 		{
-			if (ship != null && (name.equalsIgnoreCase(ship.getName()) || name.equalsIgnoreCase(ship.toString())))
+			if (ship != null &&
+					(name.equalsIgnoreCase(ship.getName()) ||
+					 name.equalsIgnoreCase(ship.toString())))
 			{
 				return ship;
 			}
@@ -909,7 +946,12 @@ public class Sector
 
 			if (isCommonFaction && commonFaction != null)
 			{
-				symbols.add(new ColorChar(symbol.get(), commonFaction.getColor()));
+				symbols.add(
+						new ColorChar(
+							symbol.get(),
+							commonFaction.getColor()
+						)
+				);
 			}
 			else
 			{
@@ -955,7 +997,9 @@ public class Sector
 		int notShown = 0;
 		for (Ship ship : ships)
 		{
-			if (ship != null && ship.getSectorLocation().getOrbit() == orbit && !ship.isPlayer())
+			if (ship != null &&
+					ship.getSectorLocation().getOrbit() == orbit &&
+					!ship.isPlayer())
 			{
 				if (contents.size() >= Star.StarMass.getLargest().getMass())
 				{
@@ -975,14 +1019,21 @@ public class Sector
 		if (notShown > 0)
 		{
 			// (notShown + 1) accounts for the replaced line
-			contents.set(11, new ColorString("(" + (notShown + 1) + " more)", AsciiPanel.brightBlack));
+			contents.set(
+					11,
+					new ColorString(
+						"(" + (notShown + 1) + " more)",
+						AsciiPanel.brightBlack
+					)
+			);
 		}
 
 		return contents;
 	}
 
 	/**
-	 * Returns true if a specified orbit is valid, meaning it ranges between 1 and the constant number of orbits.
+	 * Returns true if a specified orbit is valid, meaning it ranges between 1
+	 * and the constant number of orbits.
 	 *
 	 * @param orbit the orbit to validate
 	 * @return true if the orbit is between 1 and the constant number of orbits
@@ -993,7 +1044,8 @@ public class Sector
 	}
 
 	/**
-	 * Returns true if there are any planets or stations in this sector that can be claimed.
+	 * Returns true if there are any planets or stations in this sector that
+	 * can be claimed.
 	 *
 	 * @return true if there are any rocky planets or stations in the sector
 	 */
@@ -1016,8 +1068,9 @@ public class Sector
 	}
 
 	/**
-	 * Generates a random name to be used in sectors, and it must be final so that it cannot modify sector's
-	 * constructor. This allows for 67,600 possible designations, enough for a grid of 260x260 sectors.
+	 * Generates a random name to be used in sectors, and it must be final so
+	 * that it cannot modify sector's constructor. This allows for 67,600
+	 * possible designations, enough for a grid of 260x260 sectors.
 	 *
 	 * @return a String consisting of two characters, a hyphen, and two numbers
 	 */
@@ -1031,7 +1084,8 @@ public class Sector
 	}
 
 	/**
-	 * Scans through the list of ships, removing ones that are on planets and stations.
+	 * Scans through the list of ships, removing ones that are on planets and
+	 * stations.
 	 */
 	public void resetDuplicateShips()
 	{

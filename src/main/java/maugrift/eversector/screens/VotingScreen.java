@@ -22,7 +22,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<PopupWindow>, PopupMaster
+public class VotingScreen
+	extends MenuScreen<PopupMenu>
+	implements WindowScreen<PopupWindow>, PopupMaster
 {
 
 	/**
@@ -35,8 +37,17 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
 	 */
 	public VotingScreen()
 	{
-		super(new PopupMenu(new PopupWindow(Main.display, new Border(1), new Line(true, 1, 1)),
-				COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+		super(
+				new PopupMenu(
+					new PopupWindow(
+						Main.display,
+						new Border(1),
+						new Line(true, 1, 1)
+					),
+					COLOR_SELECTION_FOREGROUND,
+					COLOR_SELECTION_BACKGROUND
+				)
+		);
 		pendingElection.gatherVotes();
 		setUpMenu();
 	}
@@ -101,18 +112,32 @@ public class VotingScreen extends MenuScreen<PopupMenu> implements WindowScreen<
 		List<ColorString> contents = getWindow().getContents();
 		contents.add(pendingElection.getDescription());
 		contents.add(new ColorString("The candidates are listed below."));
-		contents.add(new ColorString("Press ").add(new ColorString("enter", COLOR_FIELD)).add(
-				" on a candidate to vote or ").add(new ColorString("escape", COLOR_FIELD)).add(" to abstain."));
+		contents.add(new ColorString("Press ")
+				.add(new ColorString("enter", COLOR_FIELD))
+				.add(" on a candidate to vote or ")
+				.add(new ColorString("escape", COLOR_FIELD))
+				.add(" to abstain."));
 
 		getWindow().addSeparator();
 		for (int i = 0; i < pendingElection.getCandidates().size(); i++)
 		{
 			getMenu().getRestrictions().add(i + 4);
 			Ship candidate = pendingElection.getCandidates().get(i);
-			ReputationRange reputation = candidate.getReputation(pendingElection.getFaction()).getRange();
-			contents.add(new ColorString(candidate.toString())
+			ReputationRange reputation = candidate.getReputation(
+					pendingElection.getFaction()
+			).getRange();
+			contents.add(
+					new ColorString(candidate.toString())
 					.add(" ")
-					.add(new ColorString("(" + reputation.getAdjective() + ")", reputation.getColor())));
+					.add(
+						new ColorString(
+							"("
+							+ reputation.getAdjective()
+							+ ")",
+							reputation.getColor()
+						)
+					)
+			);
 		}
 
 		getMenu().setSelectionIndex(4);

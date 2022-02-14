@@ -11,8 +11,8 @@ import maugrift.eversector.faction.Relationship.RelationshipType;
 public class RelationshipChange
 {
 	/**
-	 * The other faction in the relationship. Generally the first faction in the relationship is the one creating the
-	 * class.
+	 * The other faction in the relationship. Generally the first faction in
+	 * the relationship is the one creating the class.
 	 */
 	private final Faction otherFaction;
 
@@ -32,8 +32,8 @@ public class RelationshipChange
 	private final ColorString message;
 
 	/**
-	 * If true, will negate the answer to the question. By default, saying yes to the question will agree to the
-	 * change.
+	 * If true, will negate the answer to the question. By default, saying yes
+	 * to the question will agree to the change.
 	 */
 	private final boolean negateAnswer;
 
@@ -46,8 +46,13 @@ public class RelationshipChange
 	 * @param message      the message
 	 * @param negateAnswer true if the answer will be negated
 	 */
-	public RelationshipChange(Faction otherFaction, RelationshipType relationship, String question, ColorString message, boolean negateAnswer)
-	{
+	public RelationshipChange(
+			Faction otherFaction,
+			RelationshipType relationship,
+			String question,
+			ColorString message,
+			boolean negateAnswer
+	) {
 		this.otherFaction = otherFaction;
 		this.relationship = relationship;
 		this.question = question;

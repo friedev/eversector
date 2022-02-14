@@ -24,15 +24,15 @@ import static maugrift.eversector.Main.rng;
 public class AI
 {
 	public static final String[] modulePriority = new String[]{
-			Weapon.PULSE_BEAM,
-			Weapon.TORPEDO_TUBE,
-			Weapon.LASER,
-			Module.SHIELD,
-			Module.CLOAKING_DEVICE,
-			Module.WARP_DRIVE,
-			Module.REFINERY,
-			Module.SOLAR_ARRAY,
-			Module.SCANNER
+		Weapon.PULSE_BEAM,
+		Weapon.TORPEDO_TUBE,
+		Weapon.LASER,
+		Module.SHIELD,
+		Module.CLOAKING_DEVICE,
+		Module.WARP_DRIVE,
+		Module.REFINERY,
+		Module.SOLAR_ARRAY,
+		Module.SCANNER,
 	};
 
 	public static final String[] expanderPriority = new String[]{
@@ -70,7 +70,8 @@ public class AI
 	}
 
 	/**
-	 * Makes the ship perform an action. Has no effect if the ship is in a battle.
+	 * Makes the ship perform an action. Has no effect if the ship is in a
+	 * battle.
 	 *
 	 * @see #performBattleAction()
 	 */
@@ -230,10 +231,22 @@ public class AI
 	 */
 	private void buyResources()
 	{
-		new TransactResource(Resource.ORE, -ship.getMaxSellAmount(Resource.ORE)).execute(ship);
-		new TransactResource(Resource.FUEL, ship.getMaxBuyAmount(Resource.FUEL)).execute(ship);
-		new TransactResource(Resource.HULL, ship.getMaxBuyAmount(Resource.HULL)).execute(ship);
-		new TransactResource(Resource.ENERGY, ship.getMaxBuyAmount(Resource.ENERGY)).execute(ship);
+		new TransactResource(
+				Resource.ORE,
+				-ship.getMaxSellAmount(Resource.ORE)
+		).execute(ship);
+		new TransactResource(
+				Resource.FUEL,
+				ship.getMaxBuyAmount(Resource.FUEL)
+		).execute(ship);
+		new TransactResource(
+				Resource.HULL,
+				ship.getMaxBuyAmount(Resource.HULL)
+		).execute(ship);
+		new TransactResource(
+				Resource.ENERGY,
+				ship.getMaxBuyAmount(Resource.ENERGY)
+		).execute(ship);
 	}
 
 	/**
@@ -276,7 +289,10 @@ public class AI
 			}
 
 			String expanderName = resource.getExpander().getName();
-			new TransactResource(expanderName, ship.getMaxBuyAmount(expanderName)).execute(ship);
+			new TransactResource(
+					expanderName,
+					ship.getMaxBuyAmount(expanderName)
+			).execute(ship);
 		}
 	}
 
@@ -293,7 +309,9 @@ public class AI
 		}
 
 		Ship player = ship.getLocation().getGalaxy().getPlayer();
-		if (player != null && player.getLocation().equals(ship.getLocation()) && ship.isHostile(player.getFaction()))
+		if (player != null &&
+				player.getLocation().equals(ship.getLocation()) &&
+				ship.isHostile(player.getFaction()))
 		{
 			StartBattle startBattle = new StartBattle(player);
 			if (startBattle.canExecuteBool(ship))
@@ -340,7 +358,8 @@ public class AI
 			return;
 		}
 
-		if (ship.getResource(Resource.ORE).isFull() || ship.validateResources(Mine.RESOURCE, Mine.COST, "mine") != null)
+		if (ship.getResource(Resource.ORE).isFull() ||
+				ship.validateResources(Mine.RESOURCE, Mine.COST, "mine") != null)
 		{
 			destination = findClosestStation();
 			return;
@@ -363,7 +382,9 @@ public class AI
 				return ship.getPlanetLocation();
 			}
 
-			SectorLocation current = getPlanetMiningDestination(ship.getSectorLocation().getPlanet());
+			SectorLocation current = getPlanetMiningDestination(
+					ship.getSectorLocation().getPlanet()
+			);
 			if (current != null)
 			{
 				return current;
@@ -373,8 +394,12 @@ public class AI
 			int orbit = ship.getSectorLocation().getOrbit();
 			for (int offset = 1; offset < sector.getOrbits(); offset++)
 			{
-				SectorLocation minusOffset = getPlanetMiningDestination(sector.getPlanetAt(orbit - offset));
-				SectorLocation plusOffset = getPlanetMiningDestination(sector.getPlanetAt(orbit + offset));
+				SectorLocation minusOffset = getPlanetMiningDestination(
+						sector.getPlanetAt(orbit - offset)
+				);
+				SectorLocation plusOffset = getPlanetMiningDestination(
+						sector.getPlanetAt(orbit + offset)
+				);
 
 				if (minusOffset != null)
 				{
@@ -410,7 +435,9 @@ public class AI
 
 			for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
 			{
-				SectorLocation planetLocation = getPlanetMiningDestination(sector.getPlanetAt(orbit));
+				SectorLocation planetLocation = getPlanetMiningDestination(
+						sector.getPlanetAt(orbit)
+				);
 				if (planetLocation != null)
 				{
 					return planetLocation;
@@ -473,8 +500,12 @@ public class AI
 				int orbit = ship.getSectorLocation().getOrbit();
 				for (int offset = 1; offset < sector.getOrbits(); offset++)
 				{
-					StationLocation minusOffset = getStationDestination(sector.getStationAt(orbit - offset));
-					StationLocation plusOffset = getStationDestination(sector.getStationAt(orbit + offset));
+					StationLocation minusOffset = getStationDestination(
+							sector.getStationAt(orbit - offset)
+					);
+					StationLocation plusOffset = getStationDestination(
+							sector.getStationAt(orbit + offset)
+					);
 
 					if (minusOffset != null)
 					{
@@ -511,7 +542,9 @@ public class AI
 
 			for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
 			{
-				StationLocation stationLocation = getStationDestination(sector.getStationAt(orbit));
+				StationLocation stationLocation = getStationDestination(
+						sector.getStationAt(orbit)
+				);
 				if (stationLocation != null)
 				{
 					return stationLocation;
@@ -535,7 +568,8 @@ public class AI
 			return null;
 		}
 
-		if (!ship.isHostile(station.getFaction()) || ship.getCredits() >= Station.CLAIM_COST)
+		if (!ship.isHostile(station.getFaction()) ||
+				ship.getCredits() >= Station.CLAIM_COST)
 		{
 			return station.getLocation().dock();
 		}
@@ -558,12 +592,18 @@ public class AI
 		int orbit = ship.getSectorLocation().getOrbit();
 		for (int offset = 1; offset < sector.getOrbits(); offset++)
 		{
-			SectorLocation minusOffset = getPlanetClaimingDestination(sector.getPlanetAt(orbit - offset));
-			SectorLocation plusOffset = getPlanetClaimingDestination(sector.getPlanetAt(orbit + offset));
+			SectorLocation minusOffset = getPlanetClaimingDestination(
+					sector.getPlanetAt(orbit - offset)
+			);
+			SectorLocation plusOffset = getPlanetClaimingDestination(
+					sector.getPlanetAt(orbit + offset)
+			);
 
-			if (minusOffset != null && ship.getCredits() >= minusOffset.getPlanet().getClaimCost())
+			if (minusOffset != null &&
+					ship.getCredits() >= minusOffset.getPlanet().getClaimCost())
 			{
-				if (plusOffset != null && ship.getCredits() >= plusOffset.getPlanet().getClaimCost())
+				if (plusOffset != null &&
+						ship.getCredits() >= plusOffset.getPlanet().getClaimCost())
 				{
 					return rng.nextBoolean() ? minusOffset : plusOffset;
 				}
@@ -603,7 +643,9 @@ public class AI
 	 */
 	private StationLocation findInvasionDestination()
 	{
-		if (ship.getCredits() < Station.CLAIM_COST || !ship.hasWeapons() || !ship.getResource(Resource.FUEL).isFull())
+		if (ship.getCredits() < Station.CLAIM_COST ||
+				!ship.hasWeapons() ||
+				!ship.getResource(Resource.FUEL).isFull())
 		{
 			return null;
 		}
@@ -626,8 +668,12 @@ public class AI
 				int orbit = ship.getSectorLocation().getOrbit();
 				for (int offset = 1; offset < sector.getOrbits(); offset++)
 				{
-					StationLocation minusOffset = getStationInvasionDestination(sector.getStationAt(orbit - offset));
-					StationLocation plusOffset = getStationInvasionDestination(sector.getStationAt(orbit + offset));
+					StationLocation minusOffset = getStationInvasionDestination(
+							sector.getStationAt(orbit - offset)
+					);
+					StationLocation plusOffset = getStationInvasionDestination(
+							sector.getStationAt(orbit + offset)
+					);
 
 					if (minusOffset != null)
 					{
@@ -664,7 +710,9 @@ public class AI
 
 			for (int orbit = sector.getOrbits(); orbit > 0; orbit--)
 			{
-				StationLocation stationLocation = getStationInvasionDestination(sector.getStationAt(orbit));
+				StationLocation stationLocation = getStationInvasionDestination(
+						sector.getStationAt(orbit)
+				);
 				if (stationLocation != null)
 				{
 					return stationLocation;
@@ -696,7 +744,8 @@ public class AI
 	}
 
 	/**
-	 * Returns true if the stored destination exists, can be traveled to, and is not the ship's current location.
+	 * Returns true if the stored destination exists, can be traveled to, and
+	 * is not the ship's current location.
 	 *
 	 * @return true if the stored destination is valid
 	 */
@@ -729,8 +778,12 @@ public class AI
 			if (destination instanceof PlanetLocation &&
 				ship.getSectorLocation().getPlanet() == ((SectorLocation) destination).getPlanet())
 			{
-				return new Relocate(Utility.toGoToCardinal(ship.getPlanetLocation().getRegionCoord(),
-						((PlanetLocation) destination).getRegionCoord()));
+				return new Relocate(
+						Utility.toGoToCardinal(
+							ship.getPlanetLocation().getRegionCoord(),
+							((PlanetLocation) destination).getRegionCoord()
+						)
+				);
 			}
 
 			return new Takeoff();
@@ -738,7 +791,8 @@ public class AI
 
 		if (ship.isInSector())
 		{
-			if (destination instanceof SectorLocation && ship.getLocation().getSector() == destination.getSector())
+			if (destination instanceof SectorLocation &&
+					ship.getLocation().getSector() == destination.getSector())
 			{
 				if (ship.getSectorLocation().getOrbit() == ((SectorLocation) destination).getOrbit())
 				{
@@ -753,7 +807,9 @@ public class AI
 					}
 				}
 
-				return new Orbit(ship.getSectorLocation().getOrbit() < ((SectorLocation) destination).getOrbit());
+				return new Orbit(
+						ship.getSectorLocation().getOrbit() < ((SectorLocation) destination).getOrbit()
+				);
 			}
 
 			return new Orbit(true);
@@ -773,12 +829,18 @@ public class AI
 			}
 		}
 
-		Burn burn = new Burn(Utility.toGoToCardinal(ship.getLocation().getCoord(), destination.getCoord()));
+		Burn burn = new Burn(
+				Utility.toGoToCardinal(
+					ship.getLocation().getCoord(),
+					destination.getCoord()
+				)
+		);
 		return burn.canExecuteBool(ship) ? burn : null;
 	}
 
 	/**
-	 * Performs an action when no others are possible. Will destroy the ship if no emergency actions can be performed.
+	 * Performs an action when no others are possible. Will destroy the ship if
+	 * no emergency actions can be performed.
 	 */
 	private Action performEmergencyAction()
 	{
@@ -838,7 +900,8 @@ public class AI
 	}
 
 	/**
-	 * Gets the "friendliness" of the given ship. Used when deciding which side of a battle to join.
+	 * Gets the "friendliness" of the given ship. Used when deciding which side
+	 * of a battle to join.
 	 *
 	 * @param other the ship to get the friendliness of
 	 * @return the friendliness of the given ship
@@ -897,7 +960,8 @@ public class AI
 		}
 
 		Ship player = ship.getLocation().getGalaxy().getPlayer();
-		boolean playerInBattle = player != null && ship.getBattleLocation().getShips().contains(player);
+		boolean playerInBattle = player != null &&
+			ship.getBattleLocation().getShips().contains(player);
 
 		if (!willAttack())
 		{
@@ -942,7 +1006,9 @@ public class AI
 
 		if (playerInBattle)
 		{
-			player.addPlayerColorMessage(ship.toColorString().add(" surrenders."));
+			player.addPlayerColorMessage(
+					ship.toColorString().add(" surrenders.")
+			);
 		}
 		return new Surrender();
 	}
@@ -973,9 +1039,11 @@ public class AI
 	}
 
 	/**
-	 * Votes on a candidate for faction leader, from the given list of candidates.
+	 * Votes on a candidate for faction leader, from the given list of
+	 * candidates.
 	 *
-	 * @param candidates the candidates for faction leader that the ship can choose from
+	 * @param candidates the candidates for faction leader that the ship can
+	 *                   choose from
 	 * @return the ship that this ship is voting for
 	 */
 	public Ship vote(List<Ship> candidates)
@@ -987,7 +1055,8 @@ public class AI
 			Ship candidate = candidates.get(i);
 			preferences[i] = 0;
 
-			if (ship.getHigherLevel() != null && ship.getHigherLevel().equals(candidate.getHigherLevel()))
+			if (ship.getHigherLevel() != null &&
+					ship.getHigherLevel().equals(candidate.getHigherLevel()))
 			{
 				preferences[i] += 2;
 			}

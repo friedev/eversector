@@ -38,7 +38,8 @@ public enum Option
 	KEEP_SEED("Keep Seed", false, false),
 
 	/**
-	 * The font used on the game's AsciiPanel. The value of this option refers to the index of Main.fonts.
+	 * The font used on the game's AsciiPanel. The value of this option refers
+	 * to the index of Main.fonts.
 	 *
 	 * @see Main#fonts
 	 */
@@ -75,7 +76,8 @@ public enum Option
 	LEADERBOARD("Leaderboard", true, true),
 
 	/**
-	 * If true, will give the player prompts on which candidate to vote for each election.
+	 * If true, will give the player prompts on which candidate to vote for
+	 * each election.
 	 */
 	VOTING("Voting Prompts", true, true);
 
@@ -180,7 +182,8 @@ public enum Option
 	public ColorString toColorString()
 	{
 		String property = getProperty();
-		return new ColorString(key + ": ").add(new ColorString(getProperty(), getColor()));
+		return new ColorString(key + ": ")
+			.add(new ColorString(getProperty(), getColor()));
 	}
 
 	/**

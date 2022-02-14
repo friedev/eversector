@@ -30,11 +30,14 @@ import java.util.List;
 import static maugrift.eversector.Main.*;
 
 /**
- * The screen used to interact with stations, especially buying and selling items.
+ * The screen used to interact with stations, especially buying and selling
+ * items.
  *
  * @author Maugrift
  */
-class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<AlignedWindow>, KeyScreen
+class StationScreen
+	extends MenuScreen<AlignedMenu>
+	implements WindowScreen<AlignedWindow>, KeyScreen
 {
 	/**
 	 * True if the player is buying items.
@@ -61,8 +64,18 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	 */
 	public StationScreen()
 	{
-		super(new AlignedMenu(new AlignedWindow(Main.display, 0, 0, new Border(2)),
-				COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+		super(
+				new AlignedMenu(
+					new AlignedWindow(
+						Main.display,
+						0,
+						0,
+						new Border(2)
+					),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+			)
+		);
 		buying = true;
 	}
 
@@ -149,11 +162,16 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_TAB:
 			{
-				int offset = getMenu().getSelectionIndex() - (buying ? buyStart : sellStart);
+				int offset = getMenu().getSelectionIndex()
+					- (buying ? buyStart : sellStart);
 				buying = !buying;
 				resetSelection();
 				getMenu().setSelectionIndex(
-						Math.min(getMenu().getSelectionIndex() + offset, buying ? sellStart - 2 : sellEnd));
+						Math.min(
+							getMenu().getSelectionIndex() + offset,
+							buying ? sellStart - 2 : sellEnd
+						)
+				);
 				break;
 			}
 			case KeyEvent.VK_R:
@@ -197,8 +215,14 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	{
 		List<Keybinding> keybindings = new ArrayList<>();
 		keybindings.add(new Keybinding("buy/sell item", "enter"));
-		keybindings.add(new Keybinding("toggle buy/sell", "tab", Character.toString(ExtChars.ARROW1_L),
-				Character.toString(ExtChars.ARROW1_R)));
+		keybindings.add(
+				new Keybinding(
+					"toggle buy/sell",
+					"tab",
+					Character.toString(ExtChars.ARROW1_L),
+					Character.toString(ExtChars.ARROW1_R)
+				)
+		);
 		keybindings.add(new Keybinding("restock", "r"));
 		keybindings.add(new Keybinding("claim", "c"));
 		keybindings.add(new Keybinding("undock", "escape"));
@@ -207,7 +231,11 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 
 	private void resetSelection()
 	{
-		getMenu().setSelectionIndex(buying || getWindow().getContents().get(sellStart) == null ? buyStart : sellStart);
+		getMenu().setSelectionIndex(
+				buying || getWindow().getContents().get(sellStart) == null
+				? buyStart
+				: sellStart
+		);
 	}
 
 	/**
@@ -222,8 +250,11 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 		if (!player.getResource(Resource.ORE).isEmpty())
 		{
 			new TransactResource(Resource.ORE, -1, false);
-			restocked = new TransactResource(Resource.ORE, -player.getMaxSellAmount(Resource.ORE), false).executeBool
-					(player);
+			restocked = new TransactResource(
+					Resource.ORE,
+					-player.getMaxSellAmount(Resource.ORE),
+					false
+				).executeBool(player);
 		}
 
 		restocked = restock(Resource.HULL) || restocked;
@@ -233,7 +264,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	}
 
 	/**
-	 * Purchases the maximum amount of one item, returning true if the item was restocked.
+	 * Purchases the maximum amount of one item, returning true if the item was
+	 * restocked.
 	 *
 	 * @param name the name of the resource to restock
 	 * @return true if the resource was restocked
@@ -241,8 +273,13 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	private boolean restock(String name)
 	{
 		Resource resource = player.getResource(name);
-		return resource != null && !resource.isFull() && new TransactResource(name,
-				player.getMaxBuyAmount(resource), false).executeBool(player);
+		return resource != null &&
+			!resource.isFull() &&
+			new TransactResource(
+					name,
+					player.getMaxBuyAmount(resource),
+					false
+			).executeBool(player);
 	}
 
 	@Override
@@ -253,7 +290,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 
 	private void setUpMenu()
 	{
-		int prevOffset = getMenu().getSelectionIndex() - (buying ? buyStart : sellStart);
+		int prevOffset = getMenu().getSelectionIndex()
+			- (buying ? buyStart : sellStart);
 
 		List<ColorString> contents = getWindow().getContents();
 		Station station = player.getSectorLocation().getStation();
@@ -262,9 +300,19 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 		contents.clear();
 		getWindow().getSeparators().clear();
 		contents.add(new ColorString(station.toString()));
-		contents.add(new ColorString("Orbit: ").add(
-				new ColorString(Integer.toString(player.getSectorLocation().getOrbit()), COLOR_FIELD)));
-		contents.add(new ColorString("Ruler: ").add(station.getFaction()));
+		contents.add(
+				new ColorString("Orbit: ")
+				.add(
+					new ColorString(
+						Integer.toString(player.getSectorLocation().getOrbit()),
+						COLOR_FIELD
+					)
+				)
+		);
+		contents.add(
+				new ColorString("Ruler: ")
+				.add(station.getFaction())
+		);
 
 		if (ships.size() > 1)
 		{
@@ -312,7 +360,15 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 		{
 			if (resource.getNExpanders() > 0)
 			{
-				index = addEntry(getItemString(station.getExpander(resource.getExpander().getName()), false), index);
+				index = addEntry(
+						getItemString(
+							station.getExpander(
+								resource.getExpander().getName()
+							),
+							false
+						),
+						index
+				);
 			}
 		}
 
@@ -337,7 +393,9 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 		}
 		else
 		{
-			getMenu().setSelectionIndex((buying ? buyStart : sellStart) + prevOffset);
+			getMenu().setSelectionIndex(
+					(buying ? buyStart : sellStart) + prevOffset
+			);
 		}
 
 		getWindow().addSeparator(new Line(true, 2, 1));
@@ -351,7 +409,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	 */
 	private Item getSelectedItem()
 	{
-		if (getMenu().getSelectionIndex() >= getWindow().getContents().size() || getMenu().getSelection() == null)
+		if (getMenu().getSelectionIndex() >= getWindow().getContents().size() ||
+				getMenu().getSelection() == null)
 		{
 			resetSelection();
 		}
@@ -369,7 +428,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	}
 
 	/**
-	 * Adds the given line to the contents and restrictions and increments the given index.
+	 * Adds the given line to the contents and restrictions and increments the
+	 * given index.
 	 *
 	 * @param line  the line to add
 	 * @param index the index to increment and to add a restriction at
@@ -393,8 +453,16 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 	private ColorString getItemString(Item item, boolean buying)
 	{
 		ItemColors colors = new ItemColors(item, buying);
-		return new ColorString(item.toString(), colors.item).add(
-				new ColorString(" (" + Integer.toString(item.getPrice()) + Symbol.CREDITS + ")", colors.credits));
+		return new ColorString(item.toString(), colors.item)
+			.add(
+					new ColorString(
+						" ("
+						+ Integer.toString(item.getPrice())
+						+ Symbol.CREDITS
+						+ ")",
+						colors.credits
+					)
+			);
 	}
 
 	/**
@@ -442,7 +510,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 		{
 			if (buying)
 			{
-				if (item instanceof BaseResource && player.getResource(item.getName()).isFull())
+				if (item instanceof BaseResource &&
+						player.getResource(item.getName()).isFull())
 				{
 					this.item = DISABLED;
 					credits = DISABLED;
@@ -461,7 +530,8 @@ class StationScreen extends MenuScreen<AlignedMenu> implements WindowScreen<Alig
 			}
 			else
 			{
-				if (item instanceof Module && !player.getSectorLocation().getStation().sells((Module) item))
+				if (item instanceof Module &&
+						!player.getSectorLocation().getStation().sells((Module) item))
 				{
 					this.item = INVALID;
 					credits = DISABLED;

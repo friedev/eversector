@@ -26,7 +26,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-public class LandScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class LandScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -45,9 +47,16 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
 	{
 		super(Main.display);
 		Planet planet = player.getSectorLocation().getPlanet();
-		window = new PopupWindow(Main.display, new Border(1), new Line(true, 1, 1));
+		window = new PopupWindow(
+				Main.display,
+				new Border(1),
+				new Line(true, 1, 1)
+		);
 		window.getContents().addAll(planet.toColorStrings(Main.showFactions));
-		selection = new PlanetLocation(player.getSectorLocation(), Coord.get(0, 0));
+		selection = new PlanetLocation(
+				player.getSectorLocation(),
+				Coord.get(0, 0)
+		);
 	}
 
 	@Override
@@ -84,7 +93,9 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
 	@Override
 	public Screen onConfirm()
 	{
-		String landExecution = new Land(selection.getRegionCoord()).execute(player);
+		String landExecution = new Land(
+				selection.getRegionCoord()
+		).execute(player);
 		if (landExecution == null)
 		{
 			player.getLocation().getGalaxy().nextTurn();
@@ -106,7 +117,10 @@ public class LandScreen extends ConfirmationScreen implements WindowScreen<Popup
 		List<ColorString> colorStrings = planet.toColorStrings(Main.showFactions);
 
 		Coord regionCoord = selection.getRegionCoord();
-		colorStrings.get(regionCoord.y).getColorCharAt(regionCoord.x).setBackground(COLOR_SELECTION_BACKGROUND);
+		colorStrings
+			.get(regionCoord.y)
+			.getColorCharAt(regionCoord.x)
+			.setBackground(COLOR_SELECTION_BACKGROUND);
 		contents.addAll(colorStrings);
 
 		window.addSeparator();

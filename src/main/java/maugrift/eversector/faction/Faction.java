@@ -13,123 +13,124 @@ import static maugrift.eversector.Main.pendingElection;
 import static maugrift.eversector.Main.rng;
 
 /**
- * A named group that owns ships and territory and has relationships with other factions.
+ * A named group that owns ships and territory and has relationships with other
+ * factions.
  *
  * @author Maugrift
  */
 public class Faction implements ColorStringObject
 {
 	public static final String[] NAME_PREFIX = new String[]{
-			"Ari",
-			"Axo",
-			"Axi",
-			"Be",
-			"Ceta",
-			"Cira",
-			"Ciro",
-			"Eno",
-			"Equa",
-			"Equi",
-			"Exo",
-			"Fe",
-			"Gali",
-			"Galy",
-			"Gani",
-			"Hypo",
-			"Iglo",
-			"Ixa",
-			"Mu",
-			"Nano",
-			"Neo",
-			"Neu",
-			"Nexo",
-			"Nono",
-			"Oca",
-			"Oxi",
-			"Oxy",
-			"Psy",
-			"Quo",
-			"Tera",
-			"Thy",
-			"Undi",
-			"Uxo",
-			"Vea",
-			"Vi",
-			"Viro",
-			"Via",
-			"Xena",
-			"Xeno",
-			"Xeo",
-			"Xy",
-			"Zena",
-			"Zeta"
+		"Ari",
+		"Axo",
+		"Axi",
+		"Be",
+		"Ceta",
+		"Cira",
+		"Ciro",
+		"Eno",
+		"Equa",
+		"Equi",
+		"Exo",
+		"Fe",
+		"Gali",
+		"Galy",
+		"Gani",
+		"Hypo",
+		"Iglo",
+		"Ixa",
+		"Mu",
+		"Nano",
+		"Neo",
+		"Neu",
+		"Nexo",
+		"Nono",
+		"Oca",
+		"Oxi",
+		"Oxy",
+		"Psy",
+		"Quo",
+		"Tera",
+		"Thy",
+		"Undi",
+		"Uxo",
+		"Vea",
+		"Vi",
+		"Viro",
+		"Via",
+		"Xena",
+		"Xeno",
+		"Xeo",
+		"Xy",
+		"Zena",
+		"Zeta",
 	};
 
 	public static final String[] NAME_SUFFIX = new String[]{
-			"con",
-			"chon",
-			"chron",
-			"der",
-			"fax",
-			"fi",
-			"gon",
-			"lite",
-			"lyte",
-			"loi",
-			"lon",
-			"los",
-			"lyx",
-			"rax",
-			"rani",
-			"rano",
-			"rea",
-			"syn",
-			"syth",
-			"sino",
-			"the",
-			"to",
-			"tara",
-			"tera",
-			"tere",
-			"tra",
-			"tro",
-			"var",
-			"vax",
-			"vea",
-			"vyr",
-			"vyn",
-			"zer",
-			"zin",
-			"zon"
+		"con",
+		"chon",
+		"chron",
+		"der",
+		"fax",
+		"fi",
+		"gon",
+		"lite",
+		"lyte",
+		"loi",
+		"lon",
+		"los",
+		"lyx",
+		"rax",
+		"rani",
+		"rano",
+		"rea",
+		"syn",
+		"syth",
+		"sino",
+		"the",
+		"to",
+		"tara",
+		"tera",
+		"tere",
+		"tra",
+		"tro",
+		"var",
+		"vax",
+		"vea",
+		"vyr",
+		"vyn",
+		"zer",
+		"zin",
+		"zon",
 	};
 
 	/**
 	 * All the possible "types" of factions that can be generated.
 	 */
 	public static final String[] NAME_TYPES = new String[]{
-			"Alliance",
-			"Assembly",
-			"Association",
-			"Coalition",
-			"Collective",
-			"Commonwealth",
-			"Confederacy",
-			"Conglomerate",
-			"Conspiracy",
-			"Corporation",
-			"Council",
-			"Empire",
-			"Federation",
-			"Group",
-			"Guild",
-			"League",
-			"Nation",
-			"Network",
-			"Order",
-			"Organization",
-			"Republic",
-			"State",
-			"Union"
+		"Alliance",
+		"Assembly",
+		"Association",
+		"Coalition",
+		"Collective",
+		"Commonwealth",
+		"Confederacy",
+		"Conglomerate",
+		"Conspiracy",
+		"Corporation",
+		"Council",
+		"Empire",
+		"Federation",
+		"Group",
+		"Guild",
+		"League",
+		"Nation",
+		"Network",
+		"Order",
+		"Organization",
+		"Republic",
+		"State",
+		"Union",
 	};
 
 	/**
@@ -180,8 +181,10 @@ public class Faction implements ColorStringObject
 	 */
 	public Faction(Galaxy galaxy, Color color)
 	{
-		this.name = rng.getRandomElement(NAME_PREFIX) + rng.getRandomElement(NAME_SUFFIX) + " " + rng.getRandomElement(
-				NAME_TYPES);
+		this.name = rng.getRandomElement(NAME_PREFIX)
+			+ rng.getRandomElement(NAME_SUFFIX)
+			+ " "
+			+ rng.getRandomElement(NAME_TYPES);
 		this.color = color;
 		this.galaxy = galaxy;
 		relationships = new Relationship[galaxy.getFactions().length - 1];
@@ -317,7 +320,8 @@ public class Faction implements ColorStringObject
 	/**
 	 * Returns the rank of the faction by sectors controlled.
 	 *
-	 * @return the faction's rank among other factions based on the number of sectors controlled by each
+	 * @return the faction's rank among other factions based on the number of
+	 * sectors controlled by each
 	 */
 	public int getRank()
 	{
@@ -325,7 +329,8 @@ public class Faction implements ColorStringObject
 
 		for (Faction otherFaction : galaxy.getFactions())
 		{
-			if (otherFaction != this && getSectorsControlled() < otherFaction.getSectorsControlled())
+			if (otherFaction != this &&
+					getSectorsControlled() < otherFaction.getSectorsControlled())
 			{
 				rank++;
 			}
@@ -337,7 +342,8 @@ public class Faction implements ColorStringObject
 	/**
 	 * Returns the number of sectors controlled by the faction.
 	 *
-	 * @return the number of sectors in which the given faction is the dominant one
+	 * @return the number of sectors in which the given faction is the dominant
+	 *         one
 	 */
 	public int getSectorsControlled()
 	{
@@ -398,7 +404,8 @@ public class Faction implements ColorStringObject
 	}
 
 	/**
-	 * Gets a String representation of the types of stations controlled by the faction.
+	 * Gets a String representation of the types of stations controlled by the
+	 * faction.
 	 *
 	 * @return the station types of the faction as a String
 	 */
@@ -440,7 +447,8 @@ public class Faction implements ColorStringObject
 	}
 
 	/**
-	 * Gets a String representation of the types of ships controlled by the faction.
+	 * Gets a String representation of the types of ships controlled by the
+	 * faction.
 	 *
 	 * @return the ship types of the faction as a String
 	 */
@@ -534,8 +542,8 @@ public class Faction implements ColorStringObject
 	 * Returns the faction's relationship with the specified faction.
 	 *
 	 * @param faction the faction to find a relationship with
-	 * @return the String representing the relationship between factions, null if the faction was not found in this
-	 * faction's relationships
+	 * @return the String representing the relationship between factions, null
+	 *         if the faction was not found in this faction's relationships
 	 */
 	public Relationship.RelationshipType getRelationship(Faction faction)
 	{
@@ -544,10 +552,12 @@ public class Faction implements ColorStringObject
 	}
 
 	/**
-	 * Returns the faction's relationship with the specified faction as a Relationship object.
+	 * Returns the faction's relationship with the specified faction as a
+	 * Relationship object.
 	 *
 	 * @param faction the faction to find a relationship with
-	 * @return the Relationship between the factions, null if the faction was not found in this faction's relationships
+	 * @return the Relationship between the factions, null if the faction was
+	 *         not found in this faction's relationships
 	 */
 	public Relationship getRelationshipObject(Faction faction)
 	{
@@ -573,14 +583,19 @@ public class Faction implements ColorStringObject
 	}
 
 	/**
-	 * Returns true if the relationship with the specified faction is equal to the specified String.
+	 * Returns true if the relationship with the specified faction is equal to
+	 * the specified String.
 	 *
-	 * @param relationship the supposed relationship to compare to the actual relationship
+	 * @param relationship the supposed relationship to compare to the actual
+	 *                     relationship
 	 * @param faction      the faction to get the actual relationship with
-	 * @return true if the supposed relationship and the actual relationship match
+	 * @return true if the supposed relationship and the actual relationship
+	 *         match
 	 */
-	public boolean isRelationship(Relationship.RelationshipType relationship, Faction faction)
-	{
+	public boolean isRelationship(
+			Relationship.RelationshipType relationship,
+			Faction faction
+	) {
 		return getRelationship(faction) == relationship;
 	}
 
@@ -609,8 +624,10 @@ public class Faction implements ColorStringObject
 	 * @param faction         the faction to change a relationship with
 	 * @param newRelationship the new relationship to change to
 	 */
-	public void setRelationship(Faction faction, Relationship.RelationshipType newRelationship)
-	{
+	public void setRelationship(
+			Faction faction,
+			Relationship.RelationshipType newRelationship
+	) {
 		for (Relationship relationship : relationships)
 		{
 			if (relationship.hasFaction(faction))
@@ -622,15 +639,20 @@ public class Faction implements ColorStringObject
 	}
 
 	/**
-	 * Makes this faction request that the relationship with the given faction be set to the given relationship.
+	 * Makes this faction request that the relationship with the given faction
+	 * be set to the given relationship.
 	 *
-	 * @param faction         the faction with which to request a relationship change, must be a faction that this
-	 *                        faction has a relationship with currently
-	 * @param newRelationship the new relationship to change to, must be a valid relationship
+	 * @param faction         the faction with which to request a relationship
+	 *                        change, must be a faction that this faction has a
+	 *                        relationship with currently
+	 * @param newRelationship the new relationship to change to, must be a
+	 *                        valid relationship
 	 * @return true if the relationship was changed to the requested one
 	 */
-	public boolean requestRelationship(Faction faction, Relationship.RelationshipType newRelationship)
-	{
+	public boolean requestRelationship(
+			Faction faction,
+			Relationship.RelationshipType newRelationship
+	) {
 		Relationship relationship = getRelationshipObject(faction);
 
 		if (relationship == null)
@@ -667,7 +689,8 @@ public class Faction implements ColorStringObject
 				return true;
 			}
 
-			if (relationship.getType() == Relationship.RelationshipType.WAR && faction.getSectorsControlled() <= getSectorsControlled())
+			if (relationship.getType() == Relationship.RelationshipType.WAR &&
+					faction.getSectorsControlled() <= getSectorsControlled())
 			{
 				relationship.setRelationship(newRelationship);
 				return true;
@@ -680,10 +703,13 @@ public class Faction implements ColorStringObject
 	}
 
 	/**
-	 * Returns the relationship that this faction would like to have with the given one.
+	 * Returns the relationship that this faction would like to have with the
+	 * given one.
 	 *
-	 * @param faction the faction that this faction will choose a relationship with
-	 * @return the relationship that this faction would like to have with the given one
+	 * @param faction the faction that this faction will choose a relationship
+	 *                with
+	 * @return the relationship that this faction would like to have with the
+	 *         given one
 	 */
 	public Relationship.RelationshipType chooseRelationship(Faction faction)
 	{
@@ -696,11 +722,17 @@ public class Faction implements ColorStringObject
 
 		if (getSectorsControlled() > faction.getSectorsControlled())
 		{
-			return relationship.getType() == Relationship.RelationshipType.PEACE || relationship.getType() == Relationship.RelationshipType.WAR ? Relationship.RelationshipType.WAR : Relationship.RelationshipType.PEACE;
+			return relationship.getType() == Relationship.RelationshipType.PEACE ||
+					relationship.getType() == Relationship.RelationshipType.WAR
+				? Relationship.RelationshipType.WAR
+				: Relationship.RelationshipType.PEACE;
 		}
 		else
 		{
-			return relationship.getType() == Relationship.RelationshipType.PEACE || relationship.getType() == Relationship.RelationshipType.ALLIANCE ? Relationship.RelationshipType.ALLIANCE : Relationship.RelationshipType.PEACE;
+			return relationship.getType() == Relationship.RelationshipType.PEACE ||
+					relationship.getType() == Relationship.RelationshipType.ALLIANCE
+				? Relationship.RelationshipType.ALLIANCE
+				: Relationship.RelationshipType.PEACE;
 		}
 	}
 
@@ -721,7 +753,8 @@ public class Faction implements ColorStringObject
 	 */
 	public void addNews(ColorString news)
 	{
-		if (galaxy.getPlayer() != null && galaxy.getPlayer().getFaction() == this)
+		if (galaxy.getPlayer() != null &&
+				galaxy.getPlayer().getFaction() == this)
 		{
 			Main.addColorMessage(news);
 		}

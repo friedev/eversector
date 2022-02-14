@@ -34,7 +34,8 @@ import java.util.Queue;
 public class Main
 {
 	/**
-	 * The color used on variable fields on the display, as well as certain highlights.
+	 * The color used on variable fields on the display, as well as certain
+	 * highlights.
 	 */
 	public static final Color COLOR_FIELD = AsciiPanel.brightWhite;
 
@@ -104,7 +105,8 @@ public class Main
 	public static Queue<RelationshipChange> pendingRelationships;
 
 	/**
-	 * If true, will show star Symbol on the map instead of type Symbol and faction colors.
+	 * If true, will show star Symbol on the map instead of type Symbol and
+	 * faction colors.
 	 */
 	public static boolean showStars;
 
@@ -137,7 +139,9 @@ public class Main
 				StackTraceElement[] stackTrace = e.getStackTrace();
 				String[] stackTraceStrings = new String[stackTrace.length + 1];
 
-				stackTraceStrings[0] = "The game has crashed! Please send the contents of this file to the developer to help fix the problem.";
+				stackTraceStrings[0] = "The game has crashed! Please send the "
+					+ "contents of this file to the developer to help fix the"
+					+ "the problem.";
 				for (int i = 0; i < stackTrace.length; i++)
 				{
 					stackTraceStrings[i + 1] = stackTrace[i].toString();
@@ -159,7 +163,8 @@ public class Main
 			FileManager.movePathUp();
 		}
 
-		fonts = new File(FileManager.getPath() + Paths.FONTS).listFiles(File::isDirectory);
+		fonts = new File(FileManager.getPath() + Paths.FONTS)
+			.listFiles(File::isDirectory);
 
 		if (FileManager.checkExistence(Paths.OPTIONS))
 		{
@@ -180,12 +185,26 @@ public class Main
 		}
 
 		Properties fontProperties = getFontProperties(fontIndex);
-		AsciiFont font = new AsciiFont(Paths.FONTS + fonts[fontIndex].getName() + "/" +
-					(Option.TILES.toBoolean() ? Paths.FONT_TILES : Paths.FONT_ASCII),
+		AsciiFont font = new AsciiFont(
+				Paths.FONTS
+					+ fonts[fontIndex].getName()
+					+ "/"
+					+ (
+						Option.TILES.toBoolean()
+						? Paths.FONT_TILES
+						: Paths.FONT_ASCII
+					),
 				Utility.parseInt(fontProperties.getProperty(Option.FONT_WIDTH)),
-				Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT)));
+				Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT))
+		);
 
-		display = new AsciiPanelDisplay(new AsciiPanel(Option.WIDTH.toInt(), Option.HEIGHT.toInt(), font));
+		display = new AsciiPanelDisplay(
+				new AsciiPanel(
+					Option.WIDTH.toInt(),
+					Option.HEIGHT.toInt(),
+					font
+				)
+		);
 		((AsciiPanelDisplay) display).init(new StartScreen(startMessages));
 
 		try
@@ -242,8 +261,16 @@ public class Main
 		List<ColorString> startMessages = new LinkedList<>();
 
 		startMessages.add(new ColorString("Welcome to EverSector!"));
-		startMessages.add(new ColorString("Please consult the bundled README to learn how to play."));
-		startMessages.add(new ColorString("By playing, you accept the Terms of Use in the README."));
+		startMessages.add(
+				new ColorString(
+					"Please consult the bundled README to learn how to play."
+				)
+		);
+		startMessages.add(
+				new ColorString(
+					"By playing, you accept the Terms of Use in the README."
+				)
+		);
 
 		String startAction;
 		if (savedGame)
@@ -254,18 +281,22 @@ public class Main
 		{
 			if (Option.KEEP_SEED.toBoolean())
 			{
-				startMessages.add(new ColorString("Your chosen seed is: ").add(
-						new ColorString(Long.toString(seed), COLOR_FIELD)));
+				startMessages.add(
+						new ColorString("Your chosen seed is: ")
+						.add(new ColorString(Long.toString(seed), COLOR_FIELD))
+				);
 			}
 
 			startAction = "begin";
 		}
 
-		startMessages.add(new ColorString("Press ")
-		             .add(new ColorString("enter", COLOR_FIELD))
-		             .add(" or ")
-		             .add(new ColorString("space", COLOR_FIELD))
-		             .add(new ColorString(" to " + startAction + ".")));
+		startMessages.add(
+				new ColorString("Press ")
+				.add(new ColorString("enter", COLOR_FIELD))
+				.add(" or ")
+				.add(new ColorString("space", COLOR_FIELD))
+				.add(new ColorString(" to " + startAction + "."))
+		);
 
 		return startMessages;
 	}
@@ -380,6 +411,10 @@ public class Main
 
 	public static Properties getFontProperties(int index) throws IOException
 	{
-		return FileManager.load(Paths.FONTS + fonts[index].getName() + "/" + Paths.FONT_PROPERTIES);
+		return FileManager.load(
+				Paths.FONTS
+					+ fonts[index].getName()
+					+ "/"
+					+ Paths.FONT_PROPERTIES);
 	}
 }

@@ -8,7 +8,8 @@ import maugrift.apwt.util.Utility;
 public class CrashLand implements Action
 {
 	/**
-	 * The amount of hull that crash will damage down to, and ships at or below it will be destroyed.
+	 * The amount of hull that crash will damage down to, and ships at or below
+	 * it will be destroyed.
 	 */
 	public static final int CRASH_THRESHOLD = 1;
 
@@ -44,7 +45,9 @@ public class CrashLand implements Action
 
 		if (!planet.getType().canLandOn())
 		{
-			return "You cannot land on " + Utility.addArticle(planet.getType().toString()) + ".";
+			return "You cannot land on "
+				+ Utility.addArticle(planet.getType().toString())
+				+ ".";
 		}
 
 		return null;
@@ -71,7 +74,9 @@ public class CrashLand implements Action
 		}
 
 		Planet planet = actor.getSectorLocation().getPlanet();
-		actor.setLocation(actor.getSectorLocation().land(planet.getRandomCoord()));
+		actor.setLocation(
+				actor.getSectorLocation().land(planet.getRandomCoord())
+		);
 		return null;
 	}
 }

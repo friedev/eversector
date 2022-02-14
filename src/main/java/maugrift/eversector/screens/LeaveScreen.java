@@ -28,13 +28,16 @@ public class LeaveScreen extends ConfirmationScreen
 	/**
 	 * Instantiates a new LeaveScreen.
 	 *
-	 * @param redirect if true, will redirect to a new JoinScreen after confirming
+	 * @param redirect if true, will redirect to a new JoinScreen after
+	 *                 confirming
 	 */
 	public LeaveScreen(boolean redirect)
 	{
 		super(Main.display);
 		window = new PopupWindow(Main.display);
-		window.getContents().add(new ColorString("Really leave the ").add(player.getFaction()).add("?"));
+		window.getContents().add(new ColorString("Really leave the ")
+				.add(player.getFaction())
+				.add("?"));
 		this.redirect = redirect;
 	}
 

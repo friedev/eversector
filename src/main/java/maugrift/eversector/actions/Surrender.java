@@ -15,7 +15,9 @@ public class Surrender implements Action
 			return "Ship not found.";
 		}
 
-		return actor.isInBattle() ? null : "You must be in a battle to surrender.";
+		return actor.isInBattle()
+			? null
+			: "You must be in a battle to surrender.";
 	}
 
 	@Override
@@ -31,7 +33,11 @@ public class Surrender implements Action
 		Ship player = actor.getLocation().getGalaxy().getPlayer();
 		if (player != null && battle.getShips().contains(player))
 		{
-			addMessage(actor == player ? "You surrender." : actor + " surrenders.");
+			addMessage(
+					actor == player
+					? "You surrender."
+					: actor + " surrenders."
+			);
 		}
 
 		actor.getBattleLocation().getBattle().getSurrendered().add(actor);

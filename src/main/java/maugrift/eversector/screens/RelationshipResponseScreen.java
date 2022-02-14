@@ -16,7 +16,9 @@ import static maugrift.eversector.Main.player;
  *
  * @author Maugrift
  */
-public class RelationshipResponseScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class RelationshipResponseScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -77,6 +79,9 @@ public class RelationshipResponseScreen extends ConfirmationScreen implements Wi
 	 */
 	public void enactChange()
 	{
-		player.getFaction().setRelationship(change.getOtherFaction(), change.getRelationship());
+		player.getFaction().setRelationship(
+				change.getOtherFaction(),
+				change.getRelationship()
+		);
 	}
 }

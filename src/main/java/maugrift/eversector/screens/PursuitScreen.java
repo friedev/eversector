@@ -15,11 +15,14 @@ import java.util.List;
 import static maugrift.eversector.Main.player;
 
 /**
- * The prompt presenting to the player when enemy ships flee a battle that they're in.
+ * The prompt presenting to the player when enemy ships flee a battle that
+ * they're in.
  *
  * @author Maugrift
  */
-public class PursuitScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class PursuitScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -48,7 +51,9 @@ public class PursuitScreen extends ConfirmationScreen implements WindowScreen<Po
 		this.battle = battle;
 		this.pursuing = pursuing;
 		window = new PopupWindow(Main.display);
-		window.getContents().add(new ColorString("Pursue ").add(pursuing.get(0)).add("?"));
+		window.getContents().add(new ColorString("Pursue ")
+				.add(pursuing.get(0))
+				.add("?"));
 	}
 
 	@Override

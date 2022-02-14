@@ -54,9 +54,11 @@ public class Distress implements Action
 			actor.joinFaction(responder);
 		}
 
-		actor.addPlayerColorMessage(new ColorString("The ")
+		actor.addPlayerColorMessage(
+				new ColorString("The ")
 				.add(responder)
-				.add(" responds and warps supplies to your location."));
+				.add(" responds and warps supplies to your location.")
+		);
 		actor.changeCredits(responder, DISTRESS_CREDITS);
 		responder.changeEconomy(-actor.refill());
 		actor.changeReputation(responder, Reputation.DISTRESS);

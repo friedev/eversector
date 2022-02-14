@@ -24,43 +24,63 @@ public class Weapon extends Module
 	private final int damage;
 
 	/**
-	 * The path to the sound effect that plays when the player fires the weapon.
+	 * The path to the sound effect that plays when the player fires the
+	 * weapon.
 	 */
 	private final String soundEffect;
 
 	/**
-	 * Creates a new weapon with a name, description, value, damage, and action.
+	 * Creates a new weapon with a name, description, value, damage, and
+	 * action.
 	 *
 	 * @param name           the name of the weapon
 	 * @param description    the description of the weapon
 	 * @param value          the value of the weapon
 	 * @param damage         the damage of the weapon
 	 * @param actionResource the resource required for the module's action
-	 * @param actionCost     the amount of the resource required for the module's action
-	 * @param soundEffect    the path to the sound effect that plays when the player fires the weapon
+	 * @param actionCost     the amount of the resource required for the
+	 *                       module's action
+	 * @param soundEffect    the path to the sound effect that plays when the
+	 *                       player fires the weapon
 	 */
-	public Weapon(String name, String description, int value, int damage, String actionResource, int actionCost, String soundEffect)
-	{
+	public Weapon(
+			String name,
+			String description,
+			int value,
+			int damage,
+			String actionResource,
+			int actionCost,
+			String soundEffect
+	) {
 		super(name, description, value, true, actionResource, actionCost);
 		this.damage = Math.abs(damage);
 		this.soundEffect = soundEffect;
 	}
 
 	/**
-	 * Copying constructor that creates a new weapon identical to the one provided.
+	 * Copying constructor that creates a new weapon identical to the one
+	 * provided.
 	 *
 	 * @param copying the weapon to create a copy of
 	 */
 	public Weapon(Weapon copying)
 	{
-		this(copying.getName(), copying.getDescription(), copying.getValue(), copying.damage,
-				copying.getActionResource(), copying.getActionCost(), copying.soundEffect);
+		this(
+				copying.getName(),
+				copying.getDescription(),
+				copying.getValue(),
+				copying.damage,
+				copying.getActionResource(),
+				copying.getActionCost(),
+				copying.soundEffect
+		);
 	}
 
 	/**
 	 * Creates a new weapon from a set of Properties.
 	 *
-	 * @param properties the Properties object used in construction of the weapon
+	 * @param properties the Properties object used in construction of the
+	 *                   weapon
 	 */
 	public Weapon(Properties properties)
 	{
@@ -80,9 +100,11 @@ public class Weapon extends Module
 	}
 
 	/**
-	 * Gets the path to the sound effect that plays when the player fires the weapon.
+	 * Gets the path to the sound effect that plays when the player fires the
+	 * weapon.
 	 *
-	 * @return the path to the sound effect that plays when the player fires the weapon
+	 * @return the path to the sound effect that plays when the player fires
+	 * the weapon
 	 */
 	public String getSoundEffect()
 	{
@@ -93,8 +115,10 @@ public class Weapon extends Module
 	public List<ColorString> define()
 	{
 		List<ColorString> definition = super.define();
-		definition.add(2, new ColorString("Damage: ").add(new ColorString(Integer.toString(damage), COLOR_FIELD)));
-		definition.add(3, new ColorString("Type: ").add(new ColorString(getActionResource(), COLOR_FIELD)));
+		definition.add(2, new ColorString("Damage: ")
+				.add(new ColorString(Integer.toString(damage), COLOR_FIELD)));
+		definition.add(3, new ColorString("Type: ")
+				.add(new ColorString(getActionResource(), COLOR_FIELD)));
 		return definition;
 	}
 }

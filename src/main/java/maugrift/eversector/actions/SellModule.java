@@ -41,8 +41,9 @@ public class SellModule implements Action
 
 		if (moduleObj == null)
 		{
-			return Station.hasBaseModule(module) ? station + " will not accept a module of this type." :
-					"The specified module does not exist.";
+			return Station.hasBaseModule(module)
+				? station + " will not accept a module of this type."
+				: "The specified module does not exist.";
 		}
 
 		if (!station.sells(moduleObj))

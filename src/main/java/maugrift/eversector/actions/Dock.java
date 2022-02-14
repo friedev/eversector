@@ -46,7 +46,10 @@ public class Dock implements Action
 			if (claimExecution != null)
 			{
 				actor.setLocation(actor.getStationLocation().undock());
-				return station + " is controlled by the hostile " + station.getFaction() + ", who deny you entry.";
+				return station
+					+ " is controlled by the hostile "
+					+ station.getFaction()
+					+ ", who deny you entry.";
 			}
 			return null;
 		}

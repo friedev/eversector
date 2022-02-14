@@ -35,10 +35,16 @@ public class Escape implements Action
 
 		if (actor.getSectorLocation().getOrbit() < actor.getLocation().getSector().getOrbits())
 		{
-			return "You must be at the furthest orbit of " + actor.getLocation().getSector() + " to attempt an escape.";
+			return "You must be at the furthest orbit of "
+				+ actor.getLocation().getSector()
+				+ " to attempt an escape.";
 		}
 
-		return actor.validateResources(RESOURCE, COST, "escape the gravity of " + actor.getLocation().getSector());
+		return actor.validateResources(
+				RESOURCE,
+				COST,
+				"escape the gravity of " + actor.getLocation().getSector()
+		);
 	}
 
 	@Override

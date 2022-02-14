@@ -33,12 +33,14 @@ public class Election
 	private List<Ship> candidates;
 
 	/**
-	 * The votes gathered for each candidate. Indices in this list correlate directly to the candidates list.
+	 * The votes gathered for each candidate. Indices in this list correlate
+	 * directly to the candidates list.
 	 */
 	private List<Integer> votes;
 
 	/**
-	 * True if the election is taking place after the destruction of the former.
+	 * True if the election is taking place after the destruction of the
+	 * former.
 	 */
 	private final boolean emergency;
 
@@ -118,8 +120,13 @@ public class Election
 	 */
 	public ColorString getDescription()
 	{
-		return emergency ? new ColorString("The ").add(faction).add(" is holding an emergency election for leader.") :
-				new ColorString("The scheduled leader election for the ").add(faction).add(" has arrived.");
+		return emergency
+			? new ColorString("The ")
+				.add(faction)
+				.add(" is holding an emergency election for leader.")
+			: new ColorString("The scheduled leader election for the ")
+				.add(faction)
+				.add(" has arrived.");
 	}
 
 	/**
@@ -151,8 +158,9 @@ public class Election
 
 		for (Ship ship : faction.getGalaxy().getShips())
 		{
-			if (faction == ship.getFaction() && (ship.getReputation(faction).get() > minRep) ||
-				candidates.size() < CANDIDATES)
+			if (faction == ship.getFaction() &&
+					(ship.getReputation(faction).get() > minRep) ||
+					candidates.size() < CANDIDATES)
 			{
 				candidates.add(ship);
 
@@ -189,7 +197,9 @@ public class Election
 	{
 		if (candidates.isEmpty())
 		{
-			throw new IllegalStateException("gatherVotes() called before findCandidates()");
+			throw new IllegalStateException(
+					"gatherVotes() called before findCandidates()"
+			);
 		}
 
 		// Fill the vote list with 0s as a starting point
@@ -210,8 +220,8 @@ public class Election
 	}
 
 	/**
-	 * Gets the winner of the election based on the votes for each candidate. In the event of a tie, will return the
-	 * candidate earlier in the list.
+	 * Gets the winner of the election based on the votes for each candidate.
+	 * In the event of a tie, will return the candidate earlier in the list.
 	 *
 	 * @return the winner of the election
 	 * @throws IllegalStateException if called before findCandidates()
@@ -221,7 +231,9 @@ public class Election
 	{
 		if (candidates.isEmpty())
 		{
-			throw new IllegalStateException("getWinner() called before findCandidates()");
+			throw new IllegalStateException(
+					"getWinner() called before findCandidates()"
+			);
 		}
 
 		int winnerIndex = 0;
@@ -240,7 +252,8 @@ public class Election
 	}
 
 	/**
-	 * Returns true if, were the given ship to win the election, they would win.
+	 * Returns true if, were the given ship to win the election, they would
+	 * win.
 	 *
 	 * @param winner the ship to check as the winner
 	 * @return true if the given ship would be reelected
@@ -265,7 +278,8 @@ public class Election
 	}
 
 	/**
-	 * Adds the player as a candidate in the election, replacing the candidate with the lowest reputation.
+	 * Adds the player as a candidate in the election, replacing the candidate
+	 * with the lowest reputation.
 	 */
 	public void addPlayer()
 	{
@@ -286,7 +300,9 @@ public class Election
 	{
 		if (candidates.isEmpty())
 		{
-			throw new IllegalStateException("addVote() called before findCandidates()");
+			throw new IllegalStateException(
+					"addVote() called before findCandidates()"
+			);
 		}
 
 		for (int i = 0; i < candidates.size(); i++)

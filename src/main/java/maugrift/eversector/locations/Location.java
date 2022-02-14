@@ -64,7 +64,9 @@ public class Location
 	{
 		if (!galaxy.contains(coord))
 		{
-			throw new IndexOutOfBoundsException("Given coord not found on the map");
+			throw new IndexOutOfBoundsException(
+					"Given coord not found on the map"
+			);
 		}
 
 		this.galaxy = galaxy;
@@ -74,7 +76,8 @@ public class Location
 	/**
 	 * Copies another location.
 	 *
-	 * @param copying the location to copy; converts subclasses of Location to a Location
+	 * @param copying the location to copy; converts subclasses of Location to
+	 *                a Location
 	 */
 	public Location(Location copying)
 	{
@@ -119,7 +122,14 @@ public class Location
 	 */
 	public Location move(Direction direction)
 	{
-		return moveTo(coord.translate(Direction.getDirection(direction.deltaX, direction.deltaY)));
+		return moveTo(
+				coord.translate(
+					Direction.getDirection(
+						direction.deltaX,
+						direction.deltaY
+					)
+				)
+		);
 	}
 
 	/**
@@ -130,7 +140,9 @@ public class Location
 	 */
 	public Location moveTo(Coord destination)
 	{
-		return galaxy.contains(destination) ? new Location(galaxy, destination) : null;
+		return galaxy.contains(destination)
+			? new Location(galaxy, destination)
+			: null;
 	}
 
 	/**
@@ -140,7 +152,9 @@ public class Location
 	 */
 	public SectorLocation enterSector()
 	{
-		return getSector().isEmpty() ? null : new SectorLocation(this, getSector().getOrbits());
+		return getSector().isEmpty()
+			? null
+			: new SectorLocation(this, getSector().getOrbits());
 	}
 
 	@Override
@@ -207,7 +221,10 @@ public class Location
 
 		if (PLANET_LOCATION.equals(params[0]))
 		{
-			return new PlanetLocation(sectorLocation, Utility.parseCoord(params[3]));
+			return new PlanetLocation(
+					sectorLocation,
+					Utility.parseCoord(params[3])
+			);
 		}
 
 		if (STATION_LOCATION.equals(params[0]))
@@ -226,6 +243,8 @@ public class Location
 	 */
 	public boolean equals(Location o)
 	{
-		return !(o instanceof SectorLocation) && galaxy == o.galaxy && coord.equals(o.coord);
+		return !(o instanceof SectorLocation) &&
+			galaxy == o.galaxy &&
+			coord.equals(o.coord);
 	}
 }

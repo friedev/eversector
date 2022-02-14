@@ -60,7 +60,11 @@ public class Fire implements Action
 		}
 
 		Weapon weaponObj = actor.getWeapon(weapon);
-		return actor.validateResources(weaponObj.getActionResource(), weaponObj.getActionCost(), "fire");
+		return actor.validateResources(
+				weaponObj.getActionResource(),
+				weaponObj.getActionCost(),
+				"fire"
+		);
 	}
 
 	@Override
@@ -76,7 +80,8 @@ public class Fire implements Action
 
 		if (actor.isPlayer())
 		{
-			if (target.isShielded() && Resource.ENERGY.equals(weaponObj.getActionResource()))
+			if (target.isShielded() &&
+					Resource.ENERGY.equals(weaponObj.getActionResource()))
 			{
 				addMessage("Attack diminished by enemy shield.");
 			}
@@ -91,8 +96,14 @@ public class Fire implements Action
 			Ship player = actor.getLocation().getGalaxy().getPlayer();
 			if (player != null && battle.getShips().contains(player))
 			{
-				addColorMessage(actor.toColorString()
-								.add(" fires a pulse beam at " + (target == player ? "you" : target.toString()) + "."));
+				addColorMessage(
+						actor.toColorString()
+						.add(
+							" fires a pulse beam at "
+							+ (target == player ? "you" : target.toString())
+							+ "."
+						)
+				);
 			}
 		}
 

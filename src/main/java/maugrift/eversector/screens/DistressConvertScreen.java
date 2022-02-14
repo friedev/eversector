@@ -12,11 +12,14 @@ import maugrift.eversector.faction.Faction;
 import static maugrift.eversector.Main.player;
 
 /**
- * The prompt displayed when another faction offers to aid the player in distress.
+ * The prompt displayed when another faction offers to aid the player in
+ * distress.
  *
  * @author Maugrift
  */
-public class DistressConvertScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class DistressConvertScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -37,7 +40,9 @@ public class DistressConvertScreen extends ConfirmationScreen implements WindowS
 	{
 		super(Main.display);
 		window = new PopupWindow(Main.display);
-		window.getContents().add(new ColorString("The ").add(converting).add(" offers to aid you if you join them."));
+		window.getContents().add(new ColorString("The ")
+				.add(converting)
+				.add(" offers to aid you if you join them."));
 		window.getContents().add(new ColorString("Accept the offer?"));
 		this.converting = converting;
 	}

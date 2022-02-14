@@ -6,8 +6,8 @@ import maugrift.apwt.glyphs.ColorString;
 import java.awt.Color;
 
 /**
- * A resource with all the properties of an item, in addition to amounts and capacities for use on ships.  <b>To be
- * removed in v0.7.2.</b>
+ * A resource with all the properties of an item, in addition to amounts and
+ * capacities for use on ships.  <b>To be removed in v0.7.2.</b>
  *
  * @author Maugrift
  */
@@ -59,14 +59,15 @@ public class Resource extends BaseResource
 	private static final int CAPACITY = 15;
 
 	/**
-	 * The ratio of amount to capacity at which there is considered to be a high amount of the resource. This is
-	 * inclusive, and extends upwards to 1.
+	 * The ratio of amount to capacity at which there is considered to be a
+	 * high amount of the resource. This is inclusive, and extends upwards to
+	 * 1.
 	 */
 	private static final double RATIO_HIGH = 0.75;
 
 	/**
-	 * The ratio of amount to capacity at which there is considered to be a low amount of the resource. This is
-	 * exclusive, and extends downwards to 0.
+	 * The ratio of amount to capacity at which there is considered to be a low
+	 * amount of the resource. This is exclusive, and extends downwards to 0.
 	 */
 	private static final double RATIO_LOW = 0.25;
 
@@ -76,7 +77,8 @@ public class Resource extends BaseResource
 	private static final Color COLOR_HIGH = AsciiPanel.brightGreen;
 
 	/**
-	 * The color to color a fraction's amount when it is between the "high" and "low" ranges.
+	 * The color to color a fraction's amount when it is between the "high" and
+	 * "low" ranges.
 	 */
 	private static final Color COLOR_MEDIUM = AsciiPanel.brightYellow;
 
@@ -96,7 +98,8 @@ public class Resource extends BaseResource
 	private int amount;
 
 	/**
-	 * The starting capacity of the resource. The capacity can never be lower than this.
+	 * The starting capacity of the resource. The capacity can never be lower
+	 * than this.
 	 */
 	private int baseCapacity;
 
@@ -106,7 +109,8 @@ public class Resource extends BaseResource
 	private int capacity;
 
 	/**
-	 * Creates a resource from a name, description, value, capacity, amount, expander, and ability to be sold.
+	 * Creates a resource from a name, description, value, capacity, amount,
+	 * expander, and ability to be sold.
 	 *
 	 * @param name        the name of the resource
 	 * @param description the description of the resource
@@ -116,9 +120,15 @@ public class Resource extends BaseResource
 	 * @param canSell     true if the resource can be sold
 	 * @param expander    the resource's expander
 	 */
-	public Resource(String name, String description, int value, int capacity, int amount, boolean canSell,
-					Expander expander)
-	{
+	public Resource(
+			String name,
+			String description,
+			int value,
+			int capacity,
+			int amount,
+			boolean canSell,
+			Expander expander
+	) {
 		super(name, description, value, canSell, expander);
 		this.baseCapacity = Math.abs(capacity);
 		this.capacity = baseCapacity;
@@ -126,43 +136,71 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Creates a resource from a BaseResource, a capacity, and an amount, using the fields of the former.
+	 * Creates a resource from a BaseResource, a capacity, and an amount, using
+	 * the fields of the former.
 	 *
-	 * @param base     the BaseResource that the name, description, value, and expander will be gathered from
+	 * @param base     the BaseResource that the name, description, value, and
+	 *                 expander will be gathered from
 	 * @param capacity the capacity of the resource
 	 * @param amount   the amount of the resource
 	 */
 	public Resource(BaseResource base, int capacity, int amount)
 	{
-		this(base.getName(), base.getDescription(), base.getValue(), capacity, amount, base.canSell(),
-				base.getExpander());
+		this(
+				base.getName(),
+				base.getDescription(),
+				base.getValue(),
+				capacity,
+				amount,
+				base.canSell(),
+				base.getExpander()
+		);
 	}
 
 	/**
-	 * Creates a resource from a BaseResource and a capacity, using the fields of the former.
+	 * Creates a resource from a BaseResource and a capacity, using the fields
+	 * of the former.
 	 *
-	 * @param base     the BaseResource that the name, description, value, and expander will be gathered from
+	 * @param base     the BaseResource that the name, description, value, and
+	 *                 expander will be gathered from
 	 * @param capacity the capacity of the resource
 	 */
 	public Resource(BaseResource base, int capacity)
 	{
-		this(base.getName(), base.getDescription(), base.getValue(), capacity, capacity, base.canSell(),
-				base.getExpander());
+		this(
+				base.getName(),
+				base.getDescription(),
+				base.getValue(),
+				capacity,
+				capacity,
+				base.canSell(),
+				base.getExpander()
+		);
 	}
 
 	/**
-	 * Creates a resource from a BaseResource, using its fields as well as the default capacity and amount.
+	 * Creates a resource from a BaseResource, using its fields as well as the
+	 * default capacity and amount.
 	 *
-	 * @param base the BaseResource that the name, description, value, and expander will be gathered from
+	 * @param base the BaseResource that the name, description, value, and
+	 *             expander will be gathered from
 	 */
 	public Resource(BaseResource base)
 	{
-		this(base.getName(), base.getDescription(), base.getValue(), CAPACITY, CAPACITY, base.canSell(),
-				base.getExpander());
+		this(
+				base.getName(),
+				base.getDescription(),
+				base.getValue(),
+				CAPACITY,
+				CAPACITY,
+				base.canSell(),
+				base.getExpander()
+		);
 	}
 
 	/**
-	 * Creates a resource with a name, description, value, capacity, and expander, setting the amount to full.
+	 * Creates a resource with a name, description, value, capacity, and
+	 * expander, setting the amount to full.
 	 *
 	 * @param name        the name of the resource
 	 * @param description the description of the resource
@@ -170,13 +208,19 @@ public class Resource extends BaseResource
 	 * @param capacity    the capacity of the resource
 	 * @param expander    the resource's expander
 	 */
-	public Resource(String name, String description, int value, int capacity, Expander expander)
-	{
+	public Resource(
+			String name,
+			String description,
+			int value,
+			int capacity,
+			Expander expander
+	) {
 		this(name, description, value, capacity, capacity, expander);
 	}
 
 	/**
-	 * Creates a resource from a name, description, value, capacity, amount, and expander.
+	 * Creates a resource from a name, description, value, capacity, amount,
+	 * and expander.
 	 *
 	 * @param name        the name of the resource
 	 * @param description the description of the resource
@@ -185,22 +229,32 @@ public class Resource extends BaseResource
 	 * @param amount      the amount of the resource
 	 * @param expander    the resource's expander
 	 */
-	public Resource(String name, String description, int value, int capacity, int amount, Expander expander)
-	{
+	public Resource(
+			String name,
+			String description,
+			int value,
+			int capacity,
+			int amount,
+			Expander expander
+	) {
 		this(name, description, value, capacity, amount, true, expander);
 	}
 
 	/**
-	 * Creates a resource with a name, description, value, and expander, setting capacity to default and amount to
-	 * full.
+	 * Creates a resource with a name, description, value, and expander,
+	 * setting capacity to default and amount to full.
 	 *
 	 * @param name        the name of the resource
 	 * @param description the description of the resource
 	 * @param value       the value of one unit of the resource
 	 * @param expander    the resource's expander
 	 */
-	public Resource(String name, String description, int value, Expander expander)
-	{
+	public Resource(
+			String name,
+			String description,
+			int value,
+			Expander expander
+	) {
 		this(name, description, value, CAPACITY, CAPACITY, expander);
 	}
 
@@ -361,7 +415,8 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Changes the amount of the resource up to its maximum capacity, returning the amount discarded.
+	 * Changes the amount of the resource up to its maximum capacity, returning
+	 * the amount discarded.
 	 *
 	 * @param increase the amount to add, must be positive
 	 * @return the amount discarded, -1 if could not change the amount
@@ -394,7 +449,8 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Increases the capacity by the expansion amount of its expander a specified number of times.
+	 * Increases the capacity by the expansion amount of its expander a
+	 * specified number of times.
 	 *
 	 * @param times the amount of times to expand the resource's capacity
 	 * @return true if the capacity was changed
@@ -434,7 +490,8 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Sets the least possible capacity to a specified amount, as well as updating the capacity itself.
+	 * Sets the least possible capacity to a specified amount, as well as
+	 * updating the capacity itself.
 	 *
 	 * @param capacity the amount to set the base capacity to
 	 * @return true if the base capacity was modified
@@ -456,7 +513,8 @@ public class Resource extends BaseResource
 	 * Returns true if the amount specified is a valid capacity.
 	 *
 	 * @param capacity the amount to validate
-	 * @return true if the amount specified is greater than or equal to the base capacity
+	 * @return true if the amount specified is greater than or equal to the
+	 *         base capacity
 	 */
 	public boolean isValidCapacity(int capacity)
 	{
@@ -464,11 +522,12 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Returns true if the capacity would be valid after a specified number of expansions (intended for use in removing
-	 * expanders).
+	 * Returns true if the capacity would be valid after a specified number of
+	 * expansions (intended for use in removing expanders).
 	 *
 	 * @param times the amount of expansions to check
-	 * @return true if the capacity would be valid after expanding the resource's capacity
+	 * @return true if the capacity would be valid after expanding the
+	 *         resource's capacity
 	 */
 	public boolean canExpand(int times)
 	{
@@ -476,11 +535,12 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Returns true if the specified amount would be a valid amount of the resource.
+	 * Returns true if the specified amount would be a valid amount of the
+	 * resource.
 	 *
 	 * @param amount the amount to validate
-	 * @return true if the amount is less than or equal to the capacity of the resource, yet greater than or equal to
-	 * zero
+	 * @return true if the amount is less than or equal to the capacity of the
+	 *         resource, yet greater than or equal to zero
 	 */
 	public boolean isValidAmount(int amount)
 	{
@@ -488,10 +548,12 @@ public class Resource extends BaseResource
 	}
 
 	/**
-	 * Returns true if a specified amount of change in the resource's amount would be valid.
+	 * Returns true if a specified amount of change in the resource's amount
+	 * would be valid.
 	 *
 	 * @param amount the amount to change the resource by for validation
-	 * @return true if the addition of the specified amount leaves the total amount still valid
+	 * @return true if the addition of the specified amount leaves the total
+	 *         amount still valid
 	 */
 	public boolean canHold(int amount)
 	{
@@ -541,7 +603,8 @@ public class Resource extends BaseResource
 	/**
 	 * Returns the amount of expanders that have been purchased.
 	 *
-	 * @return the number of expanders, calculated by the change in capacity; will be non-negative
+	 * @return the number of expanders, calculated by the change in capacity;
+	 *         will be non-negative
 	 */
 	public int getNExpanders()
 	{

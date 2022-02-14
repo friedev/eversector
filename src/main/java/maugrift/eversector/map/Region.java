@@ -97,7 +97,8 @@ public class Region implements ColorStringObject
 		private final Color foreground;
 
 		/**
-		 * True if the region type is land, meaning it can contain ore and be claimed.
+		 * True if the region type is land, meaning it can contain ore and be
+		 * claimed.
 		 */
 		private final boolean isLand;
 
@@ -118,7 +119,8 @@ public class Region implements ColorStringObject
 		}
 
 		/**
-		 * Creates a new region type with all fields defined. Uses a Symbol rather than a char.
+		 * Creates a new region type with all fields defined. Uses a Symbol
+		 * rather than a char.
 		 *
 		 * @param type       the name of the region type
 		 * @param isLand     true if the region is land
@@ -157,7 +159,8 @@ public class Region implements ColorStringObject
 		}
 
 		/**
-		 * Returns true if the region is land, meaning it can contain ore and be claimed.
+		 * Returns true if the region is land, meaning it can contain ore and
+		 * be claimed.
 		 *
 		 * @return true if the region is land
 		 */
@@ -168,8 +171,8 @@ public class Region implements ColorStringObject
 	}
 
 	/**
-	 * The lowest amount of ore that can be generated in a region. This refers to the ore, not the units of the ore
-	 * resource gained by mining it.
+	 * The lowest amount of ore that can be generated in a region. This refers
+	 * to the ore, not the units of the ore resource gained by mining it.
 	 */
 	private static final int MIN_ORE = 50;
 
@@ -242,12 +245,14 @@ public class Region implements ColorStringObject
 	@Override
 	public ColorString toColorString()
 	{
-		return isClaimed() ? new ColorString(toString(), faction.getColor()) : new ColorString(toString());
+		return isClaimed()
+			? new ColorString(toString(), faction.getColor())
+			: new ColorString(toString());
 	}
 
 	/**
-	 * Returns a ColorChar representation of the region, overwritten by the player's symbol if they're present in the
-	 * region.
+	 * Returns a ColorChar representation of the region, overwritten by the
+	 * player's symbol if they're present in the region.
 	 *
 	 * @return a ColorChar representing the region
 	 */
@@ -345,7 +350,8 @@ public class Region implements ColorStringObject
 	}
 
 	/**
-	 * Claims the region for a given faction and updates the faction of the planet it's on to match.
+	 * Claims the region for a given faction and updates the faction of the
+	 * planet it's on to match.
 	 *
 	 * @param faction the faction that will claim the region
 	 */

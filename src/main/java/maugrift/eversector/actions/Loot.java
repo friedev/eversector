@@ -47,7 +47,11 @@ public class Loot implements Action
 		if (salvagedCredits > 0)
 		{
 			actor.changeCredits(salvagedCredits);
-			actor.addPlayerMessage("Salvaged " + salvagedCredits + " credits.");
+			actor.addPlayerMessage(
+					"Salvaged "
+					+ salvagedCredits
+					+ " credits."
+			);
 		}
 
 		for (Module module : looting.getModules())
@@ -55,7 +59,11 @@ public class Loot implements Action
 			if (module != null && rng.nextDouble() <= (1.0 / (double) LOOT_MODIFIER))
 			{
 				actor.addModule(module);
-				actor.addPlayerMessage("Salvaged " + Utility.addArticle(module.getName()) + ".");
+				actor.addPlayerMessage(
+						"Salvaged "
+						+ Utility.addArticle(module.getName())
+						+ "."
+				);
 			}
 		}
 
@@ -65,25 +73,43 @@ public class Loot implements Action
 			{
 				Resource yourResource = actor.getResource(resource.getName());
 				int nExpanders = resource.getNExpanders() / LOOT_MODIFIER;
-				yourResource.expand(Math.min(Ship.MAX_EXPANDERS - yourResource.getNExpanders(), nExpanders));
+				yourResource.expand(
+						Math.min(
+							Ship.MAX_EXPANDERS - yourResource.getNExpanders(),
+							nExpanders
+						)
+				);
 
 				if (nExpanders > 0)
 				{
-					actor.addPlayerMessage("Salvaged " +
-							nExpanders +
-							" " +
-							Utility.makePlural(resource.getExpander().getName().toLowerCase(), nExpanders) +
-							".");
+					actor.addPlayerMessage(
+							"Salvaged "
+							+ nExpanders
+							+ " "
+							+ Utility.makePlural(
+								resource.getExpander().getName().toLowerCase(),
+								nExpanders
+							)
+							+ "."
+					);
 				}
 
 				int oldAmount = yourResource.getAmount();
-				yourResource.changeAmountWithDiscard(resource.getAmount() / LOOT_MODIFIER);
+				yourResource.changeAmountWithDiscard(
+						resource.getAmount() / LOOT_MODIFIER
+				);
 
 				int amountIncrease = yourResource.getAmount() - oldAmount;
 
 				if (amountIncrease > 0)
 				{
-					actor.addPlayerMessage("Salvaged " + amountIncrease + " " + resource.getName().toLowerCase() + ".");
+					actor.addPlayerMessage(
+							"Salvaged "
+							+ amountIncrease
+							+ " "
+							+ resource.getName().toLowerCase()
+							+ "."
+					);
 				}
 			}
 		}

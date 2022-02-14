@@ -10,7 +10,9 @@ import maugrift.eversector.Main;
 /**
  * The prompt when selecting a faction leader vote.
  */
-public class VotingConfirmScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class VotingConfirmScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -32,12 +34,14 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
 		leaderSelection = selection;
 
 		window.getContents().add(
-				new ColorString("Submit your vote for ").add(
-					new ColorString(leaderSelection, Main.player.getFaction().getColor()).add(
-						new ColorString("?")
+				new ColorString("Submit your vote for ")
+				.add(new ColorString(
+						leaderSelection,
+						Main.player.getFaction().getColor()
 					)
+					.add(new ColorString("?"))
 				)
-			);
+		);
 	}
 
 	@Override
@@ -55,7 +59,10 @@ public class VotingConfirmScreen extends ConfirmationScreen implements WindowScr
 	@Override
 	public Screen onConfirm()
 	{
-		Main.pendingElection.addVote(leaderSelection.substring(0, leaderSelection.indexOf(" (")));
+		Main.pendingElection.addVote(leaderSelection.substring(
+					0,
+					leaderSelection.indexOf(" ("))
+		);
 
 		return new ElectionResultsScreen();
 	}

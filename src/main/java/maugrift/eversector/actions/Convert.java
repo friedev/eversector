@@ -33,7 +33,10 @@ public class Convert implements Action
 
 		if (actor.getFaction() == converting.getFaction())
 		{
-			return converting + " is already a member of the " + actor.getFaction() + ".";
+			return converting
+				+ " is already a member of the "
+				+ actor.getFaction()
+				+ ".";
 		}
 
 		if (converting.isPlayer())
@@ -73,7 +76,8 @@ public class Convert implements Action
 		converting.addPlayerColorMessage(actor.toColorString()
 				.add(" has converted you to the ")
 				.add(actorFaction)
-				.add("."));
+				.add(".")
+		);
 		return null;
 	}
 }

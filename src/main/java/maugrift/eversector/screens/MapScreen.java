@@ -28,7 +28,9 @@ import static maugrift.eversector.Main.*;
  *
  * @author Maugrift
  */
-public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
+public class MapScreen
+	extends Screen
+	implements WindowScreen<AlignedWindow>, PopupMaster, KeyScreen
 {
 	/**
 	 * The window.
@@ -105,8 +107,8 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
 				{
 					nextTurn = true;
 				}
-				else if (player.getLocation().move(direction) == null && player.validateResources(Burn.RESOURCE,
-						-Burn.COST, "burn") == null)
+				else if (player.getLocation().move(direction) == null &&
+						player.validateResources(Burn.RESOURCE, -Burn.COST, "burn") == null)
 				{
 					popup = new IntergalacticScreen();
 					return this;
@@ -199,8 +201,14 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
 	{
 		List<Keybinding> keybindings = new ArrayList<>();
 		keybindings.add(
-				new Keybinding("burn to neighboring sectors", ExtChars.ARROW1_U, ExtChars.ARROW1_D, ExtChars.ARROW1_L,
-						ExtChars.ARROW1_R));
+				new Keybinding(
+					"burn to neighboring sectors",
+					ExtChars.ARROW1_U,
+					ExtChars.ARROW1_D,
+					ExtChars.ARROW1_L,
+					ExtChars.ARROW1_R
+				)
+		);
 		keybindings.add(new Keybinding("enter a sector", "enter"));
 		keybindings.add(new Keybinding("look", "l"));
 		keybindings.add(new Keybinding("toggle star view", "v"));
@@ -249,17 +257,20 @@ public class MapScreen extends Screen implements WindowScreen<AlignedWindow>, Po
 
 		if (!galaxy.sectorAt(location).isEmpty())
 		{
-			contents.add(new ColorString("Star: ").add(galaxy.sectorAt(location).getStar()));
+			contents.add(new ColorString("Star: ")
+					.add(galaxy.sectorAt(location).getStar()));
 		}
 
 		if (galaxy.sectorAt(location).hasNebula())
 		{
-			contents.add(new ColorString("Nebula: ").add(galaxy.sectorAt(location).getNebula()));
+			contents.add(new ColorString("Nebula: ")
+					.add(galaxy.sectorAt(location).getNebula()));
 		}
 
 		if (galaxy.sectorAt(location).isClaimed())
 		{
-			contents.add(new ColorString("Faction: ").add(galaxy.sectorAt(location).getFaction()));
+			contents.add(new ColorString("Faction: ")
+					.add(galaxy.sectorAt(location).getFaction()));
 		}
 	}
 }

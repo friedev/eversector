@@ -29,14 +29,21 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 	 */
 	public OptionsScreen()
 	{
-		super(new PopupMenu(new PopupWindow(Main.display), COLOR_SELECTION_FOREGROUND, COLOR_SELECTION_BACKGROUND));
+		super(
+				new PopupMenu(
+					new PopupWindow(Main.display),
+					COLOR_SELECTION_FOREGROUND,
+					COLOR_SELECTION_BACKGROUND
+				)
+		);
 		updateWindow();
 	}
 
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (key.getKeyCode() == KeyEvent.VK_LEFT || key.getKeyCode() == KeyEvent.VK_RIGHT)
+		if (key.getKeyCode() == KeyEvent.VK_LEFT ||
+				key.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
 			Option option = getSelectedOption();
 			Integer value = option.toInt();
@@ -110,7 +117,9 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 	 */
 	private Option getSelectedOption()
 	{
-		return Option.getOption(getMenu().getSelection().toString().split(":")[0]);
+		return Option.getOption(
+				getMenu().getSelection().toString().split(":")[0]
+		);
 	}
 
 	/**
@@ -138,14 +147,25 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 				try
 				{
 					Properties fontProperties = Main.getFontProperties(option.toInt());
-					contents.add(new ColorString(option.getKey() + ": ").add(new ColorString(
-							fontProperties.getProperty(Option.FONT_NAME) + " (" +
-							fontProperties.getProperty(Option.FONT_WIDTH) + "x" +
-							fontProperties.getProperty(Option.FONT_HEIGHT) + ")", COLOR_FIELD)));
+					contents.add(new ColorString(option.getKey() + ": ")
+							.add(new ColorString(
+									fontProperties.getProperty(Option.FONT_NAME)
+									+ " ("
+									+ fontProperties.getProperty(Option.FONT_WIDTH)
+									+ "x"
+									+ fontProperties.getProperty(Option.FONT_HEIGHT)
+									+ ")",
+									COLOR_FIELD
+								)
+							)
+					);
 				}
 				catch (IOException e)
 				{
-					contents.add(new ColorString(option.getKey() + ": " + Main.fonts[option.toInt()].getName()));
+					contents.add(new ColorString(
+								option.getKey()
+								+ ": "
+								+ Main.fonts[option.toInt()].getName()));
 				}
 			}
 			else
@@ -156,6 +176,10 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 			currentRestriction++;
 		}
 
-		contents.add(new ColorString("Display and font changes require a restart to take effect."));
+		contents.add(
+				new ColorString(
+					"Display and font changes require a restart to take effect."
+				)
+		);
 	}
 }

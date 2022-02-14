@@ -18,7 +18,9 @@ import static maugrift.eversector.Paths.TORPEDO;
  *
  * @author Maugrift
  */
-public class CrashLandScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class CrashLandScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.
@@ -32,7 +34,9 @@ public class CrashLandScreen extends ConfirmationScreen implements WindowScreen<
 	{
 		super(Main.display);
 		window = new PopupWindow(Main.display);
-		window.getContents().add(new ColorString("Insufficient fuel to land; crash land?"));
+		window.getContents().add(
+				new ColorString("Insufficient fuel to land; crash land?")
+		);
 	}
 
 	@Override
@@ -55,9 +59,15 @@ public class CrashLandScreen extends ConfirmationScreen implements WindowScreen<
 			if (player.isDestroyed())
 			{
 				playSoundEffect(DEATH);
-				return new EndScreen(new ColorString(
-						"You crash into the surface of " + player.getSectorLocation().getPlanet() +
-						", obliterating your ship."), true, false);
+				return new EndScreen(
+						new ColorString(
+							"You crash into the surface of "
+							+ player.getSectorLocation().getPlanet()
+							+ ", obliterating your ship."
+						),
+						true,
+						false
+				);
 			}
 
 			playSoundEffect(TORPEDO);

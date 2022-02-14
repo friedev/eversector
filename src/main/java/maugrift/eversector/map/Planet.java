@@ -117,12 +117,14 @@ public class Planet implements ColorStringObject
 		private final int maxTemp;
 
 		/**
-		 * True if the planet has an atmosphere. Influences generation around high-radiation stars.
+		 * True if the planet has an atmosphere. Influences generation around
+		 * high-radiation stars.
 		 */
 		private final boolean atmosphere;
 
 		/**
-		 * The types of regions that can be generated on the planet, in ascending order of altitude.
+		 * The types of regions that can be generated on the planet, in
+		 * ascending order of altitude.
 		 */
 		private final RegionType[] regions;
 
@@ -133,10 +135,16 @@ public class Planet implements ColorStringObject
 		 * @param minTemp    the lowest temperature the planet can generate at
 		 * @param maxTemp    the highest temperature the planet can generate at
 		 * @param atmosphere true if the planet has an atmosphere
-		 * @param regions    the types of regions that can generate on the planet, in ascending order of altitude
+		 * @param regions    the types of regions that can generate on the
+		 *                   planet, in ascending order of altitude
 		 */
-		PlanetType(String type, int minTemp, int maxTemp, boolean atmosphere, RegionType... regions)
-		{
+		PlanetType(
+				String type,
+				int minTemp,
+				int maxTemp,
+				boolean atmosphere,
+				RegionType... regions
+		) {
 			this.type = type + " Planet";
 			this.symbol = Symbol.ROCKY_PLANET.get();
 			this.canLandOn = true;
@@ -214,7 +222,8 @@ public class Planet implements ColorStringObject
 		}
 
 		/**
-		 * Returns true if the planet is rocky, meaning it can be landed on and mined.
+		 * Returns true if the planet is rocky, meaning it can be landed on and
+		 * mined.
 		 *
 		 * @return true if the planet is rocky
 		 */
@@ -224,7 +233,8 @@ public class Planet implements ColorStringObject
 		}
 
 		/**
-		 * Returns true if the planet cannot be landed on, but can be mined for orbit.
+		 * Returns true if the planet cannot be landed on, but can be mined for
+		 * orbit.
 		 *
 		 * @return true if the planet can be mined from orbit
 		 */
@@ -254,10 +264,12 @@ public class Planet implements ColorStringObject
 		}
 
 		/**
-		 * Returns true if the given temperature is in the planet's accepted range.
+		 * Returns true if the given temperature is in the planet's accepted
+		 * range.
 		 *
 		 * @param temp the temperature to check
-		 * @return true if the given temperature is in the planet's accepted range
+		 * @return true if the given temperature is in the planet's accepted
+		 *         range
 		 * @see Star#getPowerAt(int)
 		 */
 		public boolean isInTempRange(int temp)
@@ -289,7 +301,9 @@ public class Planet implements ColorStringObject
 			}
 
 			elevation = Math.max(0.0, Math.min(1.0, elevation));
-			int index = (int) Math.round(((double) (regions.length - 1)) * elevation);
+			int index = (int) Math.round(
+					((double) (regions.length - 1)) * elevation
+			);
 			return regions[index];
 		}
 	}
@@ -379,12 +393,15 @@ public class Planet implements ColorStringObject
 	/**
 	 * Creates a planet with a name, location, and faction.
 	 *
-	 * @param place    the place of planets generated before and including this one
+	 * @param place    the place of planets generated before and including this
+	 *                 one
 	 * @param location the location of the planet
 	 */
 	public Planet(int place, SectorLocation location)
 	{
-		this.name = location.getSector().getStar().getName() + " " + toRomanNumeral(place);
+		this.name = location.getSector().getStar().getName()
+			+ " "
+			+ toRomanNumeral(place);
 		this.location = location;
 		generateType();
 
@@ -434,7 +451,10 @@ public class Planet implements ColorStringObject
 	@Override
 	public ColorString toColorString()
 	{
-		return new ColorString(toString(), isClaimed() ? getFaction().getColor() : null);
+		return new ColorString(
+				toString(),
+				isClaimed() ? getFaction().getColor() : null
+		);
 	}
 
 	/**
@@ -628,14 +648,17 @@ public class Planet implements ColorStringObject
 	}
 
 	/**
-	 * Gets the x value on the opposite side of the planet. Used when ships travel over the planet's poles.
+	 * Gets the x value on the opposite side of the planet. Used when ships
+	 * travel over the planet's poles.
 	 *
 	 * @param x the initial x value
 	 * @return the x value on the opposite side of the planet
 	 */
 	public int getOppositeSide(int x)
 	{
-		return containsX(x + getNColumns() / 2) ? x + getNColumns() / 2 : x - getNColumns() / 2;
+		return containsX(x + getNColumns() / 2)
+			? x + getNColumns() / 2
+			: x - getNColumns() / 2;
 	}
 
 	/**
@@ -686,7 +709,11 @@ public class Planet implements ColorStringObject
 			}
 		}
 
-		claim(index == -1 ? null : getLocation().getGalaxy().getFactions()[index]);
+		claim(
+				index == -1
+				? null
+				: getLocation().getGalaxy().getFactions()[index]
+		);
 	}
 
 	/**
@@ -715,10 +742,13 @@ public class Planet implements ColorStringObject
 	}
 
 	/**
-	 * Returns a random region on the planet that is not already controlled by the specified faction.
+	 * Returns a random region on the planet that is not already controlled by
+	 * the specified faction.
 	 *
-	 * @param faction the faction that regions must not be part of to be selected
-	 * @return any of the regions on the planet not owned by the specified faction, chosen at random
+	 * @param faction the faction that regions must not be part of to be
+	 *                selected
+	 * @return any of the regions on the planet not owned by the specified
+	 *         faction, chosen at random
 	 */
 	public Region getRandomRegion(Faction faction)
 	{
@@ -784,7 +814,9 @@ public class Planet implements ColorStringObject
 	 */
 	private static Region getRandomRegion(List<Region> regions)
 	{
-		return regions == null || regions.isEmpty() ? null : Main.rng.getRandomElement(regions);
+		return regions == null || regions.isEmpty()
+			? null
+			: Main.rng.getRandomElement(regions);
 	}
 
 	/**
@@ -804,11 +836,15 @@ public class Planet implements ColorStringObject
 	 */
 	public ColorChar getSymbol()
 	{
-		return new ColorChar(type.getSymbol(), isClaimed() ? getFaction().getColor() : null);
+		return new ColorChar(
+				type.getSymbol(),
+				isClaimed() ? getFaction().getColor() : null
+		);
 	}
 
 	/**
-	 * Returns or generates the ore type of the planet, depending on if it's an asteroid belt.
+	 * Returns or generates the ore type of the planet, depending on if it's an
+	 * asteroid belt.
 	 *
 	 * @return the planet's ore type or a randomly generated one
 	 */
@@ -846,7 +882,8 @@ public class Planet implements ColorStringObject
 	 * Gets the number of ships on the planet that belong to the given faction.
 	 *
 	 * @param faction the faction that ships must be in
-	 * @return the number of ships on the planet that belong to the given faction
+	 * @return the number of ships on the planet that belong to the given
+	 *         faction
 	 */
 	public int getNShips(Faction faction)
 	{
@@ -869,9 +906,11 @@ public class Planet implements ColorStringObject
 	}
 
 	/**
-	 * Returns the planet represented as a list of ColorStrings. Each symbol represents a region on the planet.
+	 * Returns the planet represented as a list of ColorStrings. Each symbol
+	 * represents a region on the planet.
 	 *
-	 * @param showFactions if true, will show faction colors instead of region colors
+	 * @param showFactions if true, will show faction colors instead of region
+	 *                     colors
 	 * @return the list of ColorStrings representing the planet
 	 */
 	public List<ColorString> toColorStrings(boolean showFactions)
@@ -886,7 +925,10 @@ public class Planet implements ColorStringObject
 				if (showFactions)
 				{
 					ColorChar regionChar = new ColorChar(region.toColorChar());
-					regionChar.setForeground(region.isClaimed() ? region.getFaction().getColor() : null);
+					regionChar.setForeground(region.isClaimed()
+							? region.getFaction().getColor()
+							: null
+					);
 					rowString.add(regionChar);
 				}
 				else
@@ -902,7 +944,8 @@ public class Planet implements ColorStringObject
 	}
 
 	/**
-	 * Generates a random planet type, including temperature based on distance from the nearest orbit.
+	 * Generates a random planet type, including temperature based on distance
+	 * from the nearest orbit.
 	 */
 	private void generateType()
 	{
@@ -912,7 +955,8 @@ public class Planet implements ColorStringObject
 		List<PlanetType> types = new LinkedList<>();
 		for (PlanetType curType : PlanetType.values())
 		{
-			if (curType.isInTempRange(temp) && !(curType.hasAtmosphere() && star.hasRadiation()))
+			if (curType.isInTempRange(temp) &&
+					!(curType.hasAtmosphere() && star.hasRadiation()))
 			{
 				types.add(curType);
 			}
@@ -947,17 +991,27 @@ public class Planet implements ColorStringObject
 	 */
 	private void generateRegions()
 	{
-		int widthMultiplier = Main.rng.nextInt(REGION_MULTIPLIER_RANGE) + MIN_REGION_MULTIPLIER;
+		int widthMultiplier = Main.rng.nextInt(REGION_MULTIPLIER_RANGE)
+			+ MIN_REGION_MULTIPLIER;
 		regions = new Region[widthMultiplier + 1][widthMultiplier * 2];
 
-		int[][] heights = MerlinNoise.preCalcNoise2D(regions.length, regions[0].length, Main.rng.nextLong());
+		int[][] heights = MerlinNoise.preCalcNoise2D(
+				regions.length,
+				regions[0].length,
+				Main.rng.nextLong()
+		);
 
 		for (int y = 0; y < regions.length; y++)
 		{
 			for (int x = 0; x < regions[y].length; x++)
 			{
-				regions[y][x] = new Region(new PlanetLocation(getLocation(), Coord.get(x, y)),
-						type.getRegionAtElevation((double) heights[y][x] / 255.0));
+				regions[y][x] = new Region(
+						new PlanetLocation(
+							getLocation(),
+							Coord.get(x, y)
+						),
+						type.getRegionAtElevation((double) heights[y][x] / 255.0)
+				);
 			}
 		}
 

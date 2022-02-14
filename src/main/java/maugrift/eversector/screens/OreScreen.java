@@ -12,7 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A popup Screen used for temporarily displaying ore values. <b>Currently unused.</b>
+ * A popup Screen used for temporarily displaying ore values. <b>Currently
+ * unused.</b>
  *
  * @author Maugrift
  */
@@ -32,7 +33,11 @@ public class OreScreen extends ConfirmationScreen
 		List<ColorString> list = new LinkedList<>();
 		for (Ore ore : Main.galaxy.getOreTypes())
 		{
-			list.add(new ColorString(ore.toString() + ": " + ore.getDensity() + " Density"));
+			list.add(new ColorString(
+						ore.toString()
+						+ ": "
+						+ ore.getDensity()
+						+ " Density"));
 		}
 		window = new PopupWindow(getDisplay(), list);
 	}

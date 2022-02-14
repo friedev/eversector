@@ -56,7 +56,10 @@ public class StartScreen extends Screen
 	/**
 	 * The character printed for each star.
 	 */
-	private static final ColorChar STAR_CHARACTER = new ColorChar(Symbol.SUBDWARF.get(), AsciiPanel.brightWhite);
+	private static final ColorChar STAR_CHARACTER = new ColorChar(
+			Symbol.SUBDWARF.get(),
+			AsciiPanel.brightWhite
+	);
 
 	/**
 	 * The window.
@@ -90,7 +93,11 @@ public class StartScreen extends Screen
 	{
 		drawStarfield();
 		ColorString[] titleArt = getTitleArt();
-		getDisplay().writeCenter(getDisplay().getCenterY() - titleArt.length / 2 - window.getContents().size() / 2 - 1,
+		getDisplay().writeCenter(
+				getDisplay().getCenterY()
+				- titleArt.length / 2
+				- window.getContents().size() / 2
+				- 1,
 				titleArt);
 		window.display();
 		if (popup != null)
@@ -116,7 +123,8 @@ public class StartScreen extends Screen
 			popup = new OptionsScreen();
 		}
 
-		if (!(key.getKeyCode() == KeyEvent.VK_ENTER || key.getKeyCode() == KeyEvent.VK_SPACE))
+		if (!(key.getKeyCode() == KeyEvent.VK_ENTER ||
+					key.getKeyCode() == KeyEvent.VK_SPACE))
 		{
 			return this;
 		}
@@ -165,7 +173,14 @@ public class StartScreen extends Screen
 		*/
 
 		String padding = Utility.getSpaces(MAX_VERSION_LENGTH - VERSION.length());
-		String infoLine = Symbol.COPYRIGHT + " " + COPYRIGHT_YEAR + " " + DEVELOPER + " " + padding + VERSION;
+		String infoLine = Symbol.COPYRIGHT
+			+ " "
+			+ COPYRIGHT_YEAR
+			+ " "
+			+ DEVELOPER
+			+ " "
+			+ padding
+			+ VERSION;
 		List<ColorString> titleArt = new LinkedList<>();
 
 		titleArt.add(new ColorString(" __________               ________          _____              "));
@@ -183,14 +198,22 @@ public class StartScreen extends Screen
 	 */
 	private void generateStarfield()
 	{
-		int nStars = (int) (STARS_PER_TILE * (getDisplay().getWidthInCharacters() * getDisplay().getHeightInCharacters()));
+		int nStars = (int) (
+				STARS_PER_TILE * (
+					getDisplay().getWidthInCharacters()
+					* getDisplay().getHeightInCharacters()
+				)
+		);
 		starCoords = new ArrayList<>(nStars);
 		for (int i = 0; i < nStars; i++)
 		{
 			Coord starCoord;
 			do
 			{
-				starCoord = rng.nextCoord(getDisplay().getWidthInCharacters(), getDisplay().getHeightInCharacters());
+				starCoord = rng.nextCoord(
+						getDisplay().getWidthInCharacters(),
+						getDisplay().getHeightInCharacters()
+				);
 			} while (starCoords.contains(starCoord));
 
 			starCoords.add(starCoord);

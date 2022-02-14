@@ -12,11 +12,14 @@ import maugrift.eversector.map.Station;
 import static maugrift.eversector.Main.*;
 
 /**
- * The prompt to claim a station when it is under the control of a hostile faction.
+ * The prompt to claim a station when it is under the control of a hostilex
+ * faction.
  *
  * @author Maugrift
  */
-public class ClaimStationScreen extends ConfirmationScreen implements WindowScreen<PopupWindow>
+public class ClaimStationScreen
+	extends ConfirmationScreen
+	implements WindowScreen<PopupWindow>
 {
 	/**
 	 * The window.

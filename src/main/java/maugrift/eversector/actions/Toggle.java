@@ -46,7 +46,8 @@ public class Toggle implements Action
 
 		if (effect == null)
 		{
-			return Utility.addCapitalizedArticle(moduleObj.getName()) + " cannot be activated.";
+			return Utility.addCapitalizedArticle(moduleObj.getName())
+				+ " cannot be activated.";
 		}
 
 		if (actor.hasFlag(effect))
@@ -54,8 +55,11 @@ public class Toggle implements Action
 			return null;
 		}
 
-		return actor.validateResources(moduleObj.getActionResource(), moduleObj.getActionCost(),
-				"activate " + moduleObj);
+		return actor.validateResources(
+				moduleObj.getActionResource(),
+				moduleObj.getActionCost(),
+				"activate " + moduleObj
+		);
 	}
 
 	@Override
@@ -83,18 +87,24 @@ public class Toggle implements Action
 		{
 			if (activating)
 			{
-				addMessage("Your " + moduleObj.toString().toLowerCase() + " has been deactivated.");
+				addMessage(
+						"Your "
+						+ moduleObj.toString().toLowerCase()
+						+ " has been deactivated."
+				);
 				playSoundEffect(SOUND_EFFECT_ENABLE);
 			}
 			else
 			{
-				addMessage("Your " +
-						moduleObj.toString().toLowerCase() +
-						" has been activated and will drain " +
-						moduleObj.getActionCost() +
-						" " +
-						moduleObj.getActionResource().toLowerCase() +
-						" per turn of use.");
+				addMessage(
+						"Your "
+						+ moduleObj.toString().toLowerCase()
+						+ " has been activated and will drain "
+						+ moduleObj.getActionCost()
+						+ " "
+						+ moduleObj.getActionResource().toLowerCase()
+						+ " per turn of use."
+				);
 				playSoundEffect(SOUND_EFFECT_DISABLE);
 			}
 		}
@@ -104,11 +114,12 @@ public class Toggle implements Action
 			Ship player = actor.getLocation().getGalaxy().getPlayer();
 			if (player != null && battle.getShips().contains(player))
 			{
-				addMessage(actor +
-						" " +
-						(activating ? "activates" : "deactivates") +
-						Utility.addArticle(module.toLowerCase()) +
-						".");
+				addMessage(actor
+						+ " "
+						+ (activating ? "activates" : "deactivates")
+						+ Utility.addArticle(module.toLowerCase())
+						+ "."
+				);
 			}
 		}
 

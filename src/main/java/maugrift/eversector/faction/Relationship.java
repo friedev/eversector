@@ -12,7 +12,8 @@ import static maugrift.eversector.Main.pendingRelationships;
 import static maugrift.eversector.Main.rng;
 
 /**
- * A relationship between factions, containing the two factions and the terms between them.
+ * A relationship between factions, containing the two factions and the terms
+ * between them.
  *
  * @author Maugrift
  */
@@ -115,7 +116,8 @@ public class Relationship
 	}
 
 	/**
-	 * Creates a new relationship between two factions, randomly choosing a relationship type.
+	 * Creates a new relationship between two factions, randomly choosing a
+	 * relationship type.
 	 *
 	 * @param faction1 the first faction
 	 * @param faction2 the second faction
@@ -139,7 +141,8 @@ public class Relationship
 	 * Returns the faction in the relationship that is not the one specified.
 	 *
 	 * @param faction the faction that will not be returned
-	 * @return the faction that does not equal the one specified, null if neither faction was entered
+	 * @return the faction that does not equal the one specified, null if
+	 *         neither faction was entered
 	 */
 	public Faction getOtherFaction(Faction faction)
 	{
@@ -157,10 +160,12 @@ public class Relationship
 	}
 
 	/**
-	 * Returns true if one of the factions in the relationship is the specified one.
+	 * Returns true if one of the factions in the relationship is the specified
+	 * one.
 	 *
 	 * @param faction the faction to check for in the relationship
-	 * @return true if the faction is one of the two involved in this relationship
+	 * @return true if the faction is one of the two involved in this
+	 *         relationship
 	 */
 	public boolean hasFaction(Faction faction)
 	{
@@ -189,7 +194,8 @@ public class Relationship
 	/**
 	 * Creates a change in relationship and announces it if necessary.
 	 *
-	 * @return true if a relationship change was requested, even if not fulfilled
+	 * @return true if a relationship change was requested, even if not
+	 *         fulfilled
 	 */
 	public boolean updateRelationship()
 	{
@@ -302,14 +308,26 @@ public class Relationship
 		if (!changeable)
 		{
 			type = newRelationship;
-			chooser.addNews(new ColorString("We " + actingVerb + " the ").add(receiver).add("."));
-			receiver.addNews(new ColorString("The ").add(chooser).add(" " + verb + " us."));
+			chooser.addNews(new ColorString("We " + actingVerb + " the ")
+					.add(receiver)
+					.add("."));
+			receiver.addNews(new ColorString("The ")
+					.add(chooser)
+					.add(" " + verb + " us."));
 			return true;
 		}
 
-		pendingRelationships.add(new RelationshipChange(otherFaction, newRelationship, question, new ColorString("The ")
-				.add(otherFaction)
-				.add(" has " + requestVerb + " you."), negateAnswer));
+		pendingRelationships.add(
+				new RelationshipChange(
+					otherFaction,
+					newRelationship,
+					question,
+					new ColorString("The ")
+					.add(otherFaction)
+					.add(" has " + requestVerb + " you."),
+					negateAnswer
+				)
+		);
 		return true;
 
 		/*
@@ -360,6 +378,10 @@ public class Relationship
 	 */
 	private RelationshipType generateRelationship()
 	{
-		return (RelationshipType) Utility.select(rng, RelationshipType.values(), new double[]{0.5, 0.3, 0.2});
+		return (RelationshipType) Utility.select(
+				rng,
+				RelationshipType.values(),
+				new double[]{0.5, 0.3, 0.2}
+		);
 	}
 }

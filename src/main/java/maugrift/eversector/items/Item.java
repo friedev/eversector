@@ -31,7 +31,8 @@ public abstract class Item
 	private final int value;
 
 	/**
-	 * The local price of the item in credits. To be updated on a per-station basis.
+	 * The local price of the item in credits. To be updated on a per-station
+	 * basis.
 	 */
 	private int price;
 
@@ -53,8 +54,9 @@ public abstract class Item
 	/**
 	 * Creates a new expander from a set of Properties.
 	 *
-	 * @param properties the Properties object to use in construction that should contain the properties "name,"
-	 *                   "description," "value," and optionally "nickname"
+	 * @param properties the Properties object to use in construction that
+	 *                   should contain the properties "name", "description",
+	 *                   "value", and optionally "nickname"
 	 */
 	public Item(Properties properties)
 	{
@@ -62,7 +64,9 @@ public abstract class Item
 		description = properties.getProperty("description");
 		if (description == null)
 		{
-			throw new NullPointerException("Empty description field found while generating items.");
+			throw new NullPointerException(
+					"Empty description field found while generating items."
+			);
 		}
 
 		value = Math.abs(Integer.parseInt(properties.getProperty("value")));
@@ -134,7 +138,8 @@ public abstract class Item
 	}
 
 	/**
-	 * Creates a definition for the item, including name, value, and description.
+	 * Creates a definition for the item, including name, value, and
+	 * description.
 	 *
 	 * @return a List of ColorStrings that define the item
 	 */
@@ -143,8 +148,23 @@ public abstract class Item
 		List<ColorString> definition = new LinkedList<>();
 		definition.add(new ColorString(name, Main.COLOR_FIELD));
 		definition.add(
-				new ColorString("Value: ").add(new ColorString(Integer.toString(value) + Symbol.CREDITS, Main.COLOR_FIELD)));
-		definition.add(new ColorString("Description: ").add(new ColorString(description, Main.COLOR_FIELD)));
+				new ColorString("Value: ")
+				.add(
+					new ColorString(
+						Integer.toString(value) + Symbol.CREDITS,
+						Main.COLOR_FIELD
+					)
+				)
+		);
+		definition.add(
+				new ColorString("Description: ")
+				.add(
+					new ColorString(
+						description,
+						Main.COLOR_FIELD
+					)
+				)
+		);
 		return definition;
 	}
 
@@ -157,7 +177,8 @@ public abstract class Item
 		int maxFluctuation = value / 5;
 
 		// Generates a random number within the allowed fluctuation range
-		int fluctuation = Main.rng.nextInt(maxFluctuation * 2 + 1) - maxFluctuation * 2 / 2;
+		int fluctuation = Main.rng.nextInt(maxFluctuation * 2 + 1)
+			- maxFluctuation * 2 / 2;
 
 		// Add the fluctuation to the base value to get the local price
 		price = value + fluctuation;
