@@ -154,7 +154,7 @@ public class StartScreen extends Screen
     public static ColorString[] getTitleArt()
     {
         // Art credit goes to patorjk.com/software/taag/
-        
+
         /*
          __________               ________          _____
          ___  ____/  _______________  ___/____________  /______________

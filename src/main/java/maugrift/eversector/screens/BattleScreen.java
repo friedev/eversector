@@ -204,7 +204,7 @@ public class BattleScreen extends MenuScreen<AlignedMenu> implements WindowScree
                             .add("."));
                     break;
                 }
-                
+
                 if (!opponent.willAttack())
                 {
                     player.convert(opponent);

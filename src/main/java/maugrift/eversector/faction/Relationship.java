@@ -305,13 +305,13 @@ public class Relationship
                 .add(otherFaction)
                 .add(" has " + requestVerb + " you."), negateAnswer));
         return true;
-        
+
         /*
         RelationshipType oldRelationship = type;
-        
+
         if ((answer && !negateAnswer) || negateAnswer)
             type = newRelationship;
-        
+
         if (answer && negateAnswer)
         {
             if (playerFaction.requestRelationship(otherFaction,
@@ -319,7 +319,7 @@ public class Relationship
             {
                 Prompt.printNotification(
                         "The " + otherFaction + " has accepted your offer.");
-                
+
                 // Returning here prevents the news from being updated since the
                 // relationship ultimately stayed the same
                 return true;
@@ -330,7 +330,7 @@ public class Relationship
                         "The " + otherFaction + " has rejected your offer.");
             }
         }
-        
+
         if (chooser.requestRelationship(receiver, newRelationship))
         {
             chooser.addNews("We " + actingVerb + " the " + receiver + ".");

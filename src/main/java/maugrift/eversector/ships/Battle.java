@@ -470,7 +470,7 @@ public class Battle
         distributeLoot();
         endBattle();
     }
-    
+
     /*
     public void controlAIBattle(Ship ship)
     {
@@ -487,7 +487,7 @@ public class Battle
                     // this ship
                     if (ship.willConvert() && ship.convert(this))
                         return;
-                    
+
                     // If the conversion fails, the fight continues
                 }
                 else
@@ -495,7 +495,7 @@ public class Battle
                     break;
                 }
             }
-            
+
             // If the other ship flees but is pursued
             if (!ship.attack(this))
             {
@@ -507,7 +507,7 @@ public class Battle
                 }
             }
         } while (!isDestroyed() && !ship.isDestroyed());
-        
+
         // If this ship is destroyed or cannot flee while the other ship lives
         if (isDestroyed() || (!validateResources(Action.FLEE, "flee") &&
                 !ship.isDestroyed()))
@@ -524,15 +524,15 @@ public class Battle
                     ship.changeReputation(ship.faction, Reputation.KILL_ALLY);
                 else
                     ship.changeReputation(ship.faction, Reputation.KILL_ENEMY);
-                
+
                 ship.changeReputation(faction, Reputation.KILL_ALLY);
-                
+
                 if (isLeader())
                 {
                     faction.addNews(ship + " of the " + ship.faction
                             + " has destroyed our leader, " + toString() + ".");
                 }
-                
+
                 ship.loot(this);
 
                 if (!isDestroyed())
@@ -553,16 +553,16 @@ public class Battle
                     changeReputation(faction, Reputation.KILL_ALLY);
                 else
                     changeReputation(faction, Reputation.KILL_ENEMY);
-                
+
                 changeReputation(ship.faction, Reputation.KILL_ALLY);
-                
+
                 if (ship.isLeader())
                 {
                     ship.faction.addNews(toString() + " of the " + faction
                             + " has destroyed our leader, " + ship.toString()
                             + ".");
                 }
-                
+
                 loot(ship);
 
                 if (!ship.isDestroyed())

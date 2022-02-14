@@ -65,7 +65,7 @@ public class AsteroidMineConfirmScreen extends ConfirmationScreen implements Win
             return new EndScreen(new ColorString("You collide with the asteroid, which breaches your hull!"), true,
                     false);
         }
-        
+
         Main.galaxy.nextTurn();
         return null;
     }

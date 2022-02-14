@@ -369,14 +369,14 @@ public class Region implements ColorStringObject
     public int extractOre(int extracted)
     {
         return extracted;
-        
+
         /*
         int actualExtracted = Math.min(nOre, extracted);
-        
+
         nOre -= extracted;
         if (nOre <= 0)
             ore = null;
-        
+
         return actualExtracted;
         */
     }
