@@ -11,8 +11,7 @@ With enough hard work, any ship can rise to power over their faction, through no
 To build EverSector from source, clone the repository and run the included build script `./build.sh`.
 This compiles EverSector and its dependencies into JAR files and also packages all files needed to run the game into a directory named `EverSector`.
 
-To run the game, run the `./EverSector` script in the newly created `EverSector` directory.
-There is also a Windows batch file provided (`bin/EverSector.bat`), which has not yet been tested.
+To run the game, run the `bin/EverSector` script in the newly created `EverSector` directory (or use the `bin/EverSector.bat` batch file if you are on Windows).
 
 To make a release build, run `./build.sh --release`.
 This zips the `EverSector` directory into `EverSector.zip` for distribution.

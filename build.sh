@@ -11,7 +11,6 @@ cp build/distributions/EverSector.tar .
 tar -xvf EverSector.tar
 rm EverSector.tar
 
-ln -s bin/EverSector EverSector/EverSector
 cp -r README.md LICENSE.txt CHANGELOG.md licenses assets EverSector
 
 # Zip for release
