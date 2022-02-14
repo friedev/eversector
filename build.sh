@@ -7,9 +7,9 @@ export PATH='/bin:/usr/bin:/usr/local/bin'
 rm -rf EverSector EverSector.zip
 ./gradlew clean build jar
 
-cp build/distributions/EverSector.zip .
-unzip EverSector.zip
-rm EverSector.zip
+cp build/distributions/EverSector.tar .
+tar -xvf EverSector.tar
+rm EverSector.tar
 
 ln -s bin/EverSector EverSector/EverSector
 cp -r README.md LICENSE.txt CHANGELOG.md licenses assets EverSector
