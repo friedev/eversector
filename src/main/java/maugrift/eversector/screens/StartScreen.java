@@ -36,7 +36,7 @@ public class StartScreen extends Screen
 	/**
 	 * The name of the game's developer.
 	 */
-	private static final String DEVELOPER = "Aaron Friesen (Maugrift)";
+	private static final String DEVELOPER = "Aaron Friesen";
 
 	/**
 	 * The years for which the game is copyrighted.

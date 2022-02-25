@@ -87,19 +87,19 @@ Now go forth, and shape the future of your galaxy!
 
 ## Credits
 
-Developer: [Aaron Friesen (Maugrift)](https://maugrift.com)
+Developer: [Aaron Friesen](https://maugrift.com)
 
 Contributors:
 
-- [Dale Campbell (oshuma)](https://twitter.com/oshuma)
+- [Dale Campbell](https://oshuma.github.io)
 
 Libraries:
 
 - [AsciiPanel](https://github.com/trystan/AsciiPanel) by [Trystan Spangler](https://trystans.blogspot.com)
 - [SquidLib](https://github.com/SquidPony/SquidLib) by [Eben Howard (SquidPony)](https://github.com/SquidPony)
-- [APWT](https://github.com/Maugrift/APWT) by [Aaron Friesen (Maugrift)](https://maugrift.com)
+- [APWT](https://github.com/Maugrift/APWT) by [Aaron Friesen](https://maugrift.com)
 
-Fonts: All fonts are based on the following CP437 tilesets from the [Dwarf Fortress Tileset Repository](https://dwarffortresswiki.org/Tileset_repository), with custom tiles added by [Aaron Friesen (Maugrift)](https://maugrift.com)
+Fonts: All fonts are based on the following CP437 tilesets from the [Dwarf Fortress Tileset Repository](https://dwarffortresswiki.org/Tileset_repository), with custom tiles added by [Aaron Friesen](https://maugrift.com)
 
 - [12x12 tileset](http://df.magmawiki.com/index.php/File:Alloy_curses_12x12.png) by [Alloy](https://dwarffortresswiki.org/index.php/User:Alloy)
 - [16x16 tileset](https://dwarffortresswiki.org/index.php/File:Cooz_curses_square_16x16.png) by [Cooz](https://dwarffortresswiki.org/index.php?title=User:Cooz)
