@@ -84,11 +84,6 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 				option.setProperty(value.toString());
 				updateWindow();
 
-				if (soundtrack != null && Option.MUSIC.equals(option))
-				{
-					FileManager.setVolume(soundtrack, value);
-				}
-
 				return this;
 			}
 		}

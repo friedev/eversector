@@ -63,12 +63,12 @@ public enum Option
 	/**
 	 * The volume of the game's soundtrack.
 	 */
-	MUSIC("Music Volume", 100, true),
+	//MUSIC("Music Volume", 100, true),
 
 	/**
 	 * The volume of all sound effects played.
 	 */
-	SFX("Sound Effect Volume", 100, true),
+	//SFX("Sound Effect Volume", 100, true),
 
 	/**
 	 * If true, will show the leaderboard and log scores to it.

@@ -107,14 +107,6 @@ Fonts: All fonts are based on the following CP437 tilesets from the [Dwarf Fortr
 
 Title ASCII Art: [TAAG](http://patorjk.com/software/taag) by [Patrick Gillespie](http://patorjk.com)
 
-Soundtrack: [Kevin MacLeod](http://incompetech.com/music/royalty-free/music.html)
-
-- ["Deep Haze"](http://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100886)
-- ["Floating Cities"](https://incompetech.com/wordpress/2016/04/floating-cities/)
-- ["Stormfront"](http://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200043)
-
-Sound Effects: [JFXR](https://jfxr.frozenfractal.com/) by [Thomas ten Cate (Frozen Fractal)](https://frozenfractal.com/)
-
 All applicable licenses can be found in the `licenses` folder.
 
 ## Contributing

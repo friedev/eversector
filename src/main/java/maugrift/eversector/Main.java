@@ -17,7 +17,6 @@ import maugrift.apwt.util.FileManager;
 import maugrift.apwt.util.Utility;
 import squidpony.squidmath.RNG;
 
-import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -73,11 +72,6 @@ public class Main
 	 * The seed of the random number generator.
 	 */
 	public static long seed;
-
-	/**
-	 * The game music that will loop in the background.
-	 */
-	public static Clip soundtrack;
 
 	/**
 	 * The galaxy in which the current game is played.
@@ -206,18 +200,6 @@ public class Main
 				)
 		);
 		((AsciiPanelDisplay) display).init(new StartScreen(startMessages));
-
-		try
-		{
-			if (soundtrack == null)
-			{
-				soundtrack = FileManager.loopAudio(Paths.SOUNDTRACK);
-				FileManager.setVolume(soundtrack, Option.MUSIC.toInt());
-			}
-		}
-		catch (Exception e)
-		{
-		}
 	}
 
 	/**
@@ -363,21 +345,12 @@ public class Main
 	}
 
 	/**
-	 * Plays the sound effect at the given path.
+	 * Plays the sound effect at the given path. Currently a no-op while the
+	 * sound system is disabled.
 	 *
 	 * @param path the path of the sound effect to play
 	 */
-	public static void playSoundEffect(String path)
-	{
-		try
-		{
-			Clip soundEffect = FileManager.playAudio(path);
-			FileManager.setVolume(soundEffect, Option.SFX.toInt());
-		}
-		catch (Exception e)
-		{
-		}
-	}
+	public static void playSoundEffect(String path) {}
 
 	/**
 	 * Set the seed based on the status of the keepSeed property.

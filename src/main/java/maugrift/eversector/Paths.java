@@ -18,7 +18,7 @@ public abstract class Paths
 	public static final String FONT_TILES = "tiles.png";
 	public static final String FONT_ASCII = "ascii.png";
 	public static final String ICON = "assets/icon.png";
-	// Audio files
+	// Audio files (currently missing, kept for compatibility)
 	public static final String SOUNDTRACK = "assets/audio/soundtrack.wav";
 	public static final String START = "assets/audio/start.wav";
 	public static final String ON = "assets/audio/on.wav";
