@@ -113,7 +113,7 @@ public class BattleScreen
 		}
 
 		Direction direction = Utility.keyToDirectionRestricted(key);
-		if (getMenu().select(direction.deltaY))
+		if (direction != null && getMenu().select(direction.deltaY))
 		{
 			return this;
 		}
