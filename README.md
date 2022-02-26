@@ -117,6 +117,6 @@ However, I may still try to maintain it, so if something doesn't work, feel free
 If you want to develop more features for EverSector, I would suggest making your own fork of the game!
 Just make sure to abide by the terms of the source code license (found in `LICENSE.txt`).
 
-**NOTE:** If you cloned the repo at or before commit 8dfcf5b ("Remove and disable audio"), you may need to rebase or re-clone the repository if you want to pull new changes.
+**NOTE:** If you cloned the repo at or before commit `8dfcf5b` ("Remove and disable audio"), you may need to rebase or re-clone the repository if you want to pull new changes.
 This is because of a history rewrite to remove the large audio files from Git history.
 Apologies for the inconvenience!

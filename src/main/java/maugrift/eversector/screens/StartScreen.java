@@ -31,7 +31,7 @@ public class StartScreen extends Screen
 	/**
 	 * The version number of the game.
 	 */
-	private static final String VERSION = "v0.7.2-dev";
+	private static final String VERSION = "0.7.2";
 
 	/**
 	 * The name of the game's developer.
@@ -99,7 +99,8 @@ public class StartScreen extends Screen
 				- titleArt.length / 2
 				- window.getContents().size() / 2
 				- 1,
-				titleArt);
+				titleArt
+		);
 		window.display();
 		if (popup != null)
 		{
