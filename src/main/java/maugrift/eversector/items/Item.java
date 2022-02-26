@@ -156,15 +156,14 @@ public abstract class Item
 					)
 				)
 		);
-		definition.add(
-				new ColorString("Description: ")
-				.add(
+		if (description != null) {
+			definition.add(
 					new ColorString(
 						description,
 						Main.COLOR_FIELD
 					)
-				)
-		);
+			);
+		}
 		return definition;
 	}
 

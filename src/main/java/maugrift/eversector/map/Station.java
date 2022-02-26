@@ -53,7 +53,7 @@ public class Station implements ColorStringObject
 	public static final Module[] MODULES = new Module[]{
 		new Module(
 				Module.SCANNER,
-				"Reveals locations from a distance.",
+				"Scan enemy ships and reveal farther sectors.",
 				150,
 				false,
 				Resource.ENERGY,
@@ -61,7 +61,7 @@ public class Station implements ColorStringObject
 		),
 		new Module(
 				Module.REFINERY,
-				"Can convert ore into fuel at a 1:1 ratio.",
+				"Convert ore into fuel at a 1:1 ratio.",
 				250,
 				false,
 				Resource.ENERGY,
@@ -69,7 +69,7 @@ public class Station implements ColorStringObject
 		),
 		new Module(
 				Module.SOLAR_ARRAY,
-				"Passively generates energy each turn based on solar proximity.",
+				"Produces energy each turn in orbit near a star.",
 				250,
 				false,
 				Resource.ENERGY,
@@ -77,7 +77,7 @@ public class Station implements ColorStringObject
 		),
 		new Module(
 				Module.WARP_DRIVE,
-				"Facilitates long-range sector jumps powered by energy.",
+				"Spend energy to jump to any visible sector.",
 				400,
 				false,
 				Resource.ENERGY,
@@ -85,7 +85,7 @@ public class Station implements ColorStringObject
 		),
 		new Module(
 				Module.SHIELD,
-				"When active, halves damage from oncoming energy weapon fire.",
+				"Halves damage from energy weapons while active.",
 				200,
 				true,
 				Ship.SHIELDED,
@@ -94,7 +94,7 @@ public class Station implements ColorStringObject
 		),
 		new Module(
 				Module.CLOAKING_DEVICE,
-				"When active, renders the ship impossible to track.",
+				"You cannot be attacked or pursued while active.",
 				300,
 				true,
 				Ship.CLOAKED,
@@ -103,7 +103,7 @@ public class Station implements ColorStringObject
 		),
 		new Weapon(
 				Weapon.LASER,
-				"A focused laser used to cut open enemy hulls.",
+				null,
 				100,
 				2,
 				Resource.ENERGY,
@@ -112,7 +112,7 @@ public class Station implements ColorStringObject
 		),
 		new Weapon(
 				Weapon.TORPEDO_TUBE,
-				"Fires guided torpedoes capable of bypassing energy shields.",
+				null,
 				200,
 				4,
 				Resource.FUEL,
@@ -121,7 +121,7 @@ public class Station implements ColorStringObject
 		),
 		new Weapon(
 				Weapon.PULSE_BEAM,
-				"A devastating laser capable of ripping through weak ships.",
+				null,
 				500,
 				7,
 				Resource.ENERGY,
@@ -137,41 +137,41 @@ public class Station implements ColorStringObject
 	public static final BaseResource[] RESOURCES = new BaseResource[]{
 		new BaseResource(
 				Resource.FUEL,
-				"A reactive mixture able to create highly efficient thrust.",
+				null,
 				10,
 				true,
 				new Expander(Resource.FUEL_EXPANDER,
-					"A compact container able to withstand extreme pressures.",
+					null,
 					70
 				)
 		),
 		new BaseResource(
 				Resource.ENERGY,
-				"Highly concentrated electrical charge.",
+				null,
 				5,
 				false,
 				new Expander(Resource.ENERGY_EXPANDER,
-					"A supercapacitor capable of retaining charge for long durations.",
+					null,
 					85
 				)
 		),
 		new BaseResource(
 				Resource.ORE,
-				"A versatile compound that can be refined into fuel.",
+				null,
 				10,
 				true,
 				new Expander(Resource.ORE_EXPANDER,
-					"An interior hold designed for containing large quantities of ore.",
+					null,
 					85
 				)
 		),
 		new BaseResource(
 				Resource.HULL,
-				"Layered alloys and ceramics that protect the ship.",
+				null,
 				15,
 				false,
 				new Expander(Resource.HULL_EXPANDER,
-					"A frame to allow the mounting of additional plating.",
+					null,
 					85,
 					2
 				)
