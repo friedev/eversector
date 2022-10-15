@@ -1,0 +1,3 @@
+[submodule "lib/apwt"]
+	path = lib/apwt
+	url = https://frie.dev/apwt.git

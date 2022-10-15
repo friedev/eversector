@@ -5,7 +5,7 @@ set -eu
 export PATH='/bin:/usr/bin:/usr/local/bin'
 
 rm -rf EverSector EverSector.zip
-./gradlew clean build jar
+gradle clean build jar
 
 cp build/distributions/EverSector.tar .
 tar -xvf EverSector.tar
