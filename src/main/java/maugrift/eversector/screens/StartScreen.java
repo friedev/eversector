@@ -31,7 +31,7 @@ public class StartScreen extends Screen
 	/**
 	 * The version number of the game.
 	 */
-	private static final String VERSION = "0.7.2";
+	private static final String VERSION = "0.7.3";
 
 	/**
 	 * The name of the game's developer.

@@ -1,5 +1,9 @@
 ## Changelog
 
+#### 0.7.3 (2022-10-15)
+
+- Build APWT as a git submodule rather than downloading it from JitPack
+
 #### 0.7.2 (2022-02-25)
 
 - Project architecture has been overhauled for better maintainability
