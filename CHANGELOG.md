@@ -1,10 +1,10 @@
-## Changelog
+# Changelog
 
-#### 0.7.3 (2022-10-15)
+### 0.7.3 (2022-10-15)
 
 - Build APWT as a git submodule rather than downloading it from JitPack
 
-#### 0.7.2 (2022-02-25)
+### 0.7.2 (2022-02-25)
 
 - Project architecture has been overhauled for better maintainability
 	- Dependencies are now pulled from JitPack
@@ -20,7 +20,7 @@
 - Fixed crash when loading a saved game while not orbital
 - Fixed crash when selecting a ship in the battle screen
 
-#### 0.7.1 (2019-05-04)
+### 0.7.1 (2019-05-04)
 
 - Implement surrendering
 	- You can now surrender in a battle by pressing U
@@ -34,7 +34,7 @@
 - Confirmation prompt when mining an asteroid that could destroy you (thanks oshuma!)
 - Fixed crash when trying to land on a nonexistent planet (thanks oshuma!)
 
-### 0.7 (2017-09-21)
+## 0.7 (2017-09-21)
 
 - The universe is divided into multiple galaxies, each of which are much larger than previous maps
 	- Traveling off the edge of a galaxy allows to you travel to a new one
@@ -66,7 +66,7 @@
 - Added two new songs to the soundtrack
 - Added a crash log to help with bug reporting
 
-### 0.6 (2017-08-07)
+## 0.6 (2017-08-07)
 
 - Battles can now occur between several ships
 	- Attacking a ship may cause other ships at the same orbit to join on either side
@@ -109,7 +109,7 @@
 	- Windows version now works without Java installed
 	- Fixed README images not displaying
 
-### 0.5 (2017-06-28)
+## 0.5 (2017-06-28)
 
 - Complete UI overhaul!
 	- The game is now displayed through AsciiPanel and APWT
@@ -134,7 +134,7 @@
 	- Automining and max buying/selling (now unnecessary)
 	- Most game data stored in files
 
-#### 0.4.3 (2017-01-19)
+### 0.4.3 (2017-01-19)
 
 - Massive faction updates
 	- New leader election system with voting, campaigning, and more opportunities to be elected
@@ -167,7 +167,7 @@
 	- Launchers now work in any folder
 	- Crashes now print a stack trace before closing
 
-#### 0.4.2 (2016-12-24)
+### 0.4.2 (2016-12-24)
 
 - New command system with files
 	- All commands are now stored in files and thus customizable
@@ -193,7 +193,7 @@
 - Duplicate modules are now stored as cargo
 - Lots of fixing and polishing
 
-#### 0.4.1 (2016-10-16)
+### 0.4.1 (2016-10-16)
 
 - Revamped region explorations and sites
 	- There are a finite amount of "sites" in each region
@@ -212,7 +212,7 @@
 - You can now become a faction leader by eliminating the previous one
 - You can now choose to be elected and if you wish to hold elections for new leaders
 
-### 0.4 (2016-09-04)
+## 0.4 (2016-09-04)
 
 - Planetary regions and changes to claiming
 	- Planets now consist of various regions which are claimed separately
@@ -248,7 +248,7 @@
 	- Claiming an ally's territory is worth less than claiming an enemy's
 - It is now possible to mod new items into the game with the use of manifest files
 
-#### 0.3.3 (2016-07-28)
+### 0.3.3 (2016-07-28)
 
 - Improved several aspects of the game's flow
 	- Actions can now be read on a single line!
@@ -267,7 +267,7 @@
 - Attacking is now possible in the central sector, but at a cost
 - All module/resource data is stored in files now, which may allow for mods later
 
-#### 0.3.2 (2016-07-20)
+### 0.3.2 (2016-07-20)
 
 - Overhauled file systems and added a rudimentary "save" functionality
 	- Save data is stored in `save.properties`
@@ -283,7 +283,7 @@
 - Fixed improper fractions when selling expanders
 - Fixed a missing farewell message for negatively-aligned wanderers
 
-#### 0.3.1 (2016-07-07)
+### 0.3.1 (2016-07-07)
 
 - Added nebulae that generate around neutron stars and supergiants
 - Further improved farewell messages
@@ -294,7 +294,7 @@
 	- Fixed max purchases and sales for expanders
 	- Fixed item spacing on trade stations
 
-### 0.3 (2016-07-03)
+## 0.3 (2016-07-03)
 
 - New commands to improve playability and informativeness
 	- New "restock" command to sell all ore and max out other resources
@@ -314,14 +314,14 @@
 - Fixed AI docking loops
 - Rebalanced cross-sector movement, godmode, and pulse beam damage
 
-#### 0.2.4 (2016-06-30)
+### 0.2.4 (2016-06-30)
 
 - Project's official name has been decided: EverSector!
 - Added randomly-generated names for each sector and faction
 - Improved grammar in the farewell message
 - Fixed a crash when docking at a station with foreign modules
 
-#### 0.2.3 (2016-06-22)
+### 0.2.3 (2016-06-22)
 
 - Ships can now convert other ships and the player
 - Longwait has been changed to hibernate and is now debug-only
@@ -329,7 +329,7 @@
 - Fixed lack of price variance in stations
 - Fixed error messages giving a negative number when selling
 
-#### 0.2.2 (2016-06-09)
+### 0.2.2 (2016-06-09)
 
 - Completely overhauled distress signals (now functional!)
 - Hint command now gives much more contextual information
@@ -337,14 +337,14 @@
 - Fixed bug that allowed you to dock while landed
 - New HTML README file
 
-#### 0.2.1 (2016-06-08)
+### 0.2.1 (2016-06-08)
 
 - Massive improvement in JavaDoc documentation
 - Status bar now shows your faction and reputation
 - Help menu now hides commands that you don't have modules for
 - Fixed some bugs with transactions and scans
 
-### 0.2 (2016-06-03)
+## 0.2 (2016-06-03)
 
 - New status bar that acts as a quick reference to your resources
 - New "hint" command that gives you tips about your situation

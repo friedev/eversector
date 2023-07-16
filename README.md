@@ -35,7 +35,7 @@ To navigate menus, use the arrow keys.
 In some cases, `wasd`, the vi keys, and the number pad may also be used to navigate.
 The current selection is often denoted by a blue highlight.
 
-## Galaxy Screen
+### Galaxy Screen
 
 The galaxy map shows you the layout of nearby sectors in your galaxy.
 Each tile is a sector, though only some of them have star systems you can enter.
