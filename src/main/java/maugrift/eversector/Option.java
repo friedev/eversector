@@ -15,8 +15,7 @@ import static maugrift.eversector.Main.COLOR_FIELD;
  *
  * @author Aaron Friesen
  */
-public enum Option
-{
+public enum Option {
 	/**
 	 * The name of the ship's captain to be logged on the leaderboard.
 	 */
@@ -183,7 +182,7 @@ public enum Option
 	{
 		String property = getProperty();
 		return new ColorString(key + ": ")
-			.add(new ColorString(getProperty(), getColor()));
+		.add(new ColorString(getProperty(), getColor()));
 	}
 
 	/**
@@ -275,12 +274,9 @@ public enum Option
 	{
 		options.setProperty(key, property);
 
-		try
-		{
+		try {
 			FileManager.save(options, Paths.OPTIONS);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 		}
 	}
 
@@ -309,8 +305,7 @@ public enum Option
 	 */
 	public void toggle()
 	{
-		if (isBoolean())
-		{
+		if (isBoolean()) {
 			setProperty(booleanToString(!toBoolean()));
 		}
 	}
@@ -320,8 +315,7 @@ public enum Option
 	 */
 	public void increment()
 	{
-		if (isInt())
-		{
+		if (isInt()) {
 			setProperty(toInt() + 1);
 		}
 	}
@@ -331,8 +325,7 @@ public enum Option
 	 */
 	public void decrement()
 	{
-		if (isInt())
-		{
+		if (isInt()) {
 			setProperty(toInt() - 1);
 		}
 	}
@@ -354,12 +347,10 @@ public enum Option
 	 */
 	public Color getColor()
 	{
-		if (OPTION_TRUE.equals(getProperty()))
-		{
+		if (OPTION_TRUE.equals(getProperty())) {
 			return COLOR_TRUE;
 		}
-		if (OPTION_FALSE.equals(getProperty()))
-		{
+		if (OPTION_FALSE.equals(getProperty())) {
 			return COLOR_FALSE;
 		}
 		return COLOR_FIELD;
@@ -383,10 +374,8 @@ public enum Option
 	 */
 	public static void applyDefaults()
 	{
-		for (Option option : Option.values())
-		{
-			if (option.getProperty() == null)
-			{
+		for (Option option : Option.values()) {
+			if (option.getProperty() == null) {
 				option.resetToDefault();
 			}
 		}
@@ -400,10 +389,8 @@ public enum Option
 	 */
 	public static Option getOption(String key)
 	{
-		for (Option option : Option.values())
-		{
-			if (option.key.equals(key))
-			{
+		for (Option option : Option.values()) {
+			if (option.key.equals(key)) {
 				return option;
 			}
 		}

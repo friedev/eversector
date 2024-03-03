@@ -65,13 +65,13 @@ class StationScreen
 	public StationScreen()
 	{
 		super(
-				new AlignedMenu(
-					new AlignedWindow(
-						Main.display,
-						0,
-						0,
-						new Border(2)
-					),
+			new AlignedMenu(
+				new AlignedWindow(
+					Main.display,
+					0,
+					0,
+					new Border(2)
+				),
 				COLOR_SELECTION_FOREGROUND,
 				COLOR_SELECTION_BACKGROUND
 			)
@@ -90,28 +90,18 @@ class StationScreen
 	public Screen processInput(KeyEvent key)
 	{
 		Direction direction = Utility.keyToDirectionRestricted(key);
-		if (direction != null && getMenu().select(direction.deltaY))
-		{
+		if (direction != null && getMenu().select(direction.deltaY)) {
 			int index = getMenu().getSelectionIndex();
-			if (buying)
-			{
-				if (index == sellStart)
-				{
+			if (buying) {
+				if (index == sellStart) {
 					getMenu().setSelectionIndex(buyStart);
-				}
-				else if (index == sellEnd)
-				{
+				} else if (index == sellEnd) {
 					getMenu().setSelectionIndex(sellStart - 2);
 				}
-			}
-			else
-			{
-				if (index == buyStart)
-				{
+			} else {
+				if (index == buyStart) {
 					getMenu().setSelectionIndex(sellStart);
-				}
-				else if (index < sellStart)
-				{
+				} else if (index < sellStart) {
 					getMenu().setSelectionIndex(sellEnd);
 				}
 			}
@@ -121,79 +111,62 @@ class StationScreen
 		boolean nextTurn = false;
 		Screen nextScreen = this;
 
-		switch (key.getKeyCode())
-		{
-			case KeyEvent.VK_ENTER:
-			{
+		switch (key.getKeyCode()) {
+		case KeyEvent.VK_ENTER: {
 				Action action;
 				Item item = getSelectedItem();
-				if (buying)
-				{
-					if (item instanceof Module)
-					{
+				if (buying) {
+					if (item instanceof Module) {
 						action = new BuyModule(item.getName());
-					}
-					else
-					{
+					} else {
 						action = new TransactResource(item.getName(), 1);
 					}
-				}
-				else
-				{
-					if (item instanceof Module)
-					{
+				} else {
+					if (item instanceof Module) {
 						action = new SellModule(item.getName());
-					}
-					else
-					{
+					} else {
 						action = new TransactResource(item.getName(), -1);
 					}
 				}
 
 				String actionExecution = action.execute(player);
-				if (actionExecution == null)
-				{
+				if (actionExecution == null) {
 					break;
 				}
 				addError(actionExecution);
 				break;
 			}
-			case KeyEvent.VK_LEFT:
-			case KeyEvent.VK_RIGHT:
-			case KeyEvent.VK_TAB:
-			{
+		case KeyEvent.VK_LEFT:
+		case KeyEvent.VK_RIGHT:
+		case KeyEvent.VK_TAB: {
 				int offset = getMenu().getSelectionIndex()
 					- (buying ? buyStart : sellStart);
 				buying = !buying;
 				resetSelection();
 				getMenu().setSelectionIndex(
-						Math.min(
-							getMenu().getSelectionIndex() + offset,
-							buying ? sellStart - 2 : sellEnd
-						)
+					Math.min(
+						getMenu().getSelectionIndex() + offset,
+						buying ? sellStart - 2 : sellEnd
+					)
 				);
 				break;
 			}
-			case KeyEvent.VK_R:
-				if (restock())
-				{
-					playSoundEffect(TransactResource.SOUND_EFFECT);
-				}
+		case KeyEvent.VK_R:
+			if (restock()) {
+				playSoundEffect(TransactResource.SOUND_EFFECT);
+			}
+			break;
+		case KeyEvent.VK_C:
+			String claimExecution = new Claim().execute(player);
+			if (claimExecution == null) {
+				nextTurn = true;
 				break;
-			case KeyEvent.VK_C:
-				String claimExecution = new Claim().execute(player);
-				if (claimExecution == null)
-				{
-					nextTurn = true;
-					break;
-				}
-				addError(claimExecution);
-				break;
-			case KeyEvent.VK_ESCAPE:
-			{
+			}
+			addError(claimExecution);
+			break;
+		case KeyEvent.VK_ESCAPE: {
 				String undockExecution = new Undock().execute(player);
-				if (undockExecution == null)
-				{
+				if (undockExecution == null) {
 					nextTurn = true;
 					nextScreen = new SectorScreen();
 					break;
@@ -203,8 +176,7 @@ class StationScreen
 			}
 		}
 
-		if (nextTurn)
-		{
+		if (nextTurn) {
 			galaxy.nextTurn();
 		}
 		return nextScreen;
@@ -216,12 +188,12 @@ class StationScreen
 		List<Keybinding> keybindings = new ArrayList<>();
 		keybindings.add(new Keybinding("buy/sell item", "enter"));
 		keybindings.add(
-				new Keybinding(
-					"toggle buy/sell",
-					"tab",
-					Character.toString(ExtChars.ARROW1_L),
-					Character.toString(ExtChars.ARROW1_R)
-				)
+			new Keybinding(
+				"toggle buy/sell",
+				"tab",
+				Character.toString(ExtChars.ARROW1_L),
+				Character.toString(ExtChars.ARROW1_R)
+			)
 		);
 		keybindings.add(new Keybinding("restock", "r"));
 		keybindings.add(new Keybinding("claim", "c"));
@@ -232,9 +204,9 @@ class StationScreen
 	private void resetSelection()
 	{
 		getMenu().setSelectionIndex(
-				buying || getWindow().getContents().get(sellStart) == null
-				? buyStart
-				: sellStart
+			buying || getWindow().getContents().get(sellStart) == null
+			? buyStart
+			: sellStart
 		);
 	}
 
@@ -247,14 +219,13 @@ class StationScreen
 	{
 		boolean restocked = false;
 
-		if (!player.getResource(Resource.ORE).isEmpty())
-		{
+		if (!player.getResource(Resource.ORE).isEmpty()) {
 			new TransactResource(Resource.ORE, -1, false);
 			restocked = new TransactResource(
-					Resource.ORE,
-					-player.getMaxSellAmount(Resource.ORE),
-					false
-				).executeBool(player);
+				Resource.ORE,
+				-player.getMaxSellAmount(Resource.ORE),
+				false
+			).executeBool(player);
 		}
 
 		restocked = restock(Resource.HULL) || restocked;
@@ -276,9 +247,9 @@ class StationScreen
 		return resource != null &&
 			!resource.isFull() &&
 			new TransactResource(
-					name,
-					player.getMaxBuyAmount(resource),
-					false
+				name,
+				player.getMaxBuyAmount(resource),
+				false
 			).executeBool(player);
 	}
 
@@ -301,26 +272,23 @@ class StationScreen
 		getWindow().getSeparators().clear();
 		contents.add(new ColorString(station.toString()));
 		contents.add(
-				new ColorString("Orbit: ")
-				.add(
-					new ColorString(
-						Integer.toString(player.getSectorLocation().getOrbit()),
-						COLOR_FIELD
-					)
+			new ColorString("Orbit: ")
+			.add(
+				new ColorString(
+					Integer.toString(player.getSectorLocation().getOrbit()),
+					COLOR_FIELD
 				)
+			)
 		);
 		contents.add(
-				new ColorString("Ruler: ")
-				.add(station.getFaction())
+			new ColorString("Ruler: ")
+			.add(station.getFaction())
 		);
 
-		if (ships.size() > 1)
-		{
+		if (ships.size() > 1) {
 			getWindow().addSeparator(new Line(true, 2, 1));
-			for (Ship ship : ships)
-			{
-				if (ship != player)
-				{
+			for (Ship ship : ships) {
+				if (ship != player) {
 					contents.add(ship.toColorString());
 				}
 			}
@@ -329,20 +297,16 @@ class StationScreen
 		getWindow().addSeparator(new Line(true, 2, 1));
 		int index = contents.size();
 		buyStart = index;
-		for (BaseResource resource : station.getResources())
-		{
+		for (BaseResource resource : station.getResources()) {
 			index = addEntry(getItemString(resource, true), index);
 		}
 
-		for (BaseResource resource : station.getResources())
-		{
+		for (BaseResource resource : station.getResources()) {
 			index = addEntry(getItemString(resource.getExpander(), true), index);
 		}
 
-		for (Module module : station.getModules())
-		{
-			if (station.sells(module))
-			{
+		for (Module module : station.getModules()) {
+			if (station.sells(module)) {
 				index = addEntry(getItemString(module, true), index);
 			}
 		}
@@ -351,15 +315,12 @@ class StationScreen
 		index++;
 		sellStart = index;
 
-		for (Resource resource : player.getResources())
-		{
+		for (Resource resource : player.getResources()) {
 			index = addEntry(getItemString(resource, false), index);
 		}
 
-		for (Resource resource : player.getResources())
-		{
-			if (resource.getNExpanders() > 0)
-			{
+		for (Resource resource : player.getResources()) {
+			if (resource.getNExpanders() > 0) {
 				index = addEntry(
 						getItemString(
 							station.getExpander(
@@ -368,33 +329,27 @@ class StationScreen
 							false
 						),
 						index
-				);
+					);
 			}
 		}
 
-		for (Module module : player.getModules())
-		{
+		for (Module module : player.getModules()) {
 			index = addEntry(getItemString(module, false), index);
 		}
 
-		for (Module module : player.getCargo())
-		{
-			if (!player.getModules().contains(module))
-			{
+		for (Module module : player.getCargo()) {
+			if (!player.getModules().contains(module)) {
 				index = addEntry(getItemString(module, false), index);
 			}
 		}
 
 		sellEnd = index - 1;
 
-		if (getMenu().getSelectionIndex() == 0)
-		{
+		if (getMenu().getSelectionIndex() == 0) {
 			getMenu().setSelectionIndex(buyStart);
-		}
-		else
-		{
+		} else {
 			getMenu().setSelectionIndex(
-					(buying ? buyStart : sellStart) + prevOffset
+				(buying ? buyStart : sellStart) + prevOffset
 			);
 		}
 
@@ -410,14 +365,12 @@ class StationScreen
 	private Item getSelectedItem()
 	{
 		if (getMenu().getSelectionIndex() >= getWindow().getContents().size() ||
-				getMenu().getSelection() == null)
-		{
+			getMenu().getSelection() == null) {
 			resetSelection();
 		}
 
 		String itemString = getMenu().getSelection().toString();
-		if (!itemString.contains(" ("))
-		{
+		if (!itemString.contains(" (")) {
 			resetSelection();
 			itemString = getMenu().getSelection().toString();
 		}
@@ -455,13 +408,13 @@ class StationScreen
 		ItemColors colors = new ItemColors(item, buying);
 		return new ColorString(item.toString(), colors.item)
 			.add(
-					new ColorString(
-						" ("
-						+ Integer.toString(item.getPrice())
-						+ Symbol.CREDITS
-						+ ")",
-						colors.credits
-					)
+				new ColorString(
+					" ("
+					+ Integer.toString(item.getPrice())
+					+ Symbol.CREDITS
+					+ ")",
+					colors.credits
+				)
 			);
 	}
 
@@ -508,18 +461,15 @@ class StationScreen
 		 */
 		ItemColors(Item item, boolean buying)
 		{
-			if (buying)
-			{
+			if (buying) {
 				if (item instanceof BaseResource &&
-						player.getResource(item.getName()).isFull())
-				{
+					player.getResource(item.getName()).isFull()) {
 					this.item = DISABLED;
 					credits = DISABLED;
 					return;
 				}
 
-				if (player.getCredits() < item.getPrice())
-				{
+				if (player.getCredits() < item.getPrice()) {
 					this.item = DISABLED;
 					credits = INVALID;
 					return;
@@ -527,28 +477,22 @@ class StationScreen
 
 				this.item = ITEM;
 				credits = CREDITS;
-			}
-			else
-			{
+			} else {
 				if (item instanceof Module &&
-						!player.getSectorLocation().getStation().sells((Module) item))
-				{
+					!player.getSectorLocation().getStation().sells((Module) item)) {
 					this.item = INVALID;
 					credits = DISABLED;
 					return;
 				}
 
-				if (item instanceof Resource)
-				{
-					if (((Resource) item).isEmpty())
-					{
+				if (item instanceof Resource) {
+					if (((Resource) item).isEmpty()) {
 						this.item = DISABLED;
 						credits = DISABLED;
 						return;
 					}
 
-					if (!((Resource) item).canSell())
-					{
+					if (!((Resource) item).canSell()) {
 						this.item = INVALID;
 						credits = DISABLED;
 						return;

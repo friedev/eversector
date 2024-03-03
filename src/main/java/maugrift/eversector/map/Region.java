@@ -24,8 +24,7 @@ public class Region implements ColorStringObject
 	/**
 	 * A type of region.
 	 */
-	public enum RegionType
-	{
+	public enum RegionType {
 		/**
 		 * A region filled with a sea of magma.
 		 */
@@ -219,8 +218,7 @@ public class Region implements ColorStringObject
 	 */
 	public Region(PlanetLocation location, RegionType type)
 	{
-		if (location == null)
-		{
+		if (location == null) {
 			throw new NullPointerException();
 		}
 
@@ -229,8 +227,7 @@ public class Region implements ColorStringObject
 		this.type = type;
 		this.faction = null;
 
-		if (type.isLand())
-		{
+		if (type.isLand()) {
 			this.ore = location.getPlanet().getRandomOre();
 			this.nOre = Main.rng.nextInt(ORE_RANGE) + MIN_ORE;
 		}
@@ -258,10 +255,8 @@ public class Region implements ColorStringObject
 	 */
 	public ColorChar toColorChar()
 	{
-		for (Ship ship : ships)
-		{
-			if (ship.isPlayer())
-			{
+		for (Ship ship : ships) {
+			if (ship.isPlayer()) {
 				return new ColorChar(Symbol.PLAYER.get(), AsciiPanel.brightWhite);
 			}
 		}
@@ -357,8 +352,7 @@ public class Region implements ColorStringObject
 	 */
 	public void claim(Faction faction)
 	{
-		if (this.faction == faction)
-		{
+		if (this.faction == faction) {
 			return;
 		}
 
@@ -397,10 +391,8 @@ public class Region implements ColorStringObject
 	{
 		int nShips = 0;
 
-		for (Ship ship : ships)
-		{
-			if (ship.getFaction() == faction)
-			{
+		for (Ship ship : ships) {
+			if (ship.getFaction() == faction) {
 				nShips++;
 			}
 		}

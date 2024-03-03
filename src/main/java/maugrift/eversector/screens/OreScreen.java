@@ -31,13 +31,12 @@ public class OreScreen extends ConfirmationScreen
 	{
 		super(Main.display);
 		List<ColorString> list = new LinkedList<>();
-		for (Ore ore : Main.galaxy.getOreTypes())
-		{
+		for (Ore ore : Main.galaxy.getOreTypes()) {
 			list.add(new ColorString(
-						ore.toString()
-						+ ": "
-						+ ore.getDensity()
-						+ " Density"));
+					ore.toString()
+					+ ": "
+					+ ore.getDensity()
+					+ " Density"));
 		}
 		window = new PopupWindow(getDisplay(), list);
 	}
@@ -51,8 +50,7 @@ public class OreScreen extends ConfirmationScreen
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (key.getKeyCode() == KeyEvent.VK_G)
-		{
+		if (key.getKeyCode() == KeyEvent.VK_G) {
 			return null;
 		}
 		return super.processInput(key);

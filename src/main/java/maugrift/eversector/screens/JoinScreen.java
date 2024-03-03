@@ -22,14 +22,13 @@ public class JoinScreen extends MenuScreen<PopupMenu>
 	public JoinScreen()
 	{
 		super(
-				new PopupMenu(
-					new PopupWindow(Main.display),
-					COLOR_SELECTION_FOREGROUND,
-					COLOR_SELECTION_BACKGROUND
-				)
+			new PopupMenu(
+				new PopupWindow(Main.display),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+			)
 		);
-		for (Faction faction : galaxy.getFactions())
-		{
+		for (Faction faction : galaxy.getFactions()) {
 			getMenu().getWindow().getContents().add(faction.toColorString());
 		}
 	}

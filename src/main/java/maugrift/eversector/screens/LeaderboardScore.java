@@ -66,8 +66,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	 */
 	public LeaderboardScore(Properties properties)
 	{
-		if (properties == null || properties.isEmpty())
-		{
+		if (properties == null || properties.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
 
@@ -90,13 +89,14 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	 * @param leader     true if the player was a leader
 	 */
 	public LeaderboardScore(
-			String name,
-			int score,
-			int turns,
-			int kills,
-			String reputation,
-			boolean leader
-	) {
+		String name,
+		int score,
+		int turns,
+		int kills,
+		String reputation,
+		boolean leader
+	)
+	{
 		this.name = name;
 		this.score = score;
 		this.turns = turns;
@@ -115,46 +115,43 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	 * @param leader     true if the player was a leader
 	 */
 	public LeaderboardScore(
-			int score,
-			int turns,
-			int kills,
-			String reputation,
-			boolean leader
-	) {
+		int score,
+		int turns,
+		int kills,
+		String reputation,
+		boolean leader
+	)
+	{
 		this(null, score, turns, kills, reputation, leader);
 	}
 
 	@Override
 	public String toString()
 	{
-		if (!isValid())
-		{
+		if (!isValid()) {
 			return INVALID;
 		}
 
 		StringBuilder builder = new StringBuilder();
 
-		if (name != null)
-		{
+		if (name != null) {
 			builder.append(name).append(": ");
 		}
 
 		builder.append(score)
-			.append(" Credits, ")
-			.append(turns)
-			.append(" Turns, ");
+		.append(" Credits, ")
+		.append(turns)
+		.append(" Turns, ");
 
-		if (kills > 0)
-		{
+		if (kills > 0) {
 			builder.append(kills)
-				.append(" ")
-				.append(Utility.makePlural("Kill", kills))
-				.append(", ");
+			.append(" ")
+			.append(Utility.makePlural("Kill", kills))
+			.append(", ");
 		}
 
 		builder.append(reputation);
-		if (leader)
-		{
+		if (leader) {
 			builder.append(" (Leader)");
 		}
 
@@ -170,8 +167,7 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	{
 		Properties properties = new Properties();
 
-		if (name != null)
-		{
+		if (name != null) {
 			properties.setProperty("shipName", name);
 		}
 
@@ -214,14 +210,12 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 		FileManager.createContainingFolders(Paths.LEADERBOARD);
 		List<LeaderboardScore> scores = getLeaderboardScores();
 
-		if (scores == null || scores.isEmpty())
-		{
+		if (scores == null || scores.isEmpty()) {
 			return leaderboard;
 		}
 
 		leaderboard.add(buildLeaderboardHeader(scores.size()));
-		for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++)
-		{
+		for (int i = 0; i < Math.min(scores.size(), DISPLAYED_SCORES); i++) {
 			leaderboard.add(new ColorString(scores.get(i).toString()));
 		}
 
@@ -237,15 +231,14 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	public static ColorString buildLeaderboardHeader(int nScores)
 	{
 		ColorString header = new ColorString("LEADERBOARD", COLOR_HEADER);
-		if (nScores > DISPLAYED_SCORES)
-		{
+		if (nScores > DISPLAYED_SCORES) {
 			header.add(
-					new ColorString(
-						" ("
-						+ nScores
-						+ " Scores Total)",
-						AsciiPanel.brightBlack
-					)
+				new ColorString(
+					" ("
+					+ nScores
+					+ " Scores Total)",
+					AsciiPanel.brightBlack
+				)
 			);
 		}
 		return header;
@@ -261,20 +254,16 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	{
 		List<LeaderboardScore> scores = new ArrayList<>();
 
-		try
-		{
+		try {
 			int index = 1;
 			while (scores.add(new LeaderboardScore(FileManager.load(
-								Paths.LEADERBOARD
-								+ "score_"
-								+ index
-								+ ".properties"))))
-			{
+							Paths.LEADERBOARD
+							+ "score_"
+							+ index
+							+ ".properties")))) {
 				index++;
 			}
-		}
-		catch (IllegalArgumentException | IOException e)
-		{
+		} catch (IllegalArgumentException | IOException e) {
 		}
 		// Do nothing, but stop the loop
 

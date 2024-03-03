@@ -19,35 +19,29 @@ public class CrashLand implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isInSector())
-		{
+		if (!actor.isInSector()) {
 			return "You must be at a planet's orbit to land.";
 		}
 
-		if (actor.isDocked())
-		{
+		if (actor.isDocked()) {
 			return "You cannot land while docked.";
 		}
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			return "You are already landed.";
 		}
 
 		Planet planet = actor.getSectorLocation().getPlanet();
 
-		if (planet == null)
-		{
+		if (planet == null) {
 			return "There is no planet at this orbit.";
 		}
 
-		if (!planet.getType().canLandOn())
-		{
+		if (!planet.getType().canLandOn()) {
 			return "You cannot land on "
 				+ Utility.addArticle(planet.getType().toString())
 				+ ".";
@@ -60,17 +54,13 @@ public class CrashLand implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
-		if (actor.getResource(Resource.HULL).getAmount() > CRASH_THRESHOLD)
-		{
+		if (actor.getResource(Resource.HULL).getAmount() > CRASH_THRESHOLD) {
 			actor.getResource(Resource.HULL).setAmount(CRASH_THRESHOLD);
-		}
-		else
-		{
+		} else {
 			actor.getResource(Resource.HULL).setAmount(0);
 			actor.destroy(false);
 			return null;
@@ -78,7 +68,7 @@ public class CrashLand implements Action
 
 		Planet planet = actor.getSectorLocation().getPlanet();
 		actor.setLocation(
-				actor.getSectorLocation().land(planet.getRandomCoord())
+			actor.getSectorLocation().land(planet.getRandomCoord())
 		);
 		return null;
 	}

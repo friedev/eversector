@@ -40,7 +40,7 @@ public class SuccessionScreen
 		super(Main.display);
 		window = new PopupWindow(Main.display);
 		window.getContents().add(leader.toColorString()
-				.add(" offers you their status as leader if you spare them."));
+			.add(" offers you their status as leader if you spare them."));
 		window.getContents().add(new ColorString("Accept the offer?"));
 		this.leader = leader;
 	}
@@ -61,10 +61,10 @@ public class SuccessionScreen
 	public Screen onConfirm()
 	{
 		player.getFaction().addNews(
-				player
-				+ " has defeated our leader, "
-				+ leader
-				+ ", and has wrested control of the faction.");
+			player
+			+ " has defeated our leader, "
+			+ leader
+			+ ", and has wrested control of the faction.");
 		player.getFaction().setLeader(player);
 		return new SectorScreen();
 	}

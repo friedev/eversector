@@ -121,14 +121,15 @@ public class Resource extends BaseResource
 	 * @param expander    the resource's expander
 	 */
 	public Resource(
-			String name,
-			String description,
-			int value,
-			int capacity,
-			int amount,
-			boolean canSell,
-			Expander expander
-	) {
+		String name,
+		String description,
+		int value,
+		int capacity,
+		int amount,
+		boolean canSell,
+		Expander expander
+	)
+	{
 		super(name, description, value, canSell, expander);
 		this.baseCapacity = Math.abs(capacity);
 		this.capacity = baseCapacity;
@@ -147,13 +148,13 @@ public class Resource extends BaseResource
 	public Resource(BaseResource base, int capacity, int amount)
 	{
 		this(
-				base.getName(),
-				base.getDescription(),
-				base.getValue(),
-				capacity,
-				amount,
-				base.canSell(),
-				base.getExpander()
+			base.getName(),
+			base.getDescription(),
+			base.getValue(),
+			capacity,
+			amount,
+			base.canSell(),
+			base.getExpander()
 		);
 	}
 
@@ -168,13 +169,13 @@ public class Resource extends BaseResource
 	public Resource(BaseResource base, int capacity)
 	{
 		this(
-				base.getName(),
-				base.getDescription(),
-				base.getValue(),
-				capacity,
-				capacity,
-				base.canSell(),
-				base.getExpander()
+			base.getName(),
+			base.getDescription(),
+			base.getValue(),
+			capacity,
+			capacity,
+			base.canSell(),
+			base.getExpander()
 		);
 	}
 
@@ -188,13 +189,13 @@ public class Resource extends BaseResource
 	public Resource(BaseResource base)
 	{
 		this(
-				base.getName(),
-				base.getDescription(),
-				base.getValue(),
-				CAPACITY,
-				CAPACITY,
-				base.canSell(),
-				base.getExpander()
+			base.getName(),
+			base.getDescription(),
+			base.getValue(),
+			CAPACITY,
+			CAPACITY,
+			base.canSell(),
+			base.getExpander()
 		);
 	}
 
@@ -209,12 +210,13 @@ public class Resource extends BaseResource
 	 * @param expander    the resource's expander
 	 */
 	public Resource(
-			String name,
-			String description,
-			int value,
-			int capacity,
-			Expander expander
-	) {
+		String name,
+		String description,
+		int value,
+		int capacity,
+		Expander expander
+	)
+	{
 		this(name, description, value, capacity, capacity, expander);
 	}
 
@@ -230,13 +232,14 @@ public class Resource extends BaseResource
 	 * @param expander    the resource's expander
 	 */
 	public Resource(
-			String name,
-			String description,
-			int value,
-			int capacity,
-			int amount,
-			Expander expander
-	) {
+		String name,
+		String description,
+		int value,
+		int capacity,
+		int amount,
+		Expander expander
+	)
+	{
 		this(name, description, value, capacity, amount, true, expander);
 	}
 
@@ -250,11 +253,12 @@ public class Resource extends BaseResource
 	 * @param expander    the resource's expander
 	 */
 	public Resource(
-			String name,
-			String description,
-			int value,
-			Expander expander
-	) {
+		String name,
+		String description,
+		int value,
+		Expander expander
+	)
+	{
 		this(name, description, value, CAPACITY, CAPACITY, expander);
 	}
 
@@ -317,16 +321,11 @@ public class Resource extends BaseResource
 	{
 		double ratio = getRatio();
 		Color color;
-		if (ratio >= RATIO_HIGH)
-		{
+		if (ratio >= RATIO_HIGH) {
 			color = COLOR_HIGH;
-		}
-		else if (ratio < RATIO_LOW)
-		{
+		} else if (ratio < RATIO_LOW) {
 			color = COLOR_LOW;
-		}
-		else
-		{
+		} else {
 			color = COLOR_MEDIUM;
 		}
 
@@ -405,8 +404,7 @@ public class Resource extends BaseResource
 	 */
 	public boolean setAmount(int amount)
 	{
-		if (!isValidAmount(amount))
-		{
+		if (!isValidAmount(amount)) {
 			return false;
 		}
 
@@ -423,13 +421,11 @@ public class Resource extends BaseResource
 	 */
 	public int changeAmountWithDiscard(int increase)
 	{
-		if (increase <= 0)
-		{
+		if (increase <= 0) {
 			return -1;
 		}
 
-		if (isFull())
-		{
+		if (isFull()) {
 			return -1;
 		}
 
@@ -479,8 +475,7 @@ public class Resource extends BaseResource
 	 */
 	public boolean setCapacity(int capacity)
 	{
-		if (!isValidCapacity(capacity))
-		{
+		if (!isValidCapacity(capacity)) {
 			return false;
 		}
 
@@ -498,8 +493,7 @@ public class Resource extends BaseResource
 	 */
 	public boolean setBaseCapacity(int capacity)
 	{
-		if (capacity <= 0)
-		{
+		if (capacity <= 0) {
 			return false;
 		}
 

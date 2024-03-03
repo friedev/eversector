@@ -26,8 +26,7 @@ public class Planet implements ColorStringObject
 	/**
 	 * The enum Planet type.
 	 */
-	public enum PlanetType
-	{
+	public enum PlanetType {
 		/*
 		VOLCANIC [------XXXXXXX]
 		OCEAN    [---XXXXX-----]
@@ -139,12 +138,13 @@ public class Planet implements ColorStringObject
 		 *                   planet, in ascending order of altitude
 		 */
 		PlanetType(
-				String type,
-				int minTemp,
-				int maxTemp,
-				boolean atmosphere,
-				RegionType... regions
-		) {
+			String type,
+			int minTemp,
+			int maxTemp,
+			boolean atmosphere,
+			RegionType... regions
+		)
+		{
 			this.type = type + " Planet";
 			this.symbol = Symbol.ROCKY_PLANET.get();
 			this.canLandOn = true;
@@ -295,15 +295,14 @@ public class Planet implements ColorStringObject
 		 */
 		public RegionType getRegionAtElevation(double elevation)
 		{
-			if (regions == null || regions.length == 0)
-			{
+			if (regions == null || regions.length == 0) {
 				return null;
 			}
 
 			elevation = Math.max(0.0, Math.min(1.0, elevation));
 			int index = (int) Math.round(
-					((double) (regions.length - 1)) * elevation
-			);
+					((double)(regions.length - 1)) * elevation
+				);
 			return regions[index];
 		}
 	}
@@ -405,12 +404,9 @@ public class Planet implements ColorStringObject
 		this.location = location;
 		generateType();
 
-		if (type.canMine())
-		{
+		if (type.canMine()) {
 			generateOre();
-		}
-		else
-		{
+		} else {
 			ores = null;
 		}
 	}
@@ -422,12 +418,9 @@ public class Planet implements ColorStringObject
 	{
 		// Only set the planet's faction if it is a rocky planet
 		// Note that unclaim() does not call updateFaction()
-		if (type.canLandOn())
-		{
+		if (type.canLandOn()) {
 			generateRegions();
-		}
-		else
-		{
+		} else {
 			unclaim();
 		}
 	}
@@ -435,8 +428,7 @@ public class Planet implements ColorStringObject
 	private static String toRomanNumeral(int number)
 	{
 		int l = romanNumeralMap.floorKey(number);
-		if (number == l)
-		{
+		if (number == l) {
 			return romanNumeralMap.get(number);
 		}
 		return romanNumeralMap.get(l) + toRomanNumeral(number - l);
@@ -454,7 +446,7 @@ public class Planet implements ColorStringObject
 		return new ColorString(
 				toString(),
 				isClaimed() ? getFaction().getColor() : null
-		);
+			);
 	}
 
 	/**
@@ -514,8 +506,7 @@ public class Planet implements ColorStringObject
 	 */
 	private void claim(Faction faction)
 	{
-		if (this.faction == faction)
-		{
+		if (this.faction == faction) {
 			return;
 		}
 
@@ -590,12 +581,9 @@ public class Planet implements ColorStringObject
 	 */
 	public Coord indexOf(Region region)
 	{
-		for (int y = 0; y < regions.length; y++)
-		{
-			for (int x = 0; x < regions[y].length; x++)
-			{
-				if (regions[y][x] == region)
-				{
+		for (int y = 0; y < regions.length; y++) {
+			for (int x = 0; x < regions[y].length; x++) {
+				if (regions[y][x] == region) {
 					return Coord.get(x, y);
 				}
 			}
@@ -669,8 +657,7 @@ public class Planet implements ColorStringObject
 		// Note than claim(null) is always used over unclaim() because sector
 		// should be refreshed by this calculation as well
 
-		if (type == null || !type.canLandOn())
-		{
+		if (type == null || !type.canLandOn()) {
 			// claim(null) must be used instead of unclaim(), so that the
 			// sector's faction is updated
 			claim(null);
@@ -680,12 +667,9 @@ public class Planet implements ColorStringObject
 		int[] control = new int[getLocation().getGalaxy().getFactions().length];
 
 		// Increase the respective counter for each claimed body
-		for (Region[] row : regions)
-		{
-			for (Region region : row)
-			{
-				if (region != null && region.isClaimed())
-				{
+		for (Region[] row : regions) {
+			for (Region region : row) {
+				if (region != null && region.isClaimed()) {
 					control[getLocation().getGalaxy().getIndex(region.getFaction())]++;
 				}
 			}
@@ -694,15 +678,11 @@ public class Planet implements ColorStringObject
 		int index = -1;
 		int maxBodies = 0; // The most owned bodies in a faction
 
-		for (int i = 0; i < control.length; i++)
-		{
-			if (control[i] > maxBodies)
-			{
+		for (int i = 0; i < control.length; i++) {
+			if (control[i] > maxBodies) {
 				maxBodies = control[i];
 				index = i;
-			}
-			else if (control[i] == maxBodies)
-			{
+			} else if (control[i] == maxBodies) {
 				// Set the index to an invalid value so that it is known that
 				// there is a tie, but so that it can also be easily overwritten
 				index = -1;
@@ -710,9 +690,9 @@ public class Planet implements ColorStringObject
 		}
 
 		claim(
-				index == -1
-				? null
-				: getLocation().getGalaxy().getFactions()[index]
+			index == -1
+			? null
+			: getLocation().getGalaxy().getFactions()[index]
 		);
 	}
 
@@ -724,8 +704,7 @@ public class Planet implements ColorStringObject
 	public Region getRandomRegion()
 	{
 		List<Region> regionList = new ArrayList<>();
-		for (Region[] row : regions)
-		{
+		for (Region[] row : regions) {
 			regionList.addAll(Arrays.asList(row));
 		}
 		return getRandomRegion(regionList);
@@ -754,12 +733,9 @@ public class Planet implements ColorStringObject
 	{
 		List<Region> unclaimedRegions = new ArrayList<>();
 
-		for (Region[] row : regions)
-		{
-			for (Region region : row)
-			{
-				if (region.getType().isLand() && region.getFaction() != faction)
-				{
+		for (Region[] row : regions) {
+			for (Region region : row) {
+				if (region.getType().isLand() && region.getFaction() != faction) {
 					unclaimedRegions.add(region);
 				}
 			}
@@ -777,12 +753,9 @@ public class Planet implements ColorStringObject
 	{
 		List<Region> oreRegions = new ArrayList<>();
 
-		for (Region[] row : regions)
-		{
-			for (Region region : row)
-			{
-				if (region.hasOre())
-				{
+		for (Region[] row : regions) {
+			for (Region region : row) {
+				if (region.hasOre()) {
 					oreRegions.add(region);
 				}
 			}
@@ -799,8 +772,7 @@ public class Planet implements ColorStringObject
 	public Coord getRandomOreCoord()
 	{
 		Region oreRegion = getRandomOreRegion();
-		if (oreRegion == null)
-		{
+		if (oreRegion == null) {
 			return getRandomCoord();
 		}
 		return oreRegion.getLocation().getRegionCoord();
@@ -839,7 +811,7 @@ public class Planet implements ColorStringObject
 		return new ColorChar(
 				type.getSymbol(),
 				isClaimed() ? getFaction().getColor() : null
-		);
+			);
 	}
 
 	/**
@@ -860,17 +832,14 @@ public class Planet implements ColorStringObject
 	 */
 	public int getNShips()
 	{
-		if (!type.canLandOn())
-		{
+		if (!type.canLandOn()) {
 			return 0;
 		}
 
 		int nShips = 0;
 
-		for (Region[] row : regions)
-		{
-			for (Region region : row)
-			{
+		for (Region[] row : regions) {
+			for (Region region : row) {
 				nShips += region.getShips().size();
 			}
 		}
@@ -887,17 +856,14 @@ public class Planet implements ColorStringObject
 	 */
 	public int getNShips(Faction faction)
 	{
-		if (!type.canLandOn())
-		{
+		if (!type.canLandOn()) {
 			return 0;
 		}
 
 		int nShips = 0;
 
-		for (Region[] row : regions)
-		{
-			for (Region region : row)
-			{
+		for (Region[] row : regions) {
+			for (Region region : row) {
 				nShips += region.getNShips(faction);
 			}
 		}
@@ -917,22 +883,17 @@ public class Planet implements ColorStringObject
 	{
 		List<ColorString> list = new ArrayList<>(getNRows());
 
-		for (Region[] row : regions)
-		{
+		for (Region[] row : regions) {
 			ColorString rowString = new ColorString();
-			for (Region region : row)
-			{
-				if (showFactions)
-				{
+			for (Region region : row) {
+				if (showFactions) {
 					ColorChar regionChar = new ColorChar(region.toColorChar());
 					regionChar.setForeground(region.isClaimed()
-							? region.getFaction().getColor()
-							: null
+						? region.getFaction().getColor()
+						: null
 					);
 					rowString.add(regionChar);
-				}
-				else
-				{
+				} else {
 					rowString.add(region.toColorChar());
 				}
 			}
@@ -953,11 +914,9 @@ public class Planet implements ColorStringObject
 		int temp = star.getPowerAt(getLocation().getOrbit());
 
 		List<PlanetType> types = new LinkedList<>();
-		for (PlanetType curType : PlanetType.values())
-		{
+		for (PlanetType curType : PlanetType.values()) {
 			if (curType.isInTempRange(temp) &&
-					!(curType.hasAtmosphere() && star.hasRadiation()))
-			{
+				!(curType.hasAtmosphere() && star.hasRadiation())) {
 				types.add(curType);
 			}
 		}
@@ -972,12 +931,10 @@ public class Planet implements ColorStringObject
 	{
 		ores = new ArrayList<>();
 		int nOres = Main.rng.nextInt(ORE_RANGE) + MIN_ORES;
-		for (int i = 0; i < nOres; i++)
-		{
+		for (int i = 0; i < nOres; i++) {
 			Ore ore = getLocation().getGalaxy().getRandomOre();
 
-			if (!ores.contains(ore))
-			{
+			if (!ores.contains(ore)) {
 				ores.add(ore);
 			}
 		}
@@ -999,18 +956,16 @@ public class Planet implements ColorStringObject
 				regions.length,
 				regions[0].length,
 				Main.rng.nextLong()
-		);
+			);
 
-		for (int y = 0; y < regions.length; y++)
-		{
-			for (int x = 0; x < regions[y].length; x++)
-			{
+		for (int y = 0; y < regions.length; y++) {
+			for (int x = 0; x < regions[y].length; x++) {
 				regions[y][x] = new Region(
-						new PlanetLocation(
-							getLocation(),
-							Coord.get(x, y)
-						),
-						type.getRegionAtElevation((double) heights[y][x] / 255.0)
+					new PlanetLocation(
+						getLocation(),
+						Coord.get(x, y)
+					),
+					type.getRegionAtElevation((double) heights[y][x] / 255.0)
 				);
 			}
 		}

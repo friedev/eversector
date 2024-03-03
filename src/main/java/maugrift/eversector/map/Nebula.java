@@ -10,8 +10,7 @@ import java.awt.Color;
  * A cloud of gas and dust in space that blocks vision.
  * @author Aaron Friesen
  */
-public enum Nebula implements ColorStringObject
-{
+public enum Nebula implements ColorStringObject {
 	/**
 	 * Emission nebula. Color is created by the emission of charged particles
 	 * for large stars. Quite hot and energetic compared to other nebulae.

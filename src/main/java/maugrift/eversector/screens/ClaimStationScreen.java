@@ -35,10 +35,10 @@ public class ClaimStationScreen
 		window = new PopupWindow(Main.display);
 		Station claiming = player.getSectorLocation().getStation();
 		window.getContents().add(new ColorString("Claim ")
-				.add(claiming)
-				.add(" for ")
-				.add(new ColorString(Integer.toString(Station.CLAIM_COST), COLOR_FIELD))
-				.add(" credits?"));
+			.add(claiming)
+			.add(" for ")
+			.add(new ColorString(Integer.toString(Station.CLAIM_COST), COLOR_FIELD))
+			.add(" credits?"));
 	}
 
 	@Override

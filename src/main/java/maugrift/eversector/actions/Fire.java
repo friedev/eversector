@@ -26,39 +26,32 @@ public class Fire implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (actor == target)
-		{
+		if (actor == target) {
 			return "You cannot attack yourself.";
 		}
 
-		if (weapon == null || !Station.hasBaseWeapon(weapon))
-		{
+		if (weapon == null || !Station.hasBaseWeapon(weapon)) {
 			return "The specified weapon does not exist.";
 		}
 
-		if (target == null)
-		{
+		if (target == null) {
 			return "The specified ship was not found.";
 		}
 
-		if (!actor.isInBattle())
-		{
+		if (!actor.isInBattle()) {
 			return "You must be in a battle to fire a weapon.";
 		}
 
-		if (actor.getBattleLocation().getBattle().getSurrendered().contains(actor))
-		{
+		if (actor.getBattleLocation().getBattle().getSurrendered().contains(actor)) {
 			return "You may not attack after surrendering";
 		}
 
 		String validateModule = actor.validateModule(weapon, "fire");
-		if (validateModule != null)
-		{
+		if (validateModule != null) {
 			return validateModule;
 		}
 
@@ -67,45 +60,37 @@ public class Fire implements Action
 				weaponObj.getActionResource(),
 				weaponObj.getActionCost(),
 				"fire"
-		);
+			);
 	}
 
 	@Override
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
 		Weapon weaponObj = actor.getWeapon(weapon);
 
-		if (actor.isPlayer())
-		{
+		if (actor.isPlayer()) {
 			if (target.isShielded() &&
-					Resource.ENERGY.equals(weaponObj.getActionResource()))
-			{
+				Resource.ENERGY.equals(weaponObj.getActionResource())) {
 				addMessage("Attack diminished by enemy shield.");
-			}
-			else
-			{
+			} else {
 				addMessage("Attack successful; hit confirmed.");
 			}
-		}
-		else
-		{
+		} else {
 			Battle battle = actor.getBattleLocation().getBattle();
 			Ship player = actor.getLocation().getGalaxy().getPlayer();
-			if (player != null && battle.getShips().contains(player))
-			{
+			if (player != null && battle.getShips().contains(player)) {
 				addColorMessage(
-						actor.toColorString()
-						.add(
-							" fires a pulse beam at "
-							+ (target == player ? "you" : target.toString())
-							+ "."
-						)
+					actor.toColorString()
+					.add(
+						" fires a pulse beam at "
+						+ (target == player ? "you" : target.toString())
+						+ "."
+					)
 				);
 			}
 		}

@@ -16,13 +16,11 @@ public class Pursue implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isInBattle())
-		{
+		if (!actor.isInBattle()) {
 			return "You must be in a battle to pursue.";
 		}
 
@@ -33,8 +31,7 @@ public class Pursue implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

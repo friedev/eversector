@@ -38,15 +38,15 @@ public class VotingScreen
 	public VotingScreen()
 	{
 		super(
-				new PopupMenu(
-					new PopupWindow(
-						Main.display,
-						new Border(1),
-						new Line(true, 1, 1)
-					),
-					COLOR_SELECTION_FOREGROUND,
-					COLOR_SELECTION_BACKGROUND
-				)
+			new PopupMenu(
+				new PopupWindow(
+					Main.display,
+					new Border(1),
+					new Line(true, 1, 1)
+				),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+			)
 		);
 		pendingElection.gatherVotes();
 		setUpMenu();
@@ -57,8 +57,7 @@ public class VotingScreen
 	{
 		super.displayOutput();
 
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup.displayOutput();
 		}
 	}
@@ -78,12 +77,10 @@ public class VotingScreen
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup = popup.processInput(key);
 
-			if (popup instanceof ElectionResultsScreen)
-			{
+			if (popup instanceof ElectionResultsScreen) {
 				return popup;
 			}
 
@@ -113,30 +110,29 @@ public class VotingScreen
 		contents.add(pendingElection.getDescription());
 		contents.add(new ColorString("The candidates are listed below."));
 		contents.add(new ColorString("Press ")
-				.add(new ColorString("enter", COLOR_FIELD))
-				.add(" on a candidate to vote or ")
-				.add(new ColorString("escape", COLOR_FIELD))
-				.add(" to abstain."));
+			.add(new ColorString("enter", COLOR_FIELD))
+			.add(" on a candidate to vote or ")
+			.add(new ColorString("escape", COLOR_FIELD))
+			.add(" to abstain."));
 
 		getWindow().addSeparator();
-		for (int i = 0; i < pendingElection.getCandidates().size(); i++)
-		{
+		for (int i = 0; i < pendingElection.getCandidates().size(); i++) {
 			getMenu().getRestrictions().add(i + 4);
 			Ship candidate = pendingElection.getCandidates().get(i);
 			ReputationRange reputation = candidate.getReputation(
 					pendingElection.getFaction()
-			).getRange();
+				).getRange();
 			contents.add(
-					new ColorString(candidate.toString())
-					.add(" ")
-					.add(
-						new ColorString(
-							"("
-							+ reputation.getAdjective()
-							+ ")",
-							reputation.getColor()
-						)
+				new ColorString(candidate.toString())
+				.add(" ")
+				.add(
+					new ColorString(
+						"("
+						+ reputation.getAdjective()
+						+ ")",
+						reputation.getColor()
 					)
+				)
 			);
 		}
 

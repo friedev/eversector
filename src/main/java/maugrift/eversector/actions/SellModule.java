@@ -22,19 +22,16 @@ public class SellModule implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
 		String validateDocking = actor.validateDocking();
-		if (validateDocking != null)
-		{
+		if (validateDocking != null) {
 			return validateDocking;
 		}
 
-		if (!actor.hasModule(module))
-		{
+		if (!actor.hasModule(module)) {
 			return "You do not have the specified module installed.";
 		}
 
@@ -42,15 +39,13 @@ public class SellModule implements Action
 		Station station = actor.getSectorLocation().getStation();
 		Module moduleObj = station.getModule(module);
 
-		if (moduleObj == null)
-		{
+		if (moduleObj == null) {
 			return Station.hasBaseModule(module)
 				? station + " will not accept a module of this type."
 				: "The specified module does not exist.";
 		}
 
-		if (!station.sells(moduleObj))
-		{
+		if (!station.sells(moduleObj)) {
 			return station + " will not accept a module of this type.";
 		}
 
@@ -61,8 +56,7 @@ public class SellModule implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

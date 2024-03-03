@@ -24,8 +24,7 @@ public class Relationship
 	 *
 	 * @author Aaron Friesen
 	 */
-	public enum RelationshipType implements ColorStringObject
-	{
+	public enum RelationshipType implements ColorStringObject {
 		/**
 		 * Factions are at war.
 		 */
@@ -146,13 +145,11 @@ public class Relationship
 	 */
 	public Faction getOtherFaction(Faction faction)
 	{
-		if (faction == faction1)
-		{
+		if (faction == faction1) {
 			return faction2;
 		}
 
-		if (faction == faction2)
-		{
+		if (faction == faction2) {
 			return faction1;
 		}
 
@@ -207,18 +204,12 @@ public class Relationship
 		Faction otherFaction = getOtherFaction(playerFaction);
 		boolean playerInvolved = otherFaction != null;
 
-		if (playerInvolved && player.isLeader())
-		{
+		if (playerInvolved && player.isLeader()) {
 			chooser = otherFaction;
-		}
-		else
-		{
-			if (rng.nextBoolean())
-			{
+		} else {
+			if (rng.nextBoolean()) {
 				chooser = faction1;
-			}
-			else
-			{
+			} else {
 				chooser = faction2;
 			}
 		}
@@ -226,8 +217,7 @@ public class Relationship
 		receiver = getOtherFaction(chooser);
 		newRelationship = chooser.chooseRelationship(receiver);
 
-		if (type.equals(newRelationship))
-		{
+		if (type.equals(newRelationship)) {
 			return false;
 		}
 
@@ -237,96 +227,87 @@ public class Relationship
 		String question;
 		boolean changeable = true;
 		boolean negateAnswer = false;
-		switch (newRelationship)
-		{
-			case WAR:
-				verb = "declared war on";
+		switch (newRelationship) {
+		case WAR:
+			verb = "declared war on";
+			actingVerb = verb;
+			requestVerb = verb;
+			question = null;
+			changeable = false;
+			break;
+		case PEACE:
+			if (type == RelationshipType.WAR) {
+				verb = "made peace with";
 				actingVerb = verb;
-				requestVerb = verb;
-				question = null;
-				changeable = false;
-				break;
-			case PEACE:
-				if (type == RelationshipType.WAR)
-				{
-					verb = "made peace with";
-					actingVerb = verb;
-					requestVerb = "offered a peace treaty to";
-					question = "Accept?";
-				}
-				else
-				{
-					verb = "broke its alliance with";
-					actingVerb = "broke our alliance with";
-					requestVerb = verb;
-					question = "Propose an extension?";
-					negateAnswer = true;
-				}
-				break;
-			case ALLIANCE:
-				verb = "formed an alliance with";
-				actingVerb = verb;
-				requestVerb = "proposed an alliance with";
+				requestVerb = "offered a peace treaty to";
 				question = "Accept?";
-				break;
-			default:
-				// NOT REACHED
-				verb = null;
-				actingVerb = null;
-				requestVerb = null;
-				question = null;
-				break;
+			} else {
+				verb = "broke its alliance with";
+				actingVerb = "broke our alliance with";
+				requestVerb = verb;
+				question = "Propose an extension?";
+				negateAnswer = true;
+			}
+			break;
+		case ALLIANCE:
+			verb = "formed an alliance with";
+			actingVerb = verb;
+			requestVerb = "proposed an alliance with";
+			question = "Accept?";
+			break;
+		default:
+			// NOT REACHED
+			verb = null;
+			actingVerb = null;
+			requestVerb = null;
+			question = null;
+			break;
 		}
 
 		// Don't print any notifications if they are disabled
 		// If this is getting triggered when the notifications are set to
 		// something other than none, they may have been set by hibernation
-		if (!player.isLeader() || !playerInvolved)
-		{
-			if (chooser.requestRelationship(receiver, newRelationship))
-			{
+		if (!player.isLeader() || !playerInvolved) {
+			if (chooser.requestRelationship(receiver, newRelationship)) {
 				chooser.addNews(new ColorString("We " + actingVerb + " the ")
-						.add(receiver)
-						.add("."));
+					.add(receiver)
+					.add("."));
 				receiver.addNews(new ColorString("The ")
-						.add(chooser)
-						.add(" " + verb + " us."));
-			}
-			else
-			{
+					.add(chooser)
+					.add(" " + verb + " us."));
+			} else {
 				chooser.addNews(new ColorString("We " + requestVerb + " the ")
-						.add(receiver)
-						.add(", but they refused it."));
+					.add(receiver)
+					.add(", but they refused it."));
 				receiver.addNews(new ColorString("The ")
-						.add(chooser)
-						.add(" " + requestVerb + " us, but we refused it."));
+					.add(chooser)
+					.add(" " + requestVerb + " us, but we refused it."));
 			}
 
 			return true;
 		}
 
-		if (!changeable)
-		{
+		if (!changeable) {
 			type = newRelationship;
 			chooser.addNews(new ColorString("We " + actingVerb + " the ")
-					.add(receiver)
-					.add("."));
+				.add(receiver)
+				.add("."));
 			receiver.addNews(new ColorString("The ")
-					.add(chooser)
-					.add(" " + verb + " us."));
+				.add(chooser)
+				.add(" " + verb + " us."));
 			return true;
 		}
 
 		pendingRelationships.add(
-				new RelationshipChange(
-					otherFaction,
-					newRelationship,
-					question,
-					new ColorString("The ")
-					.add(otherFaction)
-					.add(" has " + requestVerb + " you."),
-					negateAnswer
-				)
+			new RelationshipChange(
+				otherFaction,
+				newRelationship,
+				question,
+				new ColorString("The ")
+				.add(otherFaction)
+				.add(" has " + requestVerb + " you."),
+				negateAnswer
+			)
 		);
 		return true;
 
@@ -381,7 +362,7 @@ public class Relationship
 		return (RelationshipType) Utility.select(
 				rng,
 				RelationshipType.values(),
-				new double[]{0.5, 0.3, 0.2}
-		);
+				new double[] {0.5, 0.3, 0.2}
+			);
 	}
 }

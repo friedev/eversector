@@ -30,13 +30,11 @@ public class Distress implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (responder == null)
-		{
+		if (responder == null) {
 			return "No factions have agreed to help you.";
 		}
 
@@ -47,20 +45,18 @@ public class Distress implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
-		if (responder != actor.getFaction())
-		{
+		if (responder != actor.getFaction()) {
 			actor.joinFaction(responder);
 		}
 
 		actor.addPlayerColorMessage(
-				new ColorString("The ")
-				.add(responder)
-				.add(" responds and warps supplies to your location.")
+			new ColorString("The ")
+			.add(responder)
+			.add(" responds and warps supplies to your location.")
 		);
 		actor.changeCredits(responder, DISTRESS_CREDITS);
 		responder.changeEconomy(-actor.refill());

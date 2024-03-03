@@ -27,7 +27,7 @@ public class Station implements ColorStringObject
 	/**
 	 * The descriptors for trade stations.
 	 */
-	private static final String[] NAME_TRADE = new String[]{
+	private static final String[] NAME_TRADE = new String[] {
 		"Factory",
 		"Hub",
 		"Manufactory",
@@ -38,7 +38,7 @@ public class Station implements ColorStringObject
 	/**
 	 * The descriptors for battle stations.
 	 */
-	private static final String[] NAME_BATTLE = new String[]{
+	private static final String[] NAME_BATTLE = new String[] {
 		"Armory",
 		"Arsenal",
 		"Bunker",
@@ -50,83 +50,83 @@ public class Station implements ColorStringObject
 	 * The base modules that all stations sell, at their base prices. <b>To be
 	 * removed in v0.8.</b>
 	 */
-	public static final Module[] MODULES = new Module[]{
+	public static final Module[] MODULES = new Module[] {
 		new Module(
-				Module.SCANNER,
-				"Scan enemy ships and reveal farther sectors.",
-				150,
-				false,
-				Resource.ENERGY,
-				3
+			Module.SCANNER,
+			"Scan enemy ships and reveal farther sectors.",
+			150,
+			false,
+			Resource.ENERGY,
+			3
 		),
 		new Module(
-				Module.REFINERY,
-				"Convert ore into fuel at a 1:1 ratio.",
-				250,
-				false,
-				Resource.ENERGY,
-				1
+			Module.REFINERY,
+			"Convert ore into fuel at a 1:1 ratio.",
+			250,
+			false,
+			Resource.ENERGY,
+			1
 		),
 		new Module(
-				Module.SOLAR_ARRAY,
-				"Produces energy each turn in orbit near a star.",
-				250,
-				false,
-				Resource.ENERGY,
-				-1
+			Module.SOLAR_ARRAY,
+			"Produces energy each turn in orbit near a star.",
+			250,
+			false,
+			Resource.ENERGY,
+			-1
 		),
 		new Module(
-				Module.WARP_DRIVE,
-				"Spend energy to jump to any visible sector.",
-				400,
-				false,
-				Resource.ENERGY,
-				15
+			Module.WARP_DRIVE,
+			"Spend energy to jump to any visible sector.",
+			400,
+			false,
+			Resource.ENERGY,
+			15
 		),
 		new Module(
-				Module.SHIELD,
-				"Halves damage from energy weapons while active.",
-				200,
-				true,
-				Ship.SHIELDED,
-				Resource.ENERGY,
-				2
+			Module.SHIELD,
+			"Halves damage from energy weapons while active.",
+			200,
+			true,
+			Ship.SHIELDED,
+			Resource.ENERGY,
+			2
 		),
 		new Module(
-				Module.CLOAKING_DEVICE,
-				"You cannot be attacked or pursued while active.",
-				300,
-				true,
-				Ship.CLOAKED,
-				Resource.ENERGY,
-				2
+			Module.CLOAKING_DEVICE,
+			"You cannot be attacked or pursued while active.",
+			300,
+			true,
+			Ship.CLOAKED,
+			Resource.ENERGY,
+			2
 		),
 		new Weapon(
-				Weapon.LASER,
-				null,
-				100,
-				2,
-				Resource.ENERGY,
-				2,
-				Paths.LASER
+			Weapon.LASER,
+			null,
+			100,
+			2,
+			Resource.ENERGY,
+			2,
+			Paths.LASER
 		),
 		new Weapon(
-				Weapon.TORPEDO_TUBE,
-				null,
-				200,
-				4,
-				Resource.FUEL,
-				2,
-				Paths.TORPEDO
+			Weapon.TORPEDO_TUBE,
+			null,
+			200,
+			4,
+			Resource.FUEL,
+			2,
+			Paths.TORPEDO
 		),
 		new Weapon(
-				Weapon.PULSE_BEAM,
-				null,
-				500,
-				7,
-				Resource.ENERGY,
-				10,
-				Paths.PULSE
+			Weapon.PULSE_BEAM,
+			null,
+			500,
+			7,
+			Resource.ENERGY,
+			10,
+			Paths.PULSE
 		)
 	};
 
@@ -134,47 +134,47 @@ public class Station implements ColorStringObject
 	 * The base resources that all stations sell, at the base prices for
 	 * themselves and their expanders. <b>To be removed in v0.8.</b>
 	 */
-	public static final BaseResource[] RESOURCES = new BaseResource[]{
+	public static final BaseResource[] RESOURCES = new BaseResource[] {
 		new BaseResource(
-				Resource.FUEL,
+			Resource.FUEL,
+			null,
+			10,
+			true,
+			new Expander(Resource.FUEL_EXPANDER,
 				null,
-				10,
-				true,
-				new Expander(Resource.FUEL_EXPANDER,
-					null,
-					70
-				)
+				70
+			)
 		),
 		new BaseResource(
-				Resource.ENERGY,
+			Resource.ENERGY,
+			null,
+			5,
+			false,
+			new Expander(Resource.ENERGY_EXPANDER,
 				null,
-				5,
-				false,
-				new Expander(Resource.ENERGY_EXPANDER,
-					null,
-					85
-				)
+				85
+			)
 		),
 		new BaseResource(
-				Resource.ORE,
+			Resource.ORE,
+			null,
+			10,
+			true,
+			new Expander(Resource.ORE_EXPANDER,
 				null,
-				10,
-				true,
-				new Expander(Resource.ORE_EXPANDER,
-					null,
-					85
-				)
+				85
+			)
 		),
 		new BaseResource(
-				Resource.HULL,
+			Resource.HULL,
+			null,
+			15,
+			false,
+			new Expander(Resource.HULL_EXPANDER,
 				null,
-				15,
-				false,
-				new Expander(Resource.HULL_EXPANDER,
-					null,
-					85,
-					2
-				)
+				85,
+				2
+			)
 		)
 	};
 
@@ -232,8 +232,7 @@ public class Station implements ColorStringObject
 		battle = Main.rng.nextBoolean();
 
 		String testName;
-		do
-		{
+		do {
 			testName = location.getSector().getStar().getName()
 				+ " "
 				+ Main.rng.getRandomElement(battle ? NAME_BATTLE : NAME_TRADE);
@@ -257,7 +256,7 @@ public class Station implements ColorStringObject
 		return new ColorString(
 				toString(),
 				isClaimed() ? getFaction().getColor() : null
-		);
+			);
 	}
 
 	/**
@@ -317,8 +316,7 @@ public class Station implements ColorStringObject
 	 */
 	public void claim(Faction faction)
 	{
-		if (this.faction == faction)
-		{
+		if (this.faction == faction) {
 			return;
 		}
 
@@ -338,7 +336,7 @@ public class Station implements ColorStringObject
 				? Symbol.BATTLE_STATION.get()
 				: Symbol.TRADE_STATION.get(),
 				getFaction().getColor()
-		);
+			);
 	}
 
 	/**
@@ -349,13 +347,11 @@ public class Station implements ColorStringObject
 	 */
 	public boolean sells(Module module)
 	{
-		if (module == null || module.getName() == null)
-		{
+		if (module == null || module.getName() == null) {
 			return false;
 		}
 
-		if (module.isBattle())
-		{
+		if (module.isBattle()) {
 			return battle;
 		}
 
@@ -402,10 +398,8 @@ public class Station implements ColorStringObject
 	 */
 	public Module getModule(String name)
 	{
-		for (Module module : modules)
-		{
-			if (name.equalsIgnoreCase(module.getName()))
-			{
+		for (Module module : modules) {
+			if (name.equalsIgnoreCase(module.getName())) {
 				return module;
 			}
 		}
@@ -432,10 +426,8 @@ public class Station implements ColorStringObject
 	 */
 	public static Module getBaseModule(String name)
 	{
-		for (Module module : MODULES)
-		{
-			if (name.equalsIgnoreCase(module.getName()))
-			{
+		for (Module module : MODULES) {
+			if (name.equalsIgnoreCase(module.getName())) {
 				return module;
 			}
 		}
@@ -462,10 +454,8 @@ public class Station implements ColorStringObject
 	 */
 	public static Weapon getBaseWeapon(String name)
 	{
-		for (Module module : MODULES)
-		{
-			if (name.equalsIgnoreCase(module.getName()) && module instanceof Weapon)
-			{
+		for (Module module : MODULES) {
+			if (name.equalsIgnoreCase(module.getName()) && module instanceof Weapon) {
 				return (Weapon) module;
 			}
 		}
@@ -481,10 +471,8 @@ public class Station implements ColorStringObject
 	 */
 	public static boolean hasBaseWeapon(String name)
 	{
-		for (Module module : MODULES)
-		{
-			if (name.equalsIgnoreCase(module.getName()) && module instanceof Weapon)
-			{
+		for (Module module : MODULES) {
+			if (name.equalsIgnoreCase(module.getName()) && module instanceof Weapon) {
 				return true;
 			}
 		}
@@ -500,16 +488,11 @@ public class Station implements ColorStringObject
 	 */
 	public Item getItem(String name)
 	{
-		if (hasResource(name))
-		{
+		if (hasResource(name)) {
 			return getResource(name);
-		}
-		else if (hasExpander(name))
-		{
+		} else if (hasExpander(name)) {
 			return getExpander(name);
-		}
-		else
-		{
+		} else {
 			return getModule(name);
 		}
 	}
@@ -522,10 +505,8 @@ public class Station implements ColorStringObject
 	 */
 	public BaseResource getResource(String name)
 	{
-		for (BaseResource resource : resources)
-		{
-			if (name.equalsIgnoreCase(resource.getName()))
-			{
+		for (BaseResource resource : resources) {
+			if (name.equalsIgnoreCase(resource.getName())) {
 				return resource;
 			}
 		}
@@ -552,10 +533,8 @@ public class Station implements ColorStringObject
 	 */
 	public Expander getExpander(String name)
 	{
-		for (BaseResource resource : resources)
-		{
-			if (name.equalsIgnoreCase(resource.getExpander().getName()))
-			{
+		for (BaseResource resource : resources) {
+			if (name.equalsIgnoreCase(resource.getExpander().getName())) {
 				return resource.getExpander();
 			}
 		}
@@ -582,10 +561,8 @@ public class Station implements ColorStringObject
 	 */
 	public static BaseResource getBaseResource(String name)
 	{
-		for (BaseResource resource : RESOURCES)
-		{
-			if (name.equalsIgnoreCase(resource.getName()))
-			{
+		for (BaseResource resource : RESOURCES) {
+			if (name.equalsIgnoreCase(resource.getName())) {
 				return resource;
 			}
 		}
@@ -612,25 +589,20 @@ public class Station implements ColorStringObject
 	 */
 	public static boolean define(String name)
 	{
-		for (Module module : MODULES)
-		{
-			if (name.equalsIgnoreCase(module.getName()))
-			{
+		for (Module module : MODULES) {
+			if (name.equalsIgnoreCase(module.getName())) {
 				module.define();
 				return true;
 			}
 		}
 
-		for (BaseResource resource : RESOURCES)
-		{
-			if (name.equalsIgnoreCase(resource.getName()))
-			{
+		for (BaseResource resource : RESOURCES) {
+			if (name.equalsIgnoreCase(resource.getName())) {
 				resource.define();
 				return true;
 			}
 
-			if (name.equalsIgnoreCase(resource.getExpander().getName()))
-			{
+			if (name.equalsIgnoreCase(resource.getExpander().getName())) {
 				resource.getExpander().define();
 				return true;
 			}
@@ -661,10 +633,8 @@ public class Station implements ColorStringObject
 	{
 		int nShips = 0;
 
-		for (Ship ship : ships)
-		{
-			if (ship.getFaction() == faction)
-			{
+		for (Ship ship : ships) {
+			if (ship.getFaction() == faction) {
 				nShips++;
 			}
 		}
@@ -681,8 +651,7 @@ public class Station implements ColorStringObject
 	{
 		Resource[] copy = new Resource[RESOURCES.length];
 
-		for (int i = 0; i < RESOURCES.length; i++)
-		{
+		for (int i = 0; i < RESOURCES.length; i++) {
 			copy[i] = new Resource(RESOURCES[i]);
 		}
 
@@ -694,13 +663,11 @@ public class Station implements ColorStringObject
 	 */
 	private void generatePrices()
 	{
-		for (Module module : modules)
-		{
+		for (Module module : modules) {
 			module.generatePrice();
 		}
 
-		for (BaseResource resource : resources)
-		{
+		for (BaseResource resource : resources) {
 			resource.generatePrice();
 			resource.getExpander().generatePrice();
 		}
@@ -718,16 +685,11 @@ public class Station implements ColorStringObject
 		// array lengths
 		List<Module> moduleList = new ArrayList<>();
 
-		for (Module module : MODULES)
-		{
-			if (sells(module))
-			{
-				if (module instanceof Weapon)
-				{
+		for (Module module : MODULES) {
+			if (sells(module)) {
+				if (module instanceof Weapon) {
 					moduleList.add(new Weapon((Weapon) module));
-				}
-				else
-				{
+				} else {
 					moduleList.add(new Module(module));
 				}
 			}
@@ -736,8 +698,7 @@ public class Station implements ColorStringObject
 		modules = moduleList.toArray(new Module[moduleList.size()]);
 		resources = new BaseResource[RESOURCES.length];
 
-		for (int i = 0; i < RESOURCES.length; i++)
-		{
+		for (int i = 0; i < RESOURCES.length; i++) {
 			resources[i] = new BaseResource(RESOURCES[i]);
 		}
 	}

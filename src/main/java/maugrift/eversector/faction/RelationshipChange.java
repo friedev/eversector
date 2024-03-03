@@ -47,12 +47,13 @@ public class RelationshipChange
 	 * @param negateAnswer true if the answer will be negated
 	 */
 	public RelationshipChange(
-			Faction otherFaction,
-			RelationshipType relationship,
-			String question,
-			ColorString message,
-			boolean negateAnswer
-	) {
+		Faction otherFaction,
+		RelationshipType relationship,
+		String question,
+		ColorString message,
+		boolean negateAnswer
+	)
+	{
 		this.otherFaction = otherFaction;
 		this.relationship = relationship;
 		this.question = question;

@@ -36,19 +36,15 @@ public class HelpScreen
 	{
 		super(Main.display);
 		window = new PopupWindow(
-				Main.display,
-				new Border(1),
-				new Line(true, 1, 1)
+			Main.display,
+			new Border(1),
+			new Line(true, 1, 1)
 		);
 
-		for (Keybinding keybinding : keybindings)
-		{
-			if (keybinding == null)
-			{
+		for (Keybinding keybinding : keybindings) {
+			if (keybinding == null) {
 				window.addSeparator();
-			}
-			else
-			{
+			} else {
 				window.getContents().add(keybinding.toColorString(null, COLOR_FIELD));
 			}
 		}

@@ -39,13 +39,13 @@ public class NamePromptScreen extends PopupTerminal
 	public NamePromptScreen(String naming, Option option)
 	{
 		super(
-				new PopupWindow(
-					Main.display,
-					toContentList(naming)
-				),
-				new ColorString(),
-				Main.display.getWidthInCharacters() - 2,
-				COLOR_FIELD
+			new PopupWindow(
+				Main.display,
+				toContentList(naming)
+			),
+			new ColorString(),
+			Main.display.getWidthInCharacters() - 2,
+			COLOR_FIELD
 		);
 		this.naming = naming;
 		this.option = option;
@@ -86,12 +86,12 @@ public class NamePromptScreen extends PopupTerminal
 	{
 		return new ColorString("Enter the name of " + naming + ". ")
 			.add(
-					new ColorString(
-						getInput().isEmpty()
-						? "(Enter to skip.)"
-						: "(Enter to confirm.)",
-						AsciiPanel.brightBlack
-					)
+				new ColorString(
+					getInput().isEmpty()
+					? "(Enter to skip.)"
+					: "(Enter to confirm.)",
+					AsciiPanel.brightBlack
+				)
 			);
 	}
 

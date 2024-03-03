@@ -23,8 +23,7 @@ public interface Action
 	 * @param actor the ship executing the action
 	 * @return true if the ship can execute the action
 	 */
-	default boolean canExecuteBool(Ship actor)
-	{
+	default boolean canExecuteBool(Ship actor) {
 		return canExecute(actor) == null;
 	}
 
@@ -42,8 +41,7 @@ public interface Action
 	 * @param actor the ship executing the action
 	 * @return true if the execution was successful
 	 */
-	default boolean executeBool(Ship actor)
-	{
+	default boolean executeBool(Ship actor) {
 		return execute(actor) == null;
 	}
 }

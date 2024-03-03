@@ -189,33 +189,26 @@ public class Battle
 	{
 		boolean attackMade = false;
 		int size = Math.max(attackers.size(), defenders.size());
-		for (int i = 0; i < size; i++)
-		{
-			if (attackers.size() >= i + 1 && shipCanAttack(attackers.get(i)))
-			{
+		for (int i = 0; i < size; i++) {
+			if (attackers.size() >= i + 1 && shipCanAttack(attackers.get(i))) {
 				Action action = attackers.get(i).getAI().performBattleAction();
-				if (action != null)
-				{
+				if (action != null) {
 					attackMade = attackMade || action.executeBool(attackers.get(i));
 				}
 				updateReputation(attackers.get(i), action);
 			}
 
-			if (defenders.size() >= i + 1 && shipCanAttack(defenders.get(i)))
-			{
+			if (defenders.size() >= i + 1 && shipCanAttack(defenders.get(i))) {
 				Action action = defenders.get(i).getAI().performBattleAction();
-				if (action != null)
-				{
+				if (action != null) {
 					attackMade = attackMade || action.executeBool(defenders.get(i));
 				}
 				updateReputation(defenders.get(i), action);
 			}
 		}
 
-		for (Ship ship : getShips())
-		{
-			if (ship.isDestroyed())
-			{
+		for (Ship ship : getShips()) {
+			if (ship.isDestroyed()) {
 				// Duplicate remove done to avoid concurrent modification
 				attackers.remove(ship);
 				defenders.remove(ship);
@@ -230,19 +223,16 @@ public class Battle
 
 	private void updateReputation(Ship attacker, Action attack)
 	{
-		if (!(attack instanceof Fire))
+		if (!(attack instanceof Fire)) {
 			return;
+		}
 
 		Ship defender = ((Fire) attack).getTarget();
 
-		if (defender.isDestroyed())
-		{
-			if (attacker.isPassive(defender))
-			{
+		if (defender.isDestroyed()) {
+			if (attacker.isPassive(defender)) {
 				attacker.changeReputation(attacker.getFaction(), Reputation.KILL_ALLY);
-			}
-			else
-			{
+			} else {
 				attacker.changeReputation(attacker.getFaction(), Reputation.KILL_ENEMY);
 			}
 
@@ -273,12 +263,10 @@ public class Battle
 	{
 		List<Ship> pursuing = new LinkedList<>();
 
-		for (Ship enemy : getEnemies(ship))
-		{
+		for (Ship enemy : getEnemies(ship)) {
 			if (enemy.getAI() != null &&
-					!fleeing.contains(enemy) &&
-					enemy.getAI().pursue())
-			{
+				!fleeing.contains(enemy) &&
+				enemy.getAI().pursue()) {
 				pursuing.add(enemy);
 			}
 		}
@@ -296,39 +284,30 @@ public class Battle
 	 */
 	public void processEscape(Ship ship, List<Ship> pursuing)
 	{
-		if (!fleeing.contains(ship))
-		{
+		if (!fleeing.contains(ship)) {
 			return;
 		}
 
 		SectorLocation destination = ship.getSectorLocation();
 
-		if (!ship.isCloaked())
-		{
-			if (rng.nextBoolean())
-			{
+		if (!ship.isCloaked()) {
+			if (rng.nextBoolean()) {
 				SectorLocation test = destination.raiseOrbit();
 				destination = test == null ? destination.lowerOrbit() : test;
-			}
-			else
-			{
+			} else {
 				SectorLocation test = destination.lowerOrbit();
 				destination = test == null ? destination.raiseOrbit() : test;
 			}
 
-			if (pursuing.isEmpty())
-			{
+			if (pursuing.isEmpty()) {
 				ship.addPlayerMessage("You successfully flee the battle.");
-			}
-			else
-			{
+			} else {
 				List<Ship> defenderList = new LinkedList<>();
 				defenderList.add(ship);
 				Battle newBattle = new Battle(pursuing, defenderList);
 				destination = destination.joinBattle(newBattle);
 
-				for (Ship pursuer : pursuing)
-				{
+				for (Ship pursuer : pursuing) {
 					pursuer.setLocation(destination);
 					attackers.remove(pursuer);
 					defenders.remove(pursuer);
@@ -336,9 +315,7 @@ public class Battle
 
 				ship.addPlayerMessage("You have been pursued.");
 			}
-		}
-		else
-		{
+		} else {
 			ship.addPlayerMessage("You escape cloaked and undetected.");
 		}
 
@@ -367,8 +344,7 @@ public class Battle
 	 */
 	public void processEscapes()
 	{
-		for (Ship ship : new ArrayList<>(fleeing))
-		{
+		for (Ship ship : new ArrayList<>(fleeing)) {
 			processEscape(ship);
 		}
 	}
@@ -380,49 +356,38 @@ public class Battle
 	{
 		List<Ship> winners = null;
 
-		for (Ship ship : attackers)
-		{
-			if (!surrendered.contains(ship))
-			{
+		for (Ship ship : attackers) {
+			if (!surrendered.contains(ship)) {
 				winners = attackers;
 			}
 		}
 
-		if (winners == null)
-		{
-			for (Ship ship : defenders)
-			{
-				if (!surrendered.contains(ship))
-				{
+		if (winners == null) {
+			for (Ship ship : defenders) {
+				if (!surrendered.contains(ship)) {
 					winners = defenders;
 				}
 			}
 		}
 
-		if (winners == null)
-		{
+		if (winners == null) {
 			return;
 		}
 
 		List<Ship> looting = destroyed;
-		for (Ship ship : surrendered)
-		{
-			if (!winners.contains(ship))
-			{
+		for (Ship ship : surrendered) {
+			if (!winners.contains(ship)) {
 				looting.add(ship);
 			}
 		}
 
 		int looterIndex = 0;
-		for (Ship lootedShip : looting)
-		{
+		for (Ship lootedShip : looting) {
 			Ship looter = winners.get(looterIndex);
 
-			while (surrendered.contains(looter))
-			{
+			while (surrendered.contains(looter)) {
 				looterIndex++;
-				if (looterIndex >= winners.size())
-				{
+				if (looterIndex >= winners.size()) {
 					looterIndex = 0;
 				}
 
@@ -430,13 +395,12 @@ public class Battle
 			}
 
 			if (lootedShip.isLeader() &&
-					looter.getFaction() == lootedShip.getFaction())
-			{
+				looter.getFaction() == lootedShip.getFaction()) {
 				looter.getFaction().setLeader(looter);
 				looter.getFaction().addNews(looter.toColorString()
-						.add(" has destroyed our leader, ")
-						.add(lootedShip)
-						.add(", and taken control of the faction."));
+					.add(" has destroyed our leader, ")
+					.add(lootedShip)
+					.add(", and taken control of the faction."));
 			}
 
 			lootedShip.destroy(false);
@@ -449,10 +413,8 @@ public class Battle
 	 */
 	public void endBattle()
 	{
-		for (Ship ship : getShips())
-		{
-			if (ship.isInBattle())
-			{
+		for (Ship ship : getShips()) {
+			if (ship.isInBattle()) {
 				ship.setLocation(ship.getBattleLocation().leaveBattle());
 			}
 		}
@@ -470,10 +432,8 @@ public class Battle
 	 */
 	public void processBattle()
 	{
-		while (continues())
-		{
-			if (!processAttacks() || !continues())
-			{
+		while (continues()) {
+			if (!processAttacks() || !continues()) {
 				break;
 			}
 			processEscapes();

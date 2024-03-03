@@ -19,31 +19,26 @@ public class Convert implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (actor == converting)
-		{
+		if (actor == converting) {
 			return "You cannot convert yourself.";
 		}
 
-		if (!actor.isAligned())
-		{
+		if (!actor.isAligned()) {
 			return "You must be part of a faction to convert ships.";
 		}
 
-		if (actor.getFaction() == converting.getFaction())
-		{
+		if (actor.getFaction() == converting.getFaction()) {
 			return converting
 				+ " is already a member of the "
 				+ actor.getFaction()
 				+ ".";
 		}
 
-		if (converting.isPlayer())
-		{
+		if (converting.isPlayer()) {
 			// Converting the player must be done through the ConvertScreen
 			return "You cannot be converted.";
 		}
@@ -55,16 +50,14 @@ public class Convert implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
 		Faction actorFaction = actor.getFaction();
 		Faction oldFaction = converting.getFaction();
 
-		if (converting.isAligned())
-		{
+		if (converting.isAligned()) {
 			converting.leaveFaction();
 		}
 
@@ -77,9 +70,9 @@ public class Convert implements Action
 		converting.changeReputation(oldFaction, -Reputation.CONVERT);
 
 		converting.addPlayerColorMessage(actor.toColorString()
-				.add(" has converted you to the ")
-				.add(actorFaction)
-				.add(".")
+			.add(" has converted you to the ")
+			.add(actorFaction)
+			.add(".")
 		);
 		return null;
 	}

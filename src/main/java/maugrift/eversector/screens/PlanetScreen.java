@@ -70,77 +70,60 @@ public class PlanetScreen
 		Screen nextScreen = this;
 
 		Direction direction = Utility.keyToDirectionRestricted(key);
-		if (direction != null)
-		{
-			if (isLooking())
-			{
+		if (direction != null) {
+			if (isLooking()) {
 				cursor = cursor.moveRegion(direction);
-			}
-			else
-			{
+			} else {
 				String relocateExecution = new Relocate(direction).execute(player);
-				if (relocateExecution == null)
-				{
+				if (relocateExecution == null) {
 					nextTurn = true;
-				}
-				else
-				{
+				} else {
 					addError(relocateExecution);
 				}
 			}
-		}
-		else if (isLooking())
-		{
+		} else if (isLooking()) {
 			if (key.getKeyCode() == KeyEvent.VK_L ||
-					key.getKeyCode() == KeyEvent.VK_ESCAPE ||
-					key.getKeyCode() == KeyEvent.VK_ENTER)
-			{
+				key.getKeyCode() == KeyEvent.VK_ESCAPE ||
+				key.getKeyCode() == KeyEvent.VK_ENTER) {
 				cursor = null;
 			}
-		}
-		else
-		{
-			switch (key.getKeyCode())
-			{
-				case KeyEvent.VK_ESCAPE:
-					String takeoffExecution = new Takeoff().execute(player);
-					if (takeoffExecution == null)
-					{
-						nextTurn = true;
-						nextScreen = new SectorScreen();
-						break;
-					}
-					addError(takeoffExecution);
+		} else {
+			switch (key.getKeyCode()) {
+			case KeyEvent.VK_ESCAPE:
+				String takeoffExecution = new Takeoff().execute(player);
+				if (takeoffExecution == null) {
+					nextTurn = true;
+					nextScreen = new SectorScreen();
 					break;
-				case KeyEvent.VK_ENTER:
-					String mineExecution = new Mine().execute(player);
-					if (mineExecution == null)
-					{
-						nextTurn = true;
-						break;
-					}
-					addError(mineExecution);
+				}
+				addError(takeoffExecution);
+				break;
+			case KeyEvent.VK_ENTER:
+				String mineExecution = new Mine().execute(player);
+				if (mineExecution == null) {
+					nextTurn = true;
 					break;
-				case KeyEvent.VK_C:
-					String claimExecution = new Claim().execute(player);
-					if (claimExecution == null)
-					{
-						nextTurn = true;
-						break;
-					}
-					addError(claimExecution);
+				}
+				addError(mineExecution);
+				break;
+			case KeyEvent.VK_C:
+				String claimExecution = new Claim().execute(player);
+				if (claimExecution == null) {
+					nextTurn = true;
 					break;
-				case KeyEvent.VK_L:
-					cursor = player.getPlanetLocation();
-					break;
-				case KeyEvent.VK_V:
-					Main.showFactions = !Main.showFactions;
-					break;
+				}
+				addError(claimExecution);
+				break;
+			case KeyEvent.VK_L:
+				cursor = player.getPlanetLocation();
+				break;
+			case KeyEvent.VK_V:
+				Main.showFactions = !Main.showFactions;
+				break;
 			}
 		}
 
-		if (nextTurn)
-		{
+		if (nextTurn) {
 			galaxy.nextTurn();
 		}
 		return nextScreen;
@@ -151,13 +134,13 @@ public class PlanetScreen
 	{
 		List<Keybinding> keybindings = new ArrayList<>();
 		keybindings.add(
-				new Keybinding(
-					"change region",
-					ExtChars.ARROW1_U,
-					ExtChars.ARROW1_D,
-					ExtChars.ARROW1_L,
-					ExtChars.ARROW1_R
-				)
+			new Keybinding(
+				"change region",
+				ExtChars.ARROW1_U,
+				ExtChars.ARROW1_D,
+				ExtChars.ARROW1_L,
+				ExtChars.ARROW1_R
+			)
 		);
 		keybindings.add(new Keybinding("takeoff", "escape"));
 		keybindings.add(new Keybinding("mine", "enter"));
@@ -197,76 +180,67 @@ public class PlanetScreen
 			: player.getPlanetLocation().getRegion();
 		contents.add(new ColorString(planet.toString()));
 		contents.add(
-				new ColorString("Orbit: ")
-				.add(
-					new ColorString(
-						Integer.toString(planet.getLocation().getOrbit()),
-						COLOR_FIELD
-					)
+			new ColorString("Orbit: ")
+			.add(
+				new ColorString(
+					Integer.toString(planet.getLocation().getOrbit()),
+					COLOR_FIELD
 				)
+			)
 		);
 
-		if (planet.isClaimed())
-		{
+		if (planet.isClaimed()) {
 			contents.add(
-					new ColorString("Ruler: ")
-					.add(
-						new ColorString(
-							planet.getFaction().toString(),
-							planet.getFaction().getColor())
-					)
+				new ColorString("Ruler: ")
+				.add(
+					new ColorString(
+						planet.getFaction().toString(),
+						planet.getFaction().getColor())
+				)
 			);
-		}
-		else
-		{
+		} else {
 			contents.add(
-					new ColorString("Ruler: ")
-					.add(new ColorString("Disputed", COLOR_FIELD))
+				new ColorString("Ruler: ")
+				.add(new ColorString("Disputed", COLOR_FIELD))
 			);
 		}
 
 		window.addSeparator(new Line(true, 2, 1));
 		List<ColorString> colorStrings = planet.toColorStrings(Main.showFactions);
-		if (isLooking())
-		{
+		if (isLooking()) {
 			colorStrings.get(cursor.getRegionCoord().y)
-				.getColorCharAt(cursor.getRegionCoord().x)
-				.setBackground(COLOR_SELECTION_BACKGROUND);
+			.getColorCharAt(cursor.getRegionCoord().x)
+			.setBackground(COLOR_SELECTION_BACKGROUND);
 		}
 		contents.addAll(colorStrings);
 
 		window.addSeparator(new Line(false, 1, 2, 1));
 		contents.add(new ColorString(region.toString()));
-		if (region.isClaimed())
-		{
+		if (region.isClaimed()) {
 			contents.add(new ColorString("Ruler: ").add(region.getFaction()));
 		}
 
-		if (isLooking() && !cursor.equals(player.getLocation()))
-		{
+		if (isLooking() && !cursor.equals(player.getLocation())) {
 			return;
 		}
 
-		if (region.hasOre())
-		{
+		if (region.hasOre()) {
 			contents.add(
-					new ColorString("Ore: ")
-					.add(
-						new ColorString(
-							region.getOre().toString()
-							+ " ("
-							+ region.getOre().getDensity()
-							+ ")",
-							COLOR_FIELD
-						)
+				new ColorString("Ore: ")
+				.add(
+					new ColorString(
+						region.getOre().toString()
+						+ " ("
+						+ region.getOre().getDensity()
+						+ ")",
+						COLOR_FIELD
 					)
+				)
 			);
 		}
 
-		for (Ship ship : region.getShips())
-		{
-			if (ship != player)
-			{
+		for (Ship ship : region.getShips()) {
+			if (ship != player) {
 				contents.add(ship.toColorString());
 			}
 		}

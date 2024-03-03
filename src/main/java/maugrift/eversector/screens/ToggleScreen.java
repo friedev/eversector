@@ -27,19 +27,17 @@ public class ToggleScreen
 	public ToggleScreen()
 	{
 		super(
-				new PopupMenu(
-					new PopupWindow(Main.display),
-					COLOR_SELECTION_FOREGROUND,
-					COLOR_SELECTION_BACKGROUND
-				)
+			new PopupMenu(
+				new PopupWindow(Main.display),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+			)
 		);
 
-		for (Module module : player.getModules())
-		{
-			if (module != null && module.hasEffect())
-			{
+		for (Module module : player.getModules()) {
+			if (module != null && module.hasEffect()) {
 				getMenu().getWindow().getContents().add(
-						new ColorString(module.toString())
+					new ColorString(module.toString())
 				);
 			}
 		}
@@ -58,10 +56,9 @@ public class ToggleScreen
 		boolean hadFlag = player.hasFlag(player.getModule(module).getEffect());
 
 		String toggleExecution = new Toggle(
-				getMenu().getSelection().toString()
+			getMenu().getSelection().toString()
 		).execute(player);
-		if (toggleExecution != null)
-		{
+		if (toggleExecution != null) {
 			addError(toggleExecution);
 		}
 

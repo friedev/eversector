@@ -22,14 +22,12 @@ public class BuyModule implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
 		String validateDocking = actor.validateDocking();
-		if (validateDocking != null)
-		{
+		if (validateDocking != null) {
 			return validateDocking;
 		}
 
@@ -37,23 +35,19 @@ public class BuyModule implements Action
 		Station station = actor.getSectorLocation().getStation();
 		Module moduleObj = station.getModule(module);
 
-		if (moduleObj == null || moduleObj.getName() == null)
-		{
-			if (Station.hasBaseModule(module))
-			{
+		if (moduleObj == null || moduleObj.getName() == null) {
+			if (Station.hasBaseModule(module)) {
 				return station + " does not sell modules of this type.";
 			}
 
 			return "The specified module does not exist.";
 		}
 
-		if (!station.sells(moduleObj))
-		{
+		if (!station.sells(moduleObj)) {
 			return station + " does not sell modules of this type.";
 		}
 
-		if (moduleObj instanceof Weapon && actor.isPirate())
-		{
+		if (moduleObj instanceof Weapon && actor.isPirate()) {
 			return station + " refuses to sell weaponry to pirates.";
 		}
 
@@ -66,8 +60,7 @@ public class BuyModule implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

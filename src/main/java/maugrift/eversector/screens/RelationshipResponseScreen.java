@@ -57,8 +57,7 @@ public class RelationshipResponseScreen
 	@Override
 	public Screen onConfirm()
 	{
-		if (!change.negateAnswer())
-		{
+		if (!change.negateAnswer()) {
 			enactChange();
 		}
 		return null;
@@ -67,8 +66,7 @@ public class RelationshipResponseScreen
 	@Override
 	public Screen onCancel()
 	{
-		if (change.negateAnswer())
-		{
+		if (change.negateAnswer()) {
 			enactChange();
 		}
 		return null;
@@ -80,8 +78,8 @@ public class RelationshipResponseScreen
 	public void enactChange()
 	{
 		player.getFaction().setRelationship(
-				change.getOtherFaction(),
-				change.getRelationship()
+			change.getOtherFaction(),
+			change.getRelationship()
 		);
 	}
 }

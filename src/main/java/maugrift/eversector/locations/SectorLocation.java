@@ -30,10 +30,9 @@ public class SectorLocation extends Location
 	{
 		super(location);
 
-		if (!getSector().isValidOrbit(orbit))
-		{
+		if (!getSector().isValidOrbit(orbit)) {
 			throw new IndexOutOfBoundsException(
-					"Given orbit not found in sector (" + orbit + ")"
+				"Given orbit not found in sector (" + orbit + ")"
 			);
 		}
 
@@ -191,9 +190,8 @@ public class SectorLocation extends Location
 	public boolean equals(Location o)
 	{
 		if (!(o instanceof SectorLocation) ||
-				o instanceof PlanetLocation ||
-				o instanceof StationLocation)
-		{
+			o instanceof PlanetLocation ||
+			o instanceof StationLocation) {
 			return false;
 		}
 

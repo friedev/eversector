@@ -35,7 +35,7 @@ public class CrashLandScreen
 		super(Main.display);
 		window = new PopupWindow(Main.display);
 		window.getContents().add(
-				new ColorString("Insufficient fuel to land; crash land?")
+			new ColorString("Insufficient fuel to land; crash land?")
 		);
 	}
 
@@ -54,10 +54,8 @@ public class CrashLandScreen
 	@Override
 	public Screen onConfirm()
 	{
-		if (new CrashLand().executeBool(player))
-		{
-			if (player.isDestroyed())
-			{
+		if (new CrashLand().executeBool(player)) {
+			if (player.isDestroyed()) {
 				playSoundEffect(DEATH);
 				return new EndScreen(
 						new ColorString(
@@ -67,7 +65,7 @@ public class CrashLandScreen
 						),
 						true,
 						false
-				);
+					);
 			}
 
 			playSoundEffect(TORPEDO);

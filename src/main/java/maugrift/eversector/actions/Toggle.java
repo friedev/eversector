@@ -27,34 +27,29 @@ public class Toggle implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
 		Module moduleObj = actor.getModule(module);
 
-		if (moduleObj == null)
-		{
+		if (moduleObj == null) {
 			return "The specified module was not found on the ship.";
 		}
 
 		String validateModule = actor.validateModule(module);
-		if (validateModule != null)
-		{
+		if (validateModule != null) {
 			return validateModule;
 		}
 
 		String effect = moduleObj.getEffect();
 
-		if (effect == null)
-		{
+		if (effect == null) {
 			return Utility.addCapitalizedArticle(moduleObj.getName())
 				+ " cannot be activated.";
 		}
 
-		if (actor.hasFlag(effect))
-		{
+		if (actor.hasFlag(effect)) {
 			return null;
 		}
 
@@ -62,66 +57,55 @@ public class Toggle implements Action
 				moduleObj.getActionResource(),
 				moduleObj.getActionCost(),
 				"activate " + moduleObj
-		);
+			);
 	}
 
 	@Override
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
 		Module moduleObj = actor.getModule(module);
 		String effect = moduleObj.getEffect();
 		boolean activating = !actor.hasFlag(effect);
-		if (activating)
-		{
+		if (activating) {
 			actor.addFlag(effect);
-		}
-		else
-		{
+		} else {
 			actor.removeFlag(effect);
 		}
 
-		if (actor.isPlayer())
-		{
-			if (activating)
-			{
+		if (actor.isPlayer()) {
+			if (activating) {
 				addMessage(
-						"Your "
-						+ moduleObj.toString().toLowerCase()
-						+ " has been deactivated."
+					"Your "
+					+ moduleObj.toString().toLowerCase()
+					+ " has been deactivated."
 				);
 				playSoundEffect(SOUND_EFFECT_ENABLE);
-			}
-			else
-			{
+			} else {
 				addMessage(
-						"Your "
-						+ moduleObj.toString().toLowerCase()
-						+ " has been activated and will drain "
-						+ moduleObj.getActionCost()
-						+ " "
-						+ moduleObj.getActionResource().toLowerCase()
-						+ " per turn of use."
+					"Your "
+					+ moduleObj.toString().toLowerCase()
+					+ " has been activated and will drain "
+					+ moduleObj.getActionCost()
+					+ " "
+					+ moduleObj.getActionResource().toLowerCase()
+					+ " per turn of use."
 				);
 				playSoundEffect(SOUND_EFFECT_DISABLE);
 			}
-		}
-		else if (actor.isInBattle())
-		{
+		} else if (actor.isInBattle()) {
 			Battle battle = actor.getBattleLocation().getBattle();
 			Ship player = actor.getLocation().getGalaxy().getPlayer();
-			if (player != null && battle.getShips().contains(player))
-			{
+			if (player != null && battle.getShips().contains(player)) {
 				addMessage(actor
-						+ " "
-						+ (activating ? "activates" : "deactivates")
-						+ Utility.addArticle(module.toLowerCase())
-						+ "."
+					+ " "
+					+ (activating ? "activates" : "deactivates")
+					+ Utility.addArticle(module.toLowerCase())
+					+ "."
 				);
 			}
 		}

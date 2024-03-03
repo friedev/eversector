@@ -62,10 +62,9 @@ public class Location
 	 */
 	public Location(Galaxy galaxy, Coord coord)
 	{
-		if (!galaxy.contains(coord))
-		{
+		if (!galaxy.contains(coord)) {
 			throw new IndexOutOfBoundsException(
-					"Given coord not found on the map"
+				"Given coord not found on the map"
 			);
 		}
 
@@ -129,7 +128,7 @@ public class Location
 						direction.deltaY
 					)
 				)
-		);
+			);
 	}
 
 	/**
@@ -162,34 +161,25 @@ public class Location
 	{
 		StringBuilder params = new StringBuilder();
 
-		if (this instanceof StationLocation)
-		{
+		if (this instanceof StationLocation) {
 			params.append(STATION_LOCATION);
-		}
-		else if (this instanceof PlanetLocation)
-		{
+		} else if (this instanceof PlanetLocation) {
 			params.append(PLANET_LOCATION);
-		}
-		else if (this instanceof SectorLocation)
-		{
+		} else if (this instanceof SectorLocation) {
 			params.append(SECTOR_LOCATION);
-		}
-		else
-		{
+		} else {
 			params.append(LOCATION);
 		}
 
 		params.append("; ").append(Utility.coordToOrderedPair(coord));
 
-		if (!(this instanceof SectorLocation))
-		{
+		if (!(this instanceof SectorLocation)) {
 			return params.toString();
 		}
 
 		params.append("; ").append(((SectorLocation) this).getOrbit());
 
-		if (this instanceof PlanetLocation)
-		{
+		if (this instanceof PlanetLocation) {
 			params.append("; ").append(((PlanetLocation) this).getRegionCoord());
 		}
 
@@ -211,24 +201,21 @@ public class Location
 		Coord coord = Utility.parseCoord(params[1]);
 		Location location = new Location(galaxy, coord);
 
-		if (LOCATION.equals(params[0]))
-		{
+		if (LOCATION.equals(params[0])) {
 			return location;
 		}
 
 		int orbit = Utility.parseInt(params[2]);
 		SectorLocation sectorLocation = new SectorLocation(location, orbit);
 
-		if (PLANET_LOCATION.equals(params[0]))
-		{
+		if (PLANET_LOCATION.equals(params[0])) {
 			return new PlanetLocation(
 					sectorLocation,
 					Utility.parseCoord(params[3])
-			);
+				);
 		}
 
-		if (STATION_LOCATION.equals(params[0]))
-		{
+		if (STATION_LOCATION.equals(params[0])) {
 			return new StationLocation(sectorLocation);
 		}
 

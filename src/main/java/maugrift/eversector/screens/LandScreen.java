@@ -48,14 +48,14 @@ public class LandScreen
 		super(Main.display);
 		Planet planet = player.getSectorLocation().getPlanet();
 		window = new PopupWindow(
-				Main.display,
-				new Border(1),
-				new Line(true, 1, 1)
+			Main.display,
+			new Border(1),
+			new Line(true, 1, 1)
 		);
 		window.getContents().addAll(planet.toColorStrings(Main.showFactions));
 		selection = new PlanetLocation(
-				player.getSectorLocation(),
-				Coord.get(0, 0)
+			player.getSectorLocation(),
+			Coord.get(0, 0)
 		);
 	}
 
@@ -70,14 +70,12 @@ public class LandScreen
 	public Screen processInput(KeyEvent key)
 	{
 		Direction direction = Utility.keyToDirectionRestricted(key);
-		if (direction != null)
-		{
+		if (direction != null) {
 			selection = selection.moveRegion(direction);
 			return this;
 		}
 
-		if (key.getKeyCode() == KeyEvent.VK_V)
-		{
+		if (key.getKeyCode() == KeyEvent.VK_V) {
 			Main.showFactions = !Main.showFactions;
 		}
 
@@ -94,10 +92,9 @@ public class LandScreen
 	public Screen onConfirm()
 	{
 		String landExecution = new Land(
-				selection.getRegionCoord()
+			selection.getRegionCoord()
 		).execute(player);
-		if (landExecution == null)
-		{
+		if (landExecution == null) {
 			player.getLocation().getGalaxy().nextTurn();
 			return new PlanetScreen();
 		}
@@ -118,16 +115,15 @@ public class LandScreen
 
 		Coord regionCoord = selection.getRegionCoord();
 		colorStrings
-			.get(regionCoord.y)
-			.getColorCharAt(regionCoord.x)
-			.setBackground(COLOR_SELECTION_BACKGROUND);
+		.get(regionCoord.y)
+		.getColorCharAt(regionCoord.x)
+		.setBackground(COLOR_SELECTION_BACKGROUND);
 		contents.addAll(colorStrings);
 
 		window.addSeparator();
 		Region region = selection.getRegion();
 		contents.add(new ColorString(region.toString()));
-		if (region.isClaimed())
-		{
+		if (region.isClaimed()) {
 			contents.add(new ColorString("Ruler: ").add(region.getFaction()));
 		}
 	}

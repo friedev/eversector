@@ -11,8 +11,7 @@ import java.util.HashMap;
  *
  * @author Aaron Friesen
  */
-public enum Symbol
-{
+public enum Symbol {
 	ELLIPSIS,
 	COPYRIGHT,
 	UNDISCOVERED,
@@ -110,7 +109,9 @@ public enum Symbol
 
 	public static void setMap(boolean usingTiles)
 	{
-		if (map == null) { map = usingTiles ? tiles : ascii; }
+		if (map == null) {
+			map = usingTiles ? tiles : ascii;
+		}
 	}
 
 	public static ColorChar empty()

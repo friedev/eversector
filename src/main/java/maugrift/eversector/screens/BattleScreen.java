@@ -54,7 +54,6 @@ public class BattleScreen
 	 */
 	private List<Ship> scanning;
 
-
 	/**
 	 * Instantiates a new BattleScreen.
 	 *
@@ -64,23 +63,22 @@ public class BattleScreen
 	public BattleScreen(Battle battle, boolean nextTurn)
 	{
 		super(
-				new AlignedMenu(
-					new AlignedWindow(
-						Main.display,
-						0,
-						0,
-						new Border(2)
-					),
+			new AlignedMenu(
+				new AlignedWindow(
+					Main.display,
+					0,
+					0,
+					new Border(2)
+				),
 				COLOR_SELECTION_FOREGROUND,
 				COLOR_SELECTION_BACKGROUND
-				)
+			)
 		);
 		this.battle = battle;
 		scanning = new LinkedList<>();
 
 		// If possible, do this after the battle is over
-		if (nextTurn)
-		{
+		if (nextTurn) {
 			galaxy.nextTurn();
 		}
 	}
@@ -91,8 +89,7 @@ public class BattleScreen
 		setUpWindow();
 		super.displayOutput();
 
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup.displayOutput();
 		}
 	}
@@ -100,12 +97,10 @@ public class BattleScreen
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup = popup.processInput(key);
 			updateBattle();
-			if (battle.getEnemies(player).isEmpty())
-			{
+			if (battle.getEnemies(player).isEmpty()) {
 				battle.endBattle();
 				return endBattle();
 			}
@@ -113,8 +108,7 @@ public class BattleScreen
 		}
 
 		Direction direction = Utility.keyToDirectionRestricted(key);
-		if (direction != null && getMenu().select(direction.deltaY))
-		{
+		if (direction != null && getMenu().select(direction.deltaY)) {
 			return this;
 		}
 
@@ -124,70 +118,58 @@ public class BattleScreen
 		boolean isOpponent = enemies.contains(selected);
 		// Possibly add a local action variable and process at end
 
-		switch (key.getKeyCode())
-		{
-			case KeyEvent.VK_L:
-				if (isOpponent)
-				{
-					String fire = new Fire(Weapon.LASER, selected).execute(player);
-					if (fire == null)
-					{
-						nextAttack = true;
-						break;
-					}
-
-					addError(fire);
-				}
-				break;
-			case KeyEvent.VK_T:
-				if (isOpponent)
-				{
-					String fire = new Fire(Weapon.TORPEDO_TUBE, selected).execute(player);
-					if (fire == null)
-					{
-						nextAttack = true;
-					}
-
-					addError(fire);
-				}
-				break;
-			case KeyEvent.VK_P:
-				if (isOpponent)
-				{
-					String fire = new Fire(Weapon.PULSE_BEAM, selected).execute(player);
-					if (fire == null)
-					{
-						nextAttack = true;
-					}
-
-					addError(fire);
-				}
-				break;
-			case KeyEvent.VK_S:
-				if (selected != player && !scanning.contains(selected))
-				{
-					String scanExecution = new Scan().execute(player);
-					if (scanExecution != null)
-					{
-						addError(scanExecution);
-						break;
-					}
-
+		switch (key.getKeyCode()) {
+		case KeyEvent.VK_L:
+			if (isOpponent) {
+				String fire = new Fire(Weapon.LASER, selected).execute(player);
+				if (fire == null) {
 					nextAttack = true;
-					scanning.add(selected);
+					break;
 				}
-				break;
-			case KeyEvent.VK_F:
-			{
-				if (battle.getSurrendered().contains(player))
-				{
+
+				addError(fire);
+			}
+			break;
+		case KeyEvent.VK_T:
+			if (isOpponent) {
+				String fire = new Fire(Weapon.TORPEDO_TUBE, selected).execute(player);
+				if (fire == null) {
+					nextAttack = true;
+				}
+
+				addError(fire);
+			}
+			break;
+		case KeyEvent.VK_P:
+			if (isOpponent) {
+				String fire = new Fire(Weapon.PULSE_BEAM, selected).execute(player);
+				if (fire == null) {
+					nextAttack = true;
+				}
+
+				addError(fire);
+			}
+			break;
+		case KeyEvent.VK_S:
+			if (selected != player && !scanning.contains(selected)) {
+				String scanExecution = new Scan().execute(player);
+				if (scanExecution != null) {
+					addError(scanExecution);
+					break;
+				}
+
+				nextAttack = true;
+				scanning.add(selected);
+			}
+			break;
+		case KeyEvent.VK_F: {
+				if (battle.getSurrendered().contains(player)) {
 					addError("You may not flee after surrendering.");
 					break;
 				}
 
 				String fleeExecution = new Flee().execute(player);
-				if (fleeExecution != null)
-				{
+				if (fleeExecution != null) {
 					addError(fleeExecution);
 					break;
 				}
@@ -195,70 +177,67 @@ public class BattleScreen
 				nextAttack = true;
 				break;
 			}
-			case KeyEvent.VK_U:
-				addMessage("You surrender.");
-				battle.getSurrendered().add(player);
-				nextAttack = true;
-				break;
-			/*
-			case KeyEvent.VK_C:
+		case KeyEvent.VK_U:
+			addMessage("You surrender.");
+			battle.getSurrendered().add(player);
+			nextAttack = true;
+			break;
+		/*
+		case KeyEvent.VK_C:
+		{
+			if (!player.isAligned())
 			{
-				if (!player.isAligned())
-				{
-					addError("You must be part of a faction to convert ships.");
-					break;
-				}
-
-				if (opponent.isInFaction(player.getFaction()))
-				{
-					addColorMessage(opponent.toColorString()
-							.add(" is already in the ").add(player.getFaction())
-							.add("."));
-					break;
-				}
-
-				if (!opponent.willAttack())
-				{
-					player.convert(opponent);
-					addColorMessage(opponent.toColorString()
-							.add(" has surrendered and joined the ")
-							.add(player.getFaction()).add("."));
-					playSoundEffect(CLAIM);
-					return endBattle();
-				}
-				else
-				{
-					nextAttack = true;
-					addColorMessage(opponent.toColorString()
-							.add(" has refused to join the ")
-							.add(player.getFaction()).add("."));
-				}
+				addError("You must be part of a faction to convert ships.");
 				break;
 			}
-			*/
-			case KeyEvent.VK_PERIOD:
-			case KeyEvent.VK_SPACE:
+
+			if (opponent.isInFaction(player.getFaction()))
+			{
+				addColorMessage(opponent.toColorString()
+						.add(" is already in the ").add(player.getFaction())
+						.add("."));
+				break;
+			}
+
+			if (!opponent.willAttack())
+			{
+				player.convert(opponent);
+				addColorMessage(opponent.toColorString()
+						.add(" has surrendered and joined the ")
+						.add(player.getFaction()).add("."));
+				playSoundEffect(CLAIM);
+				return endBattle();
+			}
+			else
+			{
 				nextAttack = true;
-				break;
-			case KeyEvent.VK_Q:
-				popup = new QuitScreen();
-				break;
+				addColorMessage(opponent.toColorString()
+						.add(" has refused to join the ")
+						.add(player.getFaction()).add("."));
+			}
+			break;
+		}
+		*/
+		case KeyEvent.VK_PERIOD:
+		case KeyEvent.VK_SPACE:
+			nextAttack = true;
+			break;
+		case KeyEvent.VK_Q:
+			popup = new QuitScreen();
+			break;
 		}
 
-		if (nextAttack)
-		{
-			if (!battle.continues())
-			{
+		if (nextAttack) {
+			if (!battle.continues()) {
 				battle.distributeLoot();
 				battle.endBattle();
 
-				if (player.isDestroyed())
-				{
+				if (player.isDestroyed()) {
 					return new EndScreen(
 							new ColorString("You have been destroyed."),
 							true,
 							false
-					);
+						);
 				}
 
 				return endBattle();
@@ -266,53 +245,40 @@ public class BattleScreen
 
 			battle.processAttacks();
 
-			if (player.isDestroyed())
-			{
+			if (player.isDestroyed()) {
 				return new EndScreen(
 						new ColorString("You have been destroyed."),
 						true,
 						false
-				);
+					);
 			}
 
 			if (!battle.getFleeing().contains(player) &&
-					new Pursue().canExecute(player) == null)
-			{
+				new Pursue().canExecute(player) == null) {
 				List<Ship> enemiesEscaping = new LinkedList<>();
-				for (Ship escaping : battle.getFleeing())
-				{
-					if (enemies.contains(escaping))
-					{
+				for (Ship escaping : battle.getFleeing()) {
+					if (enemies.contains(escaping)) {
 						enemiesEscaping.add(escaping);
-					}
-					else
-					{
+					} else {
 						battle.processEscape(escaping);
 					}
 				}
 
-				if (!enemiesEscaping.isEmpty())
-				{
+				if (!enemiesEscaping.isEmpty()) {
 					popup = new PursuitScreen(battle, enemiesEscaping);
 					return this;
 				}
-			}
-			else
-			{
+			} else {
 				battle.processEscapes();
 			}
 
-			if (player.isInBattle())
-			{
+			if (player.isInBattle()) {
 				updateBattle();
-			}
-			else
-			{
+			} else {
 				return endBattle();
 			}
 
-			if (!battle.continues())
-			{
+			if (!battle.continues()) {
 				battle.distributeLoot();
 				battle.endBattle();
 				return endBattle();
@@ -330,10 +296,8 @@ public class BattleScreen
 	private Ship getSelectedShip()
 	{
 		String selectedText = getMenu().getSelection().toString();
-		for (Ship ship : battle.getShips())
-		{
-			if (selectedText.equals(ship.toString()))
-			{
+		for (Ship ship : battle.getShips()) {
+			if (selectedText.equals(ship.toString())) {
 				return ship;
 			}
 		}
@@ -366,28 +330,22 @@ public class BattleScreen
 		keybindings.add(new Keybinding("keybindings", "h", "?"));
 		keybindings.add(new Keybinding("quit", "Q"));
 		keybindings.add(null);
-		if (player.hasModule("Laser"))
-		{
+		if (player.hasModule("Laser")) {
 			keybindings.add(new Keybinding("fire laser", "l"));
 		}
-		if (player.hasModule("Torpedo Tube"))
-		{
+		if (player.hasModule("Torpedo Tube")) {
 			keybindings.add(new Keybinding("fire torpedo", "t"));
 		}
-		if (player.hasModule("Pulse Beam"))
-		{
+		if (player.hasModule("Pulse Beam")) {
 			keybindings.add(new Keybinding("fire pulse beam", "p"));
 		}
-		if (player.hasActivationModules())
-		{
+		if (player.hasActivationModules()) {
 			keybindings.add(new Keybinding("toggle module activation", "m"));
 		}
-		if (player.hasModule(Module.SCANNER))
-		{
+		if (player.hasModule(Module.SCANNER)) {
 			keybindings.add(new Keybinding("scan selected ship", "s"));
 		}
-		if (new Flee().canExecuteBool(player))
-		{
+		if (new Flee().canExecuteBool(player)) {
 			keybindings.add(new Keybinding("flee", "f"));
 		}
 		keybindings.add(new Keybinding("surrender", "u"));
@@ -417,17 +375,14 @@ public class BattleScreen
 		getWindow().getSeparators().clear();
 
 		int index = 0;
-		if (!battle.getAllies(player).isEmpty())
-		{
+		if (!battle.getAllies(player).isEmpty()) {
 			contents.add(new ColorString("Allies", COLOR_FIELD));
 			index++;
 
-			for (Ship ally : battle.getAllies(player))
-			{
+			for (Ship ally : battle.getAllies(player)) {
 				getMenu().getRestrictions().add(index);
 				ColorString allyString = ally.toColorString();
-				if (battle.getSurrendered().contains(ally))
-				{
+				if (battle.getSurrendered().contains(ally)) {
 					allyString.setForeground(COLOR_SURRENDERED);
 				}
 				contents.add(allyString);
@@ -441,12 +396,10 @@ public class BattleScreen
 		contents.add(new ColorString("Enemies", COLOR_FIELD));
 		index++;
 
-		for (Ship enemy : battle.getEnemies(player))
-		{
+		for (Ship enemy : battle.getEnemies(player)) {
 			getMenu().getRestrictions().add(index);
 			ColorString enemyString = enemy.toColorString();
-			if (battle.getSurrendered().contains(enemy))
-			{
+			if (battle.getSurrendered().contains(enemy)) {
 				enemyString.setForeground(COLOR_SURRENDERED);
 			}
 			contents.add(enemyString);
@@ -454,25 +407,19 @@ public class BattleScreen
 		}
 
 		Ship selected = getSelectedShip();
-		if (scanning.contains(selected))
-		{
+		if (scanning.contains(selected)) {
 			getWindow().addSeparator(new Line(false, 2, 1));
 			List<ColorString> statusList = selected.getStatusList();
-			for (ColorString line : statusList)
-			{
-				if (line == null)
-				{
+			for (ColorString line : statusList) {
+				if (line == null) {
 					getWindow().addSeparator(new Line(false, 2, 1));
-				}
-				else
-				{
+				} else {
 					contents.add(line);
 				}
 			}
 		}
 
-		if (!getMenu().getRestrictions().contains(getMenu().getSelectionIndex()))
-		{
+		if (!getMenu().getRestrictions().contains(getMenu().getSelectionIndex())) {
 			getMenu().setSelectionIndex(getMenu().getRestrictions().get(0));
 		}
 	}

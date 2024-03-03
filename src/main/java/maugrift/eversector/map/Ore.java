@@ -7,7 +7,7 @@ package maugrift.eversector.map;
  */
 public class Ore implements Comparable<Ore>
 {
-	public static final String[] NAME_PREFIX = new String[]{
+	public static final String[] NAME_PREFIX = new String[] {
 		"Al",
 		"Aux",
 		"Bith",
@@ -90,7 +90,7 @@ public class Ore implements Comparable<Ore>
 		"Zor",
 	};
 
-	public static final String[] NAME_SUFFIX = new String[]{
+	public static final String[] NAME_SUFFIX = new String[] {
 		"agen",
 		"ine",
 		"inite",

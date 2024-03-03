@@ -58,8 +58,8 @@ public class StartScreen extends Screen
 	 * The character printed for each star.
 	 */
 	private static final ColorChar STAR_CHARACTER = new ColorChar(
-			Symbol.SUBDWARF.get(),
-			AsciiPanel.brightWhite
+		Symbol.SUBDWARF.get(),
+		AsciiPanel.brightWhite
 	);
 
 	/**
@@ -95,15 +95,14 @@ public class StartScreen extends Screen
 		drawStarfield();
 		ColorString[] titleArt = getTitleArt();
 		getDisplay().writeCenter(
-				getDisplay().getCenterY()
-				- titleArt.length / 2
-				- window.getContents().size() / 2
-				- 1,
-				titleArt
+			getDisplay().getCenterY()
+			- titleArt.length / 2
+			- window.getContents().size() / 2
+			- 1,
+			titleArt
 		);
 		window.display();
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup.displayOutput();
 		}
 	}
@@ -111,36 +110,30 @@ public class StartScreen extends Screen
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup = popup.processInput(key);
-			if (popup != null)
-			{
+			if (popup != null) {
 				return this;
 			}
 		}
 
-		if (key.getKeyCode() == KeyEvent.VK_O)
-		{
+		if (key.getKeyCode() == KeyEvent.VK_O) {
 			popup = new OptionsScreen();
 		}
 
 		if (!(key.getKeyCode() == KeyEvent.VK_ENTER ||
-					key.getKeyCode() == KeyEvent.VK_SPACE))
-		{
+				key.getKeyCode() == KeyEvent.VK_SPACE)) {
 			return this;
 		}
 
 		String name = Option.SHIP_NAME.getProperty();
-		if (name.isEmpty())
-		{
+		if (name.isEmpty()) {
 			popup = new NamePromptScreen("your ship", Option.SHIP_NAME);
 			return this;
 		}
 
 		name = Option.CAPTAIN_NAME.getProperty();
-		if (name.isEmpty())
-		{
+		if (name.isEmpty()) {
 			popup = new NamePromptScreen("your ship's captain", Option.CAPTAIN_NAME);
 			return this;
 		}
@@ -148,8 +141,7 @@ public class StartScreen extends Screen
 		Main.playSoundEffect(Paths.START);
 		Main.player.setName(Option.SHIP_NAME.getProperty());
 
-		for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++)
-		{
+		for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++) {
 			Main.galaxy.nextTurn();
 		}
 
@@ -179,7 +171,7 @@ public class StartScreen extends Screen
 				- COPYRIGHT_YEAR.length()
 				- DEVELOPER.length()
 				- VERSION.length()
-		);
+			);
 		String infoLine = Symbol.COPYRIGHT
 			+ " "
 			+ COPYRIGHT_YEAR
@@ -205,22 +197,20 @@ public class StartScreen extends Screen
 	 */
 	private void generateStarfield()
 	{
-		int nStars = (int) (
+		int nStars = (int)(
 				STARS_PER_TILE * (
 					getDisplay().getWidthInCharacters()
 					* getDisplay().getHeightInCharacters()
 				)
-		);
+			);
 		starCoords = new ArrayList<>(nStars);
-		for (int i = 0; i < nStars; i++)
-		{
+		for (int i = 0; i < nStars; i++) {
 			Coord starCoord;
-			do
-			{
+			do {
 				starCoord = rng.nextCoord(
 						getDisplay().getWidthInCharacters(),
 						getDisplay().getHeightInCharacters()
-				);
+					);
 			} while (starCoords.contains(starCoord));
 
 			starCoords.add(starCoord);
@@ -232,8 +222,7 @@ public class StartScreen extends Screen
 	 */
 	private void drawStarfield()
 	{
-		for (Coord starCoord : starCoords)
-		{
+		for (Coord starCoord : starCoords) {
 			getDisplay().write(starCoord.x, starCoord.y, STAR_CHARACTER);
 		}
 	}

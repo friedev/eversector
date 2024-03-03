@@ -25,23 +25,19 @@ public class Burn implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (actor.isInSector())
-		{
+		if (actor.isInSector()) {
 			return "You must escape the sector before performing an interstellar burn.";
 		}
 
-		if (direction.isDiagonal())
-		{
+		if (direction.isDiagonal()) {
 			return "Diagonal burns are not allowed.";
 		}
 
-		if (getDestination(actor) == null)
-		{
+		if (getDestination(actor) == null) {
 			return "Invalid burn destination.";
 		}
 
@@ -52,8 +48,7 @@ public class Burn implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

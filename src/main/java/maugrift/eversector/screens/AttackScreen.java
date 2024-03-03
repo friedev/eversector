@@ -26,20 +26,19 @@ public class AttackScreen
 	public AttackScreen()
 	{
 		super(
-				new PopupMenu(
-					new PopupWindow(Main.display),
-					COLOR_SELECTION_FOREGROUND,
-					COLOR_SELECTION_BACKGROUND
-				)
+			new PopupMenu(
+				new PopupWindow(Main.display),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+			)
 		);
 
 		for (Ship ship : player
-				.getLocation()
-				.getSector()
-				.getShipsAt(player.getSectorLocation().getOrbit())
+			.getLocation()
+			.getSector()
+			.getShipsAt(player.getSectorLocation().getOrbit())
 		) {
-			if (!ship.isPlayer())
-			{
+			if (!ship.isPlayer()) {
 				getMenu().getWindow().getContents().add(ship.toColorString());
 			}
 		}

@@ -14,40 +14,33 @@ public class Dock implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isInSector())
-		{
+		if (!actor.isInSector()) {
 			return "Ship must be in orbit to dock.";
 		}
 
 		Station station = actor.getSectorLocation().getStation();
 
-		if (station == null)
-		{
+		if (station == null) {
 			return "There is no station at this orbit.";
 		}
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			return "The ship cannot dock while landed.";
 		}
 
-		if (actor.isDocked())
-		{
+		if (actor.isDocked()) {
 			return "The ship is already docked with " + station + ".";
 		}
 
-		if (actor.isHostile(station.getFaction()) && actor.isAligned())
-		{
+		if (actor.isHostile(station.getFaction()) && actor.isAligned()) {
 			actor.setLocation(actor.getSectorLocation().dock());
 
 			String claimExecution = new Claim().canExecute(actor);
-			if (claimExecution != null)
-			{
+			if (claimExecution != null) {
 				actor.setLocation(actor.getStationLocation().undock());
 				return station
 					+ " is controlled by the hostile "
@@ -55,9 +48,7 @@ public class Dock implements Action
 					+ ", who deny you entry.";
 			}
 			return null;
-		}
-		else
-		{
+		} else {
 			actor.setLocation(actor.getSectorLocation().dock());
 		}
 
@@ -68,14 +59,12 @@ public class Dock implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
 		actor.setLocation(actor.getSectorLocation().dock());
-		if (actor.isHostile(actor.getStationLocation().getStation().getFaction()))
-		{
+		if (actor.isHostile(actor.getStationLocation().getStation().getFaction())) {
 			new Claim().execute(actor);
 		}
 

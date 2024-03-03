@@ -41,8 +41,8 @@ public class DistressConvertScreen
 		super(Main.display);
 		window = new PopupWindow(Main.display);
 		window.getContents().add(new ColorString("The ")
-				.add(converting)
-				.add(" offers to aid you if you join them."));
+			.add(converting)
+			.add(" offers to aid you if you join them."));
 		window.getContents().add(new ColorString("Accept the offer?"));
 		this.converting = converting;
 	}

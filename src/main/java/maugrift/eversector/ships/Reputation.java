@@ -83,8 +83,7 @@ public class Reputation implements Comparable<Reputation>
 	/**
 	 * A range of reputations and its descriptors.
 	 */
-	public enum ReputationRange
-	{
+	public enum ReputationRange {
 		HEROIC("Heroic", "Admires", AsciiPanel.brightYellow, 4.0, 4.1),
 		RESPECTED("Respected", "Respects", AsciiPanel.brightGreen, 1.5, 4.0),
 		POSITIVE("Positive", "Likes", AsciiPanel.green, 0.5, 1.5),
@@ -139,12 +138,13 @@ public class Reputation implements Comparable<Reputation>
 		 *                  upper bound of this range
 		 */
 		ReputationRange(
-				String adjective,
-				String verb,
-				Color color,
-				double min,
-				double max
-		) {
+			String adjective,
+			String verb,
+			Color color,
+			double min,
+			double max
+		)
+		{
 			this.adjective = adjective;
 			this.verb = verb;
 			this.color = color;
@@ -251,10 +251,8 @@ public class Reputation implements Comparable<Reputation>
 		public static ReputationRange getHighestRange()
 		{
 			ReputationRange highestRange = DEFAULT;
-			for (ReputationRange range : values())
-			{
-				if (range.getMax() > highestRange.getMax())
-				{
+			for (ReputationRange range : values()) {
+				if (range.getMax() > highestRange.getMax()) {
 					highestRange = range;
 				}
 			}
@@ -269,10 +267,8 @@ public class Reputation implements Comparable<Reputation>
 		public static ReputationRange getLowestRange()
 		{
 			ReputationRange lowestRange = DEFAULT;
-			for (ReputationRange range : values())
-			{
-				if (range.getMin() < lowestRange.getMin())
-				{
+			for (ReputationRange range : values()) {
+				if (range.getMin() < lowestRange.getMin()) {
 					lowestRange = range;
 				}
 			}
@@ -357,21 +353,17 @@ public class Reputation implements Comparable<Reputation>
 	{
 		double range = faction.getAverageReputation();
 
-		for (ReputationRange rangeLevel : ReputationRange.values())
-		{
-			if (rangeLevel.isInRange(reputation, range))
-			{
+		for (ReputationRange rangeLevel : ReputationRange.values()) {
+			if (rangeLevel.isInRange(reputation, range)) {
 				return rangeLevel;
 			}
 		}
 
-		if (reputation >= ReputationRange.getHighestRange().getMax(range))
-		{
+		if (reputation >= ReputationRange.getHighestRange().getMax(range)) {
 			return ReputationRange.getHighestRange();
 		}
 
-		if (reputation <= ReputationRange.getLowestRange().getMin(range))
-		{
+		if (reputation <= ReputationRange.getLowestRange().getMin(range)) {
 			return ReputationRange.getLowestRange();
 		}
 

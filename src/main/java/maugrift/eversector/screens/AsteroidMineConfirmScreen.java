@@ -37,9 +37,9 @@ public class AsteroidMineConfirmScreen
 		super(Main.display);
 		window = new PopupWindow(Main.display);
 		window.getContents().add(
-				new ColorString(
-					"Your hull is dangerously low; attempt to mine the asteroid?"
-				)
+			new ColorString(
+				"Your hull is dangerously low; attempt to mine the asteroid?"
+			)
 		);
 		getConfirmCodes().remove((Integer) KeyEvent.VK_ENTER);
 	}
@@ -60,14 +60,12 @@ public class AsteroidMineConfirmScreen
 	public Screen onConfirm()
 	{
 		String mineExecution = new Mine().execute(Main.player);
-		if (mineExecution != null)
-		{
+		if (mineExecution != null) {
 			addError(mineExecution);
 			return null;
 		}
 
-		if (Main.player.isDestroyed())
-		{
+		if (Main.player.isDestroyed()) {
 			playSoundEffect(DEATH);
 			return new EndScreen(
 					new ColorString(
@@ -75,7 +73,7 @@ public class AsteroidMineConfirmScreen
 					),
 					true,
 					false
-			);
+				);
 		}
 
 		Main.galaxy.nextTurn();

@@ -62,10 +62,9 @@ public abstract class Item
 	{
 		name = properties.getProperty("name");
 		description = properties.getProperty("description");
-		if (description == null)
-		{
+		if (description == null) {
 			throw new NullPointerException(
-					"Empty description field found while generating items."
+				"Empty description field found while generating items."
 			);
 		}
 
@@ -148,20 +147,20 @@ public abstract class Item
 		List<ColorString> definition = new LinkedList<>();
 		definition.add(new ColorString(name, Main.COLOR_FIELD));
 		definition.add(
-				new ColorString("Value: ")
-				.add(
-					new ColorString(
-						Integer.toString(value) + Symbol.CREDITS,
-						Main.COLOR_FIELD
-					)
+			new ColorString("Value: ")
+			.add(
+				new ColorString(
+					Integer.toString(value) + Symbol.CREDITS,
+					Main.COLOR_FIELD
 				)
+			)
 		);
 		if (description != null) {
 			definition.add(
-					new ColorString(
-						description,
-						Main.COLOR_FIELD
-					)
+				new ColorString(
+					description,
+					Main.COLOR_FIELD
+				)
 			);
 		}
 		return definition;

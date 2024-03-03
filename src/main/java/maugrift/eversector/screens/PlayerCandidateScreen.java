@@ -33,22 +33,19 @@ public class PlayerCandidateScreen extends ConfirmationScreen
 
 		List<ColorString> contents = window.getContents();
 		contents.add(pendingElection.getDescription());
-		if (pendingElection.isReelected(player))
-		{
+		if (pendingElection.isReelected(player)) {
 			contents.add(
-					new ColorString(
-						"You have performed well as leader and have been "
-						+ "nominated again."
-					)
+				new ColorString(
+					"You have performed well as leader and have been "
+					+ "nominated again."
+				)
 			);
 			contents.add(new ColorString("Run for reelection?"));
-		}
-		else
-		{
+		} else {
 			contents.add(
-					new ColorString(
-						"You have been recognized for your deeds and nominated."
-					)
+				new ColorString(
+					"You have been recognized for your deeds and nominated."
+				)
 			);
 			contents.add(new ColorString("Run for office?"));
 		}

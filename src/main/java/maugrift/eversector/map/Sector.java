@@ -117,15 +117,13 @@ public class Sector
 				0.7,
 				1.0 / location.getCoord().distance(
 					location.getGalaxy().getCenter()
-			)
-		);
+				)
+			);
 
-		if (Utility.getChance(rng, chance))
-		{
+		if (Utility.getChance(rng, chance)) {
 			star = Star.generate(nebula);
 
-			while (location.getGalaxy().getStarNames().contains(star.getName()))
-			{
+			while (location.getGalaxy().getStarNames().contains(star.getName())) {
 				star.setName(Star.generateName());
 			}
 
@@ -134,20 +132,15 @@ public class Sector
 
 			generatePlanets();
 
-			if (rng.nextBoolean())
-			{
+			if (rng.nextBoolean()) {
 				generateStations();
 				generateShips(rng.nextInt(MIN_SHIPS * 2) + MIN_SHIPS);
-			}
-			else
-			{
+			} else {
 				generateShips(rng.nextInt(MIN_SHIPS + 1));
 			}
 
 			updateFaction();
-		}
-		else
-		{
+		} else {
 			planets = new Planet[0];
 			stations = new Station[0];
 		}
@@ -246,15 +239,12 @@ public class Sector
 	 */
 	public boolean hasPlanets()
 	{
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			return false;
 		}
 
-		for (Planet planet : planets)
-		{
-			if (planet != null)
-			{
+		for (Planet planet : planets) {
+			if (planet != null) {
 				return true;
 			}
 		}
@@ -269,15 +259,12 @@ public class Sector
 	 */
 	public boolean hasStations()
 	{
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			return false;
 		}
 
-		for (Station station : stations)
-		{
-			if (station != null)
-			{
+		for (Station station : stations) {
+			if (station != null) {
 				return true;
 			}
 		}
@@ -291,8 +278,7 @@ public class Sector
 	 */
 	public final void updateFaction()
 	{
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			return;
 		}
 
@@ -300,18 +286,14 @@ public class Sector
 		int[] control = new int[galaxy.getFactions().length];
 
 		// Increase the respective counter for each claimed body
-		for (Planet planet : planets)
-		{
-			if (planet != null && planet.isClaimed())
-			{
+		for (Planet planet : planets) {
+			if (planet != null && planet.isClaimed()) {
 				control[galaxy.getIndex(planet.getFaction())]++;
 			}
 		}
 
-		for (Station station : stations)
-		{
-			if (station != null && station.isClaimed())
-			{
+		for (Station station : stations) {
+			if (station != null && station.isClaimed()) {
 				control[galaxy.getIndex(station.getFaction())]++;
 			}
 		}
@@ -319,15 +301,11 @@ public class Sector
 		int index = -1;
 		int maxBodies = 0; // The most owned bodies in a faction
 
-		for (int i = 0; i < control.length; i++)
-		{
-			if (control[i] > maxBodies)
-			{
+		for (int i = 0; i < control.length; i++) {
+			if (control[i] > maxBodies) {
 				maxBodies = control[i];
 				index = i;
-			}
-			else if (control[i] == maxBodies)
-			{
+			} else if (control[i] == maxBodies) {
 				// Set the index to an invalid value so that it is known that
 				// there is a tie, but so that it can also be easily overwritten
 				index = -1;
@@ -335,8 +313,7 @@ public class Sector
 		}
 
 		// There was a tie in control, so no faction rules this sector
-		if (index == -1)
-		{
+		if (index == -1) {
 			faction = null;
 			return;
 		}
@@ -354,10 +331,8 @@ public class Sector
 	{
 		int planetsClaimed = 0;
 
-		for (Planet planet : planets)
-		{
-			if (planet != null && planet.getFaction() == faction)
-			{
+		for (Planet planet : planets) {
+			if (planet != null && planet.getFaction() == faction) {
 				planetsClaimed++;
 			}
 		}
@@ -375,10 +350,8 @@ public class Sector
 	{
 		int stationsClaimed = 0;
 
-		for (Station station : stations)
-		{
-			if (station != null && station.getFaction() == faction)
-			{
+		for (Station station : stations) {
+			if (station != null && station.getFaction() == faction) {
 				stationsClaimed++;
 			}
 		}
@@ -399,12 +372,10 @@ public class Sector
 	{
 		int stationsClaimed = 0;
 
-		for (Station station : stations)
-		{
+		for (Station station : stations) {
 			if (station != null &&
-					station.getFaction() == faction &&
-					station.isBattle() == battle)
-			{
+				station.getFaction() == faction &&
+				station.isBattle() == battle) {
 				stationsClaimed++;
 			}
 		}
@@ -419,17 +390,13 @@ public class Sector
 	 */
 	public ColorChar getTypeSymbol()
 	{
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			return Symbol.empty();
 		}
 
-		if (hasStations())
-		{
-			for (Station station : stations)
-			{
-				if (station != null && station.isBattle())
-				{
+		if (hasStations()) {
+			for (Station station : stations) {
+				if (station != null && station.isBattle()) {
 					return new ColorChar(Symbol.BATTLE_STATION.get());
 				}
 			}
@@ -437,8 +404,7 @@ public class Sector
 			return new ColorChar(Symbol.TRADE_STATION.get());
 		}
 
-		if (hasPlanets())
-		{
+		if (hasPlanets()) {
 			return new ColorChar(star.getSymbol());
 		}
 
@@ -456,40 +422,27 @@ public class Sector
 		boolean playerHere = location.getGalaxy().getPlayer().getLocation().getSector() == this;
 
 		char symbol;
-		if (playerHere)
-		{
+		if (playerHere) {
 			symbol = Symbol.player().getChar();
-		}
-		else
-		{
+		} else {
 			symbol = getTypeSymbol().getChar();
 		}
 
 		Color foreground;
-		if (playerHere)
-		{
+		if (playerHere) {
 			foreground = Symbol.player().getForeground();
-		}
-		else if (isClaimed())
-		{
+		} else if (isClaimed()) {
 			foreground = faction.getColor();
-		}
-		else if (isEmpty())
-		{
+		} else if (isEmpty()) {
 			foreground = Symbol.empty().getForeground();
-		}
-		else
-		{
+		} else {
 			foreground = null;
 		}
 
 		Color background;
-		if (hasNebula())
-		{
+		if (hasNebula()) {
 			background = nebula.getColor();
-		}
-		else
-		{
+		} else {
 			background = null;
 		}
 
@@ -506,16 +459,11 @@ public class Sector
 	{
 		ColorChar symbol;
 
-		if (location.getGalaxy().getPlayer().getLocation().getSector() == this)
-		{
+		if (location.getGalaxy().getPlayer().getLocation().getSector() == this) {
 			symbol = Symbol.player();
-		}
-		else if (star == null)
-		{
+		} else if (star == null) {
 			symbol = Symbol.empty();
-		}
-		else
-		{
+		} else {
 			symbol = star.getSymbol();
 		}
 
@@ -534,18 +482,14 @@ public class Sector
 	{
 		int nShips = ships.size();
 
-		for (Planet planet : planets)
-		{
-			if (planet != null)
-			{
+		for (Planet planet : planets) {
+			if (planet != null) {
 				nShips += planet.getNShips();
 			}
 		}
 
-		for (Station station : stations)
-		{
-			if (station != null)
-			{
+		for (Station station : stations) {
+			if (station != null) {
 				nShips += station.getShips().size();
 			}
 		}
@@ -565,26 +509,20 @@ public class Sector
 	{
 		int nShips = 0;
 
-		for (Ship ship : ships)
-		{
-			if (ship.getFaction() == faction)
-			{
+		for (Ship ship : ships) {
+			if (ship.getFaction() == faction) {
 				nShips++;
 			}
 		}
 
-		for (Planet planet : planets)
-		{
-			if (planet != null)
-			{
+		for (Planet planet : planets) {
+			if (planet != null) {
 				nShips += planet.getNShips(faction);
 			}
 		}
 
-		for (Station station : stations)
-		{
-			if (station != null)
-			{
+		for (Station station : stations) {
+			if (station != null) {
 				nShips += station.getNShips(faction);
 			}
 		}
@@ -600,10 +538,8 @@ public class Sector
 	public List<Planet> getPlanets()
 	{
 		List<Planet> planetList = new ArrayList<>();
-		for (Planet planet : planets)
-		{
-			if (planet != null)
-			{
+		for (Planet planet : planets) {
+			if (planet != null) {
 				planetList.add(planet);
 			}
 		}
@@ -618,10 +554,8 @@ public class Sector
 	public List<Station> getStations()
 	{
 		List<Station> stationList = new ArrayList<>();
-		for (Station station : stations)
-		{
-			if (station != null)
-			{
+		for (Station station : stations) {
+			if (station != null) {
 				stationList.add(station);
 			}
 		}
@@ -684,10 +618,8 @@ public class Sector
 	 */
 	public Station getStation(String name)
 	{
-		for (Station station : stations)
-		{
-			if (station != null && station.getName().equals(name))
-			{
+		for (Station station : stations) {
+			if (station != null && station.getName().equals(name)) {
 				return station;
 			}
 		}
@@ -699,20 +631,17 @@ public class Sector
 	 */
 	private void generatePlanets()
 	{
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			planets = new Planet[0];
 			return;
 		}
 
 		// The (... - 1) + 2 is to ensure at least one planet
 		for (int i = 0;
-				i < rng.nextInt(Math.min(MAX_PLANETS, star.getMass()) - 1) + 2;
-				i++)
-		{
+			i < rng.nextInt(Math.min(MAX_PLANETS, star.getMass()) - 1) + 2;
+			i++) {
 			int j;
-			do
-			{
+			do {
 				j = rng.nextInt(star.getMass());
 			} while (planets[j] != null);
 
@@ -726,8 +655,7 @@ public class Sector
 	 */
 	private void generateStations()
 	{
-		if (isEmpty())
-		{
+		if (isEmpty()) {
 			stations = new Station[0];
 			return;
 		}
@@ -735,20 +663,18 @@ public class Sector
 		// The (...) + 1  is to ensure at least 1 station
 		// Power is divided by 2 to avoid overpopulating small sectors
 		for (int i = 0;
-				i < rng.nextInt(Math.min(MAX_STATIONS, star.getMass() / 2)) + 1;
-				i++)
-		{
+			i < rng.nextInt(Math.min(MAX_STATIONS, star.getMass() / 2)) + 1;
+			i++) {
 			int j;
-			do
-			{
+			do {
 				j = rng.nextInt(star.getMass());
 			} while (stations[j] != null);
 
 			// There is no need to do a check for if this is a station system,
 			// because stations would not otherwise be generated
 			stations[j] = new Station(
-					new SectorLocation(getLocation(), j + 1),
-					location.getGalaxy().getRandomFaction()
+				new SectorLocation(getLocation(), j + 1),
+				location.getGalaxy().getRandomFaction()
 			);
 		}
 	}
@@ -762,14 +688,13 @@ public class Sector
 	{
 		ships = new LinkedList<>();
 
-		for (int i = 0; i < nShips; i++)
-		{
+		for (int i = 0; i < nShips; i++) {
 			Ship ship = new Ship(
-					new SectorLocation(
-						location,
-						rng.nextInt(star.getMass()) + 1
-					),
-					location.getGalaxy().getRandomFaction()
+				new SectorLocation(
+					location,
+					rng.nextInt(star.getMass()) + 1
+				),
+				location.getGalaxy().getRandomFaction()
 			);
 			ships.add(ship);
 			location.getGalaxy().getShips().add(ship);
@@ -784,12 +709,10 @@ public class Sector
 	 */
 	public Ship getShip(String name)
 	{
-		for (Ship ship : ships)
-		{
+		for (Ship ship : ships) {
 			if (ship != null &&
-					(name.equalsIgnoreCase(ship.getName()) ||
-					 name.equalsIgnoreCase(ship.toString())))
-			{
+				(name.equalsIgnoreCase(ship.getName()) ||
+					name.equalsIgnoreCase(ship.toString()))) {
 				return ship;
 			}
 		}
@@ -817,10 +740,8 @@ public class Sector
 	{
 		List<Ship> shipsAtOrbit = new LinkedList<>();
 
-		for (Ship ship : ships)
-		{
-			if (ship != null && ship.getSectorLocation().getOrbit() == orbit)
-			{
+		for (Ship ship : ships) {
+			if (ship != null && ship.getSectorLocation().getOrbit() == orbit) {
 				shipsAtOrbit.add(ship);
 			}
 		}
@@ -837,26 +758,21 @@ public class Sector
 	{
 		int nStations = 0;
 
-		for (Station station : stations)
-		{
-			if (station != null)
-			{
+		for (Station station : stations) {
+			if (station != null) {
 				nStations++;
 			}
 		}
 
-		if (nStations == 0)
-		{
+		if (nStations == 0) {
 			return -1;
 		}
 
 		int[] stationOrbits = new int[nStations];
 
 		int nextSlot = 0;
-		for (int i = 0; i < stations.length; i++)
-		{
-			if (stations[i] != null)
-			{
+		for (int i = 0; i < stations.length; i++) {
+			if (stations[i] != null) {
 				stationOrbits[nextSlot] = i + 1;
 				nextSlot++;
 			}
@@ -879,50 +795,35 @@ public class Sector
 
 		boolean playerIsHere;
 		Location playerLocation = location.getGalaxy().getPlayer().getLocation();
-		if (playerLocation instanceof SectorLocation)
-		{
+		if (playerLocation instanceof SectorLocation) {
 			SectorLocation sectorLocation = (SectorLocation) playerLocation;
 			playerIsHere = sectorLocation.getOrbit() == orbit;
-		}
-		else
-		{
+		} else {
 			playerIsHere = false;
 		}
 
-		if (stations[orbitIndex] != null)
-		{
+		if (stations[orbitIndex] != null) {
 			symbols.add(stations[orbitIndex].getSymbol());
-		}
-		else
-		{
+		} else {
 			symbols.add(Symbol.empty());
 		}
 
-		if (playerIsHere)
-		{
+		if (playerIsHere) {
 			symbols.add(Symbol.player());
-		}
-		else if (nShips > 0)
-		{
+		} else if (nShips > 0) {
 			// Calculate the highest level of ship at this orbit
 			int highestLevel = 0;
 			boolean isCommonFaction = true;
 			Faction commonFaction = null;
-			for (Ship ship : ships)
-			{
-				if (ship.getSectorLocation().getOrbit() == orbit && !ship.isPlayer())
-				{
-					if (ship.getHighestLevel() > highestLevel)
-					{
+			for (Ship ship : ships) {
+				if (ship.getSectorLocation().getOrbit() == orbit && !ship.isPlayer()) {
+					if (ship.getHighestLevel() > highestLevel) {
 						highestLevel = ship.getHighestLevel();
 					}
 
-					if (commonFaction == null)
-					{
+					if (commonFaction == null) {
 						commonFaction = ship.getFaction();
-					}
-					else
-					{
+					} else {
 						isCommonFaction = ship.getFaction() == commonFaction;
 					}
 				}
@@ -930,45 +831,36 @@ public class Sector
 
 			Symbol symbol;
 			// Print the corresponding symbol to the highest level
-			switch (highestLevel / Levels.LEVEL_AMOUNT)
-			{
-				case 0:
-				case 1:
-					symbol = Symbol.WEAK_SHIP;
-					break;
-				case 2:
-					symbol = Symbol.MEDIUM_SHIP;
-					break;
-				default:
-					symbol = Symbol.STRONG_SHIP;
-					break;
+			switch (highestLevel / Levels.LEVEL_AMOUNT) {
+			case 0:
+			case 1:
+				symbol = Symbol.WEAK_SHIP;
+				break;
+			case 2:
+				symbol = Symbol.MEDIUM_SHIP;
+				break;
+			default:
+				symbol = Symbol.STRONG_SHIP;
+				break;
 			}
 
-			if (isCommonFaction && commonFaction != null)
-			{
+			if (isCommonFaction && commonFaction != null) {
 				symbols.add(
-						new ColorChar(
-							symbol.get(),
-							commonFaction.getColor()
-						)
+					new ColorChar(
+						symbol.get(),
+						commonFaction.getColor()
+					)
 				);
-			}
-			else
-			{
+			} else {
 				symbols.add(new ColorChar(symbol.get()));
 			}
-		}
-		else
-		{
+		} else {
 			symbols.add(Symbol.empty());
 		}
 
-		if (planets[orbitIndex] != null)
-		{
+		if (planets[orbitIndex] != null) {
 			symbols.add(planets[orbitIndex].getSymbol());
-		}
-		else
-		{
+		} else {
 			symbols.add(Symbol.empty());
 		}
 
@@ -984,47 +876,40 @@ public class Sector
 	public List<ColorString> getOrbitContents(int orbit)
 	{
 		List<ColorString> contents = new LinkedList<>();
-		if (planets[orbit - 1] != null)
-		{
+		if (planets[orbit - 1] != null) {
 			contents.add(planets[orbit - 1].toColorString());
 		}
 
-		if (stations[orbit - 1] != null)
-		{
+		if (stations[orbit - 1] != null) {
 			contents.add(stations[orbit - 1].toColorString());
 		}
 
 		int notShown = 0;
-		for (Ship ship : ships)
-		{
+		for (Ship ship : ships) {
 			if (ship != null &&
-					ship.getSectorLocation().getOrbit() == orbit &&
-					!ship.isPlayer())
-			{
-				if (contents.size() >= Star.StarMass.getLargest().getMass())
-				{
+				ship.getSectorLocation().getOrbit() == orbit &&
+				!ship.isPlayer()) {
+				if (contents.size() >= Star.StarMass.getLargest().getMass()) {
 					notShown++;
 					break;
 				}
 
 				ColorString shipString = ship.toColorString();
-				if (ship.isLeader())
-				{
+				if (ship.isLeader()) {
 					shipString.add(new ColorString(" (Leader)", COLOR_FIELD));
 				}
 				contents.add(shipString);
 			}
 		}
 
-		if (notShown > 0)
-		{
+		if (notShown > 0) {
 			// (notShown + 1) accounts for the replaced line
 			contents.set(
-					11,
-					new ColorString(
-						"(" + (notShown + 1) + " more)",
-						AsciiPanel.brightBlack
-					)
+				11,
+				new ColorString(
+					"(" + (notShown + 1) + " more)",
+					AsciiPanel.brightBlack
+				)
 			);
 		}
 
@@ -1051,15 +936,12 @@ public class Sector
 	 */
 	public boolean hasClaimableTerritory()
 	{
-		if (hasStations())
-		{
+		if (hasStations()) {
 			return true;
 		}
 
-		for (Planet planet : planets)
-		{
-			if (planet != null && planet.getType().canLandOn())
-			{
+		for (Planet planet : planets) {
+			if (planet != null && planet.getType().canLandOn()) {
 				return true;
 			}
 		}
@@ -1076,8 +958,8 @@ public class Sector
 	 */
 	public static String generateName()
 	{
-		char c = (char) (rng.nextInt(25) + 65);
-		char d = (char) (rng.nextInt(25) + 65);
+		char c = (char)(rng.nextInt(25) + 65);
+		char d = (char)(rng.nextInt(25) + 65);
 		int i = rng.nextInt(10);
 		int j = rng.nextInt(10);
 		return c + "" + d + "-" + i + "" + j;
@@ -1091,14 +973,11 @@ public class Sector
 	{
 		boolean shipReset;
 
-		do
-		{
+		do {
 			shipReset = false;
 
-			for (Ship ship : ships)
-			{
-				if (ship.isLanded() || ship.isDocked())
-				{
+			for (Ship ship : ships) {
+				if (ship.isLanded() || ship.isDocked()) {
 					ships.remove(ship);
 					shipReset = true;
 					break;

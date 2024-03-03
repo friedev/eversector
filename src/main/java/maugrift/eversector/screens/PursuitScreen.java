@@ -52,8 +52,8 @@ public class PursuitScreen
 		this.pursuing = pursuing;
 		window = new PopupWindow(Main.display);
 		window.getContents().add(new ColorString("Pursue ")
-				.add(pursuing.get(0))
-				.add("?"));
+			.add(pursuing.get(0))
+			.add("?"));
 	}
 
 	@Override

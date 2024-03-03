@@ -36,9 +36,9 @@ public class ElectionResultsScreen
 	{
 		super(Main.display);
 		window = new PopupWindow(
-				Main.display,
-				new Border(1),
-				new Line(true, 1, 1)
+			Main.display,
+			new Border(1),
+			new Line(true, 1, 1)
 		);
 		setUpWindow();
 	}
@@ -71,22 +71,21 @@ public class ElectionResultsScreen
 		contents.add(new ColorString(messageSubject + " " + messageAction));
 		window.addSeparator();
 
-		for (int i = 0; i < pendingElection.getCandidates().size(); i++)
-		{
+		for (int i = 0; i < pendingElection.getCandidates().size(); i++) {
 			Ship candidate = pendingElection.getCandidates().get(i);
 			String shipName = candidate.isPlayer() ? "You" : candidate.toString();
 			ReputationRange reputation = candidate.getReputation(pendingElection.getFaction()).getRange();
 			int votes = pendingElection.getVotes().get(i);
 			contents.add(new ColorString(shipName)
-					.add(" ")
-					.add(new ColorString("("
-							+ reputation.getAdjective()
-							+ ")",
-							reputation.getColor())
-					)
-					.add(" - ")
-					.add(new ColorString(Integer.toString(votes), COLOR_FIELD))
-					.add(votes == 1 ? " Vote" : " Votes"));
+				.add(" ")
+				.add(new ColorString("("
+						+ reputation.getAdjective()
+						+ ")",
+						reputation.getColor())
+				)
+				.add(" - ")
+				.add(new ColorString(Integer.toString(votes), COLOR_FIELD))
+				.add(votes == 1 ? " Vote" : " Votes"));
 		}
 
 		pendingElection.lowerWinnerReputation(winner);

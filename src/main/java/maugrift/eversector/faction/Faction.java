@@ -20,7 +20,7 @@ import static maugrift.eversector.Main.rng;
  */
 public class Faction implements ColorStringObject
 {
-	public static final String[] NAME_PREFIX = new String[]{
+	public static final String[] NAME_PREFIX = new String[] {
 		"Ari",
 		"Axo",
 		"Axi",
@@ -66,7 +66,7 @@ public class Faction implements ColorStringObject
 		"Zeta",
 	};
 
-	public static final String[] NAME_SUFFIX = new String[]{
+	public static final String[] NAME_SUFFIX = new String[] {
 		"con",
 		"chon",
 		"chron",
@@ -107,7 +107,7 @@ public class Faction implements ColorStringObject
 	/**
 	 * All the possible "types" of factions that can be generated.
 	 */
-	public static final String[] NAME_TYPES = new String[]{
+	public static final String[] NAME_TYPES = new String[] {
 		"Alliance",
 		"Assembly",
 		"Association",
@@ -292,8 +292,7 @@ public class Faction implements ColorStringObject
 	public void holdElection(boolean emergency)
 	{
 		Election election = new Election(this, emergency);
-		if (galaxy.getTurn() >= 0 && galaxy.getPlayer().getFaction() == this)
-		{
+		if (galaxy.getTurn() >= 0 && galaxy.getPlayer().getFaction() == this) {
 			pendingElection = election;
 			return;
 		}
@@ -308,8 +307,7 @@ public class Faction implements ColorStringObject
 	 */
 	public boolean changeEconomy(int credits)
 	{
-		if (economy + credits >= 0)
-		{
+		if (economy + credits >= 0) {
 			economy += credits;
 			return true;
 		}
@@ -327,11 +325,9 @@ public class Faction implements ColorStringObject
 	{
 		int rank = 1;
 
-		for (Faction otherFaction : galaxy.getFactions())
-		{
+		for (Faction otherFaction : galaxy.getFactions()) {
 			if (otherFaction != this &&
-					getSectorsControlled() < otherFaction.getSectorsControlled())
-			{
+				getSectorsControlled() < otherFaction.getSectorsControlled()) {
 				rank++;
 			}
 		}
@@ -349,12 +345,9 @@ public class Faction implements ColorStringObject
 	{
 		int sectorsClaimed = 0;
 
-		for (Sector[] row : galaxy.getSectors())
-		{
-			for (Sector sector : row)
-			{
-				if (sector.getFaction() == this)
-				{
+		for (Sector[] row : galaxy.getSectors()) {
+			for (Sector sector : row) {
+				if (sector.getFaction() == this) {
 					sectorsClaimed++;
 				}
 			}
@@ -372,10 +365,8 @@ public class Faction implements ColorStringObject
 	{
 		int planetsClaimed = 0;
 
-		for (Sector[] row : galaxy.getSectors())
-		{
-			for (Sector sector : row)
-			{
+		for (Sector[] row : galaxy.getSectors()) {
+			for (Sector sector : row) {
 				planetsClaimed += sector.getPlanetsControlledBy(this);
 			}
 		}
@@ -392,10 +383,8 @@ public class Faction implements ColorStringObject
 	{
 		int stationsClaimed = 0;
 
-		for (Sector[] row : galaxy.getSectors())
-		{
-			for (Sector sector : row)
-			{
+		for (Sector[] row : galaxy.getSectors()) {
+			for (Sector sector : row) {
 				stationsClaimed += sector.getStationsControlledBy(this);
 			}
 		}
@@ -414,10 +403,8 @@ public class Faction implements ColorStringObject
 		int trade = 0;
 		int battle = 0;
 
-		for (Sector[] row : galaxy.getSectors())
-		{
-			for (Sector sector : row)
-			{
+		for (Sector[] row : galaxy.getSectors()) {
+			for (Sector sector : row) {
 				trade += sector.getStationTypesControlledBy(this, false);
 				battle += sector.getStationTypesControlledBy(this, true);
 			}
@@ -435,10 +422,8 @@ public class Faction implements ColorStringObject
 	{
 		int nShips = 0;
 
-		for (Ship ship : galaxy.getShips())
-		{
-			if (ship.getFaction() == this)
-			{
+		for (Ship ship : galaxy.getShips()) {
+			if (ship.getFaction() == this) {
 				nShips++;
 			}
 		}
@@ -458,18 +443,13 @@ public class Faction implements ColorStringObject
 		int mining = 0;
 		int battle = 0;
 
-		for (Ship ship : galaxy.getShips())
-		{
-			if (ship.getFaction() == this)
-			{
+		for (Ship ship : galaxy.getShips()) {
+			if (ship.getFaction() == this) {
 				total++;
 
-				if ("mining".equals(ship.getHigherLevel()))
-				{
+				if ("mining".equals(ship.getHigherLevel())) {
 					mining++;
-				}
-				else if ("battle".equals(ship.getHigherLevel()))
-				{
+				} else if ("battle".equals(ship.getHigherLevel())) {
 					battle++;
 				}
 			}
@@ -486,8 +466,7 @@ public class Faction implements ColorStringObject
 	public int getMaxReputation()
 	{
 		int maxReputation = Integer.MIN_VALUE;
-		for (Ship ship : galaxy.getShips())
-		{
+		for (Ship ship : galaxy.getShips()) {
 			maxReputation = Math.max(maxReputation, ship.getReputation(this).get());
 		}
 		return maxReputation;
@@ -501,8 +480,7 @@ public class Faction implements ColorStringObject
 	public int getMinReputation()
 	{
 		int minReputation = Integer.MAX_VALUE;
-		for (Ship ship : galaxy.getShips())
-		{
+		for (Ship ship : galaxy.getShips()) {
 			minReputation = Math.min(minReputation, ship.getReputation(this).get());
 		}
 		return minReputation;
@@ -526,11 +504,9 @@ public class Faction implements ColorStringObject
 	{
 		int totalReputation = 0;
 		int shipsWithReputation = 0;
-		for (Ship ship : galaxy.getShips())
-		{
+		for (Ship ship : galaxy.getShips()) {
 			int reputation = ship.getReputation(this).get();
-			if (reputation != 0)
-			{
+			if (reputation != 0) {
 				totalReputation += reputation;
 				shipsWithReputation++;
 			}
@@ -561,10 +537,8 @@ public class Faction implements ColorStringObject
 	 */
 	public Relationship getRelationshipObject(Faction faction)
 	{
-		for (Relationship relationship : relationships)
-		{
-			if (relationship.getOtherFaction(this) == faction)
-			{
+		for (Relationship relationship : relationships) {
+			if (relationship.getOtherFaction(this) == faction) {
 				return relationship;
 			}
 		}
@@ -593,9 +567,10 @@ public class Faction implements ColorStringObject
 	 *         match
 	 */
 	public boolean isRelationship(
-			Relationship.RelationshipType relationship,
-			Faction faction
-	) {
+		Relationship.RelationshipType relationship,
+		Faction faction
+	)
+	{
 		return getRelationship(faction) == relationship;
 	}
 
@@ -606,10 +581,8 @@ public class Faction implements ColorStringObject
 	 */
 	public void addRelationship(Relationship relationship)
 	{
-		for (int i = 0; i < relationships.length; i++)
-		{
-			if (relationships[i] == null)
-			{
+		for (int i = 0; i < relationships.length; i++) {
+			if (relationships[i] == null) {
 				relationships[i] = relationship;
 				return;
 				// Note that this return is necessary to stop the loop from
@@ -625,13 +598,12 @@ public class Faction implements ColorStringObject
 	 * @param newRelationship the new relationship to change to
 	 */
 	public void setRelationship(
-			Faction faction,
-			Relationship.RelationshipType newRelationship
-	) {
-		for (Relationship relationship : relationships)
-		{
-			if (relationship.hasFaction(faction))
-			{
+		Faction faction,
+		Relationship.RelationshipType newRelationship
+	)
+	{
+		for (Relationship relationship : relationships) {
+			if (relationship.hasFaction(faction)) {
 				relationship.setRelationship(newRelationship);
 				return;
 			}
@@ -650,28 +622,25 @@ public class Faction implements ColorStringObject
 	 * @return true if the relationship was changed to the requested one
 	 */
 	public boolean requestRelationship(
-			Faction faction,
-			Relationship.RelationshipType newRelationship
-	) {
+		Faction faction,
+		Relationship.RelationshipType newRelationship
+	)
+	{
 		Relationship relationship = getRelationshipObject(faction);
 
-		if (relationship == null)
-		{
+		if (relationship == null) {
 			return false;
 		}
 
 		// Declaring war does not require a request
-		if (Relationship.RelationshipType.WAR.equals(newRelationship))
-		{
+		if (Relationship.RelationshipType.WAR.equals(newRelationship)) {
 			relationship.setRelationship(newRelationship);
 			return true;
 		}
 
 		// The other faction will ally if it will benefit them
-		if (Relationship.RelationshipType.ALLIANCE.equals(newRelationship))
-		{
-			if (faction.getSectorsControlled() <= getSectorsControlled())
-			{
+		if (Relationship.RelationshipType.ALLIANCE.equals(newRelationship)) {
+			if (faction.getSectorsControlled() <= getSectorsControlled()) {
 				relationship.setRelationship(newRelationship);
 				return true;
 			}
@@ -681,17 +650,14 @@ public class Faction implements ColorStringObject
 
 		// Alliances can always be broken, but peace treaties will only be made
 		// if it benefits the other faction
-		if (Relationship.RelationshipType.PEACE.equals(newRelationship))
-		{
-			if (relationship.getType() == Relationship.RelationshipType.ALLIANCE)
-			{
+		if (Relationship.RelationshipType.PEACE.equals(newRelationship)) {
+			if (relationship.getType() == Relationship.RelationshipType.ALLIANCE) {
 				relationship.setRelationship(newRelationship);
 				return true;
 			}
 
 			if (relationship.getType() == Relationship.RelationshipType.WAR &&
-					faction.getSectorsControlled() <= getSectorsControlled())
-			{
+				faction.getSectorsControlled() <= getSectorsControlled()) {
 				relationship.setRelationship(newRelationship);
 				return true;
 			}
@@ -715,22 +681,18 @@ public class Faction implements ColorStringObject
 	{
 		Relationship relationship = getRelationshipObject(faction);
 
-		if (relationship == null)
-		{
+		if (relationship == null) {
 			return Relationship.RelationshipType.PEACE;
 		}
 
-		if (getSectorsControlled() > faction.getSectorsControlled())
-		{
+		if (getSectorsControlled() > faction.getSectorsControlled()) {
 			return relationship.getType() == Relationship.RelationshipType.PEACE ||
-					relationship.getType() == Relationship.RelationshipType.WAR
+				relationship.getType() == Relationship.RelationshipType.WAR
 				? Relationship.RelationshipType.WAR
 				: Relationship.RelationshipType.PEACE;
-		}
-		else
-		{
+		} else {
 			return relationship.getType() == Relationship.RelationshipType.PEACE ||
-					relationship.getType() == Relationship.RelationshipType.ALLIANCE
+				relationship.getType() == Relationship.RelationshipType.ALLIANCE
 				? Relationship.RelationshipType.ALLIANCE
 				: Relationship.RelationshipType.PEACE;
 		}
@@ -754,8 +716,7 @@ public class Faction implements ColorStringObject
 	public void addNews(ColorString news)
 	{
 		if (galaxy.getPlayer() != null &&
-				galaxy.getPlayer().getFaction() == this)
-		{
+			galaxy.getPlayer().getFaction() == this) {
 			Main.addColorMessage(news);
 		}
 	}

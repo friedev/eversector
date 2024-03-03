@@ -54,14 +54,15 @@ public class Module extends Item
 	 *                       module's action
 	 */
 	public Module(
-			String name,
-			String description,
-			int value,
-			boolean battle,
-			String effect,
-			String actionResource,
-			int actionCost
-	) {
+		String name,
+		String description,
+		int value,
+		boolean battle,
+		String effect,
+		String actionResource,
+		int actionCost
+	)
+	{
 		super(name, description, value);
 		this.battle = battle;
 		this.effect = effect;
@@ -82,13 +83,14 @@ public class Module extends Item
 	 *                       module's action
 	 */
 	public Module(
-			String name,
-			String description,
-			int value,
-			boolean battle,
-			String actionResource,
-			int actionCost
-	) {
+		String name,
+		String description,
+		int value,
+		boolean battle,
+		String actionResource,
+		int actionCost
+	)
+	{
 		this(name, description, value, battle, null, actionResource, actionCost);
 	}
 
@@ -114,13 +116,13 @@ public class Module extends Item
 	public Module(Module copying)
 	{
 		this(
-				copying.getName(),
-				copying.getDescription(),
-				copying.getValue(),
-				copying.battle,
-				copying.effect,
-				copying.actionResource,
-				copying.actionCost
+			copying.getName(),
+			copying.getDescription(),
+			copying.getValue(),
+			copying.battle,
+			copying.effect,
+			copying.actionResource,
+			copying.actionCost
 		);
 	}
 

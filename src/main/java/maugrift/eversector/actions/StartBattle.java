@@ -25,18 +25,15 @@ public class StartBattle implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (actor == opponent)
-		{
+		if (actor == opponent) {
 			return "You cannot attack yourself.";
 		}
 
-		if (!actor.getLocation().equals(opponent.getLocation()))
-		{
+		if (!actor.getLocation().equals(opponent.getLocation())) {
 			return "You must be at the same location as the chosen ship.";
 		}
 
@@ -47,8 +44,7 @@ public class StartBattle implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
@@ -57,27 +53,23 @@ public class StartBattle implements Action
 		opponent.setLocation(actor.getLocation());
 
 		List<Ship> others = actor.getSectorLocation().getShips();
-		for (Ship other : others)
-		{
-			if (other.getAI() != null && !other.isInBattle())
-			{
+		for (Ship other : others) {
+			if (other.getAI() != null && !other.isInBattle()) {
 				other.getAI().joinBattle(battle);
 			}
 		}
 
-		if (opponent.isPlayer())
-		{
+		if (opponent.isPlayer()) {
 			Main.pendingBattle = battle;
 			opponent.addPlayerColorMessage(
-					new ColorString("You are under attack from ")
-					.add(actor)
-					.add("!")
+				new ColorString("You are under attack from ")
+				.add(actor)
+				.add("!")
 			);
 			return null;
 		}
 
-		if (!actor.isPlayer())
-		{
+		if (!actor.isPlayer()) {
 			battle.processBattle();
 		}
 

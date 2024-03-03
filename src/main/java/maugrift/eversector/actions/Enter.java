@@ -17,20 +17,17 @@ public class Enter implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
 		Sector sector = actor.getLocation().getSector();
 
-		if (actor.isInSector())
-		{
+		if (actor.isInSector()) {
 			return "You are already in " + sector + ".";
 		}
 
-		if (sector.isEmpty())
-		{
+		if (sector.isEmpty()) {
 			return "There is nothing in " + sector + ".";
 		}
 
@@ -38,15 +35,14 @@ public class Enter implements Action
 				RESOURCE,
 				COST,
 				"enter into orbit around " + sector
-		);
+			);
 	}
 
 	@Override
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

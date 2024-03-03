@@ -13,13 +13,11 @@ public class Undock implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isDocked())
-		{
+		if (!actor.isDocked()) {
 			return "You are not docked.";
 		}
 
@@ -30,8 +28,7 @@ public class Undock implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

@@ -63,10 +63,10 @@ public class Expander extends Item
 	public Expander(Expander copying)
 	{
 		this(
-				copying.getName(),
-				copying.getDescription(),
-				copying.getValue(),
-				copying.expansion
+			copying.getName(),
+			copying.getDescription(),
+			copying.getValue(),
+			copying.expansion
 		);
 	}
 
@@ -84,7 +84,7 @@ public class Expander extends Item
 					properties.getProperty("expansion"),
 					EXPANSION
 				)
-		);
+			);
 	}
 
 	/**
@@ -103,9 +103,9 @@ public class Expander extends Item
 	{
 		List<ColorString> definition = super.define();
 		definition.add(
-				2,
-				new ColorString("Expansion: ")
-				.add(new ColorString("+" + expansion + " Units", COLOR_FIELD))
+			2,
+			new ColorString("Expansion: ")
+			.add(new ColorString("+" + expansion + " Units", COLOR_FIELD))
 		);
 		return definition;
 	}

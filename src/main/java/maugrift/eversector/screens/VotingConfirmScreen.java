@@ -36,13 +36,13 @@ public class VotingConfirmScreen
 		leaderSelection = selection;
 
 		window.getContents().add(
-				new ColorString("Submit your vote for ")
-				.add(new ColorString(
-						leaderSelection,
-						Main.player.getFaction().getColor()
-					)
-					.add(new ColorString("?"))
+			new ColorString("Submit your vote for ")
+			.add(new ColorString(
+					leaderSelection,
+					Main.player.getFaction().getColor()
 				)
+				.add(new ColorString("?"))
+			)
 		);
 	}
 
@@ -62,8 +62,8 @@ public class VotingConfirmScreen
 	public Screen onConfirm()
 	{
 		Main.pendingElection.addVote(leaderSelection.substring(
-					0,
-					leaderSelection.indexOf(" ("))
+				0,
+				leaderSelection.indexOf(" ("))
 		);
 
 		return new ElectionResultsScreen();

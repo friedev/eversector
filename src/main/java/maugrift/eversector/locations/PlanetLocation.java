@@ -29,17 +29,15 @@ public class PlanetLocation extends SectorLocation
 	{
 		super(location);
 
-		if (!location.isPlanet())
-		{
+		if (!location.isPlanet()) {
 			throw new IllegalArgumentException(
-					"No planet found at the given location"
+				"No planet found at the given location"
 			);
 		}
 
-		if (!getPlanet().contains(regionCoord))
-		{
+		if (!getPlanet().contains(regionCoord)) {
 			throw new IndexOutOfBoundsException(
-					"Given coord not found on planet"
+				"Given coord not found on planet"
 			);
 		}
 
@@ -95,38 +93,34 @@ public class PlanetLocation extends SectorLocation
 	 */
 	public PlanetLocation moveRegion(Direction direction)
 	{
-		if (direction.isDiagonal())
-		{
+		if (direction.isDiagonal()) {
 			return null;
 		}
 
 		Coord destination = regionCoord.translate(direction);
-		if (getPlanet().contains(destination))
-		{
+		if (getPlanet().contains(destination)) {
 			return new PlanetLocation(this, destination);
 		}
 
-		if (direction.hasUp() || direction.hasDown())
-		{
+		if (direction.hasUp() || direction.hasDown()) {
 			return new PlanetLocation(
 					this,
 					regionCoord.setX(getPlanet().getOppositeSide(regionCoord.x))
-			);
+				);
 		}
 
 		return direction.hasRight()
 			? new PlanetLocation(this, regionCoord.setX(0))
 			: new PlanetLocation(
-					this,
-					regionCoord.setX(getPlanet().getNColumns() - 1)
+				this,
+				regionCoord.setX(getPlanet().getNColumns() - 1)
 			);
 	}
 
 	@Override
 	public boolean equals(Location o)
 	{
-		if (!(o instanceof PlanetLocation))
-		{
+		if (!(o instanceof PlanetLocation)) {
 			return false;
 		}
 

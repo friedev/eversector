@@ -44,14 +44,15 @@ public class Weapon extends Module
 	 *                       player fires the weapon
 	 */
 	public Weapon(
-			String name,
-			String description,
-			int value,
-			int damage,
-			String actionResource,
-			int actionCost,
-			String soundEffect
-	) {
+		String name,
+		String description,
+		int value,
+		int damage,
+		String actionResource,
+		int actionCost,
+		String soundEffect
+	)
+	{
 		super(name, description, value, true, actionResource, actionCost);
 		this.damage = Math.abs(damage);
 		this.soundEffect = soundEffect;
@@ -66,13 +67,13 @@ public class Weapon extends Module
 	public Weapon(Weapon copying)
 	{
 		this(
-				copying.getName(),
-				copying.getDescription(),
-				copying.getValue(),
-				copying.damage,
-				copying.getActionResource(),
-				copying.getActionCost(),
-				copying.soundEffect
+			copying.getName(),
+			copying.getDescription(),
+			copying.getValue(),
+			copying.damage,
+			copying.getActionResource(),
+			copying.getActionCost(),
+			copying.soundEffect
 		);
 	}
 
@@ -116,9 +117,9 @@ public class Weapon extends Module
 	{
 		List<ColorString> definition = super.define();
 		definition.add(2, new ColorString("Damage: ")
-				.add(new ColorString(Integer.toString(damage), COLOR_FIELD)));
+			.add(new ColorString(Integer.toString(damage), COLOR_FIELD)));
 		definition.add(3, new ColorString("Type: ")
-				.add(new ColorString(getActionResource(), COLOR_FIELD)));
+			.add(new ColorString(getActionResource(), COLOR_FIELD)));
 		return definition;
 	}
 }

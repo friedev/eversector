@@ -22,38 +22,31 @@ public class Orbit implements Action
 
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isInSector())
-		{
+		if (!actor.isInSector()) {
 			return "You must be in a sector to orbit it.";
 		}
 
-		if (actor.getLocation().getSector().isEmpty())
-		{
+		if (actor.getLocation().getSector().isEmpty()) {
 			return "There is nothing to orbit in this sector.";
 		}
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			return "You must be orbital before attempting a maneuver.";
 		}
 
-		if (actor.isDocked())
-		{
+		if (actor.isDocked()) {
 			return "You must undock before attempting an orbital maneuver.";
 		}
 
 		int orbit = actor.getSectorLocation().getOrbit();
 		int target = increase ? orbit + 1 : orbit - 1;
 
-		if (!actor.getLocation().getSector().isValidOrbit(target))
-		{
-			if (increase)
-			{
+		if (!actor.getLocation().getSector().isValidOrbit(target)) {
+			if (increase) {
 				return new Escape().canExecute(actor);
 			}
 
@@ -64,8 +57,7 @@ public class Orbit implements Action
 
 		Resource resource = actor.getResource(RESOURCE);
 
-		if (resource == null)
-		{
+		if (resource == null) {
 			return "Resource not found.";
 		}
 
@@ -73,23 +65,21 @@ public class Orbit implements Action
 				resource,
 				COST,
 				"perform an orbital maneuver"
-		);
+			);
 	}
 
 	@Override
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
 		int orbit = actor.getSectorLocation().getOrbit();
 		int target = increase ? orbit + 1 : orbit - 1;
 
-		if (!actor.getLocation().getSector().isValidOrbit(target))
-		{
+		if (!actor.getLocation().getSector().isValidOrbit(target)) {
 			// All other cases are ruled out by canExecute()
 			return new Escape().execute(actor);
 		}

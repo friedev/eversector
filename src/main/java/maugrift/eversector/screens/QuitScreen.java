@@ -33,10 +33,10 @@ public class QuitScreen
 		super(Main.display);
 		List<ColorString> contents = new LinkedList<>();
 		contents.add(
-				new ColorString(
-					"Save before quitting?",
-					AsciiPanel.brightRed
-				)
+			new ColorString(
+				"Save before quitting?",
+				AsciiPanel.brightRed
+			)
 		);
 		window = new PopupWindow(Main.display, contents);
 	}

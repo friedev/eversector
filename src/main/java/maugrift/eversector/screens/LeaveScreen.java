@@ -36,8 +36,8 @@ public class LeaveScreen extends ConfirmationScreen
 		super(Main.display);
 		window = new PopupWindow(Main.display);
 		window.getContents().add(new ColorString("Really leave the ")
-				.add(player.getFaction())
-				.add("?"));
+			.add(player.getFaction())
+			.add("?"));
 		this.redirect = redirect;
 	}
 

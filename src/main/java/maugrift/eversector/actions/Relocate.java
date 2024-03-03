@@ -25,23 +25,19 @@ public class Relocate implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isLanded())
-		{
+		if (!actor.isLanded()) {
 			return "You must already be landed on a planet to relocate.";
 		}
 
-		if (direction.isDiagonal())
-		{
+		if (direction.isDiagonal()) {
 			return "Diagonal relocation is not allowed.";
 		}
 
-		if (getDestination(actor) == null)
-		{
+		if (getDestination(actor) == null) {
 			return "Invalid region specified.";
 		}
 
@@ -52,8 +48,7 @@ public class Relocate implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 

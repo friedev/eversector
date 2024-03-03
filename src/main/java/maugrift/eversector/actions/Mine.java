@@ -23,33 +23,27 @@ public class Mine implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isInSector())
-		{
+		if (!actor.isInSector()) {
 			return "You must be in a sector to mine.";
 		}
 
 		Planet planet = actor.getSectorLocation().getPlanet();
 
-		if (planet == null)
-		{
+		if (planet == null) {
 			return "There is no planet here to mine from.";
 		}
 
-		if (!actor.isLanded() && !planet.getType().canMineFromOrbit())
-		{
+		if (!actor.isLanded() && !planet.getType().canMineFromOrbit()) {
 			return "You must be landed here to mine for ore.";
 		}
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			Region region = actor.getPlanetLocation().getRegion();
-			if (!region.hasOre())
-			{
+			if (!region.hasOre()) {
 				return "There is no ore to mine in the "
 					+ region.toString().toLowerCase()
 					+ ".";
@@ -58,8 +52,7 @@ public class Mine implements Action
 
 		Resource ore = actor.getResource(Resource.ORE);
 
-		if (ore.isFull())
-		{
+		if (ore.isFull()) {
 			return "Ore storage full; cannot acquire more.";
 		}
 
@@ -67,19 +60,16 @@ public class Mine implements Action
 				RESOURCE,
 				COST,
 				"initiate mining operation"
-		);
+			);
 	}
 
 	@Override
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
-
-
 
 		Ore ore = actor.isLanded()
 			? actor.getPlanetLocation().getRegion().getOre()
@@ -88,45 +78,39 @@ public class Mine implements Action
 		int discard = actor.getResource(Resource.ORE).changeAmountWithDiscard(ore.getDensity());
 		actor.getResource(RESOURCE).changeAmount(-COST);
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			Region region = actor.getPlanetLocation().getRegion();
 			region.extractOre(1);
-			if (!region.hasOre())
-			{
+			if (!region.hasOre()) {
 				actor.addPlayerMessage(
-						"You have mined the "
-						+ region
-						+ " dry."
+					"You have mined the "
+					+ region
+					+ " dry."
 				);
 				actor.changeGlobalReputation(Reputation.MINE_DRY);
 			}
-		}
-		else if (rng.nextBoolean())
-		{
+		} else if (rng.nextBoolean()) {
 			// Chance of taking damage if mining from an asteroid belt
 			actor.damage(Planet.ASTEROID_DAMAGE, false);
 			actor.addPlayerMessage(
-					"Collided with an asteroid, dealing "
-					+ Planet.ASTEROID_DAMAGE
-					+ " damage."
+				"Collided with an asteroid, dealing "
+				+ Planet.ASTEROID_DAMAGE
+				+ " damage."
 			);
 		}
 
-		if (actor.isPlayer())
-		{
+		if (actor.isPlayer()) {
 			addMessage(
-					"Extracted 1 unit of "
-					+ ore.getName().toLowerCase()
-					+ "."
+				"Extracted 1 unit of "
+				+ ore.getName().toLowerCase()
+				+ "."
 			);
 
-			if (discard > 0)
-			{
+			if (discard > 0) {
 				addMessage(
-						"Maximum ore capacity exceeded; "
-						+ discard
-						+ " units discarded.");
+					"Maximum ore capacity exceeded; "
+					+ discard
+					+ " units discarded.");
 			}
 		}
 

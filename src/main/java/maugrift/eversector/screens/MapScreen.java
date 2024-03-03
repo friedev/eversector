@@ -70,8 +70,7 @@ public class MapScreen
 		setUpWindow();
 		window.display();
 
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup.displayOutput();
 		}
 	}
@@ -79,8 +78,7 @@ public class MapScreen
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (popup != null)
-		{
+		if (popup != null) {
 			popup = popup.processInput(key);
 			return this;
 		}
@@ -89,108 +87,81 @@ public class MapScreen
 		Screen nextScreen = this;
 		Direction direction = Utility.keyToDirectionRestricted(key);
 
-		if (direction != null)
-		{
-			if (isLooking())
-			{
+		if (direction != null) {
+			if (isLooking()) {
 				Coord targetLocation = cursor.translate(direction);
-				if (player.getFOV().contains(targetLocation))
-				{
+				if (player.getFOV().contains(targetLocation)) {
 					cursor = targetLocation;
 				}
 				return this;
-			}
-			else
-			{
+			} else {
 				String burnExecution = new Burn(direction).execute(player);
-				if (burnExecution == null)
-				{
+				if (burnExecution == null) {
 					nextTurn = true;
-				}
-				else if (player.getLocation().move(direction) == null &&
-						player.validateResources(Burn.RESOURCE, -Burn.COST, "burn") == null)
-				{
+				} else if (player.getLocation().move(direction) == null &&
+					player.validateResources(Burn.RESOURCE, -Burn.COST, "burn") == null) {
 					popup = new IntergalacticScreen();
 					return this;
-				}
-				else
-				{
+				} else {
 					addError(burnExecution);
 				}
 			}
-		}
-		else if (isLooking())
-		{
-			switch (key.getKeyCode())
-			{
-				case KeyEvent.VK_L:
-					if (warping)
-					{
-						break;
+		} else if (isLooking()) {
+			switch (key.getKeyCode()) {
+			case KeyEvent.VK_L:
+				if (warping) {
+					break;
+				}
+			case KeyEvent.VK_ESCAPE:
+				warping = false;
+			case KeyEvent.VK_ENTER:
+				if (warping) {
+					String warpExecution = new Warp(cursor).execute(player);
+					if (warpExecution == null) {
+						nextTurn = true;
+					} else {
+						addError(warpExecution);
 					}
-				case KeyEvent.VK_ESCAPE:
 					warping = false;
-				case KeyEvent.VK_ENTER:
-					if (warping)
-					{
-						String warpExecution = new Warp(cursor).execute(player);
-						if (warpExecution == null)
-						{
-							nextTurn = true;
-						}
-						else
-						{
-							addError(warpExecution);
-						}
-						warping = false;
-						cursor = null;
-						break;
-					}
-					else
-					{
-						cursor = null;
-						return this;
-					}
+					cursor = null;
+					break;
+				} else {
+					cursor = null;
+					return this;
+				}
 			}
-		}
-		else
-		{
-			if (isLooking() && key.getKeyCode() == KeyEvent.VK_L)
-			{
+		} else {
+			if (isLooking() && key.getKeyCode() == KeyEvent.VK_L) {
 				cursor = null;
 				return this;
 			}
 
-			switch (key.getKeyCode())
-			{
-				case KeyEvent.VK_ENTER:
-					String enterExecution = new Enter().execute(player);
-					if (enterExecution == null)
-					{
-						nextTurn = true;
-						nextScreen = new SectorScreen();
-						break;
-					}
+			switch (key.getKeyCode()) {
+			case KeyEvent.VK_ENTER:
+				String enterExecution = new Enter().execute(player);
+				if (enterExecution == null) {
+					nextTurn = true;
+					nextScreen = new SectorScreen();
+					break;
+				}
 
-					addError(enterExecution);
+				addError(enterExecution);
+				break;
+			case KeyEvent.VK_W:
+				if (!player.hasModule(Warp.MODULE)) {
 					break;
-				case KeyEvent.VK_W:
-					if (!player.hasModule(Warp.MODULE))
-					{
-						break;
-					}
-					warping = true;
-				case KeyEvent.VK_L:
-					cursor = player.getLocation().getCoord();
-					break;
-				case KeyEvent.VK_V:
-					Main.showStars = !Main.showStars;
-					break;
+				}
+				warping = true;
+			case KeyEvent.VK_L:
+				cursor = player.getLocation().getCoord();
+				break;
+			case KeyEvent.VK_V:
+				Main.showStars = !Main.showStars;
+				break;
 			}
 		}
 
-		if (nextTurn)
-		{
+		if (nextTurn) {
 			galaxy.nextTurn();
 		}
 		return nextScreen;
@@ -201,19 +172,18 @@ public class MapScreen
 	{
 		List<Keybinding> keybindings = new ArrayList<>();
 		keybindings.add(
-				new Keybinding(
-					"burn to neighboring sectors",
-					ExtChars.ARROW1_U,
-					ExtChars.ARROW1_D,
-					ExtChars.ARROW1_L,
-					ExtChars.ARROW1_R
-				)
+			new Keybinding(
+				"burn to neighboring sectors",
+				ExtChars.ARROW1_U,
+				ExtChars.ARROW1_D,
+				ExtChars.ARROW1_L,
+				ExtChars.ARROW1_R
+			)
 		);
 		keybindings.add(new Keybinding("enter a sector", "enter"));
 		keybindings.add(new Keybinding("look", "l"));
 		keybindings.add(new Keybinding("toggle star view", "v"));
-		if (player.hasModule(Warp.MODULE))
-		{
+		if (player.hasModule(Warp.MODULE)) {
 			keybindings.add(new Keybinding("warp to any sector", "w"));
 		}
 		return keybindings;
@@ -255,22 +225,19 @@ public class MapScreen
 		Coord location = isLooking() ? cursor : player.getLocation().getCoord();
 		contents.add(new ColorString(galaxy.sectorAt(location).toString()));
 
-		if (!galaxy.sectorAt(location).isEmpty())
-		{
+		if (!galaxy.sectorAt(location).isEmpty()) {
 			contents.add(new ColorString("Star: ")
-					.add(galaxy.sectorAt(location).getStar()));
+				.add(galaxy.sectorAt(location).getStar()));
 		}
 
-		if (galaxy.sectorAt(location).hasNebula())
-		{
+		if (galaxy.sectorAt(location).hasNebula()) {
 			contents.add(new ColorString("Nebula: ")
-					.add(galaxy.sectorAt(location).getNebula()));
+				.add(galaxy.sectorAt(location).getNebula()));
 		}
 
-		if (galaxy.sectorAt(location).isClaimed())
-		{
+		if (galaxy.sectorAt(location).isClaimed()) {
 			contents.add(new ColorString("Faction: ")
-					.add(galaxy.sectorAt(location).getFaction()));
+				.add(galaxy.sectorAt(location).getFaction()));
 		}
 	}
 }

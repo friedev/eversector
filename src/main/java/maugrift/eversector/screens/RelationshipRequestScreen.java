@@ -43,11 +43,11 @@ public class RelationshipRequestScreen
 	public RelationshipRequestScreen()
 	{
 		super(
-				new PopupMenu(
-					new PopupWindow(Main.display),
-					COLOR_SELECTION_FOREGROUND,
-					COLOR_SELECTION_BACKGROUND
-				)
+			new PopupMenu(
+				new PopupWindow(Main.display),
+				COLOR_SELECTION_FOREGROUND,
+				COLOR_SELECTION_BACKGROUND
+			)
 		);
 		factions = new ArrayList<>();
 		changes = new ArrayList<>();
@@ -65,8 +65,8 @@ public class RelationshipRequestScreen
 	{
 		int index = getMenu().getSelectionIndex();
 		player.getFaction().requestRelationship(
-				factions.get(index),
-				changes.get(index)
+			factions.get(index),
+			changes.get(index)
 		);
 		return null;
 	}
@@ -78,8 +78,7 @@ public class RelationshipRequestScreen
 	{
 		List<ColorString> contents = getWindow().getContents();
 
-		for (Relationship relationship : player.getFaction().getRelationships())
-		{
+		for (Relationship relationship : player.getFaction().getRelationships()) {
 			Faction otherFaction = relationship.getOtherFaction(player.getFaction());
 			RelationshipType type = relationship.getType();
 			ColorString base = otherFaction.toColorString().add(": ").add(type).add(
@@ -87,8 +86,7 @@ public class RelationshipRequestScreen
 
 			factions.add(otherFaction);
 
-			if (type == RelationshipType.PEACE)
-			{
+			if (type == RelationshipType.PEACE) {
 				factions.add(otherFaction);
 				changes.add(RelationshipType.WAR);
 				changes.add(RelationshipType.ALLIANCE);

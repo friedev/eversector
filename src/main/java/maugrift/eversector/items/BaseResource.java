@@ -31,12 +31,13 @@ public class BaseResource extends Item
 	 * @param expander    the expander for the BaseResource
 	 */
 	public BaseResource(
-			String name,
-			String description,
-			int value,
-			boolean canSell,
-			Expander expander
-	) {
+		String name,
+		String description,
+		int value,
+		boolean canSell,
+		Expander expander
+	)
+	{
 		super(name, description, value);
 		this.canSell = canSell;
 		this.expander = expander;
@@ -51,11 +52,11 @@ public class BaseResource extends Item
 	public BaseResource(BaseResource copying)
 	{
 		this(
-				copying.getName(),
-				copying.getDescription(),
-				copying.getValue(),
-				copying.canSell,
-				new Expander(copying.expander)
+			copying.getName(),
+			copying.getDescription(),
+			copying.getValue(),
+			copying.canSell,
+			new Expander(copying.expander)
 		);
 	}
 

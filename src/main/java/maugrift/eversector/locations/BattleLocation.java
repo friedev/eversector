@@ -48,8 +48,7 @@ public class BattleLocation extends SectorLocation
 	@Override
 	public boolean equals(Location o)
 	{
-		if (!(o instanceof BattleLocation))
-		{
+		if (!(o instanceof BattleLocation)) {
 			return false;
 		}
 

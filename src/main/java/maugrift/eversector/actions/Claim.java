@@ -20,25 +20,21 @@ public class Claim implements Action
 	@Override
 	public String canExecute(Ship actor)
 	{
-		if (actor == null)
-		{
+		if (actor == null) {
 			return "Ship not found.";
 		}
 
-		if (!actor.isAligned())
-		{
+		if (!actor.isAligned()) {
 			return "You must be part of a faction to claim territory.";
 		}
 
 		Faction faction = actor.getFaction();
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			return canExecute(actor, actor.getPlanetLocation().getRegion());
 		}
 
-		if (actor.isDocked())
-		{
+		if (actor.isDocked()) {
 			return canExecute(actor, actor.getSectorLocation().getStation());
 		}
 
@@ -50,8 +46,7 @@ public class Claim implements Action
 		Faction faction = actor.getFaction();
 		Planet planet = region.getLocation().getPlanet();
 
-		if (actor.getCredits() < planet.getClaimCost())
-		{
+		if (actor.getCredits() < planet.getClaimCost()) {
 			return "You cannot afford the "
 				+ planet.getClaimCost()
 				+ " credit cost to claim territory on "
@@ -59,15 +54,13 @@ public class Claim implements Action
 				+ ".";
 		}
 
-		if (!region.getType().isLand())
-		{
+		if (!region.getType().isLand()) {
 			return "The "
 				+ region.toString().toLowerCase()
 				+ " cannot be claimed.";
 		}
 
-		if (region.getFaction() == faction)
-		{
+		if (region.getFaction() == faction) {
 			return "The "
 				+ region.toString().toLowerCase()
 				+ " is already claimed by the "
@@ -75,8 +68,7 @@ public class Claim implements Action
 				+ ".";
 		}
 
-		if (region.getNShips(region.getFaction()) > 0)
-		{
+		if (region.getNShips(region.getFaction()) > 0) {
 			return "There are currently ships of the "
 				+ region.getFaction()
 				+ " guarding the "
@@ -91,8 +83,7 @@ public class Claim implements Action
 	{
 		Faction faction = actor.getFaction();
 
-		if (actor.getCredits() < Station.CLAIM_COST)
-		{
+		if (actor.getCredits() < Station.CLAIM_COST) {
 			return "You cannot afford the "
 				+ Station.CLAIM_COST
 				+ " credit cost to claim "
@@ -101,13 +92,11 @@ public class Claim implements Action
 		}
 
 		// If the body is already claimed by solely your faction, return false
-		if (station.getFaction() == faction)
-		{
+		if (station.getFaction() == faction) {
 			return station + " is already claimed by the " + faction + ".";
 		}
 
-		if (station.getNShips(station.getFaction()) > 0)
-		{
+		if (station.getNShips(station.getFaction()) > 0) {
 			return "There are currently ships of the "
 				+ station.getFaction()
 				+ " guarding "
@@ -122,32 +111,27 @@ public class Claim implements Action
 	public String execute(Ship actor)
 	{
 		String canExecute = canExecute(actor);
-		if (canExecute != null)
-		{
+		if (canExecute != null) {
 			return canExecute;
 		}
 
 		Faction faction = actor.getFaction();
 
-		if (actor.isLanded())
-		{
+		if (actor.isLanded()) {
 			Region region = actor.getPlanetLocation().getRegion();
 			Planet planet = actor.getSectorLocation().getPlanet();
 			int nRegions = planet.getNRegions();
 			actor.changeCredits(region.getFaction(), -planet.getClaimCost());
 
-			if (ALLIANCE == faction.getRelationship(region.getFaction()))
-			{
+			if (ALLIANCE == faction.getRelationship(region.getFaction())) {
 				actor.changeReputation(faction, Reputation.CLAIM_ALLY / nRegions);
-			}
-			else
-			{
+			} else {
 				actor.changeReputation(faction, Reputation.CLAIM / nRegions);
 			}
 
 			actor.changeReputation(
-					region.getFaction(),
-					-Reputation.CLAIM / nRegions
+				region.getFaction(),
+				-Reputation.CLAIM / nRegions
 			);
 
 			// Claim must be done here so the faction relations can be checked
@@ -159,12 +143,9 @@ public class Claim implements Action
 		Station station = actor.getSectorLocation().getStation();
 		actor.changeCredits(station.getFaction(), -Station.CLAIM_COST);
 
-		if (ALLIANCE.equals(faction.getRelationship(station.getFaction())))
-		{
+		if (ALLIANCE.equals(faction.getRelationship(station.getFaction()))) {
 			actor.changeReputation(faction, Reputation.CLAIM_ALLY);
-		}
-		else
-		{
+		} else {
 			actor.changeReputation(faction, Reputation.CLAIM);
 		}
 

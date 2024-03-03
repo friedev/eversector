@@ -18,10 +18,9 @@ public class StationLocation extends SectorLocation
 	{
 		super(location);
 
-		if (!location.isStation())
-		{
+		if (!location.isStation()) {
 			throw new IllegalArgumentException(
-					"No station found at the given location"
+				"No station found at the given location"
 			);
 		}
 	}
@@ -39,8 +38,7 @@ public class StationLocation extends SectorLocation
 	@Override
 	public boolean equals(Location o)
 	{
-		if (!(o instanceof StationLocation))
-		{
+		if (!(o instanceof StationLocation)) {
 			return false;
 		}
 

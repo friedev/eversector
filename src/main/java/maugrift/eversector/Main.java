@@ -122,8 +122,7 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) ->
-		{
+		Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
 			try
 			{
 				e.printStackTrace();
@@ -134,70 +133,62 @@ public class Main
 				String[] stackTraceStrings = new String[stackTrace.length + 1];
 
 				stackTraceStrings[0] = "The game has crashed! Please send the "
-					+ "contents of this file to the developer to help fix the"
-					+ "the problem.";
-				for (int i = 0; i < stackTrace.length; i++)
-				{
+				+ "contents of this file to the developer to help fix the"
+				+ "the problem.";
+				for (int i = 0; i < stackTrace.length; i++) {
 					stackTraceStrings[i + 1] = stackTrace[i].toString();
 				}
 
 				FileManager.writeToFile(Paths.CRASH, stackTraceStrings);
-			}
-			catch (Exception ex)
+			} catch (Exception ex)
 			{
-			}
-			finally
+			} finally
 			{
 				System.exit(1);
 			}
 		});
 
-		if (FileManager.getPath().contains("lib"))
-		{
+		if (FileManager.getPath().contains("lib")) {
 			FileManager.movePathUp();
 		}
 
 		fonts = new File(FileManager.getPath() + Paths.FONTS)
-			.listFiles(File::isDirectory);
+		.listFiles(File::isDirectory);
 
-		if (FileManager.checkExistence(Paths.OPTIONS))
-		{
+		if (FileManager.checkExistence(Paths.OPTIONS)) {
 			Option.options = FileManager.load(Paths.OPTIONS);
-		}
-		else
-		{
+		} else {
 			Option.options = new Properties();
 		}
 
 		List<ColorString> startMessages = startGame();
 
 		int fontIndex = Option.FONT.toInt();
-		if (fontIndex < 0 || fontIndex >= fonts.length)
-		{
+		if (fontIndex < 0 || fontIndex >= fonts.length) {
 			fontIndex = 0;
 			Option.FONT.setProperty(0);
 		}
 
 		Properties fontProperties = getFontProperties(fontIndex);
 		AsciiFont font = new AsciiFont(
-				Paths.FONTS
-					+ fonts[fontIndex].getName()
-					+ "/"
-					+ (
-						Option.TILES.toBoolean()
-						? Paths.FONT_TILES
-						: Paths.FONT_ASCII
-					),
-				Utility.parseInt(fontProperties.getProperty(Option.FONT_WIDTH)),
-				Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT))
+			Paths.FONTS
+			+ fonts[fontIndex].getName()
+			+ "/"
+			+ (
+				Option.TILES.toBoolean()
+				? Paths.FONT_TILES
+				: Paths.FONT_ASCII
+			),
+			Utility.parseInt(fontProperties.getProperty(Option.FONT_WIDTH)),
+			Utility.parseInt(fontProperties.getProperty(Option.FONT_HEIGHT))
 		);
 
 		display = new AsciiPanelDisplay(
-				new AsciiPanel(
-					Option.WIDTH.toInt(),
-					Option.HEIGHT.toInt(),
-					font
-				)
+			new AsciiPanel(
+				Option.WIDTH.toInt(),
+				Option.HEIGHT.toInt(),
+				font
+			)
 		);
 		((AsciiPanelDisplay) display).init(new StartScreen(startMessages));
 	}
@@ -226,14 +217,11 @@ public class Main
 		galaxy = new Galaxy();
 
 		boolean savedGame = FileManager.checkExistence(Paths.SAVE);
-		if (savedGame)
-		{
+		if (savedGame) {
 			Properties save = FileManager.load(Paths.SAVE);
 			player = new Ship(galaxy, save);
 			galaxy.setPlayer(player);
-		}
-		else
-		{
+		} else {
 			Option.CAPTAIN_NAME.setProperty("");
 			Option.SHIP_NAME.setProperty("");
 			galaxy.createNewPlayer();
@@ -244,23 +232,19 @@ public class Main
 
 		startMessages.add(new ColorString("Welcome to EverSector!"));
 		startMessages.add(
-				new ColorString(
-					"Consult the README to learn how to play."
-				)
+			new ColorString(
+				"Consult the README to learn how to play."
+			)
 		);
 
 		String startAction;
-		if (savedGame)
-		{
+		if (savedGame) {
 			startAction = "continue your saved game";
-		}
-		else
-		{
-			if (Option.KEEP_SEED.toBoolean())
-			{
+		} else {
+			if (Option.KEEP_SEED.toBoolean()) {
 				startMessages.add(
-						new ColorString("Your chosen seed is: ")
-						.add(new ColorString(Long.toString(seed), COLOR_FIELD))
+					new ColorString("Your chosen seed is: ")
+					.add(new ColorString(Long.toString(seed), COLOR_FIELD))
 				);
 			}
 
@@ -268,11 +252,11 @@ public class Main
 		}
 
 		startMessages.add(
-				new ColorString("Press ")
-				.add(new ColorString("enter", COLOR_FIELD))
-				.add(" or ")
-				.add(new ColorString("space", COLOR_FIELD))
-				.add(new ColorString(" to " + startAction + "."))
+			new ColorString("Press ")
+			.add(new ColorString("enter", COLOR_FIELD))
+			.add(" or ")
+			.add(new ColorString("space", COLOR_FIELD))
+			.add(new ColorString(" to " + startAction + "."))
 		);
 
 		return startMessages;
@@ -284,8 +268,7 @@ public class Main
 	public static void changeGalaxy()
 	{
 		galaxy = new Galaxy();
-		for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++)
-		{
+		for (int i = 0; i < Galaxy.SIMULATED_TURNS; i++) {
 			galaxy.nextTurn();
 		}
 
@@ -302,14 +285,12 @@ public class Main
 	 */
 	public static void addColorMessage(ColorString message)
 	{
-		if (message == null)
-		{
+		if (message == null) {
 			return;
 		}
 
 		Screen currentScreen = display.getScreen();
-		if (currentScreen instanceof GameScreen)
-		{
+		if (currentScreen instanceof GameScreen) {
 			((GameScreen) currentScreen).addMessage(message);
 		}
 	}
@@ -321,8 +302,7 @@ public class Main
 	 */
 	public static void addError(String error)
 	{
-		if (error == null)
-		{
+		if (error == null) {
 			return;
 		}
 
@@ -336,8 +316,7 @@ public class Main
 	 */
 	public static void addMessage(String message)
 	{
-		if (message == null)
-		{
+		if (message == null) {
 			return;
 		}
 
@@ -358,17 +337,12 @@ public class Main
 	public static void setUpSeed()
 	{
 		long newSeed = 0;
-		if (Option.KEEP_SEED.toBoolean())
-		{
+		if (Option.KEEP_SEED.toBoolean()) {
 			String seedString = Option.SEED.getProperty();
-			if (seedString != null)
-			{
-				try
-				{
+			if (seedString != null) {
+				try {
 					newSeed = Long.parseLong(seedString);
-				}
-				catch (NumberFormatException nf)
-				{
+				} catch (NumberFormatException nf) {
 				}
 			}
 		}
@@ -381,8 +355,8 @@ public class Main
 	{
 		return FileManager.load(
 				Paths.FONTS
-					+ fonts[index].getName()
-					+ "/"
-					+ Paths.FONT_PROPERTIES);
+				+ fonts[index].getName()
+				+ "/"
+				+ Paths.FONT_PROPERTIES);
 	}
 }

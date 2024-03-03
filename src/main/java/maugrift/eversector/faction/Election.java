@@ -106,8 +106,7 @@ public class Election
 	public int getMinimumReputation()
 	{
 		int minRep = candidates.get(0).getReputation(faction).get();
-		for (Ship candidate : candidates)
-		{
+		for (Ship candidate : candidates) {
 			minRep = Math.min(minRep, candidate.getReputation(faction).get());
 		}
 		return minRep;
@@ -122,11 +121,11 @@ public class Election
 	{
 		return emergency
 			? new ColorString("The ")
-				.add(faction)
-				.add(" is holding an emergency election for leader.")
+			.add(faction)
+			.add(" is holding an emergency election for leader.")
 			: new ColorString("The scheduled leader election for the ")
-				.add(faction)
-				.add(" has arrived.");
+			.add(faction)
+			.add(" has arrived.");
 	}
 
 	/**
@@ -156,26 +155,21 @@ public class Election
 	{
 		int minRep = 0;
 
-		for (Ship ship : faction.getGalaxy().getShips())
-		{
+		for (Ship ship : faction.getGalaxy().getShips()) {
 			if (faction == ship.getFaction() &&
-					(ship.getReputation(faction).get() > minRep) ||
-					candidates.size() < CANDIDATES)
-			{
+				(ship.getReputation(faction).get() > minRep) ||
+				candidates.size() < CANDIDATES) {
 				candidates.add(ship);
 
-				if (candidates.size() > CANDIDATES)
-				{
+				if (candidates.size() > CANDIDATES) {
 					candidates.sort(Comparator.naturalOrder());
 					candidates.remove(0);
 				}
 
 				int lowestRep = ship.getReputation(faction).get();
 
-				for (Ship candidate : candidates)
-				{
-					if (candidate.getReputation(faction).get() < lowestRep)
-					{
+				for (Ship candidate : candidates) {
+					if (candidate.getReputation(faction).get() < lowestRep) {
 						lowestRep = candidate.getReputation(faction).get();
 					}
 				}
@@ -195,23 +189,19 @@ public class Election
 	 */
 	public void gatherVotes()
 	{
-		if (candidates.isEmpty())
-		{
+		if (candidates.isEmpty()) {
 			throw new IllegalStateException(
-					"gatherVotes() called before findCandidates()"
+				"gatherVotes() called before findCandidates()"
 			);
 		}
 
 		// Fill the vote list with 0s as a starting point
-		for (Ship candidate : candidates)
-		{
+		for (Ship candidate : candidates) {
 			votes.add(0);
 		}
 
-		for (Ship ship : faction.getGalaxy().getShips())
-		{
-			if (faction == ship.getFaction() && !candidates.contains(ship))
-			{
+		for (Ship ship : faction.getGalaxy().getShips()) {
+			if (faction == ship.getFaction() && !candidates.contains(ship)) {
 				Ship vote = ship.getAI().vote(candidates);
 				int index = candidates.indexOf(vote);
 				votes.set(index, votes.get(index) + 1);
@@ -229,20 +219,17 @@ public class Election
 	 */
 	public Ship getWinner()
 	{
-		if (candidates.isEmpty())
-		{
+		if (candidates.isEmpty()) {
 			throw new IllegalStateException(
-					"getWinner() called before findCandidates()"
+				"getWinner() called before findCandidates()"
 			);
 		}
 
 		int winnerIndex = 0;
 		int highestVotes = 0;
 
-		for (int i = 0; i < votes.size(); i++)
-		{
-			if (votes.get(i) > highestVotes)
-			{
+		for (int i = 0; i < votes.size(); i++) {
+			if (votes.get(i) > highestVotes) {
 				winnerIndex = i;
 				highestVotes = votes.get(i);
 			}
@@ -271,8 +258,7 @@ public class Election
 	 */
 	public void lowerWinnerReputation(Ship winner)
 	{
-		if (isReelected(winner))
-		{
+		if (isReelected(winner)) {
 			winner.changeReputation(faction, Reputation.REELECTION);
 		}
 	}
@@ -298,17 +284,14 @@ public class Election
 	 */
 	public void addVote(String candidate)
 	{
-		if (candidates.isEmpty())
-		{
+		if (candidates.isEmpty()) {
 			throw new IllegalStateException(
-					"addVote() called before findCandidates()"
+				"addVote() called before findCandidates()"
 			);
 		}
 
-		for (int i = 0; i < candidates.size(); i++)
-		{
-			if (candidates.get(i).toString().equals(candidate))
-			{
+		for (int i = 0; i < candidates.size(); i++) {
+			if (candidates.get(i).toString().equals(candidate)) {
 				votes.set(i, votes.get(i) + 1);
 				return;
 			}
