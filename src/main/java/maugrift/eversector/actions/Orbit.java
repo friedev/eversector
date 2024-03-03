@@ -50,9 +50,11 @@ public class Orbit implements Action
 				return new Escape().canExecute(actor);
 			}
 
-			return "Invalid orbit. Must be between 1 and "
+			return (
+				"Invalid orbit. Must be between 1 and "
 				+ actor.getLocation().getSector().getOrbits()
-				+ ".";
+				+ "."
+			);
 		}
 
 		Resource resource = actor.getResource(RESOURCE);

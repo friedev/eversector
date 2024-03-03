@@ -84,7 +84,8 @@ public class NamePromptScreen extends PopupTerminal
 	 */
 	private ColorString buildPrompt()
 	{
-		return new ColorString("Enter the name of " + naming + ". ")
+		return (
+			new ColorString("Enter the name of " + naming + ". ")
 			.add(
 				new ColorString(
 					getInput().isEmpty()
@@ -92,7 +93,8 @@ public class NamePromptScreen extends PopupTerminal
 					: "(Enter to confirm.)",
 					AsciiPanel.brightBlack
 				)
-			);
+			)
+		);
 	}
 
 	@Override

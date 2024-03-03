@@ -78,10 +78,13 @@ public class ElectionResultsScreen
 			int votes = pendingElection.getVotes().get(i);
 			contents.add(new ColorString(shipName)
 				.add(" ")
-				.add(new ColorString("("
+				.add(
+					new ColorString(
+						"("
 						+ reputation.getAdjective()
 						+ ")",
-						reputation.getColor())
+						reputation.getColor()
+					)
 				)
 				.add(" - ")
 				.add(new ColorString(Integer.toString(votes), COLOR_FIELD))

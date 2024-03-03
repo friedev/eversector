@@ -74,8 +74,10 @@ public class Fire implements Action
 		Weapon weaponObj = actor.getWeapon(weapon);
 
 		if (actor.isPlayer()) {
-			if (target.isShielded() &&
-				Resource.ENERGY.equals(weaponObj.getActionResource())) {
+			if (
+				target.isShielded()
+				&& Resource.ENERGY.equals(weaponObj.getActionResource())
+			) {
 				addMessage("Attack diminished by enemy shield.");
 			} else {
 				addMessage("Attack successful; hit confirmed.");

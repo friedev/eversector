@@ -42,10 +42,12 @@ public class Dock implements Action
 			String claimExecution = new Claim().canExecute(actor);
 			if (claimExecution != null) {
 				actor.setLocation(actor.getStationLocation().undock());
-				return station
+				return (
+					station
 					+ " is controlled by the hostile "
 					+ station.getFaction()
-					+ ", who deny you entry.";
+					+ ", who deny you entry."
+				);
 			}
 			return null;
 		} else {

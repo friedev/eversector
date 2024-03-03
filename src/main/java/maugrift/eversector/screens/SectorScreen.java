@@ -65,8 +65,10 @@ class SectorScreen
 		window.display();
 
 		if (popup != null) {
-			if (popup instanceof WindowScreen &&
-				((WindowScreen) popup).getWindow() instanceof AlignedWindow) {
+			if (
+				popup instanceof WindowScreen
+				&& ((WindowScreen) popup).getWindow() instanceof AlignedWindow
+			) {
 				((AlignedWindow)((WindowScreen) popup).getWindow())
 				.setLocation(1, window.getBottom() + 3);
 			}
@@ -86,10 +88,16 @@ class SectorScreen
 				return this;
 			}
 
-			return popup instanceof PlanetScreen ||
-				popup instanceof StationScreen ||
-				popup instanceof BattleScreen ||
-				popup instanceof EndScreen ? popup : this;
+			return (
+				(
+					popup instanceof PlanetScreen
+					|| popup instanceof StationScreen
+					|| popup instanceof BattleScreen
+					|| popup instanceof EndScreen
+				)
+				? popup
+				: this
+			);
 		}
 
 		// This is necessary both here and below to avoid interruptions
@@ -144,9 +152,11 @@ class SectorScreen
 			break;
 		case KeyEvent.VK_LEFT:
 			Station station = player.getSectorLocation().getStation();
-			if (station != null &&
-				player.isHostile(station.getFaction()) &&
-				new Claim().canExecute(player, station) == null) {
+			if (
+				station != null
+				&& player.isHostile(station.getFaction())
+				&& new Claim().canExecute(player, station) == null
+			) {
 				popup = new ClaimStationScreen();
 			} else {
 				String dockExecution = new Dock().execute(player);

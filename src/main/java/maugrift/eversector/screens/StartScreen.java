@@ -121,8 +121,12 @@ public class StartScreen extends Screen
 			popup = new OptionsScreen();
 		}
 
-		if (!(key.getKeyCode() == KeyEvent.VK_ENTER ||
-				key.getKeyCode() == KeyEvent.VK_SPACE)) {
+		if (
+			!(
+				key.getKeyCode() == KeyEvent.VK_ENTER
+				|| key.getKeyCode() == KeyEvent.VK_SPACE
+			)
+		) {
 			return this;
 		}
 
@@ -172,14 +176,16 @@ public class StartScreen extends Screen
 				- DEVELOPER.length()
 				- VERSION.length()
 			);
-		String infoLine = Symbol.COPYRIGHT
+		String infoLine = (
+			Symbol.COPYRIGHT
 			+ " "
 			+ COPYRIGHT_YEAR
 			+ " "
 			+ DEVELOPER
 			+ " "
 			+ padding
-			+ VERSION;
+			+ VERSION
+		);
 		List<ColorString> titleArt = new LinkedList<>();
 
 		titleArt.add(new ColorString(" __________               ________          _____              "));

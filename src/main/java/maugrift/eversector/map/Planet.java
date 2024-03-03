@@ -398,9 +398,11 @@ public class Planet implements ColorStringObject
 	 */
 	public Planet(int place, SectorLocation location)
 	{
-		this.name = location.getSector().getStar().getName()
+		this.name = (
+			location.getSector().getStar().getName()
 			+ " "
-			+ toRomanNumeral(place);
+			+ toRomanNumeral(place)
+		);
 		this.location = location;
 		generateType();
 
@@ -644,9 +646,11 @@ public class Planet implements ColorStringObject
 	 */
 	public int getOppositeSide(int x)
 	{
-		return containsX(x + getNColumns() / 2)
+		return (
+			containsX(x + getNColumns() / 2)
 			? x + getNColumns() / 2
-			: x - getNColumns() / 2;
+			: x - getNColumns() / 2
+		);
 	}
 
 	/**
@@ -786,9 +790,11 @@ public class Planet implements ColorStringObject
 	 */
 	private static Region getRandomRegion(List<Region> regions)
 	{
-		return regions == null || regions.isEmpty()
+		return (
+			regions == null || regions.isEmpty()
 			? null
-			: Main.rng.getRandomElement(regions);
+			: Main.rng.getRandomElement(regions)
+		);
 	}
 
 	/**
@@ -915,8 +921,10 @@ public class Planet implements ColorStringObject
 
 		List<PlanetType> types = new LinkedList<>();
 		for (PlanetType curType : PlanetType.values()) {
-			if (curType.isInTempRange(temp) &&
-				!(curType.hasAtmosphere() && star.hasRadiation())) {
+			if (
+				curType.isInTempRange(temp)
+				&& !(curType.hasAtmosphere() && star.hasRadiation())
+			) {
 				types.add(curType);
 			}
 		}

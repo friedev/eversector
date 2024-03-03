@@ -42,8 +42,10 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 	@Override
 	public Screen processInput(KeyEvent key)
 	{
-		if (key.getKeyCode() == KeyEvent.VK_LEFT ||
-			key.getKeyCode() == KeyEvent.VK_RIGHT) {
+		if (
+			key.getKeyCode() == KeyEvent.VK_LEFT
+			|| key.getKeyCode() == KeyEvent.VK_RIGHT
+		) {
 			Option option = getSelectedOption();
 			Integer value = option.toInt();
 			if (value != null) {
@@ -132,7 +134,8 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 				try {
 					Properties fontProperties = Main.getFontProperties(option.toInt());
 					contents.add(new ColorString(option.getKey() + ": ")
-						.add(new ColorString(
+						.add(
+							new ColorString(
 								fontProperties.getProperty(Option.FONT_NAME)
 								+ " ("
 								+ fontProperties.getProperty(Option.FONT_WIDTH)
@@ -144,10 +147,13 @@ public class OptionsScreen extends MenuScreen<PopupMenu>
 						)
 					);
 				} catch (IOException e) {
-					contents.add(new ColorString(
+					contents.add(
+						new ColorString(
 							option.getKey()
 							+ ": "
-							+ Main.fonts[option.toInt()].getName()));
+							+ Main.fonts[option.toInt()].getName()
+						)
+					);
 				}
 			} else {
 				contents.add(option.toColorString());

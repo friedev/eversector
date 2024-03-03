@@ -82,9 +82,11 @@ public class PlanetScreen
 				}
 			}
 		} else if (isLooking()) {
-			if (key.getKeyCode() == KeyEvent.VK_L ||
-				key.getKeyCode() == KeyEvent.VK_ESCAPE ||
-				key.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (
+				key.getKeyCode() == KeyEvent.VK_L
+				|| key.getKeyCode() == KeyEvent.VK_ESCAPE
+				|| key.getKeyCode() == KeyEvent.VK_ENTER
+			) {
 				cursor = null;
 			}
 		} else {

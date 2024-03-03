@@ -181,8 +181,10 @@ public enum Option {
 	public ColorString toColorString()
 	{
 		String property = getProperty();
-		return new ColorString(key + ": ")
-		.add(new ColorString(getProperty(), getColor()));
+		return (
+			new ColorString(key + ": ")
+			.add(new ColorString(getProperty(), getColor()))
+		);
 	}
 
 	/**

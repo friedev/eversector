@@ -111,8 +111,10 @@ public class AI
 					return sectorAction;
 				}
 
-				if (ship.getSectorLocation().isPlanet() &&
-					ship.getSectorLocation().getPlanet().getType().canMineFromOrbit()) {
+				if (
+					ship.getSectorLocation().isPlanet()
+					&& ship.getSectorLocation().getPlanet().getType().canMineFromOrbit()
+				) {
 					Mine mine = new Mine();
 					if (mine.canExecuteBool(ship)) {
 						return mine;
@@ -278,9 +280,11 @@ public class AI
 		}
 
 		Ship player = ship.getLocation().getGalaxy().getPlayer();
-		if (player != null &&
-			player.getLocation().equals(ship.getLocation()) &&
-			ship.isHostile(player.getFaction())) {
+		if (
+			player != null
+			&& player.getLocation().equals(ship.getLocation())
+			&& ship.isHostile(player.getFaction())
+		) {
 			StartBattle startBattle = new StartBattle(player);
 			if (startBattle.canExecuteBool(ship)) {
 				return startBattle;
@@ -319,8 +323,10 @@ public class AI
 			return;
 		}
 
-		if (ship.getResource(Resource.ORE).isFull() ||
-			ship.validateResources(Mine.RESOURCE, Mine.COST, "mine") != null) {
+		if (
+			ship.getResource(Resource.ORE).isFull()
+			|| ship.validateResources(Mine.RESOURCE, Mine.COST, "mine") != null
+		) {
 			destination = findClosestStation();
 			return;
 		}
@@ -497,8 +503,10 @@ public class AI
 			return null;
 		}
 
-		if (!ship.isHostile(station.getFaction()) ||
-			ship.getCredits() >= Station.CLAIM_COST) {
+		if (
+			!ship.isHostile(station.getFaction())
+			|| ship.getCredits() >= Station.CLAIM_COST
+		) {
 			return station.getLocation().dock();
 		}
 		return null;
@@ -525,10 +533,14 @@ public class AI
 					sector.getPlanetAt(orbit + offset)
 				);
 
-			if (minusOffset != null &&
-				ship.getCredits() >= minusOffset.getPlanet().getClaimCost()) {
-				if (plusOffset != null &&
-					ship.getCredits() >= plusOffset.getPlanet().getClaimCost()) {
+			if (
+				minusOffset != null
+				&& ship.getCredits() >= minusOffset.getPlanet().getClaimCost()
+			) {
+				if (
+					plusOffset != null
+					&& ship.getCredits() >= plusOffset.getPlanet().getClaimCost()
+				) {
 					return rng.nextBoolean() ? minusOffset : plusOffset;
 				}
 
@@ -564,9 +576,11 @@ public class AI
 	 */
 	private StationLocation findInvasionDestination()
 	{
-		if (ship.getCredits() < Station.CLAIM_COST ||
-			!ship.hasWeapons() ||
-			!ship.getResource(Resource.FUEL).isFull()) {
+		if (
+			ship.getCredits() < Station.CLAIM_COST
+			|| !ship.hasWeapons()
+			|| !ship.getResource(Resource.FUEL).isFull()
+		) {
 			return null;
 		}
 
@@ -655,9 +669,11 @@ public class AI
 	 */
 	private boolean destinationIsValid()
 	{
-		return !(destination == null ||
-				ship.getLocation().equals(destination) ||
-				destination instanceof BattleLocation);
+		return !(
+			destination == null
+			|| ship.getLocation().equals(destination)
+			|| destination instanceof BattleLocation
+		);
 	}
 
 	/**
@@ -890,9 +906,11 @@ public class AI
 	public boolean pursue()
 	{
 		Battle battle = ship.getBattleLocation().getBattle();
-		return willAttack() &&
-			battle.getEnemies(ship).size() - battle.getFleeing().size() < 1 &&
-			new Pursue().executeBool(ship);
+		return (
+			willAttack()
+			&& battle.getEnemies(ship).size() - battle.getFleeing().size() < 1
+			&& new Pursue().executeBool(ship)
+		);
 	}
 
 	/**
@@ -902,9 +920,13 @@ public class AI
 	 */
 	public boolean willAttack()
 	{
-		return ship.hasWeapons() &&
-			ship.getResource(Resource.HULL).getAmount() >=
-			ship.getResource(Resource.HULL).getCapacity() / 2;
+		return (
+			ship.hasWeapons()
+			&& (
+				ship.getResource(Resource.HULL).getAmount()
+				>= ship.getResource(Resource.HULL).getCapacity() / 2
+			)
+		);
 	}
 
 	/**

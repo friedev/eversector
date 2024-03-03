@@ -117,9 +117,11 @@ public class SectorLocation extends Location
 	 */
 	public SectorLocation setOrbit(int orbit)
 	{
-		return getSector().isValidOrbit(orbit)
+		return (
+			getSector().isValidOrbit(orbit)
 			? new SectorLocation(this, orbit)
-			: null;
+			: null
+		);
 	}
 
 	/**
@@ -129,9 +131,11 @@ public class SectorLocation extends Location
 	 */
 	public SectorLocation raiseOrbit()
 	{
-		return orbit == getSector().getOrbits()
+		return (
+			orbit == getSector().getOrbits()
 			? null
-			: new SectorLocation(this, orbit + 1);
+			: new SectorLocation(this, orbit + 1)
+		);
 	}
 
 	/**
@@ -189,15 +193,19 @@ public class SectorLocation extends Location
 	@Override
 	public boolean equals(Location o)
 	{
-		if (!(o instanceof SectorLocation) ||
-			o instanceof PlanetLocation ||
-			o instanceof StationLocation) {
+		if (
+			!(o instanceof SectorLocation)
+			|| o instanceof PlanetLocation
+			|| o instanceof StationLocation
+		) {
 			return false;
 		}
 
 		SectorLocation cast = (SectorLocation) o;
-		return getGalaxy() == cast.getGalaxy() &&
-			getCoord().equals(cast.getCoord()) &&
-			orbit == cast.orbit;
+		return (
+			getGalaxy() == cast.getGalaxy()
+			&& getCoord().equals(cast.getCoord())
+			&& orbit == cast.orbit
+		);
 	}
 }

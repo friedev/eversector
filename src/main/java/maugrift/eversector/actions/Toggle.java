@@ -45,8 +45,10 @@ public class Toggle implements Action
 		String effect = moduleObj.getEffect();
 
 		if (effect == null) {
-			return Utility.addCapitalizedArticle(moduleObj.getName())
-				+ " cannot be activated.";
+			return (
+				Utility.addCapitalizedArticle(moduleObj.getName())
+				+ " cannot be activated."
+			);
 		}
 
 		if (actor.hasFlag(effect)) {
@@ -101,7 +103,8 @@ public class Toggle implements Action
 			Battle battle = actor.getBattleLocation().getBattle();
 			Ship player = actor.getLocation().getGalaxy().getPlayer();
 			if (player != null && battle.getShips().contains(player)) {
-				addMessage(actor
+				addMessage(
+					actor
 					+ " "
 					+ (activating ? "activates" : "deactivates")
 					+ Utility.addArticle(module.toLowerCase())

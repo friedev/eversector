@@ -53,8 +53,10 @@ public class BattleLocation extends SectorLocation
 		}
 
 		BattleLocation cast = (BattleLocation) o;
-		return getGalaxy() == cast.getGalaxy() &&
-			getCoord().equals(cast.getCoord()) &&
-			getOrbit() == cast.getOrbit();
+		return (
+			getGalaxy() == cast.getGalaxy()
+			&& getCoord().equals(cast.getCoord())
+			&& getOrbit() == cast.getOrbit()
+		);
 	}
 }

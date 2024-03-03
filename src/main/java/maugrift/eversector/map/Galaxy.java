@@ -450,14 +450,18 @@ public class Galaxy
 	{
 		int edgeCoord = Main.rng.nextInt(sectors.length);
 		if (Main.rng.nextBoolean()) {
-			return Main.rng.nextBoolean()
+			return (
+				Main.rng.nextBoolean()
 				? sectors[0][edgeCoord]
-				: sectors[sectors.length - 1][edgeCoord];
+				: sectors[sectors.length - 1][edgeCoord]
+			);
 		}
 
-		return Main.rng.nextBoolean()
+		return (
+			Main.rng.nextBoolean()
 			? sectors[edgeCoord][0]
-			: sectors[edgeCoord][sectors.length - 1];
+			: sectors[edgeCoord][sectors.length - 1]
+		);
 	}
 
 	/**
@@ -612,9 +616,11 @@ public class Galaxy
 		}
 
 		// Update relationships if there are more than two factions
-		if (turn >= (RELATION_UPDATE_FREQ / factions.length) &&
-			factions.length > 2 &&
-			turn % (RELATION_UPDATE_FREQ / factions.length) == 0) {
+		if (
+			turn >= (RELATION_UPDATE_FREQ / factions.length)
+			&& factions.length > 2
+			&& turn % (RELATION_UPDATE_FREQ / factions.length) == 0
+		) {
 			int tries = 0;
 			do {
 				tries++;
@@ -714,8 +720,8 @@ public class Galaxy
 				for (int i = 0; i < nNebulae; i++) {
 					List<Coord> tempNebula = nebulae.get(i);
 					if (
-						tempNebula != null &&
-						tempNebula.contains(Coord.get(x, y))
+						tempNebula != null
+						&& tempNebula.contains(Coord.get(x, y))
 					) {
 						nebula = nebulaTypes[i];
 						break;
@@ -798,13 +804,20 @@ public class Galaxy
 		for (int i = 0; i < ores.length; i++) {
 			String name;
 			do {
-				name = Main.rng.getRandomElement(Ore.NAME_PREFIX)
-					+ Main.rng.getRandomElement(Ore.NAME_SUFFIX);
+				name = (
+					Main.rng.getRandomElement(Ore.NAME_PREFIX)
+					+ Main.rng.getRandomElement(Ore.NAME_SUFFIX)
+				);
 
 				// Ensure unique names
 				for (Ore ore : ores) {
-					if (name == null ||
-						(ore != null && name.equals(ore.getName()))) {
+					if (
+						name == null
+						|| (
+							ore != null 
+							&& name.equals(ore.getName())
+						)
+					) {
 						name = null;
 					}
 				}

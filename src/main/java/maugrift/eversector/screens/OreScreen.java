@@ -32,11 +32,14 @@ public class OreScreen extends ConfirmationScreen
 		super(Main.display);
 		List<ColorString> list = new LinkedList<>();
 		for (Ore ore : Main.galaxy.getOreTypes()) {
-			list.add(new ColorString(
+			list.add(
+				new ColorString(
 					ore.toString()
 					+ ": "
 					+ ore.getDensity()
-					+ " Density"));
+					+ " Density"
+				)
+			);
 		}
 		window = new PopupWindow(getDisplay(), list);
 	}

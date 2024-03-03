@@ -40,9 +40,11 @@ public class SellModule implements Action
 		Module moduleObj = station.getModule(module);
 
 		if (moduleObj == null) {
-			return Station.hasBaseModule(module)
+			return (
+				Station.hasBaseModule(module)
 				? station + " will not accept a module of this type."
-				: "The specified module does not exist.";
+				: "The specified module does not exist."
+			);
 		}
 
 		if (!station.sells(moduleObj)) {

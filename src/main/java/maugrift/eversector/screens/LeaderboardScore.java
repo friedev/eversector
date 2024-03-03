@@ -139,15 +139,15 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 		}
 
 		builder.append(score)
-		.append(" Credits, ")
-		.append(turns)
-		.append(" Turns, ");
+			.append(" Credits, ")
+			.append(turns)
+			.append(" Turns, ");
 
 		if (kills > 0) {
 			builder.append(kills)
-			.append(" ")
-			.append(Utility.makePlural("Kill", kills))
-			.append(", ");
+				.append(" ")
+				.append(Utility.makePlural("Kill", kills))
+				.append(", ");
 		}
 
 		builder.append(reputation);
@@ -187,10 +187,12 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 	 */
 	public boolean isValid()
 	{
-		return score != null &&
-			turns != null &&
-			kills != null &&
-			reputation != null;
+		return (
+			score != null
+			&& turns != null
+			&& kills != null
+			&& reputation != null
+		);
 	}
 
 	@Override
@@ -256,11 +258,18 @@ public class LeaderboardScore implements Comparable<LeaderboardScore>
 
 		try {
 			int index = 1;
-			while (scores.add(new LeaderboardScore(FileManager.load(
+			while (
+				scores.add(
+					new LeaderboardScore(
+						FileManager.load(
 							Paths.LEADERBOARD
 							+ "score_"
 							+ index
-							+ ".properties")))) {
+							+ ".properties"
+						)
+					)
+				)
+			) {
 				index++;
 			}
 		} catch (IllegalArgumentException | IOException e) {

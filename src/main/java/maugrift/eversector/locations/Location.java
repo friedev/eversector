@@ -139,9 +139,11 @@ public class Location
 	 */
 	public Location moveTo(Coord destination)
 	{
-		return galaxy.contains(destination)
+		return (
+			galaxy.contains(destination)
 			? new Location(galaxy, destination)
-			: null;
+			: null
+		);
 	}
 
 	/**
@@ -151,9 +153,11 @@ public class Location
 	 */
 	public SectorLocation enterSector()
 	{
-		return getSector().isEmpty()
+		return (
+			getSector().isEmpty()
 			? null
-			: new SectorLocation(this, getSector().getOrbits());
+			: new SectorLocation(this, getSector().getOrbits())
+		);
 	}
 
 	@Override
@@ -230,8 +234,10 @@ public class Location
 	 */
 	public boolean equals(Location o)
 	{
-		return !(o instanceof SectorLocation) &&
-			galaxy == o.galaxy &&
-			coord.equals(o.coord);
+		return (
+			!(o instanceof SectorLocation)
+			&& galaxy == o.galaxy
+			&& coord.equals(o.coord)
+		);
 	}
 }

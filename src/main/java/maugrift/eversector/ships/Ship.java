@@ -192,10 +192,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	{
 		String testName;
 		do {
-			testName = rng.getRandomElement(NAME_PREFIX)
+			testName = (
+				rng.getRandomElement(NAME_PREFIX)
 				+ rng.getRandomElement(NAME_SUFFIX)
 				+ "-"
-				+ String.format("%02d", rng.nextInt(100));
+				+ String.format("%02d", rng.nextInt(100))
+			);
 		} while (location.getGalaxy().getShipNames().contains(testName));
 
 		this.name = testName;
@@ -300,9 +302,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	@Override
 	public ColorString toColorString()
 	{
-		return isAligned()
+		return (
+			isAligned()
 			? new ColorString(toString(), faction.getColor())
-			: new ColorString(toString());
+			: new ColorString(toString())
+		);
 	}
 
 	/**
@@ -435,10 +439,14 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public boolean isOrbital()
 	{
-		return location instanceof SectorLocation &&
-			!(location instanceof PlanetLocation ||
-				location instanceof StationLocation ||
-				location instanceof BattleLocation);
+		return (
+			location instanceof SectorLocation
+			&& !(
+				location instanceof PlanetLocation
+				|| location instanceof StationLocation
+				|| location instanceof BattleLocation
+			)
+		);
 	}
 
 	/**
@@ -599,13 +607,16 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public boolean isPassive(Ship ship)
 	{
-		return ship.isAligned() && (
-				!isAligned() ||
-				faction == ship.faction ||
-				!ship.getFaction().isRelationship(
+		return (
+			ship.isAligned()
+			&& (
+				!isAligned()
+				|| faction == ship.faction
+				|| !ship.getFaction().isRelationship(
 					Relationship.RelationshipType.WAR, faction
 				)
-			);
+			)
+		);
 	}
 
 	/**
@@ -616,12 +627,15 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public boolean isHostile(Faction faction)
 	{
-		return this.faction != faction && (
-				!isAligned() ||
-				this.faction.isRelationship(
+		return (
+			this.faction != faction
+			&& (
+				!isAligned()
+				|| this.faction.isRelationship(
 					Relationship.RelationshipType.WAR, faction
 				)
-			);
+			)
+		);
 	}
 
 	/**
@@ -665,8 +679,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 			return;
 		}
 
-		if (destination instanceof StationLocation &&
-			!(location instanceof StationLocation)) {
+		if (
+			destination instanceof StationLocation
+			&& !(location instanceof StationLocation)
+		) {
 			getSectorLocation().getStation().getShips().add(this);
 			location.getSector().getShips().remove(this);
 		} else if (destination instanceof PlanetLocation) {
@@ -904,8 +920,10 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 		Reputation highestRep = null;
 
 		for (Reputation rep : reputations) {
-			if ((highestRep == null || rep.get() > highestRep.get()) &&
-				rep.getFaction() != faction) {
+			if (
+				(highestRep == null || rep.get() > highestRep.get())
+				&& rep.getFaction() != faction
+			) {
 				highestRep = rep;
 			}
 		}
@@ -1425,16 +1443,20 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public void damage(int damage, boolean print)
 	{
-		if (!getResource(Resource.HULL).changeAmount(-damage) ||
-			getResource(Resource.HULL).isEmpty()) {
+		if (
+			!getResource(Resource.HULL).changeAmount(-damage)
+			|| getResource(Resource.HULL).isEmpty()
+		) {
 			getResource(Resource.HULL).setAmount(0);
 			destroy(print);
 		}
 
 		// Damages a module if the damage is above a threshold that is
 		// proportional to the number of modules installed
-		if (!modules.isEmpty() &&
-			damage >= getResource(Resource.HULL).getCapacity() / modules.size()) {
+		if (
+			!modules.isEmpty()
+			&& damage >= getResource(Resource.HULL).getCapacity() / modules.size()
+		) {
 			Module damagedModule = modules.get(rng.nextInt(modules.size()));
 
 			if (damagedModule.damage()) {
@@ -1535,9 +1557,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 		Reputation offerReputation = getMostPopularOtherFaction();
 		Faction offerFaction = offerReputation.getFaction();
 
-		if (offerFaction == null ||
-			offerFaction.getEconomyCredits() < DISTRESS_CREDITS ||
-			offerReputation.get() + Reputation.JOIN + Reputation.DISTRESS < 0) {
+		if (
+			offerFaction == null
+			|| offerFaction.getEconomyCredits() < DISTRESS_CREDITS
+			|| offerReputation.get() + Reputation.JOIN + Reputation.DISTRESS < 0
+		) {
 			if (!isAligned()) {
 				addPlayerMessage("There is no response.");
 				changeGlobalReputation(Reputation.DISTRESS_ATTEMPT);
@@ -1617,13 +1641,16 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public String validateFunds(int price)
 	{
-		return price > credits
-			? "Insufficient funds; have "
-			+ credits
-			+ " credits, need "
-			+ price
-			+ "."
-			: null;
+		return (
+			price > credits
+			? (
+				"Insufficient funds; have "
+				+ credits
+				+ " credits, need "
+				+ price
+				+ "."
+		  ) : null
+		);
 	}
 
 	/**
@@ -1634,9 +1661,11 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	 */
 	public String validateDocking()
 	{
-		return isDocked()
+		return (
+			isDocked()
 			? null
-			: "Ship must be docked with a station to buy and sell items.";
+			: "Ship must be docked with a station to buy and sell items."
+		);
 	}
 
 	/**
@@ -1652,10 +1681,12 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	{
 		// The ship can technically have this installed because it doesn't exist
 		if (module == null || !hasModule(module)) {
-			return Utility.addCapitalizedArticle(module)
+			return (
+				Utility.addCapitalizedArticle(module)
 				+ " is required"
 				+ (action == null ? "" : " to " + action)
-				+ ".";
+				+ "."
+			);
 		}
 
 		Module moduleObj = getModule(module);
@@ -1664,16 +1695,20 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 			if (getModuleAmount(moduleObj) > 1) {
 				// Check for spares
 				for (Module cargoModule : cargo) {
-					if (cargoModule.getName().equalsIgnoreCase(moduleObj.getName()) &&
-						!cargoModule.isDamaged()) {
+					if (
+						cargoModule.getName().equalsIgnoreCase(moduleObj.getName())
+						&& !cargoModule.isDamaged()
+					) {
 						return null;
 					}
 				}
 			}
 
-			return "Your "
+			return (
+				"Your "
 				+ moduleObj.getName().toLowerCase()
-				+ " is too damaged to function.";
+				+ " is too damaged to function."
+			);
 		}
 
 		return null;
@@ -1710,7 +1745,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 	)
 	{
 		if (resource != null && resource.getAmount() < cost) {
-			return "Insufficient "
+			return (
+				"Insufficient "
 				+ resource.getName().toLowerCase()
 				+ " reserves to "
 				+ actionString
@@ -1719,7 +1755,8 @@ public class Ship implements ColorStringObject, Comparable<Ship>
 				+ resource.getAmount()
 				+ ", need "
 				+ cost
-				+ ".";
+				+ "."
+			);
 		}
 
 		return null;

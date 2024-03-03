@@ -109,12 +109,14 @@ public class PlanetLocation extends SectorLocation
 				);
 		}
 
-		return direction.hasRight()
+		return (
+			direction.hasRight()
 			? new PlanetLocation(this, regionCoord.setX(0))
 			: new PlanetLocation(
 				this,
 				regionCoord.setX(getPlanet().getNColumns() - 1)
-			);
+			)
+		);
 	}
 
 	@Override
@@ -125,9 +127,11 @@ public class PlanetLocation extends SectorLocation
 		}
 
 		PlanetLocation cast = (PlanetLocation) o;
-		return getGalaxy() == cast.getGalaxy() &&
-			getCoord().equals(cast.getCoord()) &&
-			getOrbit() == cast.getOrbit() &&
-			regionCoord.equals(cast.regionCoord);
+		return (
+			getGalaxy() == cast.getGalaxy()
+			&& getCoord().equals(cast.getCoord())
+			&& getOrbit() == cast.getOrbit()
+			&& regionCoord.equals(cast.regionCoord)
+		);
 	}
 }

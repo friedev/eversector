@@ -67,11 +67,13 @@ public class TransactResource implements Action
 			}
 
 			if (quantity > 0 && resourceObj.getNExpanders() + 1 > Ship.MAX_EXPANDERS) {
-				return "The ship cannot store over "
+				return (
+					"The ship cannot store over "
 					+ Ship.MAX_EXPANDERS
 					+ " "
 					+ expander.getName().toLowerCase()
-					+ "s.";
+					+ "s."
+				);
 			} else if (quantity < 0 && !resourceObj.canExpand(-1)) {
 				return "No expanders to sell.";
 			}
@@ -93,18 +95,22 @@ public class TransactResource implements Action
 		if (!resourceObj.canHold(quantity)) {
 			if (actor.isPlayer()) {
 				if (quantity > 0) {
-					return "Inadequate storage; have "
+					return (
+						"Inadequate storage; have "
 						+ resourceObj.getCapacity()
 						+ ", need"
 						+ (resourceObj.getAmount() + quantity)
-						+ ".";
+						+ "."
+					);
 				}
 
-				return "Inadequate resources to sell; have "
+				return (
+					"Inadequate resources to sell; have "
 					+ resourceObj.getAmount()
 					+ ", need "
 					+ Math.abs(quantity)
-					+ ".";
+					+ "."
+				);
 			}
 		}
 

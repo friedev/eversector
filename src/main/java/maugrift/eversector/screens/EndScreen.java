@@ -169,8 +169,10 @@ public class EndScreen extends Screen implements WindowScreen<PopupWindow>
 		}
 
 		// Print either leadership and reputation status
-		if (player.isAligned() &&
-			player.getReputation(player.getFaction()).get() != 0) {
+		if (
+			player.isAligned()
+			&& player.getReputation(player.getFaction()).get() != 0
+		) {
 			ReputationRange reputation = player
 				.getReputation(player.getFaction()).
 				getRange();

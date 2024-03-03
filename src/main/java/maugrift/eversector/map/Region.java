@@ -242,9 +242,11 @@ public class Region implements ColorStringObject
 	@Override
 	public ColorString toColorString()
 	{
-		return isClaimed()
+		return (
+			isClaimed()
 			? new ColorString(toString(), faction.getColor())
-			: new ColorString(toString());
+			: new ColorString(toString())
+		);
 	}
 
 	/**

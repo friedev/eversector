@@ -98,8 +98,10 @@ public class MapScreen
 				String burnExecution = new Burn(direction).execute(player);
 				if (burnExecution == null) {
 					nextTurn = true;
-				} else if (player.getLocation().move(direction) == null &&
-					player.validateResources(Burn.RESOURCE, -Burn.COST, "burn") == null) {
+				} else if (
+					player.getLocation().move(direction) == null
+					&& player.validateResources(Burn.RESOURCE, -Burn.COST, "burn") == null
+				) {
 					popup = new IntergalacticScreen();
 					return this;
 				} else {

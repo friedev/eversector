@@ -112,13 +112,15 @@ public class Sector
 	 */
 	public void init()
 	{
-		double chance = 0.2
+		double chance = (
+			0.2
 			+ Math.min(
 				0.7,
 				1.0 / location.getCoord().distance(
 					location.getGalaxy().getCenter()
 				)
-			);
+			)
+		);
 
 		if (Utility.getChance(rng, chance)) {
 			star = Star.generate(nebula);
@@ -373,9 +375,11 @@ public class Sector
 		int stationsClaimed = 0;
 
 		for (Station station : stations) {
-			if (station != null &&
-				station.getFaction() == faction &&
-				station.isBattle() == battle) {
+			if (
+				station != null
+				&& station.getFaction() == faction
+				&& station.isBattle() == battle
+			) {
 				stationsClaimed++;
 			}
 		}
@@ -710,9 +714,13 @@ public class Sector
 	public Ship getShip(String name)
 	{
 		for (Ship ship : ships) {
-			if (ship != null &&
-				(name.equalsIgnoreCase(ship.getName()) ||
-					name.equalsIgnoreCase(ship.toString()))) {
+			if (
+				ship != null
+				&& (
+					name.equalsIgnoreCase(ship.getName())
+					|| name.equalsIgnoreCase(ship.toString())
+				)
+			) {
 				return ship;
 			}
 		}
@@ -886,9 +894,11 @@ public class Sector
 
 		int notShown = 0;
 		for (Ship ship : ships) {
-			if (ship != null &&
-				ship.getSectorLocation().getOrbit() == orbit &&
-				!ship.isPlayer()) {
+			if (
+				ship != null
+				&& ship.getSectorLocation().getOrbit() == orbit
+				&& !ship.isPlayer()
+			) {
 				if (contents.size() >= Star.StarMass.getLargest().getMass()) {
 					notShown++;
 					break;

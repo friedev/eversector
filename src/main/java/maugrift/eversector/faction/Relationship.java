@@ -314,39 +314,47 @@ public class Relationship
 		/*
 		RelationshipType oldRelationship = type;
 
-		if ((answer && !negateAnswer) || negateAnswer)
+		if ((answer && !negateAnswer) || negateAnswer) {
 			type = newRelationship;
+		}
 
-		if (answer && negateAnswer)
-		{
-			if (playerFaction.requestRelationship(otherFaction,
-					oldRelationship))
-			{
+		if (answer && negateAnswer) {
+			if (
+				playerFaction.requestRelationship(otherFaction,
+					oldRelationship)
+			) {
 				Prompt.printNotification(
-						"The " + otherFaction + " has accepted your offer.");
+					"The " + otherFaction + " has accepted your offer."
+				);
 
 				// Returning here prevents the news from being updated since the
 				// relationship ultimately stayed the same
 				return true;
-			}
-			else
-			{
+			} else {
 				Prompt.printNotification(
-						"The " + otherFaction + " has rejected your offer.");
+					"The " + otherFaction + " has rejected your offer."
+				);
 			}
 		}
 
-		if (chooser.requestRelationship(receiver, newRelationship))
-		{
+		if (chooser.requestRelationship(receiver, newRelationship)) {
 			chooser.addNews("We " + actingVerb + " the " + receiver + ".");
 			receiver.addNews("The " + chooser + " " + verb + " us.");
-		}
-		else
-		{
-			chooser.addNews("We " + requestVerb + " the " + receiver
-					+ ", but they refused it.");
-			receiver.addNews("The " + chooser + " " + requestVerb
-					+ " us, but we refused it.");
+		} else {
+			chooser.addNews(
+				"We "
+				+ requestVerb
+				+ " the "
+				+ receiver
+				+ ", but they refused it."
+			);
+			receiver.addNews(
+				"The "
+				+ chooser
+				+ " "
+				+ requestVerb
+				+ " us, but we refused it."
+			);
 		}
 		return true;
 		*/

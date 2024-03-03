@@ -181,10 +181,12 @@ public class Faction implements ColorStringObject
 	 */
 	public Faction(Galaxy galaxy, Color color)
 	{
-		this.name = rng.getRandomElement(NAME_PREFIX)
+		this.name = (
+			rng.getRandomElement(NAME_PREFIX)
 			+ rng.getRandomElement(NAME_SUFFIX)
 			+ " "
-			+ rng.getRandomElement(NAME_TYPES);
+			+ rng.getRandomElement(NAME_TYPES)
+		);
 		this.color = color;
 		this.galaxy = galaxy;
 		relationships = new Relationship[galaxy.getFactions().length - 1];
@@ -326,8 +328,10 @@ public class Faction implements ColorStringObject
 		int rank = 1;
 
 		for (Faction otherFaction : galaxy.getFactions()) {
-			if (otherFaction != this &&
-				getSectorsControlled() < otherFaction.getSectorsControlled()) {
+			if (
+				otherFaction != this
+				&& getSectorsControlled() < otherFaction.getSectorsControlled()
+			) {
 				rank++;
 			}
 		}
@@ -656,8 +660,10 @@ public class Faction implements ColorStringObject
 				return true;
 			}
 
-			if (relationship.getType() == Relationship.RelationshipType.WAR &&
-				faction.getSectorsControlled() <= getSectorsControlled()) {
+			if (
+				relationship.getType() == Relationship.RelationshipType.WAR
+				&& faction.getSectorsControlled() <= getSectorsControlled()
+			) {
 				relationship.setRelationship(newRelationship);
 				return true;
 			}
@@ -686,15 +692,23 @@ public class Faction implements ColorStringObject
 		}
 
 		if (getSectorsControlled() > faction.getSectorsControlled()) {
-			return relationship.getType() == Relationship.RelationshipType.PEACE ||
-				relationship.getType() == Relationship.RelationshipType.WAR
+			return (
+				(
+					relationship.getType() == Relationship.RelationshipType.PEACE
+					|| relationship.getType() == Relationship.RelationshipType.WAR
+				)
 				? Relationship.RelationshipType.WAR
-				: Relationship.RelationshipType.PEACE;
+				: Relationship.RelationshipType.PEACE
+			);
 		} else {
-			return relationship.getType() == Relationship.RelationshipType.PEACE ||
-				relationship.getType() == Relationship.RelationshipType.ALLIANCE
+			return (
+				(
+					relationship.getType() == Relationship.RelationshipType.PEACE
+					|| relationship.getType() == Relationship.RelationshipType.ALLIANCE
+				)
 				? Relationship.RelationshipType.ALLIANCE
-				: Relationship.RelationshipType.PEACE;
+				: Relationship.RelationshipType.PEACE
+			);
 		}
 	}
 
@@ -715,8 +729,10 @@ public class Faction implements ColorStringObject
 	 */
 	public void addNews(ColorString news)
 	{
-		if (galaxy.getPlayer() != null &&
-			galaxy.getPlayer().getFaction() == this) {
+		if (
+			galaxy.getPlayer() != null
+			&& galaxy.getPlayer().getFaction() == this
+		) {
 			Main.addColorMessage(news);
 		}
 	}

@@ -233,9 +233,11 @@ public class Station implements ColorStringObject
 
 		String testName;
 		do {
-			testName = location.getSector().getStar().getName()
+			testName = (
+				location.getSector().getStar().getName()
 				+ " "
-				+ Main.rng.getRandomElement(battle ? NAME_BATTLE : NAME_TRADE);
+				+ Main.rng.getRandomElement(battle ? NAME_BATTLE : NAME_TRADE)
+			);
 		} while (location.getSector().getStation(testName) != null);
 
 		name = testName;

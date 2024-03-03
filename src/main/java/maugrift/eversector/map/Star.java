@@ -725,7 +725,8 @@ public class Star implements ColorStringObject
 	 */
 	public static String generateName()
 	{
-		return Main.rng.getRandomElement(NAME_PREFIX)
+		return (
+			Main.rng.getRandomElement(NAME_PREFIX)
 			+ (
 				Main.rng.nextBoolean()
 				? Main.rng.getRandomElement(NAME_MIDDLE)
@@ -736,7 +737,8 @@ public class Star implements ColorStringObject
 				Main.rng.nextBoolean()
 				? " " + Main.rng.getRandomElement(NAME_DESCRIPTOR)
 				: ""
-			);
+			)
+		);
 	}
 
 	@Override

@@ -42,9 +42,11 @@ public class CrashLand implements Action
 		}
 
 		if (!planet.getType().canLandOn()) {
-			return "You cannot land on "
+			return (
+				"You cannot land on "
 				+ Utility.addArticle(planet.getType().toString())
-				+ ".";
+				+ "."
+			);
 		}
 
 		return null;

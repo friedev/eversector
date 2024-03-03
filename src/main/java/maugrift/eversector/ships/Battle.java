@@ -173,10 +173,12 @@ public class Battle
 	 */
 	public boolean continues()
 	{
-		return !attackers.isEmpty() &&
-			!defenders.isEmpty() &&
-			!surrendered.containsAll(attackers) &&
-			!surrendered.containsAll(defenders);
+		return (
+			!attackers.isEmpty()
+			&& !defenders.isEmpty()
+			&& !surrendered.containsAll(attackers)
+			&& !surrendered.containsAll(defenders)
+		);
 	}
 
 	/**
@@ -248,9 +250,11 @@ public class Battle
 	 */
 	private boolean shipCanAttack(Ship ship)
 	{
-		return !ship.isDestroyed() &&
-			!surrendered.contains(ship) &&
-			ship.getAI() != null;
+		return (
+			!ship.isDestroyed()
+			&& !surrendered.contains(ship)
+			&& ship.getAI() != null
+		);
 	}
 
 	/**
@@ -264,9 +268,11 @@ public class Battle
 		List<Ship> pursuing = new LinkedList<>();
 
 		for (Ship enemy : getEnemies(ship)) {
-			if (enemy.getAI() != null &&
-				!fleeing.contains(enemy) &&
-				enemy.getAI().pursue()) {
+			if (
+				enemy.getAI() != null
+				&& !fleeing.contains(enemy)
+				&& enemy.getAI().pursue()
+			) {
 				pursuing.add(enemy);
 			}
 		}
@@ -394,8 +400,10 @@ public class Battle
 				looter = winners.get(looterIndex);
 			}
 
-			if (lootedShip.isLeader() &&
-				looter.getFaction() == lootedShip.getFaction()) {
+			if (
+				lootedShip.isLeader()
+				&& looter.getFaction() == lootedShip.getFaction()
+			) {
 				looter.getFaction().setLeader(looter);
 				looter.getFaction().addNews(looter.toColorString()
 					.add(" has destroyed our leader, ")
@@ -451,19 +459,20 @@ public class Battle
 			// If this ship chooses to flee but is pursued
 			if (!attack(ship))
 			{
-				if (changeResourceBy(Action.FLEE) &&
-						(!ship.willPursue(this) ||
-						 !ship.changeResourceBy(Action.PURSUE)))
-				{
+				if (
+					changeResourceBy(Action.FLEE)
+					&& (
+						!ship.willPursue(this)
+						|| !ship.changeResourceBy(Action.PURSUE)
+					)
+				) {
 					// If the other ship is powerful enough, they will convert
 					// this ship
 					if (ship.willConvert() && ship.convert(this))
 						return;
 
 					// If the conversion fails, the fight continues
-				}
-				else
-				{
+				} else {
 					break;
 				}
 			}
@@ -471,74 +480,94 @@ public class Battle
 			// If the other ship flees but is pursued
 			if (!ship.attack(this))
 			{
-				if (ship.changeResourceBy(Action.PURSUE) &&
-						(!willPursue(ship) || !changeResourceBy(Action.FLEE)))
-				{
-					if (willConvert() && convert(ship))
+				if (
+					ship.changeResourceBy(Action.PURSUE)
+					&& (
+						!willPursue(ship)
+						|| !changeResourceBy(Action.FLEE)
+					)
+				) {
+					if (willConvert() && convert(ship)) {
 						return;
+					}
 				}
 			}
 		} while (!isDestroyed() && !ship.isDestroyed());
 
 		// If this ship is destroyed or cannot flee while the other ship lives
-		if (isDestroyed() || (!validateResources(Action.FLEE, "flee") &&
-				!ship.isDestroyed()))
-		{
-			if (isLeader() && ship.isInFaction(faction))
-			{
+		if (
+			isDestroyed()
+			|| (!validateResources(Action.FLEE, "flee")
+			&& !ship.isDestroyed())
+		) {
+			if (isLeader() && ship.isInFaction(faction)) {
 				faction.setLeader(ship);
-				faction.addNews(ship + " has defeated our leader, " + toString()
-						+ ", and has wrested control of the faction.");
-			}
-			else
-			{
-				if (ship.isPassive(this))
+				faction.addNews(
+					ship
+					+ " has defeated our leader, "
+					+ toString()
+					+ ", and has wrested control of the faction."
+				);
+			} else {
+				if (ship.isPassive(this)) {
 					ship.changeReputation(ship.faction, Reputation.KILL_ALLY);
-				else
+				} else {
 					ship.changeReputation(ship.faction, Reputation.KILL_ENEMY);
+				}
 
 				ship.changeReputation(faction, Reputation.KILL_ALLY);
 
-				if (isLeader())
-				{
-					faction.addNews(ship + " of the " + ship.faction
-							+ " has destroyed our leader, " + toString() + ".");
+				if (isLeader()) {
+					faction.addNews(
+						ship
+						+ " of the "
+						+ ship.faction
+						+ " has destroyed our leader, "
+						+ toString()
+						+ "."
+					);
 				}
 
 				ship.loot(this);
 
-				if (!isDestroyed())
+				if (!isDestroyed()) {
 					destroy(false);
+				}
 			}
-		}
-		else
-		{
-			if (ship.isLeader() && isInFaction(faction))
-			{
+		} else {
+			if (ship.isLeader() && isInFaction(faction)) {
 				ship.faction.setLeader(this);
-				ship.faction.addNews(toString() + " has defeated our leader, "
-						+ ship + ", and has wrested control of the faction.");
-			}
-			else
-			{
-				if (isPassive(ship))
+				ship.faction.addNews(
+					toString()
+					+ " has defeated our leader, "
+					+ ship
+					+ ", and has wrested control of the faction."
+				);
+			} else {
+				if (isPassive(ship)) {
 					changeReputation(faction, Reputation.KILL_ALLY);
-				else
+				} else {
 					changeReputation(faction, Reputation.KILL_ENEMY);
+				}
 
 				changeReputation(ship.faction, Reputation.KILL_ALLY);
 
-				if (ship.isLeader())
-				{
-					ship.faction.addNews(toString() + " of the " + faction
-							+ " has destroyed our leader, " + ship.toString()
-							+ ".");
+				if (ship.isLeader()) {
+					ship.faction.addNews(
+						toString()
+						+ " of the "
+						+ faction
+						+ " has destroyed our leader, "
+						+ ship.toString()
+						+ "."
+					);
 				}
 
 				loot(ship);
 
-				if (!ship.isDestroyed())
+				if (!ship.isDestroyed()) {
 					ship.destroy(false);
+				}
 			}
 		}
 	}

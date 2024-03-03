@@ -32,10 +32,12 @@ public class Convert implements Action
 		}
 
 		if (actor.getFaction() == converting.getFaction()) {
-			return converting
+			return (
+				converting
 				+ " is already a member of the "
 				+ actor.getFaction()
-				+ ".";
+				+ "."
+			);
 		}
 
 		if (converting.isPlayer()) {

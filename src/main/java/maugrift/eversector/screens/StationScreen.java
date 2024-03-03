@@ -244,13 +244,15 @@ class StationScreen
 	private boolean restock(String name)
 	{
 		Resource resource = player.getResource(name);
-		return resource != null &&
-			!resource.isFull() &&
-			new TransactResource(
+		return (
+			resource != null
+			&& !resource.isFull()
+			&& new TransactResource(
 				name,
 				player.getMaxBuyAmount(resource),
 				false
-			).executeBool(player);
+			).executeBool(player)
+		);
 	}
 
 	@Override
@@ -364,8 +366,10 @@ class StationScreen
 	 */
 	private Item getSelectedItem()
 	{
-		if (getMenu().getSelectionIndex() >= getWindow().getContents().size() ||
-			getMenu().getSelection() == null) {
+		if (
+			getMenu().getSelectionIndex() >= getWindow().getContents().size()
+			|| getMenu().getSelection() == null
+		) {
 			resetSelection();
 		}
 
@@ -406,8 +410,8 @@ class StationScreen
 	private ColorString getItemString(Item item, boolean buying)
 	{
 		ItemColors colors = new ItemColors(item, buying);
-		return new ColorString(item.toString(), colors.item)
-			.add(
+		return (
+			new ColorString(item.toString(), colors.item).add(
 				new ColorString(
 					" ("
 					+ Integer.toString(item.getPrice())
@@ -415,7 +419,8 @@ class StationScreen
 					+ ")",
 					colors.credits
 				)
-			);
+			)
+		);
 	}
 
 	/**
@@ -462,8 +467,10 @@ class StationScreen
 		ItemColors(Item item, boolean buying)
 		{
 			if (buying) {
-				if (item instanceof BaseResource &&
-					player.getResource(item.getName()).isFull()) {
+				if (
+					item instanceof BaseResource
+					&& player.getResource(item.getName()).isFull()
+				) {
 					this.item = DISABLED;
 					credits = DISABLED;
 					return;
@@ -478,8 +485,10 @@ class StationScreen
 				this.item = ITEM;
 				credits = CREDITS;
 			} else {
-				if (item instanceof Module &&
-					!player.getSectorLocation().getStation().sells((Module) item)) {
+				if (
+					item instanceof Module
+					&& !player.getSectorLocation().getStation().sells((Module) item)
+				) {
 					this.item = INVALID;
 					credits = DISABLED;
 					return;

@@ -132,9 +132,11 @@ public class Main
 				StackTraceElement[] stackTrace = e.getStackTrace();
 				String[] stackTraceStrings = new String[stackTrace.length + 1];
 
-				stackTraceStrings[0] = "The game has crashed! Please send the "
-				+ "contents of this file to the developer to help fix the"
-				+ "the problem.";
+				stackTraceStrings[0] = (
+					"The game has crashed! Please send the "
+					+ "contents of this file to the developer to help fix the"
+					+ "the problem."
+				);
 				for (int i = 0; i < stackTrace.length; i++) {
 					stackTraceStrings[i + 1] = stackTrace[i].toString();
 				}
@@ -354,9 +356,10 @@ public class Main
 	public static Properties getFontProperties(int index) throws IOException
 	{
 		return FileManager.load(
-				Paths.FONTS
-				+ fonts[index].getName()
-				+ "/"
-				+ Paths.FONT_PROPERTIES);
+			Paths.FONTS
+			+ fonts[index].getName()
+			+ "/"
+			+ Paths.FONT_PROPERTIES
+		);
 	}
 }

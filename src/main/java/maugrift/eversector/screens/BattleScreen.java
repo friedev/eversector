@@ -184,39 +184,39 @@ public class BattleScreen
 			break;
 		/*
 		case KeyEvent.VK_C:
-		{
-			if (!player.isAligned())
-			{
+			if (!player.isAligned()) {
 				addError("You must be part of a faction to convert ships.");
 				break;
 			}
 
-			if (opponent.isInFaction(player.getFaction()))
-			{
-				addColorMessage(opponent.toColorString()
-						.add(" is already in the ").add(player.getFaction())
-						.add("."));
+			if (opponent.isInFaction(player.getFaction())) {
+				addColorMessage(
+					opponent.toColorString()
+					.add(" is already in the ")
+					.add(player.getFaction())
+					.add(".")
+				);
 				break;
 			}
 
-			if (!opponent.willAttack())
-			{
+			if (!opponent.willAttack()) {
 				player.convert(opponent);
-				addColorMessage(opponent.toColorString()
-						.add(" has surrendered and joined the ")
-						.add(player.getFaction()).add("."));
+				addColorMessage(
+					opponent.toColorString()
+					.add(" has surrendered and joined the ")
+					.add(player.getFaction()).add(".")
+				);
 				playSoundEffect(CLAIM);
 				return endBattle();
-			}
-			else
-			{
+			} else {
 				nextAttack = true;
-				addColorMessage(opponent.toColorString()
-						.add(" has refused to join the ")
-						.add(player.getFaction()).add("."));
+				addColorMessage(
+					opponent.toColorString()
+					.add(" has refused to join the ")
+					.add(player.getFaction()).add(".")
+				);
 			}
 			break;
-		}
 		*/
 		case KeyEvent.VK_PERIOD:
 		case KeyEvent.VK_SPACE:
@@ -253,8 +253,10 @@ public class BattleScreen
 					);
 			}
 
-			if (!battle.getFleeing().contains(player) &&
-				new Pursue().canExecute(player) == null) {
+			if (
+				!battle.getFleeing().contains(player)
+				&& new Pursue().canExecute(player) == null
+			) {
 				List<Ship> enemiesEscaping = new LinkedList<>();
 				for (Ship escaping : battle.getFleeing()) {
 					if (enemies.contains(escaping)) {

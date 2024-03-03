@@ -44,9 +44,11 @@ public class Mine implements Action
 		if (actor.isLanded()) {
 			Region region = actor.getPlanetLocation().getRegion();
 			if (!region.hasOre()) {
-				return "There is no ore to mine in the "
+				return (
+					"There is no ore to mine in the "
 					+ region.toString().toLowerCase()
-					+ ".";
+					+ "."
+				);
 			}
 		}
 
@@ -110,7 +112,8 @@ public class Mine implements Action
 				addMessage(
 					"Maximum ore capacity exceeded; "
 					+ discard
-					+ " units discarded.");
+					+ " units discarded."
+				);
 			}
 		}
 

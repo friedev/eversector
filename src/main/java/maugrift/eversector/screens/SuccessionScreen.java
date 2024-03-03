@@ -64,7 +64,8 @@ public class SuccessionScreen
 			player
 			+ " has defeated our leader, "
 			+ leader
-			+ ", and has wrested control of the faction.");
+			+ ", and has wrested control of the faction."
+		);
 		player.getFaction().setLeader(player);
 		return new SectorScreen();
 	}

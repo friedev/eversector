@@ -117,8 +117,10 @@ public class GameScreen
 		drawMessageWindow();
 
 		if (subscreen != null) {
-			if (subscreen instanceof WindowScreen &&
-				((WindowScreen) subscreen).getWindow() instanceof AlignedWindow) {
+			if (
+				subscreen instanceof WindowScreen
+				&& ((WindowScreen) subscreen).getWindow() instanceof AlignedWindow
+			) {
 				((AlignedWindow)((WindowScreen) subscreen).getWindow()).setLocation(1, bottomY + 3);
 			}
 
@@ -148,9 +150,11 @@ public class GameScreen
 		}
 
 		if (viewingHistory()) {
-			if (key.getKeyCode() == KeyEvent.VK_H ||
-				key.getKeyCode() == KeyEvent.VK_ENTER ||
-				key.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			if (
+				key.getKeyCode() == KeyEvent.VK_H
+				|| key.getKeyCode() == KeyEvent.VK_ENTER
+				|| key.getKeyCode() == KeyEvent.VK_ESCAPE
+			) {
 				messageOffset = -1;
 				return this;
 			}
@@ -177,8 +181,10 @@ public class GameScreen
 		}
 
 		if (subscreen != null) {
-			boolean subscreenHasPopup = subscreen instanceof PopupMaster &&
-				((PopupMaster) subscreen).hasPopup();
+			boolean subscreenHasPopup = (
+				subscreen instanceof PopupMaster
+				&& ((PopupMaster) subscreen).hasPopup()
+			);
 
 			subscreen = subscreen.processInput(key);
 
@@ -333,8 +339,10 @@ public class GameScreen
 		if (messages.size() > MESSAGE_LINES) {
 			keybindings.add(new Keybinding("message history", "h"));
 		}
-		if (Option.LEADERBOARD.toBoolean() &&
-			!LeaderboardScore.buildLeaderboard().isEmpty()) {
+		if (
+			Option.LEADERBOARD.toBoolean()
+			&& !LeaderboardScore.buildLeaderboard().isEmpty()
+		) {
 			keybindings.add(new Keybinding("leaderboard", "b"));
 		}
 		keybindings.add(new Keybinding("options", "o"));

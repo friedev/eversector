@@ -119,13 +119,19 @@ public class Election
 	 */
 	public ColorString getDescription()
 	{
-		return emergency
-			? new ColorString("The ")
-			.add(faction)
-			.add(" is holding an emergency election for leader.")
-			: new ColorString("The scheduled leader election for the ")
-			.add(faction)
-			.add(" has arrived.");
+		return (
+			emergency
+			? (
+				new ColorString("The ")
+				.add(faction)
+				.add(" is holding an emergency election for leader.")
+			)
+			: (
+				new ColorString("The scheduled leader election for the ")
+				.add(faction)
+				.add(" has arrived.")
+			)
+		);
 	}
 
 	/**
@@ -156,9 +162,11 @@ public class Election
 		int minRep = 0;
 
 		for (Ship ship : faction.getGalaxy().getShips()) {
-			if (faction == ship.getFaction() &&
-				(ship.getReputation(faction).get() > minRep) ||
-				candidates.size() < CANDIDATES) {
+			if (
+				faction == ship.getFaction()
+				&& (ship.getReputation(faction).get() > minRep)
+				|| candidates.size() < CANDIDATES
+			) {
 				candidates.add(ship);
 
 				if (candidates.size() > CANDIDATES) {

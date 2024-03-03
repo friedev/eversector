@@ -17,9 +17,11 @@ public class Surrender implements Action
 			return "Ship not found.";
 		}
 
-		return actor.isInBattle()
+		return (
+			actor.isInBattle()
 			? null
-			: "You must be in a battle to surrender.";
+			: "You must be in a battle to surrender."
+		);
 	}
 
 	@Override
