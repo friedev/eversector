@@ -7,6 +7,10 @@ Go forth, and shape the future of your galaxy!
 
 ## Usage
 
+Dependencies:
+
+- Java 8 or newer
+
 To run the game: `./bin/EverSector`
 
 Or, on Windows: `./bin/EverSector.bat`
